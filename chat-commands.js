@@ -1040,8 +1040,9 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			'- <a href="http://www.smogon.com/forums/showthread.php?t=3463764" target="_blank">Balanced Hackmons</a><br />' +
 			'- <a href="http://www.smogon.com/forums/showthread.php?t=3471810" target="_blank">Dream World OU</a><br />' +
 			'- <a href="http://www.smogon.com/forums/showthread.php?t=3467120" target="_blank">Glitchmons</a><br />' +
-			'- <a href="http://www.smogon.com/forums/showthread.php?t=3476006" target="_blank">Seasonal: Winter Wonderland</a>' +
-			'- <a href="http://www.smogon.com/forums/showthread.php?t=3476469" target="_blank">Smogon Doubles</a>' +
+			'- <a href="http://www.smogon.com/forums/showthread.php?t=3476006" target="_blank">Seasonal: Winter Wonderland</a><br />' +
+			'- <a href="http://www.smogon.com/forums/showthread.php?t=3476469" target="_blank">Smogon Doubles</a><br />' +
+			'- <a href="http://www.smogon.com/forums/showthread.php?t=3471161" target="_blank">VGC 2013</a>' +
 			'</div>');
 		return false;
 		break;
@@ -1234,10 +1235,6 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			emit(socket, 'message', "The user '"+targets[2]+"' was not found.");
 			return false;
 		}
-		if (!targetUser.allowChallenges) {
-			emit(socket, 'message', "The user '"+targets[2]+"' is not accepting challenges right now.");
-			return false;
-		}
 		if (typeof target !== 'string') target = 'debugmode';
 		var problems = Tools.validateTeam(user.team, target);
 		if (problems) {
@@ -1250,14 +1247,14 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		
 	case 'blockchallenges':
 	case 'bc':
-		user.setChallenges(false);
+		user.allowChallenges = false;
 		emit(socket, 'console', 'You are now blocking all incoming challenge requests.');
 		return false;
 		break;
-		
+
 	case 'allowchallenges':
 	case 'ac':
-		user.setChallenges(true);
+		user.allowChallenges = true;
 		emit(socket, 'console', 'You are available from challenges from now on.');
 		return false;
 		break;
@@ -1265,7 +1262,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 	case 'cancelchallenge':
 	case 'cchall':
 		user.cancelChallengeTo(target);
-		return false
+		return false;
 		break;
 
 	case 'accept':
