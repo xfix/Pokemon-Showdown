@@ -26,9 +26,7 @@ exports.BattleStatuses = {
 			this.add('-status', target, 'par');
 		},
 		onModifySpe: function(spe, pokemon) {
-			if (pokemon.ability !== 'quickfeet') {
-				return spe / 4;
-			}
+			return spe / 4;
 		},
 		onBeforeMovePriority: 2,
 		onBeforeMove: function(pokemon) {
@@ -44,9 +42,6 @@ exports.BattleStatuses = {
 			this.add('-status', target, 'slp');
 			// 1-3 turns
 			this.effectData.startTime = this.random(2,5);
-			this.effectData.time = this.effectData.startTime;
-		},
-		onSwitchIn: function(target) {
 			this.effectData.time = this.effectData.startTime;
 		},
 		onBeforeMovePriority: 2,
@@ -73,10 +68,6 @@ exports.BattleStatuses = {
 		},
 		onBeforeMovePriority: 2,
 		onBeforeMove: function(pokemon, target, move) {
-			if (move.thawsUser || this.random(5) === 0) {
-				pokemon.cureStatus();
-				return;
-			}
 			this.add('cant', pokemon, 'frz');
 			return false;
 		},
@@ -115,8 +106,8 @@ exports.BattleStatuses = {
 	},
 	confusion: {
 		// this is a volatile status
-		onStart: function(target, source) {
-			var result = this.runEvent('TryConfusion', target, source);
+		onStart: function(target) {
+			var result = this.runEvent('TryConfusion');
 			if (!result) return result;
 			this.add('-start', target, 'confusion');
 			this.effectData.time = this.random(2,6);
@@ -216,27 +207,6 @@ exports.BattleStatuses = {
 			}
 		}
 	},
-	choicelock: {
-		onStart: function(pokemon) {
-			this.effectData.move = this.activeMove.id;
-			if (!this.effectData.move) return false;
-		},
-		onModifyPokemon: function(pokemon) {
-			if (!pokemon.hasMove(this.effectData.move)) {
-				return;
-			}
-			if (!pokemon.getItem().isChoice) {
-				pokemon.removeVolatile('choicelock');
-				return;
-			}
-			var moves = pokemon.moveset;
-			for (var i=0; i<moves.length; i++) {
-				if (moves[i].id !== this.effectData.move) {
-					moves[i].disabled = true;
-				}
-			}
-		}
-	},
 	mustrecharge: {
 		duration: 2,
 		onBeforeMove: function(pokemon) {
@@ -318,148 +288,5 @@ exports.BattleStatuses = {
 			}
 			this.effectData.duration = 2;
 		},
-	},
-
-	// weather
-
-	// weather is implemented here since it's so important to the game
-
-	raindance: {
-		effectType: 'Weather',
-		duration: 5,
-		durationCallback: function(source, effect) {
-			if (source && source.item === 'damprock') {
-				return 8;
-			}
-			return 5;
-		},
-		onBasePower: function(basePower, attacker, defender, move) {
-			if (move.type === 'Water') {
-				this.debug('rain water boost');
-				return basePower * 1.5;
-			}
-			if (move.type === 'Fire') {
-				this.debug('rain fire suppress');
-				return basePower * .5;
-			}
-		},
-		onStart: function(battle, source, effect) {
-			if (effect && effect.effectType === 'Ability') {
-				this.effectData.duration = 0;
-				this.add('-weather', 'RainDance', '[from] ability: '+effect, '[of] '+source);
-			} else {
-				this.add('-weather', 'RainDance');
-			}
-		},
-		onResidualOrder: 1,
-		onResidual: function() {
-			this.add('-weather', 'RainDance', '[upkeep]');
-			this.eachEvent('Weather');
-		},
-		onEnd: function() {
-			this.add('-weather', 'none');
-		}
-	},
-	sunnyday: {
-		effectType: 'Weather',
-		duration: 5,
-		durationCallback: function(source, effect) {
-			if (source && source.item === 'heatrock') {
-				return 8;
-			}
-			return 5;
-		},
-		onBasePower: function(basePower, attacker, defender, move) {
-			if (move.type === 'Fire') {
-				this.debug('Sunny Day fire boost');
-				return basePower * 1.5;
-			}
-			if (move.type === 'Water') {
-				this.debug('Sunny Day water suppress');
-				return basePower * .5;
-			}
-		},
-		onStart: function(battle, source, effect) {
-			if (effect && effect.effectType === 'Ability') {
-				this.effectData.duration = 0;
-				this.add('-weather', 'SunnyDay', '[from] ability: '+effect, '[of] '+source);
-			} else {
-				this.add('-weather', 'SunnyDay');
-			}
-		},
-		onImmunity: function(type) {
-			if (type === 'frz') return false;
-		},
-		onResidualOrder: 1,
-		onResidual: function() {
-			this.add('-weather', 'SunnyDay', '[upkeep]');
-			this.eachEvent('Weather');
-		},
-		onEnd: function() {
-			this.add('-weather', 'none');
-		}
-	},
-	sandstorm: {
-		effectType: 'Weather',
-		duration: 5,
-		durationCallback: function(source, effect) {
-			if (source && source.item === 'smoothrock') {
-				return 8;
-			}
-			return 5;
-		},
-		onModifySpD: function(spd, pokemon) {
-			if (pokemon.hasType('Rock')) {
-				return spd * 3/2;
-			}
-		},
-		onStart: function(battle, source, effect) {
-			if (effect && effect.effectType === 'Ability') {
-				this.effectData.duration = 0;
-				this.add('-weather', 'Sandstorm', '[from] ability: '+effect, '[of] '+source);
-			} else {
-				this.add('-weather', 'Sandstorm');
-			}
-		},
-		onResidualOrder: 1,
-		onResidual: function() {
-			this.add('-weather', 'Sandstorm', '[upkeep]');
-			this.eachEvent('Weather');
-		},
-		onWeather: function(target) {
-			this.damage(target.maxhp/16);
-		},
-		onEnd: function() {
-			this.add('-weather', 'none');
-		}
-	},
-	hail: {
-		effectType: 'Weather',
-		duration: 5,
-		durationCallback: function(source, effect) {
-			if (source && source.item === 'icyrock') {
-				return 8;
-			}
-			return 5;
-		},
-		onStart: function(battle, source, effect) {
-			if (effect && effect.effectType === 'Ability') {
-				this.effectData.duration = 0;
-				this.add('-weather', 'Hail', '[from] ability: '+effect, '[of] '+source);
-			} else {
-				this.add('-weather', 'Hail');
-			}
-		},
-		onResidualOrder: 1,
-		onResidual: function() {
-			this.add('-weather', 'Hail', '[upkeep]');
-			this.eachEvent('Weather');
-		},
-		onWeather: function(target) {
-			this.damage(target.maxhp/16);
-		},
-		onEnd: function() {
-			this.add('-weather', 'none');
-		}
 	}
 };

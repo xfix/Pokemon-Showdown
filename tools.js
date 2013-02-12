@@ -156,10 +156,9 @@ module.exports = (function () {
 				id = toId(name);
 			}
 			move = {};
-			if (id.substr(0,12) === 'HiddenPower[') {
-				var hptype = id.substr(12);
-				hptype = hptype.substr(0,hptype.length-1);
-				id = 'HiddenPower'+hptype;
+			if (id.substr(0,11) === 'hiddenpower') {
+				var matches = /([a-z]*)([0-9]*)/.exec(id);
+				id = matches[1];
 			}
 			if (id && this.data.Movedex[id]) {
 				move = this.data.Movedex[id];
@@ -314,6 +313,7 @@ module.exports = (function () {
 	Tools.prototype.getType = function(type) {
 		if (!type || typeof type === 'string') {
 			var id = toId(type);
+			id = id.substr(0,1).toUpperCase() + id.substr(1);
 			type = {};
 			if (id && this.data.TypeChart[id]) {
 				type = this.data.TypeChart[id];
@@ -743,23 +743,26 @@ module.exports = (function () {
 			if (totalEV > 510) {
 				problems.push(name+" has more than 510 total EVs.");
 			}
-
-			if (ability.name !== template.abilities['0'] &&
-				ability.name !== template.abilities['1'] &&
-				ability.name !== template.abilities['DW']) {
-				problems.push(name+" can't have "+set.ability+".");
-			}
-			if (ability.name === template.abilities['DW']) {
-				isDW = true;
-
-				if (!template.dreamWorldRelease && banlistTable['Unreleased']) {
-					problems.push(name+"'s Dream World ability is unreleased.");
-				} else if (set.level < 10 && (template.maleOnlyDreamWorld || template.gender === 'N')) {
-					problems.push(name+" must be at least level 10 with its DW ability.");
+			
+			// We only check abilities if it's not standard all abilities
+			if (format.ruleset.indexOf['Standard All Abilities'] === -1) {
+				if (ability.name !== template.abilities['0'] &&
+					ability.name !== template.abilities['1'] &&
+					ability.name !== template.abilities['DW']) {
+					problems.push(name+" can't have "+set.ability+".");
 				}
-				if (template.maleOnlyDreamWorld) {
-					set.gender = 'M';
-					lsetData.sources = ['5D'];
+				if (ability.name === template.abilities['DW']) {
+					isDW = true;
+	
+					if (!template.dreamWorldRelease && banlistTable['Unreleased']) {
+						problems.push(name+"'s Dream World ability is unreleased.");
+					} else if (set.level < 10 && (template.maleOnlyDreamWorld || template.gender === 'N')) {
+						problems.push(name+" must be at least level 10 with its DW ability.");
+					}
+					if (template.maleOnlyDreamWorld) {
+						set.gender = 'M';
+						lsetData.sources = ['5D'];
+					}
 				}
 			}
 		}
@@ -846,7 +849,7 @@ module.exports = (function () {
 				} else if (lsetData.sources) {
 					var compatibleSource = false;
 					for (var i=0,len=lsetData.sources.length; i<len; i++) {
-						if (lsetData.sources[i].substr(0,2) in {'5E':1, '5D':1}) {
+						if (lsetData.sources[i].substr(0,2) === '5E' || (lsetData.sources[i].substr(0,2) === '5D' && (set.level >= 10 || set.forcedLevel))) {
 							compatibleSource = true;
 							break;
 						}

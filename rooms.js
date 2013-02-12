@@ -1,5 +1,8 @@
 const MAX_MESSAGE_LENGTH = 300;
 const TIMEOUT_DEALLOCATE = 15*60*1000;
+// Increment this by 1 for each change that breaks compatibility between
+// the previous version of the client and the current version of the server.
+const BATTLE_ROOM_PROTOCOL_VERSION = 2;
 
 function BattleRoom(roomid, format, p1, p2, parentid, rated) {
 	var selfR = this;
@@ -35,7 +38,8 @@ function BattleRoom(roomid, format, p1, p2, parentid, rated) {
 	this.p1 = p1 || '';
 	this.p2 = p2 || '';
 
-	this.sideTicksLeft = [18, 18];
+	this.sideTicksLeft = [21, 21];
+	if (!rated) this.sideTicksLeft = [28,28];
 	this.sideFreeTicks = [0, 0];
 	this.maxTicksLeft = 0;
 
@@ -64,9 +68,9 @@ function BattleRoom(roomid, format, p1, p2, parentid, rated) {
 			}
 
 			var p1 = rated.p1;
-			if (Users.get(rated.p1)) p1 = Users.get(rated.p1).name;
+			if (Users.getExact(rated.p1)) p1 = Users.getExact(rated.p1).name;
 			var p2 = rated.p2;
-			if (Users.get(rated.p2)) p2 = Users.get(rated.p2).name;
+			if (Users.getExact(rated.p2)) p2 = Users.getExact(rated.p2).name;
 
 			//update.updates.push('[DEBUG] uri: '+config.loginserver+'action.php?act=ladderupdate&serverid='+config.serverid+'&p1='+encodeURIComponent(p1)+'&p2='+encodeURIComponent(p2)+'&score='+p1score+'&format='+toId(rated.format)+'&servertoken=[token]');
 
@@ -75,7 +79,7 @@ function BattleRoom(roomid, format, p1, p2, parentid, rated) {
 			} else {
 				var winner = Users.get(winnerid);
 				if (winner && !winner.authenticated) {
-					winner.emit('console', {rawMessage: '<div style="background-color:#6688AA;color:white;padding:2px 4px"><b>Register an account to protect your ladder rating!</b><br /><button onclick="overlay(\'register\',{ifuserid:\''+winner.userid+'\'});return false"><b>Register</b></button></div>'});
+					winner.emit('console', {rawMessage: '<div class="message-register-account"><b>Register an account to protect your ladder rating!</b><br /><button onclick="overlay(\'register\',{ifuserid:\''+winner.userid+'\'});return false"><b>Register</b></button></div>'});
 				}
 				var p1rating, p2rating;
 				// update rankings
@@ -137,9 +141,10 @@ function BattleRoom(roomid, format, p1, p2, parentid, rated) {
 	};
 	this.update = function(excludeUser) {
 		if (selfR.log.length < selfR.lastUpdate) return;
+		var updates = selfR.log.slice(selfR.lastUpdate);
 		var update = {
 			since: selfR.lastUpdate,
-			updates: selfR.log.slice(selfR.lastUpdate),
+			updates: updates,
 			active: selfR.active
 		}
 		selfR.lastUpdate = selfR.log.length;
@@ -147,9 +152,10 @@ function BattleRoom(roomid, format, p1, p2, parentid, rated) {
 		update.room = selfR.id;
 		var hasUsers = false;
 		for (var i in selfR.users) {
+			var user = selfR.users[i];
 			hasUsers = true;
-			if (selfR.users[i] === excludeUser) continue;
-			selfR.users[i].emit('update', update);
+			if (user === excludeUser) continue;
+			user.emit('update', update);
 		}
 
 		// empty rooms time out after ten minutes
@@ -355,11 +361,12 @@ function BattleRoom(roomid, format, p1, p2, parentid, rated) {
 
 		// a tick is 10 seconds
 
-		var maxTicksLeft = 12; // 2 minutes
+		var maxTicksLeft = 15; // 2 minutes 30 seconds
 		if (!selfR.battle.p1 || !selfR.battle.p2) {
 			// if a player has left, don't wait longer than 6 ticks (1 minute)
 			maxTicksLeft = 6;
 		}
+		if (!selfR.rated) maxTicksLeft = 30;
 		selfR.sideFreeTicks = [1,1];
 
 		selfR.maxTicksLeft = maxTicksLeft;
@@ -412,6 +419,8 @@ function BattleRoom(roomid, format, p1, p2, parentid, rated) {
 		}
 		selfR.update();
 	};
+	// This function is only called when the room is not empty.
+	// Joining an empty room calls this.join() below instead.
 	this.initSocket = function(user, socket) {
 		var initdata = {
 			name: user.name,
@@ -421,12 +430,12 @@ function BattleRoom(roomid, format, p1, p2, parentid, rated) {
 			token: user.token,
 			room: selfR.id,
 			roomType: 'battle',
+			version: BATTLE_ROOM_PROTOCOL_VERSION,
 			battlelog: selfR.log
 		};
 		emit(socket, 'init', initdata);
 		if (selfR.battle.requests[user.userid]) {
-			emit(socket, 'update', JSON.parse(selfR.battle.requests[user.userid]));
-			sendData(socket, '>'+selfR.id+'\n|callback|decision');
+			selfR.battle.resendRequest(user);
 		}
 	};
 	this.join = function(user) {
@@ -448,6 +457,7 @@ function BattleRoom(roomid, format, p1, p2, parentid, rated) {
 			token: user.token,
 			room: selfR.id,
 			roomType: 'battle',
+			version: BATTLE_ROOM_PROTOCOL_VERSION,
 			battlelog: selfR.log
 		};
 		user.emit('init', initdata);
@@ -569,6 +579,10 @@ function BattleRoom(roomid, format, p1, p2, parentid, rated) {
 			}
 		}
 
+		// Battle actions are actually just text commands that are handled in
+		// parseCommand(), which in turn often calls Simulator.prototype.sendFor().
+		// Sometimes the call to sendFor is done indirectly, by calling
+		// room.decision(), where room.constructor === BattleRoom.
 		var parsedMessage = parseCommand(user, cmd, target, selfR, socket, message);
 		if (typeof parsedMessage === 'string') {
 			message = parsedMessage;
@@ -862,8 +876,11 @@ function LobbyRoom(roomid) {
 		if (user) {
 			user.sendTo(selfR, message);
 		} else {
+			var isPureLobbyChat = (message.indexOf('\n') < 0 && message.match(/^\|c\|[^\|]*\|/) && message.substr(0,5) !== '|c|~|');
 			for (var i in selfR.users) {
-				selfR.users[i].sendTo(selfR, message);
+				user = selfR.users[i];
+				if (isPureLobbyChat && user.blockLobbyChat) continue;
+				user.sendTo(selfR, message);
 			}
 		}
 	};
