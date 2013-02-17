@@ -1,3 +1,10 @@
+/**
+ * Statuses worked way different.
+ * Sleep lasted longer, had no reset on switch and took a whole turn to wake up.
+ * Frozen only thaws when hit by fire or Haze.
+ * 
+ * -Joim
+ */
 function clampIntRange(num, min, max) {
 	num = Math.floor(num);
 	if (num < min) num = min;
@@ -40,8 +47,8 @@ exports.BattleStatuses = {
 		effectType: 'Status',
 		onStart: function(target) {
 			this.add('-status', target, 'slp');
-			// 1-3 turns
-			this.effectData.startTime = this.random(2,5);
+			// 1-7 turns
+			this.effectData.startTime = this.random(2,9);
 			this.effectData.time = this.effectData.startTime;
 		},
 		onBeforeMovePriority: 2,

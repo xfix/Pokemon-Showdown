@@ -3,6 +3,8 @@
 /node_modules
 npm-debug.log
 /config/bannedwords.txt
+.buildpath
+.project
 
 # boilerplate #
 ###############

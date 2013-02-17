@@ -1,3 +1,9 @@
+/**
+ * All Gen 1 moves have to be updated due to the 1/256 bug on accuracy: 
+ * Even 100% accuracy moves had a 1/256 chance of failing.
+ * 
+ * -Joim
+ */
 function clampIntRange(num, min, max) {
 	num = Math.floor(num);
 	if (num < min) num = min;
@@ -60,7 +66,7 @@ exports.BattleMovedex = {
 		shortDesc: "Waits 2-3 turns; deals double the damage taken.",
 		priority: 0,
 		effect: {
-			duration: 2+random(),
+			duration: 2,
 			onLockMove: 'bide',
 			onStart: function(pokemon) {
 				this.effectData.totalDamage = 0;
@@ -360,16 +366,12 @@ exports.BattleMovedex = {
 	},
 	fireblast: {
 		inherit: true,
-		accuracy: 100,
+		accuracy: 85,
 		desc: "Deals damage to the target with a 30% chance to burn it.",
 		shortDesc: "30% chance to burn the target.",
 		secondary: {
-			chance: 100,
+			chance: 30,
 			status: 'brn'
-		},
-		onTryHit: function (pokemon) {
-			console.log('Using gen 1 Fire Blast');
-			return true;
 		}
 	},
 	firepunch: {
@@ -491,6 +493,12 @@ exports.BattleMovedex = {
 		priority: 0,
 		self: {
 			volatileStatus: 'mustrecharge'
+		},
+		onHit: function(target, source) {
+			if (target.hp <= 0) {
+				source.removeVolatile('mustrecharge');
+				console.log('Removing recharge through faint');
+			}
 		},
 		secondary: false,
 		target: "normal",
@@ -917,12 +925,18 @@ exports.BattleMovedex = {
 				this.add('-fail', target, 'move: Substitute');
 				return null;
 			}
-			if (target.hp <= target.maxhp/4 || target.maxhp === 1) {
-				return true;
+			// We only prevent when hp is less than one quarter.
+			// If you use substitute at exactly one quarter, you faint.
+			if (target.hp < target.maxhp/4) {
+				this.add('-fail', target, 'move: Substitute', '[weak]');
+				return null;
 			}
 		},
 		onHit: function(target) {
-			this.directDamage(target.maxhp / 4, target, target);
+			// If max HP is 3 or less substitute makes no damage
+			if (target.maxhp > 3) {
+				this.directDamage(target.maxhp / 4, target, target);
+			}
 		},
 		effect: {
 			onStart: function(target) {
@@ -955,6 +969,7 @@ exports.BattleMovedex = {
 				source.lastDamage = damage;
 				if (target.volatiles['substitute'].hp <= 0) {
 					target.removeVolatile('substitute');
+					source.removeVolatile('mustrecharge');
 				} else {
 					this.add('-activate', target, 'Substitute', '[damage]');
 				}

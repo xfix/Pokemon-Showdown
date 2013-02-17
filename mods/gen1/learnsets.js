@@ -1,3 +1,10 @@
+/**
+ * Learnsets were very different on gen 1. This list has been fully updated
+ * This list has been compiled thanks to the huge help of the following users:
+ * BiGGiE, SmashBrosBrawl, Lagalaga, mrSmellyfeet100
+ * 
+ * -Joim
+ */
 exports.BattleLearnsets = {
 	missingno:{learnset:{blizzard:["1L0"],bubblebeam:["1L0"],cut:["1L0"],doubleedge:["1L0"],earthquake:["1L0"],fissure:["1L0"],fly:["1L0"],icebeam:["1L0"],megakick:["1L0"],megapunch:["1L0"],payday:["1L0"],psychic:["1L0"],rage:["1L0"],razorwind:["1L0"],rest:["1L0"],seismictoss:["1L0"],skyattack:["1L0"],submission:["1L0"],substitute:["1L0"],swordsdance:["1L0"],takedown:["1L0"],teleport:["1L0"],thunderwave:["1L0"],toxic:["1L0"],triattack:["1L0"],watergun:["1L0"]}},
 	bulbasaur:{learnset:{growl:["1L1"],growth:["1L34"],leechseed:["1L7"],poisonpowder:["1L20"],razorleaf:["1L27"],sleeppowder:["1L41"],solarbeam:["1L48","1M"],tackle:["1L1"],vinewhip:["1L13"],bide:["1M"],bodyslam:["1M"],doubleteam:["1M"],doubleedge:["1M"],megadrain:["1M"],mimic:["1M"],rage:["1M"],reflect:["1M"],rest:["1M"],substitute:["1M"],swordsdance:["1M"],takedown:["1M"],toxic:["1M"]}},

@@ -1,3 +1,12 @@
+/**
+ * Types were different on gen 1 too.
+ * We had no steel nor dark types and there were a couple of important differences:
+ * Bug and Poison were weak to eachother
+ * Ice was neutral to fire
+ * Psychic was immune to ghost
+ * 
+ * -Joim
+ */
 exports.BattleTypeChart = {
   "Bug": {
     "damageTaken": {
