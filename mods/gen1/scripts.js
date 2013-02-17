@@ -284,7 +284,7 @@ exports.BattleScripts = {
 		}
 		if (move.alwaysHit) accuracy = true; // bypasses ohko accuracy modifiers
 		accuracy = this.runEvent('Accuracy', target, pokemon, move, accuracy);
-		if (accuracy !== true && this.random(100 + (1/256)) >= accuracy) {
+		if (accuracy !== true && (this.random(100) >= accuracy || this.random(256) === 1)) {
 			if (!spreadHit) this.attrLastMove('[miss]');
 			this.add('-miss', pokemon, target);
 			return false;
