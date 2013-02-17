@@ -458,6 +458,8 @@ module.exports = (function () {
 										!dexEntry.isNonstandard && 
 										// can't breed mons from future gens
 										dexEntry.gen <= parseInt(learned.substr(0,1),10) &&
+										// genderless pokemon can't pass egg moves
+										dexEntry.gender !== 'N' &&
 										// if chainbreeding, only match the original source
 										(!alreadyChecked[dexEntry.speciesid] || fromSelf) &&
 										// the breeding target can learn this move
@@ -714,6 +716,12 @@ module.exports = (function () {
 		if (!Array.isArray(set.moves)) set.moves = [];
 
 		var maxLevel = format.maxLevel || 100;
+		var maxForcedLevel = format.maxForcedLevel || maxLevel;
+		if (format.forcedLevel) {
+			set.forcedLevel = format.forcedLevel;
+		} else if ((set.level || maxLevel) >= maxForcedLevel) {
+			set.forcedLevel = maxForcedLevel;
+		}
 		if (!set.level || set.level > maxLevel || set.level == set.forcedLevel) {
 			set.level = maxLevel;
 		}

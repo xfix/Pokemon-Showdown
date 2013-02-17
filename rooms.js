@@ -75,15 +75,15 @@ function BattleRoom(roomid, format, p1, p2, parentid, rated) {
 			//update.updates.push('[DEBUG] uri: '+config.loginserver+'action.php?act=ladderupdate&serverid='+config.serverid+'&p1='+encodeURIComponent(p1)+'&p2='+encodeURIComponent(p2)+'&score='+p1score+'&format='+toId(rated.format)+'&servertoken=[token]');
 
 			if (!rated.p1 || !rated.p2) {
-				selfR.push('|chatmsg-raw|ERROR: Ladder not updated: a player does not exist');
+				selfR.push('|raw|ERROR: Ladder not updated: a player does not exist');
 			} else {
 				var winner = Users.get(winnerid);
 				if (winner && !winner.authenticated) {
-					winner.emit('console', {rawMessage: '<div class="message-register-account"><b>Register an account to protect your ladder rating!</b><br /><button onclick="overlay(\'register\',{ifuserid:\''+winner.userid+'\'});return false"><b>Register</b></button></div>'});
+					selfR.send('|askreg|' + winner.userid, winner);
 				}
 				var p1rating, p2rating;
 				// update rankings
-				selfR.push('|chatmsg-raw|Ladder updating...');
+				selfR.push('|raw|Ladder updating...');
 				LoginServer.request('ladderupdate', {
 					p1: p1,
 					p2: p2,
@@ -665,6 +665,8 @@ function LobbyRoom(roomid) {
 	this.rooms = [];
 	this.numRooms = 0;
 	this.searchers = [];
+	this.logFile = null;
+	this.logFilename = '';
 
 	// Never do any other file IO synchronously
 	// but this is okay to prevent race conditions as we start up PS
@@ -674,7 +676,7 @@ function LobbyRoom(roomid) {
 	} catch (e) {} // file doesn't exist [yet]
 
 	// generate and cache the format list
-	{
+	this.formatListText = (function() {
 		var formatListText = '|formats';
 		var curSection = '';
 		for (var i in Tools.data.Formats) {
@@ -693,7 +695,42 @@ function LobbyRoom(roomid) {
 			else if (!format.searchShow) formatListText += ',';
 			if (format.team) formatListText += ',#';
 		}
-		this.formatListText = formatListText;
+		return formatListText;
+	})();
+
+	this.rollLogFile = function(sync) {
+		var mkdir = sync ? (function(path, mode, callback) {
+			try {
+				fs.mkdirSync(path, mode);
+			} catch (e) {}	// directory already exists
+			callback();
+		}) : fs.mkdir;
+		var date = new Date();
+		var path = 'logs/lobby';
+		mkdir(path, '0755', function() {
+			path += '/' + date.format('{yyyy}-{MM}');
+			mkdir(path, '0755', function() {
+				path += '/' + date.format('{yyyy}-{MM}-{dd}') + '.txt';
+				if (path !== selfR.logFilename) {
+					selfR.logFilename = path;
+					if (selfR.logFile) selfR.logFile.destroySoon();
+					selfR.logFile = fs.createWriteStream(path, {flags: 'a'});
+				}
+				var timestamp = +date;
+				date.advance('1 hour').reset('minutes').advance('1 second');
+				setTimeout(selfR.rollLogFile, +date - timestamp);
+			});
+		});
+	};
+	if (config.loglobby) {
+		this.rollLogFile(true);
+		this.logEntry = function(entry) {
+			var timestamp = new Date().format('{HH}:{mm}:{ss} ');
+			selfR.logFile.write(timestamp + entry + '\n');
+		};
+		this.logEntry('Lobby created');
+	} else {
+		this.logEntry = function() { };
 	}
 
 	this.getUpdate = function(since, omitUsers, omitRoomList) {
@@ -851,7 +888,8 @@ function LobbyRoom(roomid) {
 	};
 	this.update = function() {
 		if (selfR.log.length <= selfR.lastUpdate) return;
-		var update = selfR.log.slice(selfR.lastUpdate).join('\n');
+		var entries = selfR.log.slice(selfR.lastUpdate);
+		var update = entries.join('\n');
 		if (selfR.log.length > 100) selfR.log = selfR.log.slice(-100);
 		selfR.lastUpdate = selfR.log.length;
 
@@ -887,9 +925,12 @@ function LobbyRoom(roomid) {
 	this.updateRooms = function(excludeUser) {
 		// do nothing
 	};
-	this.add = function(message) {
+	this.add = function(message, noUpdate) {
 		selfR.log.push(message);
-		selfR.update();
+		this.logEntry(message);
+		if (!noUpdate) {
+			selfR.update();
+		}
 	};
 	this.addRaw = function(message) {
 		selfR.add('|raw|'+message);
@@ -915,10 +956,12 @@ function LobbyRoom(roomid) {
 
 		selfR.users[user.userid] = user;
 		if (user.named && config.reportjoins) {
-			selfR.log.push('|j|'+user.getIdentity());
+			selfR.add('|j|'+user.getIdentity(), true);
 			selfR.update(user);
 		} else if (user.named) {
-			selfR.log.push('|J|'+user.getIdentity());
+			var entry = '|J|'+user.getIdentity();
+			selfR.send(entry);
+			selfR.logEntry(entry);
 		}
 
 		var initdata = {
@@ -942,12 +985,17 @@ function LobbyRoom(roomid) {
 		selfR.users[user.userid] = user;
 		if (joining && config.reportjoins) {
 			selfR.add('|j|'+user.getIdentity());
-		} else if (joining) {
-			selfR.send('|J|'+user.getIdentity());
-		} else if (!user.named) {
-			selfR.send('|L| '+oldid);
 		} else {
-			selfR.send('|N|'+user.getIdentity()+'|'+oldid);
+			var entry;
+			if (joining) {
+				entry = '|J|' + user.getIdentity();
+			} else if (!user.named) {
+				entry = '|L| ' + oldid;
+			} else {
+				entry = '|N|' + user.getIdentity() + '|' + oldid;
+			}
+			selfR.send(entry);
+			selfR.logEntry(entry);
 		}
 		return user;
 	};
@@ -958,7 +1006,9 @@ function LobbyRoom(roomid) {
 		if (config.reportjoins) {
 			selfR.add('|l|'+user.getIdentity());
 		} else if (user.named) {
-			selfR.send('|L|'+user.getIdentity());
+			var entry = '|L|' + user.getIdentity();
+			selfR.send(entry);
+			selfR.logEntry(entry);
 		}
 	};
 	this.startBattle = function(p1, p2, format, rated, p1team, p2team) {
@@ -1064,22 +1114,22 @@ function LobbyRoom(roomid) {
 
 			var room = selfR;
 			var me = user;
-			selfR.log.push('|c|'+user.getIdentity()+'|>> '+cmd);
+			selfR.add('|c|'+user.getIdentity()+'|>> '+cmd, true);
 			if (user.can('console')) {
 				try {
-					selfR.log.push('|c|'+user.getIdentity()+'|<< '+eval(cmd));
+					selfR.add('|c|'+user.getIdentity()+'|<< '+eval(cmd), true);
 				} catch (e) {
-					selfR.log.push('|c|'+user.getIdentity()+'|<< error: '+e.message);
+					selfR.add('|c|'+user.getIdentity()+'|<< error: '+e.message, true);
 					var stack = (""+e.stack).split("\n");
 					for (var i=0; i<stack.length; i++) {
 						user.sendTo(selfR.id, '<< '+stack[i]);
 					}
 				}
 			} else {
-				selfR.log.push('|c|'+user.getIdentity()+'|<< Access denied.');
+				selfR.add('|c|'+user.getIdentity()+'|<< Access denied.', true);
 			}
 		} else if (!user.muted) {
-			selfR.log.push('|c|'+user.getIdentity()+'|'+message);
+			selfR.add('|c|'+user.getIdentity()+'|'+message, true);
 		}
 		selfR.update();
 	};

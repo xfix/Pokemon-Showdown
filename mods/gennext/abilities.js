@@ -415,7 +415,7 @@ exports.BattleAbilities = {
 	},
 	"flareboost": {
 		inherit: true,
-		onDamage: function(damage, attacker, defender, effect) {
+		onDamage: function(damage, defender, attacker, effect) {
 			if (effect && (effect.id === 'brn')) {
 				return damage / 2;
 			}
@@ -423,6 +423,30 @@ exports.BattleAbilities = {
 	},
 	"telepathy": {
 		inherit: true,
-		onSwitchOut: function() {}
+		onStart: function(target) {
+			this.add('-start', target, 'move: Imprison');
+		},
+		onFoeModifyPokemon: function(pokemon) {
+			var foeMoves = this.effectData.source.moveset;
+			for (var f=0; f<foeMoves.length; f++) {
+				pokemon.disabledMoves[foeMoves[f].id] = true;
+			}
+		},
+		onFoeBeforeMove: function(attacker, defender, move) {
+			if (attacker.disabledMoves[move.id]) {
+				this.add('cant', attacker, 'move: Imprison', move);
+				return false;
+			}
+		}
+	},
+	"justified": {
+		inherit: true,
+		onBasePowerPriority: 100,
+		onBasePower: function(power, attacker, defender) {
+			if (power > 100 && !defender.hasType('Dark')) {
+				this.debug('capping base power at 100');
+				return 100;
+			}
+		}
 	}
 };
