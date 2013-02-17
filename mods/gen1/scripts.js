@@ -250,5 +250,90 @@ exports.BattleScripts = {
 		}
 
 		return Math.floor(baseDamage);
+	},
+	rollMoveHit: function(target, pokemon, move, spreadHit) {
+		if (move.selfdestruct && spreadHit) {
+			pokemon.hp = 0;
+		}
+
+		var boostTable = [1, 4/3, 5/3, 2, 7/3, 8/3, 3];
+
+		// calculate true accuracy
+		var accuracy = move.accuracy;
+		if (accuracy !== true) {
+			if (!move.ignoreAccuracy) {
+				if (pokemon.boosts.accuracy > 0) {
+					accuracy *= boostTable[pokemon.boosts.accuracy];
+				} else {
+					accuracy /= boostTable[-pokemon.boosts.accuracy];
+				}
+			}
+			if (!move.ignoreEvasion) {
+				if (target.boosts.evasion > 0 && !move.ignorePositiveEvasion) {
+					accuracy /= boostTable[target.boosts.evasion];
+				} else if (target.boosts.evasion < 0) {
+					accuracy *= boostTable[-target.boosts.evasion];
+				}
+			}
+		}
+		if (move.ohko) { // bypasses accuracy modifiers
+			if (!target.volatiles['bounce'] && !target.volatiles['dig'] && !target.volatiles['dive'] && !target.volatiles['fly'] && !target.volatiles['shadowforce'] && !target.volatiles['skydrop']) {
+				accuracy = 30;
+				if (pokemon.level > target.level) accuracy += (pokemon.level - target.level);
+			}
+		}
+		if (move.alwaysHit) accuracy = true; // bypasses ohko accuracy modifiers
+		accuracy = this.runEvent('Accuracy', target, pokemon, move, accuracy);
+		if (accuracy !== true && this.random(100 + (1/256)) >= accuracy) {
+			if (!spreadHit) this.attrLastMove('[miss]');
+			this.add('-miss', pokemon, target);
+			return false;
+		}
+
+		if ((move.affectedByImmunities && !target.runImmunity(move.type, true)) || (move.isSoundBased && (pokemon !== target || this.gen <= 4) && !target.runImmunity('sound', true))) {
+			return false;
+		}
+
+		var damage = 0;
+		pokemon.lastDamage = 0;
+		if (move.multihit) {
+			var hits = move.multihit;
+			if (hits.length) {
+				// yes, it's hardcoded... meh
+				if (hits[0] === 2 && hits[1] === 5) {
+					var roll = this.random(6);
+					hits = [2,2,3,3,4,5][roll];
+				} else {
+					hits = this.random(hits[0],hits[1]+1);
+				}
+			}
+			hits = Math.floor(hits);
+			for (var i=0; i<hits && target.hp && pokemon.hp; i++) {
+				var moveDamage = this.moveHit(target, pokemon, move);
+				if (moveDamage === false) break;
+				// Damage from each hit is individually counted for the
+				// purposes of Counter, Metal Burst, and Mirror Coat.
+				damage = (moveDamage || 0);
+			}
+			if (i === 0) return true;
+			this.add('-hitcount', target, i);
+		} else {
+			damage = this.moveHit(target, pokemon, move);
+		}
+
+		if (move.category !== 'Status') target.gotAttacked(move, damage, pokemon);
+
+		if (!damage && damage !== 0) return false;
+
+		if (move.selfdestruct) {
+			this.faint(pokemon, pokemon, move);
+		}
+
+		if (!move.negateSecondary) {
+			this.singleEvent('AfterMoveSecondary', move, null, target, pokemon, move);
+			this.runEvent('AfterMoveSecondary', target, pokemon, move);
+		}
+
+		return damage;
 	}
 }
