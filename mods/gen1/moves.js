@@ -399,7 +399,7 @@ exports.BattleMovedex = {
 	},
 	focusenergy: {
 		inherit: true,
-		desc: "If the attack deals critical hits sometimes, then the chance of its happening is quartered. If a move has a high chance of dealing a critical hit, if the user iis currently faster than the opposing Pokemon its critical hit ratio is not decreased. If it's slower, its chances of dealing a critical hit is cut by 50%. If the user is significantly slower than the opposing Pokémon, then the user will be unable to deal critical hits to the opposing Pokémon.",
+		desc: "If the attack deals critical hits sometimes, then the chance of its happening is quartered. If a move has a high chance of dealing a critical hit, if the user iis currently faster than the opposing Pokemon its critical hit ratio is not decreased. If it's slower, its chances of dealing a critical hit is cut by 50%. If the user is significantly slower than the opposing Pokï¿½mon, then the user will be unable to deal critical hits to the opposing Pokï¿½mon.",
 		shortDesc: "Reduces the user's chance for a critical hit.",
 		id: "focusenergy",
 		name: "Focus Energy",
@@ -532,6 +532,7 @@ exports.BattleMovedex = {
 	},
 	karatechop: {
 		inherit: true,
+		type: "Normal"
 	},
 	kinesis: {
 		inherit: true,
