@@ -166,6 +166,14 @@ exports.BattleStatuses = {
 		onStart: function(pokemon, source) {
 			this.add('-activate', pokemon, 'move: ' +this.effectData.sourceEffect, '[of] '+source);
 		},
+		onBeforeMovePriority: 1,
+		onBeforeMove: function(pokemon) {
+			if (!this.runEvent('partiallytrapped', pokemon)) {
+				return;
+			}
+			this.add('cant', pokemon, 'partiallytrapped');
+			return false;
+		},
 		onResidualOrder: 11,
 		onResidual: function(pokemon) {
 			if (this.effectData.source && (!this.effectData.source.isActive || this.effectData.source.hp <= 0)) {

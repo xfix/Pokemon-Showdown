@@ -1121,8 +1121,6 @@ function BattleSide(name, battle, n, team) {
 function Battle(roomid, formatarg, rated) {
 	var selfB = this;
 	var format = Tools.getFormat(formatarg);
-	// Merge in scripts and tools.
-	Tools.mod(formatarg).install(this);
 
 	this.log = [];
 	this.turn = 0;
@@ -3286,6 +3284,8 @@ function Battle(roomid, formatarg, rated) {
 
 		selfB = null;
 	};
+	// Merge in scripts and tools.
+	Tools.mod(formatarg).install(this);
 } // function Battle
 
 exports.BattlePokemon = BattlePokemon;

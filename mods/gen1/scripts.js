@@ -24,6 +24,11 @@ exports.BattleScripts = {
 			if (item.gen > 1) item.isNonstandard = true;
 		}
 	},
+	debug: function(activity) {
+		if (this.getFormat().debug) {
+			this.add('debug', activity);
+		}
+	},
 	runMove: function(move, pokemon, target, sourceEffect) {
 		/**
 		 * runMove event needs to be reviewed for gen 1
@@ -51,6 +56,46 @@ exports.BattleScripts = {
 		this.useMove(move, pokemon, target, sourceEffect);
 		this.runEvent('AfterMove', target, pokemon, move);
 		this.runEvent('AfterMoveSelf', pokemon, target, move);
+	},
+	getStat: function(statName, unboosted, unmodified) {
+		statName = toId(statName);
+		var boost = selfP.boosts[statName];
+
+		if (statName === 'hp') return selfP.maxhp; // please just read .maxhp directly
+
+		// base stat
+		var stat = selfP.baseStats[statName];
+		stat = Math.floor(Math.floor(2*stat+selfP.set.ivs[statName]+Math.floor(selfP.set.evs[statName]/4))*selfP.level / 100 + 5);
+
+		// nature
+		var nature = selfB.getNature(selfP.set.nature);
+		if (statName === nature.plus) stat *= 1.1;
+		if (statName === nature.minus) stat *= 0.9;
+		stat = Math.floor(stat);
+
+		if (unmodified) return stat;
+
+		// stat modifier effects
+		var statTable = {atk:'Atk', def:'Def', spa:'SpA', spd:'SpD', spe:'Spe'};
+		stat = selfB.runEvent('Modify'+statTable[statName], selfP, null, null, stat);
+		stat = Math.floor(stat);
+
+		if (unboosted) return stat;
+
+		// stat boosts
+		var boostTable = [1,1.5,2,2.5,3,3.5,4];
+		if (boost > 6) boost = 6;
+		if (boost < -6) boost = -6;
+		if (boost >= 0) {
+			stat = Math.floor(stat * boostTable[boost]);
+		} else {
+			stat = Math.floor(stat / boostTable[-boost]);
+		}
+		
+		// Gen 1 caps stats at 999
+		if (stat > 999) stat = 999;
+
+		return stat;
 	},
 	getDamage: function(pokemon, target, move, suppressMessages) {
 		if (typeof move === 'string') move = this.getMove(move);
@@ -99,7 +144,7 @@ exports.BattleScripts = {
 		// In Gen 1 category deppends on attacking type
 		var specialTypes = {Fire:1, Water:1, Grass:1, Ice:1, Electric:1, Dark:1, Psychic:1, Dragon:1};
 		var category = (type in specialTypes)? 'Special' : 'Physical';
-		console.log(move.name + ': Using ' + category + ' type of attack for ' + type + '-type move.');
+		this.debug(move.name + ': Using ' + category + ' type of attack for ' + type + '-type move.');
 		
 		var basePower = move.basePower;
 		if (move.basePowerCallback) {
@@ -120,28 +165,28 @@ exports.BattleScripts = {
 			case 1:
 				// Normal crit-rate: BaseSpeed * 100 / 512.
 				critRatio = pokemon.baseStats['spe'] * 100 / 512;
-				console.log('Using normal crit-rate: BaseSpeed * 100 / 512');
+				this.debug('Using normal crit-rate: BaseSpeed * 100 / 512');
 				break;
 			case 2:
 				// High crit-rate: BaseSpeed * 100 / 64
 				critRatio = pokemon.baseStats['spe'] * 100 / 64;
-				console.log('Using high crit-rate: BaseSpeed * 100 / 64');
+				this.debug('Using high crit-rate: BaseSpeed * 100 / 64');
 				break;
 			case -2:
 				// Crit rate destroyed by Focus Energy (dumb trainer is dumb)
 				// 1 - 3 = -2, this is a normal move
 				critRatio = (pokemon.baseStats['spe'] * 100 / 64) * 0.25;
-				console.log('Using ruined normal crit-rate: (pokemon.baseStats[\'spe\'] * 100 / 64) * 0.25');
+				this.debug('Using ruined normal crit-rate: (pokemon.baseStats[\'spe\'] * 100 / 64) * 0.25');
 				break;
 			case -1:
 				// 2 - 3 = -1, this is a high crit move. Deppends on speed
 				if (pokemon.speed > target.speed) {
 					// Critical rate not decreased
 					critRatio = pokemon.baseStats['spe'] * 100 / 64;
-					console.log('Using ruined high crit-rate: pokemon.baseStats[\'spe\'] * 100 / 64');
+					this.debug('Using ruined high crit-rate: pokemon.baseStats[\'spe\'] * 100 / 64');
 				} else {
 					// If you are slower you can't crit
-					console.log('Ruined crit rate, too slow, cannnot crit');
+					this.debug('Ruined crit rate, too slow, cannnot crit');
 					critRatio = false;
 				}
 				break;
@@ -187,14 +232,14 @@ exports.BattleScripts = {
 			move.ignoreOffensive = true;
 		}
 		if (move.ignoreOffensive) {
-			console.log('Negating (sp)atk boost/penalty.');
+			this.debug('Negating (sp)atk boost/penalty.');
 			attack = attacker.getStat(move.category==='Physical'?'atk':'spa', true);
 		}
 		if (move.ignorePositiveDefensive && defense > target.getStat(move.defensiveCategory==='Physical'?'def':'spd', true)) {
 			move.ignoreDefensive = true;
 		}
 		if (move.ignoreDefensive) {
-			console.log('Negating (sp)def boost/penalty.');
+			this.debug('Negating (sp)def boost/penalty.');
 			defense = target.getStat(move.defensiveCategory==='Physical'?'def':'spd', true);
 		}
 
@@ -202,7 +247,7 @@ exports.BattleScripts = {
 		// Where: L: user level, A: current attack, P: move power, D: opponent current defense,
 		// S is the Stab modifier, T is the type effectiveness modifier, R is random between 217 and 255
 		// The max damage is 999
-		console.log('Using formula: int(int(int(2*L/5+2)*A*P/D)/50) for base damage');
+		this.debug('Using formula: int(int(int(2*L/5+2)*A*P/D)/50) for base damage');
 		var baseDamage = Math.floor(Math.floor(Math.floor(2*level/5+2) * basePower * attack/defense)/50) + 2;
 
 		// crit
@@ -216,7 +261,7 @@ exports.BattleScripts = {
 		// gen 1-2
 		var randFactor = Math.floor(Math.random()*39)+217;
 		baseDamage *= Math.floor(randFactor * 100 / 255) / 100;
-		console.log('Randomizing base damage as to gen 1: Math.floor(randFactor * 100 / 255) / 100, rand factor is ' + randFactor);
+		this.debug('Randomizing base damage as to gen 1: Math.floor(randFactor * 100 / 255) / 100, rand factor is ' + randFactor);
 
 		// STAB
 		if (type !== '???' && pokemon.hasType(type)) {
@@ -246,7 +291,7 @@ exports.BattleScripts = {
 		}
 
 		if (basePower && !Math.floor(baseDamage)) {
-			return 1;
+			return 0;
 		}
 
 		return Math.floor(baseDamage);

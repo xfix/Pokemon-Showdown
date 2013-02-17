@@ -1,6 +1,7 @@
 /**
  * All Gen 1 moves have to be updated due to the 1/256 bug on accuracy: 
  * Even 100% accuracy moves had a 1/256 chance of failing.
+ * Some moves have had major changes, such as Bite's typing.
  * 
  * -Joim
  */
@@ -794,6 +795,9 @@ exports.BattleMovedex = {
 	},
 	rockslide: {
 		inherit: true,
+		desc: "Deals damage to a foe.",
+		shortDesc: "Deals damage.",
+		secondary: null
 	},
 	rockthrow: {
 		inherit: true,
