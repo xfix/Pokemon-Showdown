@@ -454,7 +454,7 @@ exports.BattleMovedex = {
 	},
 	gust: {
 		inherit: true,
-		category: "Physical"
+		category: "Physical",
 		type: "Normal"
 	},
 	harden: {
