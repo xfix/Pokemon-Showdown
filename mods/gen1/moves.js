@@ -539,6 +539,7 @@ exports.BattleMovedex = {
 	},
 	karatechop: {
 		inherit: true,
+		type: "Normal"
 	},
 	kinesis: {
 		inherit: true,
