@@ -600,27 +600,8 @@ exports.BattleMovedex = {
 	},
 	lowkick: {
 		num: 67,
-		accuracy: 100,
-		basePower: 0,
-		basePowerCallback: function(pokemon, target) {
-			var targetWeight = target.weightkg;
-			if (target.weightkg >= 200) {
-				return 120;
-			}
-			if (target.weightkg >= 100) {
-				return 100;
-			}
-			if (target.weightkg >= 50) {
-				return 80;
-			}
-			if (target.weightkg >= 25) {
-				return 60;
-			}
-			if (target.weightkg >= 10) {
-				return 40;
-			}
-			return 20;
-		}
+		accuracy: 90,
+		basePower: 50,
 	},
 	meditate: {
 		inherit: true,
