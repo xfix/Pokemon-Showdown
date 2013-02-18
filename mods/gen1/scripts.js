@@ -71,7 +71,7 @@ exports.BattleScripts = {
 
 		// stat modifier effects
 		var statTable = {atk:'Atk', def:'Def', spa:'SpA', spd:'SpD', spe:'Spe'};
-		stat = this.runEvent('Modify'+statTable[statName], selfP, null, null, stat);
+		stat = selfB.runEvent('Modify'+statTable[statName], selfP, null, null, stat);
 		stat = Math.floor(stat);
 
 		if (unboosted) return stat;
