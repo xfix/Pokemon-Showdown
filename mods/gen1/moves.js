@@ -643,7 +643,7 @@ exports.BattleMovedex = {
 				if (i !== move.id) continue;
 				if (move.isNonstandard) continue;
 				var noMetronome = {
-					counter:1, metronome:1, mimic:1, mirrormove:1, struggle:1, transform:1
+					metronome:1, struggle:1
 				};
 				if (!noMetronome[move.id] && move.num <= 165) {
 					moves.push(move.id);
