@@ -257,6 +257,7 @@ exports.BattleMovedex = {
 			duration: 2,
 			onLockMove: 'dig',
 			onAccuracy: function(accuracy, target, source, move) {
+				if (move.id === 'swift') return true;
 				return 0;
 			},
 			onDamage: function(damage, target, source, move) {
@@ -401,7 +402,23 @@ exports.BattleMovedex = {
 	},
 	fly: {
 		inherit: true,
-		basePower: 90
+		desc: "Deals damage to target. This attack charges on the first turn and strikes on the second. The user cannot make a move between turns. (Field: Can be used to fly to a previously visited area.)",
+		shortDesc: "Flies up on first turn, then strikes the next turn.",
+		effect: {
+			duration: 2,
+			onLockMove: 'fly',
+			onAccuracy: function(accuracy, target, source, move) {
+				if (move.id === 'swift') return true;
+				return 0;
+			},
+			onDamage: function(damage, target, source, move) {
+				if (!move || move.effectType !== 'Move') return;
+				if (!source || source.side === target.side) return;
+				if (move.id === 'gust' || move.id === 'thunder') {
+					return 0;
+				}
+			}
+		}
 	},
 	focusenergy: {
 		inherit: true,
@@ -714,8 +731,8 @@ exports.BattleMovedex = {
 	},
 	psychic: {
 		inherit: true,
-		desc: "Deals damage to one target with a 10% chance to lower its Special by 1 stage.",
-		shortDesc: "10% chance to lower the target's Special by 1.",
+		desc: "Deals damage to one target with a 30% chance to lower its Special by 1 stage.",
+		shortDesc: "30% chance to lower the target's Special by 1.",
 		secondary: {
 			chance: 30,
 			boosts: {
@@ -835,6 +852,7 @@ exports.BattleMovedex = {
 	},
 	skyattack: {
 		inherit: true,
+		critRatio: 1
 	},
 	slam: {
 		inherit: true,
@@ -876,6 +894,9 @@ exports.BattleMovedex = {
 	},
 	stomp: {
 		inherit: true,
+		basePowerCallback: null,
+		desc: "Deals damage to one adjacent target with a 30% chance to flinch it.",
+		shortDesc: "30% chance to flinch the target."
 	},
 	strength: {
 		inherit: true,
