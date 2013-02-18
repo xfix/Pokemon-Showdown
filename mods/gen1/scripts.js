@@ -67,17 +67,11 @@ exports.BattleScripts = {
 		var stat = selfP.baseStats[statName];
 		stat = Math.floor(Math.floor(2*stat+selfP.set.ivs[statName]+Math.floor(selfP.set.evs[statName]/4))*selfP.level / 100 + 5);
 
-		// nature
-		var nature = selfB.getNature(selfP.set.nature);
-		if (statName === nature.plus) stat *= 1.1;
-		if (statName === nature.minus) stat *= 0.9;
-		stat = Math.floor(stat);
-
 		if (unmodified) return stat;
 
 		// stat modifier effects
 		var statTable = {atk:'Atk', def:'Def', spa:'SpA', spd:'SpD', spe:'Spe'};
-		stat = selfB.runEvent('Modify'+statTable[statName], selfP, null, null, stat);
+		stat = this.runEvent('Modify'+statTable[statName], selfP, null, null, stat);
 		stat = Math.floor(stat);
 
 		if (unboosted) return stat;
@@ -150,7 +144,10 @@ exports.BattleScripts = {
 		if (move.basePowerCallback) {
 			basePower = move.basePowerCallback.call(this, pokemon, target, move);
 		}
-		if (!basePower) return 0;
+		if (!basePower) {
+			if (basePower === 0) return; // returning undefined means not dealing damage
+			return basePower;
+		}
 		basePower = clampIntRange(basePower, 1);
 
 		// We check if it's a 100% crit move
@@ -291,7 +288,7 @@ exports.BattleScripts = {
 		}
 
 		if (basePower && !Math.floor(baseDamage)) {
-			return 0;
+			return 1;
 		}
 
 		return Math.floor(baseDamage);

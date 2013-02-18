@@ -131,8 +131,8 @@ exports.BattleMovedex = {
 		accuracy: 90,
 		basePower: 120,
 		category: "Special",
-		desc: "Deals damage to the target and has a 30% chance to freeze it.",
-		shortDesc: "30% chance to freeze the foe.",
+		desc: "Deals damage to the target and has a 10% chance to freeze it.",
+		shortDesc: "10% chance to freeze the foe.",
 		id: "blizzard",
 		isViable: true,
 		name: "Blizzard",
@@ -239,28 +239,34 @@ exports.BattleMovedex = {
 	},
 	dig: {
 		inherit: true,
-		basePower: 60,
+		desc: "Deals damage to one adjacent target. This attack charges on the first turn and strikes on the second. On the first turn, the user avoids all attacks other than Earthquake and Magnitude but takes double damage from them, and is also unaffected by Hail and Sandstorm damage. The user cannot make a move between turns. If the user is holding a Power Herb, the move completes in one turn. Makes contact. (Field: Can be used to escape a cave quickly.)",
+		shortDesc: "Digs underground turn 1, strikes turn 2.",
+		onTry: function(attacker, defender, move) {
+			if (attacker.removeVolatile(move.id)) {
+				return;
+			}
+			this.add('-prepare', attacker, move.name, defender);
+			if (!this.runEvent('ChargeMove', attacker, defender)) {
+				this.add('-anim', attacker, move.name, defender);
+				return;
+			}
+			attacker.addVolatile(move.id, defender);
+			return null;
+		},
 		effect: {
 			duration: 2,
 			onLockMove: 'dig',
-			onImmunity: function(type, pokemon) {
-				if (type === 'sandstorm' || type === 'hail') return false;
+			onAccuracy: function(accuracy, target, source, move) {
+				return 0;
 			},
-			onSourceModifyMove: function(move) {
-				if (move.target === 'foeSide') return;
-				if (move.id === 'earthquake' || move.id === 'magnitude' || move.id === 'fissure') {
-					// should not normally be done in ModifyMove event,
-					// but it's faster to do this here than in
-					// onFoeBasePower
-					if (!move.basePowerModifier) move.basePowerModifier = 1;
-					move.basePowerModifier *= 2;
-					return;
-				} else if (move.id === 'fissure') {
-					return;
+			onDamage: function(damage, target, source, move) {
+				if (!move || move.effectType !== 'Move') return;
+				if (!source || source.side === target.side) return;
+				if (move.id === 'earthquake') {
+					return 0;
 				}
-				move.accuracy = 0;
 			}
-		},
+		}
 	},
 	disable: {
 		inherit: true,
