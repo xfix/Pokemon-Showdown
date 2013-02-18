@@ -716,6 +716,10 @@ exports.BattleMovedex = {
 	},
 	poisonsting: {
 		inherit: true,
+		secondary: {
+			chance: 20,
+			status: 'psn'
+		},
 	},
 	poisonpowder: {
 		inherit: true,
@@ -731,7 +735,7 @@ exports.BattleMovedex = {
 		desc: "Deals damage to one target with a 10% chance to lower its Special by 1 stage.",
 		shortDesc: "10% chance to lower the target's Special by 1.",
 		secondary: {
-			chance: 10,
+			chance: 30,
 			boosts: {
 				spd: -1,
 				spa: -1
@@ -753,7 +757,7 @@ exports.BattleMovedex = {
 	},
 	razorwind: {
 		num: 13,
-		accuracy: 100,
+		accuracy: 75,
 		basePower: 80,
 		category: "Physical",
 		desc: "Deals damage to a foe. This attack charges on the first turn and strikes on the second. The user cannot make a move between turns.",
@@ -845,6 +849,7 @@ exports.BattleMovedex = {
 	},
 	skullbash: {
 		inherit: true,
+		effect: null
 	},
 	skyattack: {
 		inherit: true,
@@ -1048,6 +1053,10 @@ exports.BattleMovedex = {
 	},
 	thunder: {
 		inherit: true,
+		secondary: {
+			chance: 10,
+			status: 'par'
+		},
 	},
 	thunderpunch: {
 		inherit: true,
@@ -1079,6 +1088,7 @@ exports.BattleMovedex = {
 	triattack: {
 		inherit: true,
 		category: "Physical"
+		secondary: null
 	},
 	twineedle: {
 		inherit: true,
@@ -1107,6 +1117,7 @@ exports.BattleMovedex = {
 	},
 	wingattack: {
 		inherit: true,
+		basePower: 35,
 	},
 	withdraw: {
 		inherit: true,
