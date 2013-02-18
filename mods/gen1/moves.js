@@ -792,6 +792,15 @@ exports.BattleMovedex = {
 	},
 	rest: {
 		inherit: true,
+		onHit: function(target) {
+			if (target.hp >= target.maxhp) return false;
+			if (!target.setStatus('slp')) return false;
+			// fail glitch when hp is 255/511 less than max
+			if ((target.hp === (target.maxhp - 255)) || target.hp === (target.maxhp - 511)) return false;
+			target.statusData.time = 3;
+			target.statusData.startTime = 3;
+			this.heal(target.maxhp) //Aeshetic only as the healing happens after you fall asleep in-game
+			this.add('-status', target, 'slp', '[from] move: Rest');
 	},
 	roar: {
 		inherit: true,
