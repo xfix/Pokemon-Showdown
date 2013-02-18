@@ -405,7 +405,7 @@ exports.BattleMovedex = {
 	},
 	focusenergy: {
 		inherit: true,
-		desc: "If the attack deals critical hits sometimes, then the chance of its happening is quartered. If a move has a high chance of dealing a critical hit, if the user iis currently faster than the opposing Pokemon its critical hit ratio is not decreased. If it's slower, its chances of dealing a critical hit is cut by 50%. If the user is significantly slower than the opposing Pok�mon, then the user will be unable to deal critical hits to the opposing Pok�mon.",
+		desc: "If the attack deals critical hits sometimes, then the chance of its happening is quartered. If a move has a high chance of dealing a critical hit, if the user iis currently faster than the opposing Pokemon its critical hit ratio is not decreased. If it's slower, its chances of dealing a critical hit is cut by 50%. If the user is significantly slower than the opposing Pokemon, then the user will be unable to deal critical hits to the opposing Pokemon.",
 		shortDesc: "Reduces the user's chance for a critical hit.",
 		id: "focusenergy",
 		name: "Focus Energy",
@@ -701,7 +701,7 @@ exports.BattleMovedex = {
 		secondary: {
 			chance: 20,
 			status: 'psn'
-		},
+		}
 	},
 	poisonpowder: {
 		inherit: true,
@@ -1038,7 +1038,7 @@ exports.BattleMovedex = {
 		secondary: {
 			chance: 10,
 			status: 'par'
-		},
+		}
 	},
 	thunderpunch: {
 		inherit: true,
@@ -1069,7 +1069,7 @@ exports.BattleMovedex = {
 	},
 	triattack: {
 		inherit: true,
-		category: "Physical"
+		category: "Physical",
 		secondary: null
 	},
 	twineedle: {
@@ -1099,7 +1099,7 @@ exports.BattleMovedex = {
 	},
 	wingattack: {
 		inherit: true,
-		basePower: 35,
+		basePower: 35
 	},
 	withdraw: {
 		inherit: true,
