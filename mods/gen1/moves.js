@@ -146,19 +146,19 @@ exports.BattleMovedex = {
 		type: "Ice"
 	},
 	bodyslam: {
-		inherit: true,
+		inherit: true
 	},
 	boneclub: {
-		inherit: true,
+		inherit: true
 	},
 	bonemerang: {
-		inherit: true,
+		inherit: true
 	},
 	bubble: {
-		inherit: true,
+		inherit: true
 	},
 	bubblebeam: {
-		inherit: true,
+		inherit: true
 	},
 	clamp: {
 		inherit: true,
@@ -167,16 +167,16 @@ exports.BattleMovedex = {
 		pp: 10
 	},
 	cometpunch: {
-		inherit: true,
+		inherit: true
 	},
 	confuseray: {
-		inherit: true,
+		inherit: true
 	},
 	confusion: {
-		inherit: true,
+		inherit: true
 	},
 	constrict: {
-		inherit: true,
+		inherit: true
 	},
 	conversion: {
 		inherit: true,
@@ -232,10 +232,10 @@ exports.BattleMovedex = {
 		accuracy: 85
 	},
 	cut: {
-		inherit: true,
+		inherit: true
 	},
 	defensecurl: {
-		inherit: true,
+		inherit: true
 	},
 	dig: {
 		inherit: true,
@@ -328,10 +328,10 @@ exports.BattleMovedex = {
 		secondary: null
 	},
 	doublekick: {
-		inherit: true,
+		inherit: true
 	},
 	doubleteam: {
-		inherit: true,
+		inherit: true
 	},
 	doubleedge: {
 		inherit: true,
@@ -357,16 +357,16 @@ exports.BattleMovedex = {
 		}
 	},
 	drillpeck: {
-		inherit: true,
+		inherit: true
 	},
 	earthquake: {
-		inherit: true,
+		inherit: true
 	},
 	eggbomb: {
-		inherit: true,
+		inherit: true
 	},
 	ember: {
-		inherit: true,
+		inherit: true
 	},
 	explosion: {
 		inherit: true,
@@ -392,13 +392,13 @@ exports.BattleMovedex = {
 		basePower: 15
 	},
 	fissure: {
-		inherit: true,
+		inherit: true
 	},
 	flamethrower: {
-		inherit: true,
+		inherit: true
 	},
 	flash: {
-		inherit: true,
+		inherit: true
 	},
 	fly: {
 		inherit: true,
@@ -443,18 +443,18 @@ exports.BattleMovedex = {
 		type: "Normal"
 	},
 	furyattack: {
-		inherit: true,
+		inherit: true
 	},
 	furyswipes: {
-		inherit: true,
+		inherit: true
 	},
 	glare: {
 		inherit: true,
 		accuracy: 75,
-		affectedByImmunities: true
+		affectedByImmunities: false
 	},
 	growl: {
-		inherit: true,
+		inherit: true
 	},
 	growth: {
 		inherit: true,
@@ -467,7 +467,7 @@ exports.BattleMovedex = {
 		}
 	},
 	guillotine: {
-		inherit: true,
+		inherit: true
 	},
 	gust: {
 		inherit: true,
@@ -475,29 +475,28 @@ exports.BattleMovedex = {
 		type: "Normal"
 	},
 	harden: {
-		inherit: true,
+		inherit: true
 	},
 	haze: {
-		inherit: true,
+		inherit: true
 	},
 	headbutt: {
-		inherit: true,
+		inherit: true
 	},
 	hijumpkick: {
 		inherit: true,
 		basePower: 130,
-		desc: "If this attack misses the target, the user takes half of the damage it would have dealt in recoil damage.",
-		shortDesc: "User takes half damage it would have dealt if miss.",
+		desc: "If this attack misses the target, the user takes 1 HP of damage.",
+		shortDesc: "User takes 1 HP damage it would have dealt if miss.",
 		pp: 20,
 		onMoveFail: function(target, source, move) {
 			if (target.type !== 'ghost') {
-				var damage = this.getDamage(source, target, move, true);
-				this.damage(clampIntRange(damage/8, 1, Math.floor(target.maxhp/2)), source);
+				this.damage(1, source);
 			}
 		}
 	},
 	hornattack: {
-		inherit: true,
+		inherit: true
 	},
 	horndrill: {
 		inherit: true,
@@ -505,7 +504,7 @@ exports.BattleMovedex = {
 		shortDesc: "OHKOs the target. Fails if user is slower than the target."
 	},
 	hydropump: {
-		inherit: true,
+		inherit: true
 	},
 	hyperbeam: {
 		inherit: true,
@@ -530,14 +529,14 @@ exports.BattleMovedex = {
 		type: "Normal"
 	},
 	hyperfang: {
-		inherit: true,
+		inherit: true
 	},
 	hypnosis: {
 		inherit: true,
 		accuracy: 60
 	},
 	icebeam: {
-		inherit: true,
+		inherit: true
 	},
 	icepunch: {
 		inherit: true,
@@ -546,12 +545,11 @@ exports.BattleMovedex = {
 	jumpkick: {
 		inherit: true,
 		basePower: 70,
-		desc: "If this attack misses the target, the user takes half of the damage it would have dealt in recoil damage.",
-		shortDesc: "User takes half damage it would have dealt if miss.",
+		desc: "If this attack misses the target, the user 1HP of damage.",
+		shortDesc: "User takes 1 HP damage if miss.",
 		pp: 25,
 		onMoveFail: function(target, source, move) {
-			var damage = this.getDamage(source, target, move, true);
-			this.damage(clampIntRange(damage/2, 1, Math.floor(target.maxhp/2)), source);
+			this.damage(1, source);
 		}
 	},
 	karatechop: {
@@ -559,10 +557,10 @@ exports.BattleMovedex = {
 		type: "Normal"
 	},
 	kinesis: {
-		inherit: true,
+		inherit: true
 	},
 	leechlife: {
-		inherit: true,
+		inherit: true
 	},
 	leechseed: {
 		inherit: true,
@@ -604,16 +602,16 @@ exports.BattleMovedex = {
 		type: "Grass"
 	},
 	leer: {
-		inherit: true,
+		inherit: true
 	},
 	lick: {
-		inherit: true,
+		inherit: true
 	},
 	lightscreen: {
-		inherit: true,
+		inherit: true
 	},
 	lovelykiss: {
-		inherit: true,
+		inherit: true
 	},
 	lowkick: {
 		num: 67,
@@ -621,17 +619,17 @@ exports.BattleMovedex = {
 		basePower: 50,
 	},
 	meditate: {
-		inherit: true,
+		inherit: true
 	},
 	megadrain: {
 		inherit: true,
 		pp: 10
 	},
 	megakick: {
-		inherit: true,
+		inherit: true
 	},
 	megapunch: {
-		inherit: true,
+		inherit: true
 	},
 	metronome: {
 		inherit: true,
@@ -658,10 +656,10 @@ exports.BattleMovedex = {
 		type: "Normal"
 	},
 	mimic: {
-		inherit: true,
+		inherit: true
 	},
 	minimize: {
-		inherit: true,
+		inherit: true
 	},
 	mirrormove: {
 		num: 119,
@@ -689,16 +687,16 @@ exports.BattleMovedex = {
 		type: "Flying"
 	},
 	mist: {
-		inherit: true,
+		inherit: true
 	},
 	nightshade: {
-		inherit: true,
+		inherit: true
 	},
 	payday: {
-		inherit: true,
+		inherit: true
 	},
 	peck: {
-		inherit: true,
+		inherit: true
 	},
 	petaldance: {
 		inherit: true,
@@ -706,7 +704,7 @@ exports.BattleMovedex = {
 		pp: 20
 	},
 	pinmissile: {
-		inherit: true,
+		inherit: true
 	},
 	poisongas: {
 		inherit: true,
@@ -721,13 +719,13 @@ exports.BattleMovedex = {
 		}
 	},
 	poisonpowder: {
-		inherit: true,
+		inherit: true
 	},
 	pound: {
-		inherit: true,
+		inherit: true
 	},
 	psybeam: {
-		inherit: true,
+		inherit: true
 	},
 	psychic: {
 		inherit: true,
@@ -742,13 +740,13 @@ exports.BattleMovedex = {
 		}
 	},
 	psywave: {
-		inherit: true,
+		inherit: true
 	},
 	quickattack: {
-		inherit: true,
+		inherit: true
 	},
 	rage: {
-		inherit: true,
+		inherit: true
 	},
 	razorleaf: {
 		inherit: true,
@@ -789,26 +787,26 @@ exports.BattleMovedex = {
 	recover: {
 		inherit: true,
 		pp: 20,
-		// fail when health is 255 or 511 less than max
+		// Fail when health is 255 or 511 less than max
 		heal: null,
 		onHit: function(target) {
-			if ((target.hp === (target.maxhp - 255)) || target.hp === (target.maxhp - 511)) return false;
+			if (target.hp === (target.maxhp - 255) || target.hp === (target.maxhp - 511)) return false;
 			target.heal = [1,2];
 		}
 	},
 	reflect: {
-		inherit: true,
+		inherit: true
 	},
 	rest: {
 		inherit: true,
 		onHit: function(target) {
 			if (target.hp >= target.maxhp) return false;
 			if (!target.setStatus('slp')) return false;
-			// fail glitch when hp is 255/511 less than max
-			if ((target.hp === (target.maxhp - 255)) || target.hp === (target.maxhp - 511)) return false;
+			// Fail glitch when hp is 255/511 less than max
+			if (target.hp === (target.maxhp - 255) || target.hp === (target.maxhp - 511)) return false;
 			target.statusData.time = 3;
 			target.statusData.startTime = 3;
-			this.heal(target.maxhp) //Aeshetic only as the healing happens after you fall asleep in-game
+			this.heal(target.maxhp); // Aeshetic only as the healing happens after you fall asleep in-game
 			this.add('-status', target, 'slp', '[from] move: Rest');
 	},
 	roar: {
@@ -825,26 +823,26 @@ exports.BattleMovedex = {
 		secondary: null
 	},
 	rockthrow: {
-		inherit: true,
+		inherit: true
 	},
 	rollingkick: {
-		inherit: true,
+		inherit: true
 	},
 	sandattack: {
-		inherit: true,
+		inherit: true
 	},
 	scratch: {
-		inherit: true,
+		inherit: true
 	},
 	screech: {
-		inherit: true,
+		inherit: true
 	},
 	semismictoss: {
-		inherit: true,
+		inherit: true
 	},
 	selfdestruct: {
 		inherit: true,
-		basePower: 260,
+		basePower: 260
 	},
 	sharpen: {
 		inherit: true,
@@ -881,28 +879,28 @@ exports.BattleMovedex = {
 	},
 	softboiled: {
 		inherit: true,
-		// fail when health is 255 or 511 less than max
+		// Fail when health is 255 or 511 less than max
 		heal: null,
 		onHit: function(target) {
-			if ((target.hp === (target.maxhp - 255)) || target.hp === (target.maxhp - 511)) return false;
+			if (target.hp === (target.maxhp - 255) || target.hp === (target.maxhp - 511)) return false;
 			target.heal = [1,2];
 		}
 	},
 	solarbeam: {
-		inherit: true,
+		inherit: true
 	},
 	sonicboom: {
 		inherit: true,
 		category: "Physical"
 	},
 	spikecannon: {
-		inherit: true,
+		inherit: true
 	},
 	splash: {
-		inherit: true,
+		inherit: true
 	},
 	spore: {
-		inherit: true,
+		inherit: true
 	},
 	stomp: {
 		inherit: true,
@@ -911,10 +909,10 @@ exports.BattleMovedex = {
 		shortDesc: "30% chance to flinch the target."
 	},
 	strength: {
-		inherit: true,
+		inherit: true
 	},
 	stringshot: {
-		inherit: true,
+		inherit: true
 	},
 	struggle: {
 		num: 165,
@@ -941,10 +939,10 @@ exports.BattleMovedex = {
 		type: "Normal"
 	},
 	stunspore: {
-		inherit: true,
+		inherit: true
 	},
 	submission: {
-		inherit: true,
+		inherit: true
 	},
 	substitute: {
 		num: 164,
@@ -1032,20 +1030,20 @@ exports.BattleMovedex = {
 		type: "Normal"
 	},
 	superfang: {
-		inherit: true,
+		inherit: true
 	},
 	supersonic: {
-		inherit: true,
+		inherit: true
 	},
 	surf: {
-		inherit: true,
+		inherit: true
 	},
 	swift: {
 		inherit: true,
 		category: "Physical"
 	},
 	swordsdance: {
-		inherit: true,
+		inherit: true
 	},
 	tackle: {
 		inherit: true,
@@ -1053,13 +1051,13 @@ exports.BattleMovedex = {
 		basePower: 35
 	},
 	tailwhip: {
-		inherit: true,
+		inherit: true
 	},
 	takedown: {
-		inherit: true,
+		inherit: true
 	},
 	teleport: {
-		inherit: true,
+		inherit: true
 	},
 	thrash: {
 		inherit: true,
@@ -1088,17 +1086,17 @@ exports.BattleMovedex = {
 		type: "???"
 	},
 	thunderbolt: {
-		inherit: true,
+		inherit: true
 	},
 	thundershock: {
-		inherit: true,
+		inherit: true
 	},
 	toxic: {
 		inherit: true,
 		accuracy: 85
 	},
 	transform: {
-		inherit: true,
+		inherit: true
 	},
 	triattack: {
 		inherit: true,
@@ -1106,10 +1104,10 @@ exports.BattleMovedex = {
 		secondary: null
 	},
 	twineedle: {
-		inherit: true,
+		inherit: true
 	},
 	vicegrip: {
-		inherit: true,
+		inherit: true
 	},
 	vinewhip: {
 		inherit: true,
@@ -1117,10 +1115,10 @@ exports.BattleMovedex = {
 		pp: 10
 	},
 	watergun: {
-		inherit: true,
+		inherit: true
 	},
 	waterfall: {
-		inherit: true,
+		inherit: true
 	},
 	whirlwind: {
 		inherit: true,
@@ -1135,7 +1133,7 @@ exports.BattleMovedex = {
 		basePower: 35
 	},
 	withdraw: {
-		inherit: true,
+		inherit: true
 	},
 	wrap: {
 		inherit: true,
