@@ -808,6 +808,7 @@ exports.BattleMovedex = {
 			target.statusData.startTime = 3;
 			this.heal(target.maxhp); // Aeshetic only as the healing happens after you fall asleep in-game
 			this.add('-status', target, 'slp', '[from] move: Rest');
+		}
 	},
 	roar: {
 		inherit: true,
