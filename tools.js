@@ -26,10 +26,28 @@ module.exports = (function () {
 		if (mod === 'base') {
 			dataTypes.forEach(function(dataType) {
 				try {
-					Data[mod][dataType] = require('./data/'+dataFiles[dataType])['Battle'+dataType];
-				} catch (e) {}
+					var path = './data/' + dataFiles[dataType];
+					if (fs.existsSync(path)) {
+						Data[mod][dataType] = require(path)['Battle' + dataType];
+					}
+				} catch (e) {
+					console.log(e.stack);
+				}
 				if (!Data[mod][dataType]) Data[mod][dataType] = {};
 			}, this);
+			try {
+				var path = './config/formats.js';
+				if (fs.existsSync(path)) {
+					var configFormats = require(path).Formats;
+					for (var i=0; i<configFormats.length; i++) {
+						var id = toId(configFormats[i].name);
+						configFormats[i].effectType = 'Format';
+						Data[mod].Formats[id] = configFormats[i];
+					}
+				}
+			} catch (e) {
+				console.log(e.stack);
+			}
 		} else {
 			dataTypes.forEach(function(dataType) {
 				try {
@@ -385,7 +403,7 @@ module.exports = (function () {
 		var level = set.level || 100;
 
 		var limit1 = true;
-		var sketch = true;
+		var sketch = false;
 
 		// This is a pretty complicated algorithm
 
@@ -411,8 +429,10 @@ module.exports = (function () {
 			if (template.learnset) {
 				if (template.learnset[move] || template.learnset['sketch']) {
 					var lset = template.learnset[move];
-					if (lset) sketch = false;
-					if (!lset) lset = template.learnset['sketch'];
+					if (!lset) {
+						lset = template.learnset['sketch'];
+						sketch = true;
+					}
 					if (typeof lset === 'string') lset = [lset];
 
 					for (var i=0, len=lset.length; i<len; i++) {

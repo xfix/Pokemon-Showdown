@@ -249,6 +249,26 @@ exports.BattleFormats = {
 		searchShow: true,
 		ruleset: ['PotD', 'Pokemon', 'Sleep Clause']
 	},
+	seasonalspringforward: {
+		effectType: 'Format',
+		name: "[Seasonal] Spring Forward",
+		team: 'randomSeasonalSF',
+		canUseRandomTeam: true,
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		onBegin: function() {
+			if (this.random(100) < 25) {
+				this.setWeather('Sunny Day');
+				this.add('-message', "What a wonderful spring sunny day!");
+			} else {
+				this.setWeather('Rain Dance');
+				this.add('-message', "April showers bring May flowers...");
+			}
+			delete this.weatherData.duration;
+		},
+		ruleset: ['PotD', 'Pokemon', 'Sleep Clause']
+	},
 	challengecup: {
 		effectType: 'Format',
 		name: "Challenge Cup",

@@ -5,6 +5,8 @@ npm-debug.log
 /config/bannedwords.txt
 .buildpath
 .project
+.settings
+.settings/org.eclipse.core.resources.prefs
 
 # boilerplate #
 ###############
