@@ -788,7 +788,13 @@ exports.BattleMovedex = {
 	},
 	recover: {
 		inherit: true,
-		pp: 20
+		pp: 20,
+		// fail when health is 255 or 511 less than max
+		heal: null,
+		onHit: function(target) {
+			if ((target.hp === (target.maxhp - 255)) || target.hp === (target.maxhp - 511)) return false;
+			target.heal = [1,2];
+		}
 	},
 	reflect: {
 		inherit: true,
@@ -875,6 +881,12 @@ exports.BattleMovedex = {
 	},
 	softboiled: {
 		inherit: true,
+		// fail when health is 255 or 511 less than max
+		heal: null,
+		onHit: function(target) {
+			if ((target.hp === (target.maxhp - 255)) || target.hp === (target.maxhp - 511)) return false;
+			target.heal = [1,2];
+		}
 	},
 	solarbeam: {
 		inherit: true,
