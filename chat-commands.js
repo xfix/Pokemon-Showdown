@@ -860,7 +860,14 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		}
 
 		if (targetUser.userid === toUserid(targets[2])) {
-			logModCommand(room,''+targetUser.name+' was forced to choose a new name by '+user.name+'.' + (targets[1] ? " (" + targets[1] + ")" : ""));
+			var entry = ''+targetUser.name+' was forced to choose a new name by '+user.name+'.' + (targets[1] ? " (" + targets[1] + ")" : "");
+			logModCommand(room, entry, true);
+			rooms.lobby.sendAuth(entry);
+			if (room.id !== 'lobby') {
+				room.add(entry);
+			} else {
+				room.logEntry(entry);
+			}
 			targetUser.resetName();
 			targetUser.emit('nameTaken', {reason: user.name+" has forced you to change your name. "+targets[1]});
 		} else {
@@ -888,7 +895,14 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		}
 
 		if (targetUser.userid === toUserid(targets[2])) {
-			logModCommand(room, ''+targetUser.name+' was forcibly renamed to '+targets[1]+' by '+user.name+'.');
+			var entry = ''+targetUser.name+' was forcibly renamed to '+targets[1]+' by '+user.name+'.';
+			logModCommand(room, entry, true);
+			rooms.lobby.sendAuth(entry);
+			if (room.id !== 'lobby') {
+				room.add(entry);
+			} else {
+				room.logEntry(entry);
+			}
 			targetUser.forceRename(targets[1]);
 		} else {
 			emit(socket, 'console', "User "+targetUser.name+" is no longer using that name.");
@@ -1504,6 +1518,9 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			rooms[id].addRaw('<div class="message-lockdown"><b>The server is restarting soon.</b><br />Please finish your battles quickly. No new battles can be started until the server resets in a few minutes.</div>');
 			if (rooms[id].requestKickInactive) rooms[id].requestKickInactive(user, true);
 		}
+
+		rooms.lobby.logEntry(user.name + ' used /lockdown');
+
 		return false;
 		break;
 
@@ -1517,6 +1534,9 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		for (var id in rooms) {
 			rooms[id].addRaw('<div class="message-endlockdown"><b>The server shutdown was canceled.</b></div>');
 		}
+
+		rooms.lobby.logEntry(user.name + ' used /endlockdown');
+
 		return false;
 		break;
 
@@ -1549,6 +1569,64 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 				if (data[i]) bannedIps[data[i]] = '#ipban';
 			}
 			emit(socket, 'console', 'banned '+i+' ips');
+		});
+		return false;
+		break;
+
+	case 'refreshpage':
+		if (!user.can('hotpatch')) {
+			emit(socket, 'console', '/refreshpage - Access denied.');
+			return false;
+		}
+		rooms.lobby.send('|refresh|');
+		rooms.lobby.logEntry(user.name + ' used /refreshpage');
+		return false;
+		break;
+
+	case 'updateserver':
+		if (!user.can('console')) {
+			emit(socket, 'console', '/updateserver - Access denied.');
+			return false;
+		}
+
+		if (updateServerLock) {
+			emit(socket, 'console', '/updateserver - Another update is already in progress.');
+			return false;
+		}
+
+		updateServerLock = true;
+
+		var logQueue = [];
+		logQueue.push(user.name + ' used /updateserver');
+
+		var exec = require('child_process').exec;
+		exec('git diff-index --quiet HEAD --', function(error) {
+			var cmd = 'git pull --rebase';
+			if (error) {
+				if (error.code === 1) {
+					// The working directory or index have local changes.
+					cmd = 'git stash;' + cmd + ';git stash pop';
+				} else {
+					// The most likely case here is that the user does not have
+					// `git` on the PATH (which would be error.code === 127).
+					user.emit('console', '' + error);
+					logQueue.push('' + error);
+					logQueue.forEach(rooms.lobby.logEntry);
+					updateServerLock = false;
+					return;
+				}
+			}
+			var entry = 'Running `' + cmd + '`';
+			user.emit('console', entry);
+			logQueue.push(entry);
+			exec(cmd, function(error, stdout, stderr) {
+				('' + stdout + stderr).split('\n').forEach(function(s) {
+					user.emit('console', s);
+					logQueue.push(s);
+				});
+				logQueue.forEach(rooms.lobby.logEntry);
+				updateServerLock = false;
+			});
 		});
 		return false;
 		break;
@@ -1756,10 +1834,11 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		}
 		if (target === 'all' || target === 'highlight') {
 			matched = true;
-			emit(socket, 'console', 'Set your highlights preference:');
-			emit(socket, 'console', '/highlight delete - deletes all highlighting words.');
-			emit(socket, 'console', '/highlight add, word - adds a highlighing word. You can add several words separated by commas.');
-			emit(socket, 'console', '/highlight delete, word - deletes a single or several highlighting words. Separated by commas.');
+			emit(socket, 'console', 'Set up highlights:');
+			emit(socket, 'console', '/highlight add, word - add a new word to the highlight list.');
+			emit(socket, 'console', '/highlight list - list all words that currently highlight you.');
+			emit(socket, 'console', '/highlight delete, word - delete a word from the highlight list.');
+			emit(socket, 'console', '/highlight delete - clear the highlight list');
 		}
 		if (target === 'timestamps') {
 			matched = true;
