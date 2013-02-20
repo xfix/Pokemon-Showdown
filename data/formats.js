@@ -33,6 +33,27 @@ exports.BattleFormats = {
 		ruleset: ['Pokemon', 'Standard', 'Team Preview'],
 		banlist: ['Kyogre', 'Arceus', 'Mewtwo', 'Palkia', 'Rayquaza', 'Dialga', 'Arceus-Steel', 'Arceus-Ghost', 'Arceus-Dark', 'Arceus-Rock', 'Arceus-Psychic', 'Soul Dew', 'Kyurem-White', 'Reshiram', 'Zekrom']
 	},
+	ouallabilities: {
+		effectType: 'Format',
+		name: "OU All Abilities",
+		challengeDefault: true,
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Standard All Abilities', 'Evasion Abilities Clause', 'Team Preview'],
+		banlist: ['Illegal', 'Uber', 'Soul Dew', 'Pure Power', 'Huge Power', 'Wonder Guard', 'Moody', 'Imposter', 'Snow Cloak', 'Sand Veil', 'Zen Mode', 'Shedinja ++ Sturdy']
+	},
+	ousixmoves: {
+		effectType: 'Format',
+		name: "OU Six Moves",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Six Moves', 'Standard', 'Team Preview'],
+		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
+	},
 	outierboost: {
 		mod: 'tierboost',
 		effectType: 'Format',
@@ -44,16 +65,12 @@ exports.BattleFormats = {
 		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
 		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
 	},
-	ouallabilities: {
+	haxmons: {
 		effectType: 'Format',
-		name: "OU All Abilities",
-		challengeDefault: true,
-		rated: true,
+		name: "Haxmons",
 		challengeShow: true,
-		searchShow: true,
-		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'Standard All Abilities', 'Evasion Abilities Clause', 'Team Preview'],
-		banlist: ['Illegal', 'Uber', 'Soul Dew', 'Pure Power', 'Huge Power', 'Wonder Guard', 'Moody', 'Imposter', 'Snow Cloak', 'Sand Veil', 'Zen Mode', 'Shedinja ++ Sturdy']
+		canUseRandomTeam: true,
+		ruleset: ['Hax Clause', 'Team Preview']
 	},
     gbusingles: {
         effectType: 'Format',
@@ -73,32 +90,16 @@ exports.BattleFormats = {
         },
         ruleset: ['Pokemon', 'Species Clause', 'Item Clause', 'Team Preview GBU'],
         banlist: ['Unreleased', 'Illegal', 'Sky Drop', 'Dark Void', 'Soul Dew',
-             'Mewtwo',
-	        'Mew',
-	        'Lugia',
-	        'Ho-Oh',       
-	        'Celebi',
-	        'Kyogre',
-	        'Groudon',
-	        'Rayquaza',
-	        'Jirachi',
-	        'Deoxys', 'Deoxys-Attack', 'Deoxys-Speed', 'Deoxys-Defense',
-	        'Chatot',
-	        'Dialga',
-	        'Palkia',
-	        'Giratina', 'Giratina-Origin',
-	        'Phione',
-	        'Manaphy',
-	        'Darkrai',
-	        'Shaymin', 'Shaymin-Sky',
-	        'Arceus', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fighting',   'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus', 'Arceus-Poison', 'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water',
-	        'Victini',
-	        'Reshiram',
-	        'Zekrom',
-	        'Kyurem', 'Kyurem-Black', 'Kyurem-White',
-	        'Keldeo', 'Keldeo-Resolute',
-	        'Meloetta',
-	        'Genesect']
+      	    'Mewtwo', 'Mew', 'Lugia', 'Ho-Oh', 'Celebi', 'Kyogre', 'Groudon',
+	        'Rayquaza', 'Jirachi',  'Deoxys', 'Deoxys-Attack', 'Deoxys-Speed', 'Deoxys-Defense',
+	        'Chatot', 'Dialga', 'Palkia', 'Giratina', 'Giratina-Origin', 'Phione',
+	        'Manaphy',  'Darkrai', 'Shaymin', 'Shaymin-Sky',
+	        'Arceus', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fighting', 'Arceus-Fire', 
+	        'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus', 'Arceus-Poison', 
+	        'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water',
+	        'Victini', 'Reshiram', 'Zekrom', 'Kyurem', 'Kyurem-Black', 'Kyurem-White',
+	        'Keldeo', 'Keldeo-Resolute',  'Meloetta', 'Genesect'
+	    ]
     },
 	gen1dev: {
 		mod: 'gen1',
@@ -108,8 +109,8 @@ exports.BattleFormats = {
 		searchShow: true,
 		debug: true,
 		isTeambuilderFormat: true,
-		ruleset: ['Gen1 Pokemon', 'Standard Gen1'],
-		banlist: ['Illegal']
+		ruleset: ['Gen1 Pokemon', 'Standard', 'Standard Gen1', 'Evasion Abilities Clause'],
+		banlist: ['Uber', 'Illegal']
 	},
 	unratedrandombattle: {
 		effectType: 'Format',
@@ -317,7 +318,7 @@ exports.BattleFormats = {
 			} else if (move.id === 'eggbomb') {
 				move.category = 'Special';
 				move.type = 'Grass';
-				move.basePower = 90;
+				move.basePower = 100;
 				move.willCrit = true;
 				move.accuracy = 100;
 				move.onHit = function (target, source) {
@@ -1099,6 +1100,60 @@ exports.BattleFormats = {
 			if (!template.nfe) {
 				return [set.species+" doesn't have an evolution family."];
 			}
+		}
+	},
+	sixmoves: {
+		effectType: 'Banlist',
+		validateSet: function(set, format) {
+			var item = this.getItem(set.item);
+			var template = this.getTemplate(set.species);
+			var problems = [];
+
+			if (set.species === set.name) delete set.name;
+			if (template.num == 493) { // Arceus
+				if (set.ability === 'Multitype' && item.onPlate) {
+					set.species = 'Arceus-'+item.onPlate;
+				} else {
+					set.species = 'Arceus';
+				}
+			}
+			if (template.num == 487) { // Giratina
+				if (item.id === 'griseousorb') {
+					set.species = 'Giratina-Origin';
+				} else {
+					set.species = 'Giratina';
+				}
+			}
+			if (template.num == 555) { // Darmanitan
+				set.species = 'Darmanitan';
+			}
+			if (template.num == 648) { // Meloetta
+				set.species = 'Meloetta';
+			}
+			if (template.num == 351) { // Castform
+				set.species = 'Castform';
+			}
+			if (template.num == 421) { // Cherrim
+				set.species = 'Cherrim';
+			}
+			if (template.num == 647) { // Keldeo
+				if (set.species === 'Keldeo-Resolution' && set.moves.indexOf('Secret Sword') < 0) {
+					set.species = 'Keldeo';
+				}
+			}
+			if (template.isNonstandard) {
+				problems.push(set.species+' is not a real Pokemon.');
+			}
+			if (set.moves) for (var i=0; i<set.moves.length; i++) {
+				var move = this.getMove(set.moves[i]);
+				if (move.isNonstandard) {
+					problems.push(move.name+' is not a real move.');
+				}
+			}
+			if (set.moves && set.moves.length > 6) {
+				problems.push((set.name||set.species) + ' has more than six moves.');
+			}
+			return problems;
 		}
 	},
 	speciesclause: {
