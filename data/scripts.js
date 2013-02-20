@@ -1399,7 +1399,7 @@ exports.BattleScripts = {
 			'mrmime', 'tauros', 'kabuto', 'dragonite', 'mewtwo', 'marill', 'hoppip', 'espeon', 'teddiursa', 'ursaring', 
 			'cascoon', 'taillow', 'swellow', 'pelipper', 'masquerain', 'azurill', 'minun', 'carvanha', 'huntail', 'bagon', 
 			'shelgon', 'salamence', 'latios', 'tangrowth', 'seismitoad', 'jellicent', 'eelektross', 'druddigon', 'bronzor', 
-			'bronzong', 'murkrow', 'honchkrow', 'absol', 'pidove ', 'tranquill', 'unfezant', 'dunsparce', 'jirachi', 
+			'bronzong', 'murkrow', 'honchkrow', 'absol', 'pidove', 'tranquill', 'unfezant', 'dunsparce', 'jirachi', 
 			'deerling', 'sawsbuck', 'meloetta', 'cherrim', 'gloom', 'vileplume', 'bellossom', 'lileep', 'venusaur' 
         ];
 		seasonalPokemonList = seasonalPokemonList.randomize();
@@ -1410,7 +1410,7 @@ exports.BattleScripts = {
 			mrmime:1, tauros:1, kabuto:1, dragonite:1, mewtwo:1, marill:1, hoppip:1, espeon:1, teddiursa:1, ursaring:1, 
 			cascoon:1, taillow:1, swellow:1, pelipper:1, masquerain:1, azurill:1, minun:1, carvanha:1, huntail:1, bagon:1, 
 			shelgon:1, salamence:1, latios:1, tangrowth:1, seismitoad:1, jellicent:1, elektross:1, druddigon:1, 
-			bronzor:1, bronzong:1
+			bronzor:1, bronzong:1, golett:1, golurk:1
 		};
 		// Pokemon that are in for their natural Super Luck ability
 		var superLuckPokemon = {murkrow:1, honchkrow:1, absol:1, pidove :1, tranquill:1, unfezant:1};
@@ -1449,6 +1449,11 @@ exports.BattleScripts = {
 			// These Pokemon must always be shiny to be green
 			if (template.id in mustBeShiny) {
 				set.shiny = true;
+			}
+			
+			// We don't want choice items
+			if (['Choice Scarf', 'Choice Band', 'Choice Specs'].indexOf(set.item) > -1) {
+				set.item = 'Metronome';
 			}
 			team.push(set);
 		}

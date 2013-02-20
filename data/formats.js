@@ -33,6 +33,17 @@ exports.BattleFormats = {
 		ruleset: ['Pokemon', 'Standard', 'Team Preview'],
 		banlist: ['Kyogre', 'Arceus', 'Mewtwo', 'Palkia', 'Rayquaza', 'Dialga', 'Arceus-Steel', 'Arceus-Ghost', 'Arceus-Dark', 'Arceus-Rock', 'Arceus-Psychic', 'Soul Dew', 'Kyurem-White', 'Reshiram', 'Zekrom']
 	},
+	outierboost: {
+		mod: 'tierboost',
+		effectType: 'Format',
+		name: "OU Tier Boost",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
+		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
+	},
 	ouallabilities: {
 		effectType: 'Format',
 		name: "OU All Abilities",
@@ -258,14 +269,11 @@ exports.BattleFormats = {
 		challengeShow: true,
 		searchShow: true,
 		onBegin: function() {
-			if (this.random(100) < 25) {
-				this.add('-message', "What a wonderful spring sunny day!");
-				this.setWeather('Sunny Day');
-			} else {
+			if (this.random(100) < 75) {
 				this.add('-message', "March and April showers bring May flowers...");
 				this.setWeather('Rain Dance');
+				delete this.weatherData.duration;
 			}
-			delete this.weatherData.duration;
 		},
 		onSwitchIn: function(pokemon) {
 			var greenPokemon = {
@@ -287,36 +295,45 @@ exports.BattleFormats = {
 			if (pokemon.template.id in greenPokemon) {
 				this.add('-message', pokemon.name + " drank way too much!");
 				pokemon.addVolatile('confusion');
+				pokemon.statusData.time = 0;
 			}
 		},
 		onModifyMove: function(move) {
 			if (move.id === 'barrage') {
 				move.category = 'Special';
 				move.type = 'Grass';
-				move.basePower = 35;
+				move.basePower = 30;
+				move.critRatio = 2;
 				move.accuracy = 100;
 				move.multihit = [3,5],
-				move.onTryHit = function() {
+				move.onBeforeMove = function() {
 					this.add('-message', "You found a little chocolate egg!");
 				};
 				move.onHit = function (target, source) {
-					this.heal(source.maxhp / 8, source);
+					this.heal(Math.ceil(source.maxhp / 40), source);
 				};
+				// We add a random status
+				move.secondary = {chance: 30, status: 'brn'};
 			} else if (move.id === 'eggbomb') {
 				move.category = 'Special';
-				move.basePower = 180;
+				move.type = 'Grass';
+				move.basePower = 90;
+				move.willCrit = true;
 				move.accuracy = 100;
-				move.onTryHit = function() {
-					this.add('-message', "You found a big chocolate egg!");
-				};
 				move.onHit = function (target, source) {
+					this.add('-message', source.name + " ate a big chocolate egg!");
 					this.heal(source.maxhp / 8, source);
 				};
+				// Too much chocolate, you get fat. Also with STAB it's too OP
+				move.self = {boosts: {spe: -2, spa: -1}};
 			} else if (move.id === 'softboiled') {
 				move.heal = [3,4];
-				move.onTryHit = function() {
-					this.add('-message', "You ate a delicious chocolate egg!");
+				move.onHit = function(target) {
+					this.add('-message', target.name + " ate a delicious chocolate egg!");
 				};
+			} else {
+				// As luck is everywhere...
+				move.critRatio = 2;
 			}
 		},
 		ruleset: ['PotD', 'Pokemon', 'Sleep Clause']
