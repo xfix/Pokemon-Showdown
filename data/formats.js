@@ -70,6 +70,8 @@ exports.BattleFormats = {
 		name: "Haxmons",
 		challengeShow: true,
 		canUseRandomTeam: true,
+		rated: true,
+		team: 'random',
 		ruleset: ['Hax Clause', 'Team Preview']
 	},
     gbusingles: {
@@ -109,7 +111,7 @@ exports.BattleFormats = {
 		searchShow: true,
 		debug: true,
 		isTeambuilderFormat: true,
-		ruleset: ['Gen1 Pokemon', 'Standard', 'Standard Gen1', 'Evasion Abilities Clause'],
+		ruleset: ['Gen1 Pokemon', 'Standard All Abilities', 'Standard Gen1', 'Evasion Abilities Clause'],
 		banlist: ['Uber', 'Illegal']
 	},
 	unratedrandombattle: {
@@ -652,6 +654,8 @@ exports.BattleFormats = {
 		effectType: 'Format',
 		name: "[Gen NEXT] NEXT-OU",
 		challengeShow: true,
+		searchShow: true,
+		rated: true,
 		ruleset: ['Pokemon', 'Standard NEXT', 'Team Preview'],
 		banlist: ['Uber']
 	},

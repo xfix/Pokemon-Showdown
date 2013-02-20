@@ -1144,7 +1144,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		}
 		if (target === 'all' || target === 'banless' || target === 'lenient') {
 			matched = true;
-			buffer += '&bull;<strong>OU Banless</strong> is a metagame with only a limited amount of disallowed Pokemon. As of now, the banlist consists of: Kyogre, Arceus, Mewtwo, Palkia, Rayquaza, Dialga, Arceus-Steel, Arceus-Ghost, Arceus-Dark, Arceus-Rock, Arceus-Psychic, Kyurem-white, Reshiram, Zekrom and the item Soul Dew.<br />';
+			buffer += '&bull;<strong>OU Lenient</strong> is a metagame with only a limited amount of disallowed Pokemon. As of now, the banlist consists of: Kyogre, Arceus, Mewtwo, Palkia, Rayquaza, Dialga, Arceus-Steel, Arceus-Ghost, Arceus-Dark, Arceus-Rock, Arceus-Psychic, Kyurem-white, Reshiram, Zekrom and the item Soul Dew.<br />';
 		}
 		if (target === 'all' || target === 'gbusingles') {
 			matched = true;
