@@ -789,7 +789,7 @@ module.exports = (function () {
 			}
 
 			// Don't check abilities for Illegal All Abilities 
-			if (format.ruleset.indexOf('Standard All Abilities') === -1) {
+			if (format.ruleset.indexOf('All Abilities') === -1) {
 				if (ability.name !== template.abilities['0'] &&
 					ability.name !== template.abilities['1'] &&
 					ability.name !== template.abilities['DW']) {

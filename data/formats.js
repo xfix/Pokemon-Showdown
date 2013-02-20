@@ -111,7 +111,7 @@ exports.BattleFormats = {
 		searchShow: true,
 		debug: true,
 		isTeambuilderFormat: true,
-		ruleset: ['Gen1 Pokemon', 'Standard All Abilities', 'Standard Gen1', 'Evasion Abilities Clause'],
+		ruleset: ['Gen1 Pokemon', 'All Abilities', 'Sleep Clause', 'Species Clause', 'OHKO Clause'],
 		banlist: ['Uber', 'Illegal']
 	},
 	unratedrandombattle: {
@@ -873,7 +873,8 @@ exports.BattleFormats = {
 	},
 	standardgen1: {
 		effectType: 'Banlist',
-		ruleset: ['Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Moves Clause'],
+		ruleset: ['Sleep Clause', 'Species Clause', 'OHKO Clause'],
+		banlist: ['Unreleased', 'Illegal'],
 		validateSet: function(set) {
 			// limit one of each move in Standard
 			var moves = [];
@@ -892,7 +893,7 @@ exports.BattleFormats = {
 	},
 	standardallabilities: {
 		effectType: 'Banlist',
-		ruleset: ['Sleep Clause', 'Species Clause', 'OHKO Clause', 'Moody Clause', 'Evasion Moves Clause'],
+		ruleset: ['Sleep Clause', 'Species Clause', 'OHKO Clause', 'Moody Clause', 'Evasion Moves Clause', 'All Abilities'],
 		banlist: ['Unreleased'],
 		validateSet: function(set) {
 			// limit one of each move in Standard
