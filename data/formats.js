@@ -305,7 +305,7 @@ exports.BattleFormats = {
 			if (move.id === 'barrage') {
 				move.category = 'Special';
 				move.type = 'Grass';
-				move.basePower = 30;
+				move.basePower = 35;
 				move.critRatio = 2;
 				move.accuracy = 100;
 				move.multihit = [3,5],
@@ -315,8 +315,6 @@ exports.BattleFormats = {
 				move.onHit = function (target, source) {
 					this.heal(Math.ceil(source.maxhp / 40), source);
 				};
-				// We add a random status
-				move.secondary = {chance: 30, status: 'brn'};
 			} else if (move.id === 'eggbomb') {
 				move.category = 'Special';
 				move.type = 'Grass';
