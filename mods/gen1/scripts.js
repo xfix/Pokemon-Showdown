@@ -53,6 +53,9 @@ exports.BattleScripts = {
 		this.useMove(move, pokemon, target, sourceEffect);
 		this.runEvent('AfterMove', target, pokemon, move);
 		this.runEvent('AfterMoveSelf', pokemon, target, move);
+		if (target.hp <= 0 && pokemon.volatiles['mustrecharge']) {
+			pokemon.removeVolatile('mustrecharge');
+		}
 	},
 	getStat: function(statName, unboosted, unmodified) {
 		statName = toId(statName);
@@ -203,7 +206,6 @@ exports.BattleScripts = {
 				move.crit = (random.floor() <= critRatio);
 			}
 		}
-
 		if (move.crit) {
 			move.crit = this.runEvent('CriticalHit', target, null, move);
 		}
@@ -251,13 +253,14 @@ exports.BattleScripts = {
 		// its defense will be halved, and halved again (truncating both times), and those numbers will 
 		// be used in place of its actual attack and defense values.
 		if (attack > 255) {
-			attack = Math.floor((Math.floor(attack / 2) / 2);
+			attack = Math.floor(Math.floor(attack / 2) / 2);
 		}
 		if (defense > 255) {
-			defense = Math.floor((Math.floor(defense / 2) / 2);
+			defense = Math.floor(Math.floor(defense / 2) / 2);
 		}
 
-		// Gen 1 damage formula (((((min(((((2 * L / 5 + 2)*Atk*BP)/max(1, Def))/50), 997) + 2)*Stab)*TypeEffect)/10)*Random)/255
+		// Gen 1 damage formula: 
+		// ((((min(((((2 * L / 5 + 2)*Atk*BP)/max(1, Def))/50), 997) + 2)*Stab)*TypeEffect)/10)*Random/255
 		// Where: L: user level, A: current attack, P: move power, D: opponent current defense,
 		// S is the Stab modifier, T is the type effectiveness modifier, R is random between 217 and 255
 		// The max damage is 999
@@ -269,9 +272,8 @@ exports.BattleScripts = {
 			baseDamage = this.modify(baseDamage, move.critModifier || 2);
 		}
 		
-		// STAB damage bonus
+		// STAB damage bonus, the "???" type never gets STAB
 		if (type !== '???' && pokemon.hasType(type)) {
-			// The "???" type never gets STAB
 			baseDamage = Math.floor(baseDamage * 1.5);
 		}
 		
@@ -285,6 +287,7 @@ exports.BattleScripts = {
 				baseDamage *= 2;
 			}
 		}
+		
 		// Resisted attack
 		if (totalTypeMod < 0) {
 			if (!suppressMessages) this.add('-resisted', target);
@@ -293,14 +296,10 @@ exports.BattleScripts = {
 				baseDamage = Math.floor(baseDamage / 2);
 			}
 		}
-		
-		// Now we divide damage by 10
-		baseDamage = Math.floor(baseDamage / 10);
 
 		// Randomizer, it's a number between 217 and 255
 		var randFactor = Math.floor(Math.random()*39)+217;
-		baseDamage *= randFactor;
-		baseDamage = Math.floor(baseDamage / 255);
+		baseDamage *= Math.floor(randFactor * 100 / 255) / 100;
 		
 		// If damage is less than 1, we return 1
 		if (basePower && !Math.floor(baseDamage)) {
@@ -337,11 +336,8 @@ exports.BattleScripts = {
 		}
 		
 		// Bypasses accuracy modifiers
-		if (move.ohko) { 
-			if (!target.volatiles['dig'] && !target.volatiles['fly']) {
-				accuracy = 30;
-				if (pokemon.speed > target.speed) accuracy += (pokemon.speed - target.speed);
-			}
+		if (move.ohko && !target.volatiles['dig'] && !target.volatiles['fly']) {
+			accuracy = 30;
 		}
 		
 		// Bypasses ohko accuracy modifiers
