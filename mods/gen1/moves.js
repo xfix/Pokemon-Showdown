@@ -828,9 +828,8 @@ exports.BattleMovedex = {
 	recover: {
 		inherit: true,
 		pp: 20,
-		// Fail when health is 255 or 511 less than max
-		heal: null,
 		onHit: function(target) {
+			// Fail when health is 255 or 511 less than max
 			if (target.hp === (target.maxhp - 255) || target.hp === (target.maxhp - 511)) return false;
 			target.heal = [1,2];
 		}
@@ -949,9 +948,8 @@ exports.BattleMovedex = {
 	},
 	softboiled: {
 		inherit: true,
-		// Fail when health is 255 or 511 less than max
-		heal: null,
 		onHit: function(target) {
+			// Fail when health is 255 or 511 less than max
 			if (target.hp === (target.maxhp - 255) || target.hp === (target.maxhp - 511)) return false;
 			target.heal = [1,2];
 		}
