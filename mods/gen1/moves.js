@@ -690,7 +690,8 @@ exports.BattleMovedex = {
 		inherit: true
 	},
 	nightshade: {
-		inherit: true
+		inherit: true,
+		affectedByImmunities: false
 	},
 	payday: {
 		inherit: true
@@ -838,8 +839,9 @@ exports.BattleMovedex = {
 	screech: {
 		inherit: true
 	},
-	semismictoss: {
-		inherit: true
+	seismictoss: {
+		inherit: true,
+		affectedByImmunities: false
 	},
 	selfdestruct: {
 		inherit: true,

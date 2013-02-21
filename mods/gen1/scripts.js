@@ -329,9 +329,10 @@ exports.BattleScripts = {
 		// Bypasses ohko accuracy modifiers
 		if (move.alwaysHit) accuracy = true; 
 		accuracy = this.runEvent('Accuracy', target, pokemon, move, accuracy);
-		// Gen 1, 1/256 chance of missing
-		if (accuracy !== true && (this.random(100) >= accuracy || this.random(256) === 1)) {
-			if (!spreadHit) this.attrLastMove('[miss]');
+		
+		// Gen 1, 1/256 chance of missing always, no matter what
+		if (accuracy !== true && (this.random(100) >= accuracy || this.random(256) === 256)) {
+			this.attrLastMove('[miss]');
 			this.add('-miss', pokemon, target);
 			return false;
 		}
@@ -345,23 +346,19 @@ exports.BattleScripts = {
 		if (move.multihit) {
 			var hits = move.multihit;
 			if (hits.length) {
-				// yes, it's hardcoded... meh
+				// Yes, it's hardcoded... meh
 				if (hits[0] === 2 && hits[1] === 5) {
 					var roll = this.random(6);
-					hits = [2,2,3,3,4,5][roll];
+					hits = [2, 2, 3, 3, 4, 5][roll];
 				} else {
 					hits = this.random(hits[0], hits[1]+1);
 				}
 			}
 			hits = Math.floor(hits);
-			for (var i=0; i<hits && target.hp && pokemon.hp; i++) {
-				var moveDamage = this.moveHit(target, pokemon, move);
-				if (moveDamage === false) break;
-				// Damage from each hit is individually counted for the
-				// purposes of Counter, Metal Burst, and Mirror Coat.
-				damage = (moveDamage || 0);
-			}
-			if (i === 0) return true;
+			// In gen 1, all the hits have the same damage for multihits move
+			var moveDamage = this.moveHit(target, pokemon, move);
+			damage = (moveDamage || 0);
+			if (hits === 0) return true;
 			this.add('-hitcount', target, i);
 		} else {
 			damage = this.moveHit(target, pokemon, move);
