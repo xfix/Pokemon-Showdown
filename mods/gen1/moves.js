@@ -22,8 +22,8 @@ exports.BattleMovedex = {
 		accuracy: 100,
 		basePower: 40,
 		category: "Physical",
-		desc: "Deals damage to all adjacent foes with a 10% chance to lower their Defense by 1 stage each.",
-		shortDesc: "10% chance to lower the foe(s) Defense by 1.",
+		desc: "Deals damage to target with a 10% chance to lower its Defense by 1 stage.",
+		shortDesc: "10% chance to lower the foe's Defense by 1.",
 		id: "acid",
 		name: "Acid",
 		pp: 30,
@@ -34,7 +34,7 @@ exports.BattleMovedex = {
 				def: -1
 			}
 		},
-		target: "foes",
+		target: "normal",
 		type: "Poison"
 	},
 	acidarmor: {
@@ -142,7 +142,7 @@ exports.BattleMovedex = {
 			chance: 10,
 			status: 'frz'
 		},
-		target: "foes",
+		target: "normal",
 		type: "Ice"
 	},
 	bodyslam: {
@@ -155,7 +155,8 @@ exports.BattleMovedex = {
 		inherit: true
 	},
 	bubble: {
-		inherit: true
+		inherit: true,
+		target: "normal"
 	},
 	bubblebeam: {
 		inherit: true
@@ -239,7 +240,7 @@ exports.BattleMovedex = {
 	},
 	dig: {
 		inherit: true,
-		desc: "Deals damage to one adjacent target. This attack charges on the first turn and strikes on the second. On the first turn, the user avoids all attacks other than Earthquake and Magnitude but takes double damage from them, and is also unaffected by Hail and Sandstorm damage. The user cannot make a move between turns. If the user is holding a Power Herb, the move completes in one turn. Makes contact. (Field: Can be used to escape a cave quickly.)",
+		desc: "Deals damage to one target. This attack charges on the first turn and strikes on the second. On the first turn, the user avoids all attacks other than Earthquake and Magnitude but takes double damage from them, and is also unaffected by Hail and Sandstorm damage. The user cannot make a move between turns. If the user is holding a Power Herb, the move completes in one turn. Makes contact. (Field: Can be used to escape a cave quickly.)",
 		shortDesc: "Digs underground turn 1, strikes turn 2.",
 		onTry: function(attacker, defender, move) {
 			if (attacker.removeVolatile(move.id)) {
@@ -258,13 +259,15 @@ exports.BattleMovedex = {
 			onLockMove: 'dig',
 			onAccuracy: function(accuracy, target, source, move) {
 				if (move.id === 'swift') return true;
-				return 0;
+				this.add('-message', 'The foe ' + target.name + ' can\'t be hit underground!');
+				return null;
 			},
 			onDamage: function(damage, target, source, move) {
 				if (!move || move.effectType !== 'Move') return;
-				if (!source || source.side === target.side) return;
+				if (!source) return;
 				if (move.id === 'earthquake') {
-					return 0;
+					this.add('-message', 'The foe ' + target.name + ' can\'t be hit underground!');
+					return null;
 				}
 			}
 		}
@@ -371,6 +374,7 @@ exports.BattleMovedex = {
 	explosion: {
 		inherit: true,
 		basePower: 340,
+		target: "normal"
 	},
 	fireblast: {
 		inherit: true,
@@ -398,7 +402,8 @@ exports.BattleMovedex = {
 		inherit: true
 	},
 	flash: {
-		inherit: true
+		inherit: true,
+		target: "normal"
 	},
 	fly: {
 		inherit: true,
@@ -409,13 +414,15 @@ exports.BattleMovedex = {
 			onLockMove: 'fly',
 			onAccuracy: function(accuracy, target, source, move) {
 				if (move.id === 'swift') return true;
-				return 0;
+				this.add('-message', 'The foe ' + target.name + ' can\'t be hit while flying!');
+				return null;
 			},
 			onDamage: function(damage, target, source, move) {
 				if (!move || move.effectType !== 'Move') return;
 				if (!source || source.side === target.side) return;
 				if (move.id === 'gust' || move.id === 'thunder') {
-					return 0;
+					this.add('-message', 'The foe ' + target.name + ' can\'t be hit while flying!');
+					return null;
 				}
 			}
 		}
@@ -454,7 +461,8 @@ exports.BattleMovedex = {
 		affectedByImmunities: false
 	},
 	growl: {
-		inherit: true
+		inherit: true,
+		target: "normal"
 	},
 	growth: {
 		inherit: true,
@@ -478,7 +486,18 @@ exports.BattleMovedex = {
 		inherit: true
 	},
 	haze: {
-		inherit: true
+		inherit: true,
+		desc: "Eliminates any stat stage changes and status from all active Pokemon.",
+		shortDesc: "Eliminates all stat changes and status.",
+		onHitField: function() {
+			this.add('-clearallboost');
+			for (var i=0; i<this.sides.length; i++) {
+				for (var j=0; j<this.sides[i].active.length; j++) {
+					this.sides[i].active[j].clearBoosts();
+				}
+			}
+			// TODO: add status clearing
+		}
 	},
 	headbutt: {
 		inherit: true
@@ -517,13 +536,7 @@ exports.BattleMovedex = {
 		priority: 0,
 		self: {
 			volatileStatus: 'mustrecharge'
-		},
-		onHit: function(target, pokemon) {
-			if (target.hp <= 0) {
-				pokemon.removeVolatile('mustrecharge');
-				console.log('Removing recharge through faint');
-			}
-		},
+		}
 		secondary: false,
 		target: "normal",
 		type: "Normal"
@@ -608,7 +621,30 @@ exports.BattleMovedex = {
 		inherit: true
 	},
 	lightscreen: {
-		inherit: true
+		inherit: true,
+		desc: "For 5 turns, the user and its party members double their Special Defense. Critical hits ignore this protection. It is removed from the user's side if the user is successfully hit by Haze.",
+		shortDesc: "For 5 turns, allies' Sp. Def is 2x.",
+		effect: {
+			duration: 5,
+			onFoeBasePower: function(basePower, attacker, defender, move) {
+				if (move.category === 'Special' && defender.side === this.effectData.target) {
+					if (!move.crit) {
+						// @TODO: Change this to double defense
+						this.debug('Light Screen weaken');
+						if (attacker.side.active.length > 1) return basePower*2/3;
+						return basePower / 2;
+					}
+				}
+			},
+			onStart: function(side) {
+				this.add('-sidestart', side, 'move: Light Screen');
+			},
+			onResidualOrder: 21,
+			onResidualSubOrder: 1,
+			onEnd: function(side) {
+				this.add('-sideend', side, 'move: Light Screen');
+			}
+		}
 	},
 	lovelykiss: {
 		inherit: true
@@ -710,7 +746,8 @@ exports.BattleMovedex = {
 	poisongas: {
 		inherit: true,
 		accuracy: 55,
-		category: "Physical"
+		category: "Physical",
+		target: "normal"
 	},
 	poisonsting: {
 		inherit: true,
@@ -741,7 +778,8 @@ exports.BattleMovedex = {
 		}
 	},
 	psywave: {
-		inherit: true
+		inherit: true,
+		target: "normal"
 	},
 	quickattack: {
 		inherit: true
@@ -751,7 +789,8 @@ exports.BattleMovedex = {
 	},
 	razorleaf: {
 		inherit: true,
-		category: "Special"
+		category: "Special",
+		target: "normal"
 	},
 	razorwind: {
 		num: 13,
@@ -782,7 +821,7 @@ exports.BattleMovedex = {
 			onLockMove: 'razorwind'
 		},
 		secondary: false,
-		target: "foes",
+		target: "normal",
 		type: "Normal"
 	},
 	recover: {
@@ -796,7 +835,29 @@ exports.BattleMovedex = {
 		}
 	},
 	reflect: {
-		inherit: true
+		inherit: true,
+		desc: "For 5 turns, the user has doubled Defense. Critical hits ignore this protection. It is removed from the user if it is successfully hit by Haze.",
+		shortDesc: "For 5 turns, user's Defense is 2x.",
+		effect: {
+			duration: 5,
+			onFoeBasePower: function(basePower, attacker, defender, move) {
+				// @TODO: Make this double defense
+				if (move.category === 'Physical' && defender.side === this.effectData.target) {
+					if (!move.crit && attacker.ability !== 'infiltrator') {
+						this.debug('Reflect weaken');
+						if (attacker.side.active.length > 1) return basePower*2/3;
+						return basePower/2;
+					}
+				}
+			},
+			onStart: function(side) {
+				this.add('-sidestart',side,'Reflect');
+			},
+			onResidualOrder: 21,
+			onEnd: function(side) {
+				this.add('-sideend',side,'Reflect');
+			}
+		}
 	},
 	rest: {
 		inherit: true,
@@ -822,7 +883,8 @@ exports.BattleMovedex = {
 		inherit: true,
 		desc: "Deals damage to a foe.",
 		shortDesc: "Deals damage.",
-		secondary: null
+		secondary: null,
+		target: "normal"
 	},
 	rockthrow: {
 		inherit: true
@@ -837,7 +899,8 @@ exports.BattleMovedex = {
 		inherit: true
 	},
 	screech: {
-		inherit: true
+		inherit: true,
+		target: "normal"
 	},
 	seismictoss: {
 		inherit: true,
@@ -845,13 +908,15 @@ exports.BattleMovedex = {
 	},
 	selfdestruct: {
 		inherit: true,
-		basePower: 260
+		basePower: 260,
+		target: "normal"
 	},
 	sharpen: {
 		inherit: true,
 	},
 	sing: {
 		inherit: true,
+		target: "normal"
 	},
 	skullbash: {
 		inherit: true,
@@ -876,9 +941,11 @@ exports.BattleMovedex = {
 	},
 	smog: {
 		inherit: true,
+		target: "normal"
 	},
 	smokescreen: {
 		inherit: true,
+		target: "normal"
 	},
 	softboiled: {
 		inherit: true,
@@ -915,7 +982,8 @@ exports.BattleMovedex = {
 		inherit: true
 	},
 	stringshot: {
-		inherit: true
+		inherit: true,
+		target: "normal"
 	},
 	struggle: {
 		num: 165,
@@ -1036,7 +1104,8 @@ exports.BattleMovedex = {
 		inherit: true
 	},
 	supersonic: {
-		inherit: true
+		inherit: true,
+		target: "normal"
 	},
 	surf: {
 		inherit: true
@@ -1054,7 +1123,8 @@ exports.BattleMovedex = {
 		basePower: 35
 	},
 	tailwhip: {
-		inherit: true
+		inherit: true,
+		target: "normal"
 	},
 	takedown: {
 		inherit: true
@@ -1085,8 +1155,7 @@ exports.BattleMovedex = {
 				this.add('-immune', target.id, '[msg]');
 				return null;
 			}
-		},
-		type: "???"
+		}
 	},
 	thunderbolt: {
 		inherit: true
