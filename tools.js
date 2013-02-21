@@ -77,6 +77,12 @@ module.exports = (function () {
 		}
 		this.data = Data[mod];
 
+		// Scripts can override Tools
+		// Be careful! Some Scripts are meant to be run only from inside a
+		// Battle!
+		for (var i in this.data.Scripts) {
+			this[i] = this.data.Scripts[i];
+		}
 		if (this.init) this.init();
 	}
 
@@ -434,6 +440,8 @@ module.exports = (function () {
 						if (learned.substr(0,2) in {'4L':1,'5L':1}) {
 							// gen 4 or 5 level-up moves
 							if (level >= parseInt(learned.substr(2),10)) {
+								// Chatter and Struggle cannot be sketched
+								if (sketch && (move === 'chatter' || move === 'struggle')) return true;
 								// we're past the required level to learn it
 								return false;
 							}
@@ -473,15 +481,17 @@ module.exports = (function () {
 										// can't breed mons from future gens
 										dexEntry.gen <= parseInt(learned.substr(0,1),10) &&
 										// genderless pokemon can't pass egg moves
-										dexEntry.gender !== 'N' &&
-										// if chainbreeding, only match the original source
-										(!alreadyChecked[dexEntry.speciesid] || fromSelf) &&
-										// the breeding target can learn this move
-										dexEntry.learnset && (dexEntry.learnset[move]||dexEntry.learnset['sketch'])) {
-										if (dexEntry.eggGroups.intersect(eggGroups).length) {
-											// we can breed with it
-											atLeastOne = true;
-											sources.push(learned+dexEntry.id);
+										dexEntry.gender !== 'N') {
+										if (
+											// chainbreeding
+											fromSelf ||
+											// otherwise parent must be able to learn the move
+											!alreadyChecked[dexEntry.speciesid] && dexEntry.learnset && (dexEntry.learnset[move]||dexEntry.learnset['sketch'])) {
+											if (dexEntry.eggGroups.intersect(eggGroups).length) {
+												// we can breed with it
+												atLeastOne = true;
+												sources.push(learned+dexEntry.id);
+											}
 										}
 									}
 								}

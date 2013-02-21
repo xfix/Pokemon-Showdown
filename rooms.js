@@ -667,6 +667,7 @@ function LobbyRoom(roomid) {
 	this.searchers = [];
 	this.logFile = null;
 	this.logFilename = '';
+	this.destroyingLog = false;
 
 	// Never do any other file IO synchronously
 	// but this is okay to prevent race conditions as we start up PS
@@ -738,6 +739,7 @@ function LobbyRoom(roomid) {
 		mkdir(path, '0755', function() {
 			path += '/' + date.format('{yyyy}-{MM}');
 			mkdir(path, '0755', function() {
+				if (selfR.destroyingLog) return;
 				path += '/' + date.format('{yyyy}-{MM}-{dd}') + '.txt';
 				if (path !== selfR.logFilename) {
 					selfR.logFilename = path;
@@ -750,6 +752,38 @@ function LobbyRoom(roomid) {
 			});
 		});
 	};
+	this.destroyLog = function(initialCallback, finalCallback) {
+		selfR.destroyingLog = true;
+		initialCallback();
+		if (selfR.logFile) {
+			selfR.logEntry = function() { };
+			selfR.logFile.on('close', finalCallback);
+			selfR.logFile.destroySoon();
+		} else {
+			finalCallback();
+		}
+	};
+	this.logUserStats = function() {
+		var total = 0;
+		var guests = 0;
+		var groups = {};
+		config.groupsranking.forEach(function(group) {
+			groups[group] = 0;
+		});
+		for (var i in selfR.users) {
+			var user = selfR.users[i];
+			++total;
+			if (!user.named) {
+				++guests;
+			}
+			++groups[user.group];
+		}
+		var entry = '|userstats|total:' + total + '|guests:' + guests;
+		for (var i in groups) {
+			entry += '|' + i + ':' + groups[i];
+		}
+		selfR.logEntry(entry);
+	};
 	if (config.loglobby) {
 		this.rollLogFile(true);
 		this.logEntry = function(entry) {
@@ -757,6 +791,9 @@ function LobbyRoom(roomid) {
 			selfR.logFile.write(timestamp + entry + '\n');
 		};
 		this.logEntry('Lobby created');
+		if (config.loguserstats) {
+			setInterval(this.logUserStats, config.loguserstats);
+		}
 	} else {
 		this.logEntry = function() { };
 	}
