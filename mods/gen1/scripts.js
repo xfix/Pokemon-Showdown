@@ -30,9 +30,6 @@ exports.BattleScripts = {
 		}
 	},
 	runMove: function(move, pokemon, target, sourceEffect) {
-		/**
-		 * runMove event needs to be reviewed for gen 1
-		 */
 		move = this.getMove(move);
 		if (!target) target = this.resolveTarget(pokemon, move);
 
@@ -86,8 +83,9 @@ exports.BattleScripts = {
 			stat = Math.floor(stat / boostTable[-boost]);
 		}
 		
-		// Gen 1 caps stats at 999
+		// Gen 1 caps stats at 999 and min is 1
 		if (stat > 999) stat = 999;
+		if (stat < 1) stat = 1;
 
 		return stat;
 	},
@@ -146,19 +144,22 @@ exports.BattleScripts = {
 		// In Gen 1 category deppends on attacking type
 		var specialTypes = {Fire:1, Water:1, Grass:1, Ice:1, Electric:1, Dark:1, Psychic:1, Dragon:1};
 		var category = (type in specialTypes)? 'Special' : 'Physical';
-		this.debug(move.name + ': Using ' + category + ' type of attack for ' + type + '-type move.');
 		
+		// We get the base power and apply basePowerCallback if necessary
 		var basePower = move.basePower;
 		if (move.basePowerCallback) {
 			basePower = move.basePowerCallback.call(this, pokemon, target, move);
 		}
+		
+		// We check for Base Power
 		if (!basePower) {
-			if (basePower === 0) return; // returning undefined means not dealing damage
+			if (basePower === 0) return; // Returning undefined means not dealing damage
 			return basePower;
 		}
 		basePower = clampIntRange(basePower, 1);
 
-		// We check if it's a 100% crit move
+		// Checking for the move's Critical Hit ratio
+		// First, we check if it's a 100% crit move
 		move.critRatio = clampIntRange(move.critRatio, 0, 5);
 		var critMult = [0, 16, 8, 4, 3, 2];
 		move.crit = move.willCrit || false;
@@ -170,33 +171,31 @@ exports.BattleScripts = {
 			case 1:
 				// Normal crit-rate: BaseSpeed * 100 / 512.
 				critRatio = pokemon.baseStats['spe'] * 100 / 512;
-				this.debug('Using normal crit-rate: BaseSpeed * 100 / 512');
 				break;
 			case 2:
 				// High crit-rate: BaseSpeed * 100 / 64
 				critRatio = pokemon.baseStats['spe'] * 100 / 64;
-				this.debug('Using high crit-rate: BaseSpeed * 100 / 64');
 				break;
 			case -2:
 				// Crit rate destroyed by Focus Energy (dumb trainer is dumb)
-				// 1 - 3 = -2, this is a normal move
 				critRatio = (pokemon.baseStats['spe'] * 100 / 64) * 0.25;
 				this.debug('Using ruined normal crit-rate: (pokemon.baseStats[\'spe\'] * 100 / 64) * 0.25');
 				break;
 			case -1:
-				// 2 - 3 = -1, this is a high crit move. Deppends on speed
+				// High crit move ruined by Focus Energy. Deppends on speed
 				if (pokemon.speed > target.speed) {
-					// Critical rate not decreased
+					// Critical rate not decreased if pokemon is faster than target
 					critRatio = pokemon.baseStats['spe'] * 100 / 64;
 					this.debug('Using ruined high crit-rate: pokemon.baseStats[\'spe\'] * 100 / 64');
 				} else {
-					// If you are slower you can't crit
+					// If you are slower, you can't crit on this moves
 					this.debug('Ruined crit rate, too slow, cannnot crit');
 					critRatio = false;
 				}
 				break;
 			}
 			
+			// Last, we check deppending on ratio if the move hits
 			if (critRatio) {
 				critRatio = critRatio.floor();
 				var random = Math.random() * 100;
@@ -208,10 +207,9 @@ exports.BattleScripts = {
 			move.crit = this.runEvent('CriticalHit', target, null, move);
 		}
 
-		// happens after crit calculation
+		// Happens after crit calculation
 		if (basePower) {
 			basePower = this.runEvent('BasePower', pokemon, target, move, basePower);
-
 			if (move.basePowerModifier) {
 				basePower *= move.basePowerModifier;
 			}
@@ -219,65 +217,66 @@ exports.BattleScripts = {
 		if (!basePower) return 0;
 		basePower = clampIntRange(basePower, 1);
 
+		// We now check for attacker and defender
 		var level = pokemon.level;
-
 		var attacker = pokemon;
 		var defender = target;
 		if (move.useTargetOffensive) attacker = target;
 		if (move.useSourceDefensive) defender = pokemon;
-
-		var attack = attacker.getStat(move.category==='Physical'?'atk':'spa');
-		var defense = defender.getStat(move.defensiveCategory==='Physical'?'def':'spd');
+		var attack = attacker.getStat((move.category==='Physical')? 'atk' : 'spa');
+		var defense = defender.getStat((move.defensiveCategory==='Physical')? 'def' : 'spd');
 
 		if (move.crit) {
 			move.ignoreNegativeOffensive = true;
 			move.ignorePositiveDefensive = true;
 		}
-		if (move.ignoreNegativeOffensive && attack < attacker.getStat(move.category==='Physical'?'atk':'spa', true)) {
+		if (move.ignoreNegativeOffensive && attack < attacker.getStat((move.category==='Physical')? 'atk' : 'spa', true)) {
 			move.ignoreOffensive = true;
 		}
 		if (move.ignoreOffensive) {
 			this.debug('Negating (sp)atk boost/penalty.');
-			attack = attacker.getStat(move.category==='Physical'?'atk':'spa', true);
+			attack = attacker.getStat((move.category==='Physical')? 'atk' : 'spa', true);
 		}
-		if (move.ignorePositiveDefensive && defense > target.getStat(move.defensiveCategory==='Physical'?'def':'spd', true)) {
+		if (move.ignorePositiveDefensive && defense > target.getStat((move.defensiveCategory==='Physical')? 'def' : 'spd' , true)) {
 			move.ignoreDefensive = true;
 		}
 		if (move.ignoreDefensive) {
 			this.debug('Negating (sp)def boost/penalty.');
-			defense = target.getStat(move.defensiveCategory==='Physical'?'def':'spd', true);
+			defense = target.getStat((move.defensiveCategory==='Physical')? 'def' : 'spd', true);
+		}
+		
+		// Gen 1 stat bug:
+		// If the pokémon's current attack or current defense is greater than 255, then its attack and 
+		// its defense will be halved, and halved again (truncating both times), and those numbers will 
+		// be used in place of its actual attack and defense values.
+		if (attack > 255) {
+			attack = Math.floor((Math.floor(attack / 2) / 2);
+		}
+		if (defense > 255) {
+			defense = Math.floor((Math.floor(defense / 2) / 2);
 		}
 
-		// Gen 1 damage formula (((((min(((((2L/5 + 2)*A*P)/max(1, D))/50), 997) + 2)*S)*T)/10)*R)/255
+		// Gen 1 damage formula (((((min(((((2 * L / 5 + 2)*Atk*BP)/max(1, Def))/50), 997) + 2)*Stab)*TypeEffect)/10)*Random)/255
 		// Where: L: user level, A: current attack, P: move power, D: opponent current defense,
 		// S is the Stab modifier, T is the type effectiveness modifier, R is random between 217 and 255
 		// The max damage is 999
-		this.debug('Using formula: int(int(int(2*L/5+2)*A*P/D)/50) for base damage');
-		var baseDamage = Math.floor(Math.floor(Math.floor(2*level/5+2) * basePower * attack/defense)/50) + 2;
+		var baseDamage = Math.min(Math.floor(Math.floor(Math.floor(2 * level / 5 + 2) * attack * basePower / defense) / 50), 997) + 2;
 
-		// crit
+		// Crit damage addition (usually doubling)
 		if (move.crit) {
 			if (!suppressMessages) this.add('-crit', target);
 			baseDamage = this.modify(baseDamage, move.critModifier || 2);
 		}
-
-		// randomizer
-		// this is not a modifier
-		// gen 1-2
-		var randFactor = Math.floor(Math.random()*39)+217;
-		baseDamage *= Math.floor(randFactor * 100 / 255) / 100;
-
-		// STAB
+		
+		// STAB damage bonus
 		if (type !== '???' && pokemon.hasType(type)) {
 			// The "???" type never gets STAB
-			// Not even if you Roost in Gen 4 and somehow manage to use
-			// Struggle in the same turn.
-			// (On second thought, it might be easier to get a Missingno.)
-			baseDamage = this.modify(baseDamage, move.stab || 1.5);
+			baseDamage = Math.floor(baseDamage * 1.5);
 		}
 		
-		// Types
+		// Type effectiveness
 		var totalTypeMod = this.getEffectiveness(type, target);
+		// Super effective attack
 		if (totalTypeMod > 0) {
 			if (!suppressMessages) this.add('-supereffective', target);
 			baseDamage *= 2;
@@ -285,19 +284,29 @@ exports.BattleScripts = {
 				baseDamage *= 2;
 			}
 		}
-		
+		// Resisted attack
 		if (totalTypeMod < 0) {
 			if (!suppressMessages) this.add('-resisted', target);
-			baseDamage = Math.floor(baseDamage/2);
+			baseDamage = Math.floor(baseDamage / 2);
 			if (totalTypeMod <= -2) {
-				baseDamage = Math.floor(baseDamage/2);
+				baseDamage = Math.floor(baseDamage / 2);
 			}
 		}
+		
+		// Now we divide damage by 10
+		baseDamage = Math.floor(baseDamage / 10);
 
+		// Randomizer, it's a number between 217 and 255
+		var randFactor = Math.floor(Math.random()*39)+217;
+		baseDamage *= randFactor;
+		baseDamage = Math.floor(baseDamage / 255);
+		
+		// If damage is less than 1, we return 1
 		if (basePower && !Math.floor(baseDamage)) {
 			return 1;
 		}
 
+		// We are done, this is the final damage
 		return Math.floor(baseDamage);
 	},
 	rollMoveHit: function(target, pokemon, move, spreadHit) {
@@ -601,14 +610,10 @@ exports.BattleScripts = {
 				}
 			}
 		}
-		if (target && target.hp > 0 && pokemon.hp > 0) {
-			if (moveData.forceSwitch && this.runEvent('DragOut', target, pokemon, move)) {
-				target.forceSwitchFlag = true;
-			}
-		}
 		if (move.selfSwitch && pokemon.hp) {
 			pokemon.switchFlag = move.selfSwitch;
 		}
+		
 		return damage;
 	},
 };
