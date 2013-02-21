@@ -92,6 +92,7 @@ exports.BattleScripts = {
 		return stat;
 	},
 	getDamage: function(pokemon, target, move, suppressMessages) {
+		// We get the move
 		if (typeof move === 'string') move = this.getMove(move);
 		if (typeof move === 'number') move = {
 			basePower: move,
@@ -99,12 +100,14 @@ exports.BattleScripts = {
 			category: 'Physical'
 		};
 
+		// First of all, we test for immunities
 		if (move.affectedByImmunities) {
 			if (!target.runImmunity(move.type, true)) {
 				return false;
 			}
 		}
 
+		// Is it ok?
 		if (move.ohko) {
 			if (target.speed > pokemon.speed) {
 				this.add('-failed', target);
@@ -113,22 +116,27 @@ exports.BattleScripts = {
 			return target.maxhp;
 		}
 		
+		// We edit the damage through move's damage callback
 		if (move.damageCallback) {
 			return move.damageCallback.call(this, pokemon, target);
 		}
 		
+		// We take damage from damage=level moves
 		if (move.damage === 'level') {
 			return pokemon.level;
 		}
 		
+		// If there's a fix move damage, we run it
 		if (move.damage) {
 			return move.damage;
 		}
 
+		// There's no move for some reason, create it
 		if (!move) {
 			move = {};
 		}
 		
+		// We check the category and typing to calculate later on the damage
 		if (!move.category) move.category = 'Physical';
 		if (!move.defensiveCategory) move.defensiveCategory = move.category;
 		// '???' is typeless damage: used for Struggle and Confusion etc
@@ -356,14 +364,22 @@ exports.BattleScripts = {
 			}
 			hits = Math.floor(hits);
 			// In gen 1, all the hits have the same damage for multihits move
-			
+			var moveDamage = 0;
 			for (var i=0; i<hits && target.hp && pokemon.hp; i++) {
-				var moveDamage = this.moveHit(target, pokemon, move);
+				if (i === 0) {
+					// First hit, we calculate
+					moveDamage = this.moveHit(target, pokemon, move);
+					var firstDamage = moveDamage;
+				} else {
+					// We get the previous damage to make it fix damage
+					move.damage = firstDamage;
+					moveDamage = this.moveHit(target, pokemon, move);
+				}
 				if (moveDamage === false) break;
-				// Damage from each hit is individually counted for the
-				// purposes of Counter, Metal Burst, and Mirror Coat.
+				// Damage from each hit is individually counted for the purposes of Counter
 				damage = (moveDamage || 0);
 			}
+			move.damage = null;
 			if (i === 0) return true;
 			this.add('-hitcount', target, i);
 		} else {
@@ -547,11 +563,6 @@ exports.BattleScripts = {
 			}
 			if (moveData.sideCondition) {
 				if (target.side.addSideCondition(moveData.sideCondition, pokemon, move)) {
-					didSomething = true;
-				}
-			}
-			if (moveData.weather) {
-				if (this.setWeather(moveData.weather, pokemon, move)) {
 					didSomething = true;
 				}
 			}
