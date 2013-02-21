@@ -301,9 +301,9 @@ exports.BattleScripts = {
 		return Math.floor(baseDamage);
 	},
 	rollMoveHit: function(target, pokemon, move, spreadHit) {
-		if (move.selfdestruct && spreadHit) {
-			pokemon.hp = 0;
-		}
+		// We get the sub to the target to see if it existed
+		var targetSub = target.volatiles['substitute'];
+		var targetHadSub = (targetSub !== null && targetSub !== false && (typeof targetSub !== 'undefined'));
 
 		var boostTable = [1, 4/3, 5/3, 2, 7/3, 8/3, 3];
 
@@ -386,8 +386,14 @@ exports.BattleScripts = {
 		if (move.category !== 'Status') target.gotAttacked(move, damage, pokemon);
 
 		if (!damage && damage !== 0) return false;
-
-		if (move.selfdestruct) {
+		
+		// Not selfdestructs if Substitute is gonna faint
+		var targetSub = target.volatiles['substitute'];
+		var doSelfDestruct = true;
+		if (targetSub !== null && targetSub !== false && (typeof targetSub !== 'undefined')) {
+			doSelfDestruct = targetSub.hp <= damage;
+		}
+		if (move.selfdestruct && doSelfDestruct) {
 			this.faint(pokemon, pokemon, move);
 		}
 
@@ -409,7 +415,11 @@ exports.BattleScripts = {
 		if (typeof move.affectedByImmunities === 'undefined') {
 			move.affectedByImmunities = (move.category !== 'Status');
 		}
-	
+		
+		// We get the sub to the target to see if it existed
+		var targetSub = target.volatiles['substitute'];
+		var targetHadSub = (targetSub !== null && targetSub !== false && (typeof targetSub !== 'undefined'));
+		
 		// TryHit events:
 		//   STEP 1: we see if the move will succeed at all:
 		//   - TryHit, TryHitSide, or TryHitField are run on the move,
@@ -556,6 +566,7 @@ exports.BattleScripts = {
 			if (moveData.volatileStatus) {
 				if (target.addVolatile(moveData.volatileStatus, pokemon, move)) {
 					didSomething = true;
+					this.debug('Adding volatileStatus ' + moveData.volatileStatus + ' to ' + pokemon.name);
 				}
 			}
 			if (moveData.sideCondition) {
@@ -586,7 +597,19 @@ exports.BattleScripts = {
 				return false;
 			}
 		}
-		if (moveData.self) {
+		if (target) {
+			var targetSub = target.getVolatile('substitute');
+			if (targetSub === null) {
+				var targetHasSub = false;
+			} else {
+				var targetHasSub = (targetSub.hp > 0);
+			}
+		} else {
+			var targetHasSub = false;
+		}
+		
+		var doSelf = (targetHadSub && targetHasSub) || !targetHadSub;
+		if (moveData.self && doSelf) {
 			this.moveHit(pokemon, pokemon, move, moveData.self, isSecondary, true);
 		}
 		if (moveData.secondaries) {
@@ -619,24 +642,22 @@ exports.BattleScripts = {
 
 		this.singleEvent('ModifyMove', move, null, pokemon, target, move, move);
 		if (baseMove.target !== move.target) {
-			//Target changed in ModifyMove, so we must adjust it here
+			// Target changed in ModifyMove, so we must adjust it here
 			target = this.resolveTarget(pokemon, move);
 		}
-		move = this.runEvent('ModifyMove',pokemon,target,move,move);
+		move = this.runEvent('ModifyMove', pokemon, target, move, move);
 		if (baseMove.target !== move.target) {
-			//check again
+			// Check again
 			target = this.resolveTarget(pokemon, move);
 		}
 		if (!move) return false;
 
 		var attrs = '';
 		var missed = false;
-		if (pokemon.fainted) {
-			return false;
-		}
+		if (pokemon.fainted) return false;
 
 		if (move.isTwoTurnMove && !pokemon.volatiles[move.id]) {
-			attrs = '|[still]'; // suppress the default move animation
+			attrs = '|[still]'; // Suppress the default move animation
 		}
 
 		var movename = move.name;
@@ -658,42 +679,7 @@ exports.BattleScripts = {
 		var damage = false;
 		if (move.target === 'all' || move.target === 'foeSide' || move.target === 'allySide' || move.target === 'allyTeam') {
 			damage = this.moveHit(target, pokemon, move);
-		} else if (move.target === 'allAdjacent' || move.target === 'allAdjacentFoes') {
-			var targets = [];
-			if (move.target === 'allAdjacent') {
-				var allyActive = pokemon.side.active;
-				for (var i=0; i<allyActive.length; i++) {
-					if (allyActive[i] && Math.abs(i-pokemon.position)<=1 && i != pokemon.position && !allyActive[i].fainted) {
-						targets.push(allyActive[i]);
-					}
-				}
-			}
-			var foeActive = pokemon.side.foe.active;
-			var foePosition = foeActive.length-pokemon.position-1;
-			for (var i=0; i<foeActive.length; i++) {
-				if (foeActive[i] && Math.abs(i-foePosition)<=1 && !foeActive[i].fainted) {
-					targets.push(foeActive[i]);
-				}
-			}
-			if (!targets.length) {
-				this.attrLastMove('[notarget]');
-				this.add('-notarget');
-				if (move.selfdestruct && this.gen == 5) {
-					this.faint(pokemon, pokemon, move);
-				}
-				return true;
-			}
-			if (targets.length > 1) move.spreadHit = true;
-			damage = 0;
-			for (var i=0; i<targets.length; i++) {
-				damage += (this.rollMoveHit(targets[i], pokemon, move, true) || 0);
-			}
-			if (!pokemon.hp) pokemon.faint();
 		} else {
-			if (target.fainted && target.side !== pokemon.side) {
-				// if a targeted foe faints, the move is retargeted
-				target = this.resolveTarget(pokemon, move);
-			}
 			if (target.fainted) {
 				this.attrLastMove('[notarget]');
 				this.add('-notarget');

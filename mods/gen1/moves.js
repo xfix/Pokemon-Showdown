@@ -830,8 +830,11 @@ exports.BattleMovedex = {
 		pp: 20,
 		onHit: function(target) {
 			// Fail when health is 255 or 511 less than max
-			if (target.hp === (target.maxhp - 255) || target.hp === (target.maxhp - 511)) return false;
-			target.heal = [1,2];
+			if (target.hp === (target.maxhp - 255) || target.hp === (target.maxhp - 511)) {
+				this.heal = [0,1];
+				return false;
+			}
+			this.heal = [1,2];
 		}
 	},
 	reflect: {
@@ -950,8 +953,11 @@ exports.BattleMovedex = {
 		inherit: true,
 		onHit: function(target) {
 			// Fail when health is 255 or 511 less than max
-			if (target.hp === (target.maxhp - 255) || target.hp === (target.maxhp - 511)) return false;
-			target.heal = [1,2];
+			if (target.hp === (target.maxhp - 255) || target.hp === (target.maxhp - 511)) {
+				this.heal = [0,1];
+				return false;
+			}
+			this.heal = [1,2];
 		}
 	},
 	solarbeam: {
