@@ -363,7 +363,8 @@ exports.BattleMovedex = {
 		inherit: true
 	},
 	earthquake: {
-		inherit: true
+		inherit: true,
+		category: "Physical"
 	},
 	eggbomb: {
 		inherit: true
@@ -836,10 +837,9 @@ exports.BattleMovedex = {
 	},
 	reflect: {
 		inherit: true,
-		desc: "For 5 turns, the user has doubled Defense. Critical hits ignore this protection. It is removed from the user if it is successfully hit by Haze.",
-		shortDesc: "For 5 turns, user's Defense is 2x.",
+		desc: "The user has doubled Defense. Critical hits ignore this protection. It is removed from the user if it is successfully hit by Haze.",
+		shortDesc: "User's Defense is 2x.",
 		effect: {
-			duration: 5,
 			onFoeBasePower: function(basePower, attacker, defender, move) {
 				// @TODO: Make this double defense
 				if (move.category === 'Physical' && defender.side === this.effectData.target) {
@@ -851,11 +851,11 @@ exports.BattleMovedex = {
 				}
 			},
 			onStart: function(side) {
-				this.add('-sidestart',side,'Reflect');
+				this.add('-sidestart', side, 'Reflect');
 			},
 			onResidualOrder: 21,
 			onEnd: function(side) {
-				this.add('-sideend',side,'Reflect');
+				this.add('-sideend', side, 'Reflect');
 			}
 		}
 	},
@@ -1036,6 +1036,7 @@ exports.BattleMovedex = {
 			}
 			// We only prevent when hp is less than one quarter.
 			// If you use substitute at exactly one quarter, you faint.
+			if (target.hp === target.maxhp/4) target.faint();
 			if (target.hp < target.maxhp/4) {
 				this.add('-fail', target, 'move: Substitute', '[weak]');
 				return null;
@@ -1078,7 +1079,6 @@ exports.BattleMovedex = {
 				source.lastDamage = damage;
 				if (target.volatiles['substitute'].hp <= 0) {
 					target.removeVolatile('substitute');
-					source.removeVolatile('mustrecharge');
 				} else {
 					this.add('-activate', target, 'Substitute', '[damage]');
 				}

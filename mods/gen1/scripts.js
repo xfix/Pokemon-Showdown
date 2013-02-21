@@ -226,37 +226,28 @@ exports.BattleScripts = {
 		var defender = target;
 		if (move.useTargetOffensive) attacker = target;
 		if (move.useSourceDefensive) defender = pokemon;
-		var attack = attacker.getStat((move.category==='Physical')? 'atk' : 'spa');
-		var defense = defender.getStat((move.defensiveCategory==='Physical')? 'def' : 'spd');
+		var atkType = (move.category === 'Physical')? 'atk' : 'spa';
+		var defType = (move.defensiveCategory === 'Physical')? 'atk' : 'spa';
+		var attack = attacker.getStat(atkType);
+		var defense = defender.getStat(defType);
 
 		if (move.crit) {
 			move.ignoreNegativeOffensive = true;
 			move.ignorePositiveDefensive = true;
 		}
-		if (move.ignoreNegativeOffensive && attack < attacker.getStat((move.category==='Physical')? 'atk' : 'spa', true)) {
+		if (move.ignoreNegativeOffensive && attack < attacker.getStat(atkType, true)) {
 			move.ignoreOffensive = true;
 		}
 		if (move.ignoreOffensive) {
 			this.debug('Negating (sp)atk boost/penalty.');
-			attack = attacker.getStat((move.category==='Physical')? 'atk' : 'spa', true);
+			attack = attacker.getStat(atkType, true);
 		}
-		if (move.ignorePositiveDefensive && defense > target.getStat((move.defensiveCategory==='Physical')? 'def' : 'spd' , true)) {
+		if (move.ignorePositiveDefensive && defense > target.getStat(defType, true)) {
 			move.ignoreDefensive = true;
 		}
 		if (move.ignoreDefensive) {
 			this.debug('Negating (sp)def boost/penalty.');
-			defense = target.getStat((move.defensiveCategory==='Physical')? 'def' : 'spd', true);
-		}
-		
-		// Gen 1 stat bug:
-		// If the pokémon's current attack or current defense is greater than 255, then its attack and 
-		// its defense will be halved, and halved again (truncating both times), and those numbers will 
-		// be used in place of its actual attack and defense values.
-		if (attack > 255) {
-			attack = Math.floor(Math.floor(attack / 2) / 2);
-		}
-		if (defense > 255) {
-			defense = Math.floor(Math.floor(defense / 2) / 2);
+			defense = target.getStat(defType, true);
 		}
 
 		// Gen 1 damage formula: 
@@ -613,4 +604,113 @@ exports.BattleScripts = {
 		
 		return damage;
 	},
+	useMove: function(move, pokemon, target, sourceEffect) {
+		if (!sourceEffect && this.effect.id) sourceEffect = this.effect;
+		move = this.getMove(move);
+		baseMove = move;
+		move = this.getMoveCopy(move);
+		if (!target) target = this.resolveTarget(pokemon, move);
+		if (move.target === 'self' || move.target === 'allies') {
+			target = pokemon;
+		}
+		if (sourceEffect) move.sourceEffect = sourceEffect.id;
+
+		this.setActiveMove(move, pokemon, target);
+
+		this.singleEvent('ModifyMove', move, null, pokemon, target, move, move);
+		if (baseMove.target !== move.target) {
+			//Target changed in ModifyMove, so we must adjust it here
+			target = this.resolveTarget(pokemon, move);
+		}
+		move = this.runEvent('ModifyMove',pokemon,target,move,move);
+		if (baseMove.target !== move.target) {
+			//check again
+			target = this.resolveTarget(pokemon, move);
+		}
+		if (!move) return false;
+
+		var attrs = '';
+		var missed = false;
+		if (pokemon.fainted) {
+			return false;
+		}
+
+		if (move.isTwoTurnMove && !pokemon.volatiles[move.id]) {
+			attrs = '|[still]'; // suppress the default move animation
+		}
+
+		var movename = move.name;
+		if (move.id === 'hiddenpower') movename = 'Hidden Power';
+		if (sourceEffect) attrs += '|[from]'+this.getEffect(sourceEffect);
+		this.addMove('move', pokemon, movename, target+attrs);
+
+		if (!this.singleEvent('Try', move, null, pokemon, target, move)) {
+			return true;
+		}
+		if (!this.runEvent('TryMove', pokemon, target, move)) {
+			return true;
+		}
+
+		if (typeof move.affectedByImmunities === 'undefined') {
+			move.affectedByImmunities = (move.category !== 'Status');
+		}
+
+		var damage = false;
+		if (move.target === 'all' || move.target === 'foeSide' || move.target === 'allySide' || move.target === 'allyTeam') {
+			damage = this.moveHit(target, pokemon, move);
+		} else if (move.target === 'allAdjacent' || move.target === 'allAdjacentFoes') {
+			var targets = [];
+			if (move.target === 'allAdjacent') {
+				var allyActive = pokemon.side.active;
+				for (var i=0; i<allyActive.length; i++) {
+					if (allyActive[i] && Math.abs(i-pokemon.position)<=1 && i != pokemon.position && !allyActive[i].fainted) {
+						targets.push(allyActive[i]);
+					}
+				}
+			}
+			var foeActive = pokemon.side.foe.active;
+			var foePosition = foeActive.length-pokemon.position-1;
+			for (var i=0; i<foeActive.length; i++) {
+				if (foeActive[i] && Math.abs(i-foePosition)<=1 && !foeActive[i].fainted) {
+					targets.push(foeActive[i]);
+				}
+			}
+			if (!targets.length) {
+				this.attrLastMove('[notarget]');
+				this.add('-notarget');
+				if (move.selfdestruct && this.gen == 5) {
+					this.faint(pokemon, pokemon, move);
+				}
+				return true;
+			}
+			if (targets.length > 1) move.spreadHit = true;
+			damage = 0;
+			for (var i=0; i<targets.length; i++) {
+				damage += (this.rollMoveHit(targets[i], pokemon, move, true) || 0);
+			}
+			if (!pokemon.hp) pokemon.faint();
+		} else {
+			if (target.fainted && target.side !== pokemon.side) {
+				// if a targeted foe faints, the move is retargeted
+				target = this.resolveTarget(pokemon, move);
+			}
+			if (target.fainted) {
+				this.attrLastMove('[notarget]');
+				this.add('-notarget');
+				return true;
+			}
+			damage = this.rollMoveHit(target, pokemon, move);
+		}
+
+		if (!damage && damage !== 0) {
+			this.singleEvent('MoveFail', move, null, target, pokemon, move);
+			return true;
+		}
+
+		if (!move.negateSecondary) {
+			this.singleEvent('AfterMoveSecondarySelf', move, null, pokemon, target, move);
+			this.runEvent('AfterMoveSecondarySelf', pokemon, target, move);
+		}
+		return true;
+	}
 };
