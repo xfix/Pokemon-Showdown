@@ -70,6 +70,7 @@ exports.BattleFormats = {
 		name: "Haxmons",
 		challengeShow: true,
 		canUseRandomTeam: true,
+		searchShow: true,
 		rated: true,
 		team: 'random',
 		ruleset: ['Hax Clause', 'Team Preview']
@@ -1017,6 +1018,9 @@ exports.BattleFormats = {
 			// They also get a useless nature, since that didn't exist
 			set.nature = 'Serious';
 			
+			// No shinies
+			set.shiny = false;
+			
 			return problems;
 		}
 	},
@@ -1299,6 +1303,31 @@ exports.BattleFormats = {
 				}
 			}
 			return ["Your team must share a type."];
+		}
+	},
+	haxclause: {
+		effectType: 'Rule',
+		onStart: function() {
+			this.add('rule', 'Hax Clause');
+		},
+		onModifyMovePriority: -100,
+		onModifyMove: function(move) {
+			if (move.secondaries) {
+				for (var s = 0; s < move.secondaries.length; ++s) {
+					move.secondaries[s].chance = 100;
+				}
+			}
+			if (move.accuracy !== true && move.accuracy <= 99) {
+				move.accuracy = 0;
+				if (move.name.indexOf(' ') > -1) {
+					var moveName = move.name.split(' ');
+					moveName[1] = 'Miss';
+					move.name = moveName[0] + '  ' + moveName[1];
+				} else {
+					move.name = move.name.substr(0, move.name.length-2) + 'fail';
+				}
+			}
+			move.willCrit = true;
 		}
 	}
 };

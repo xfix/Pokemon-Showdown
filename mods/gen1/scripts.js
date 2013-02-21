@@ -258,7 +258,6 @@ exports.BattleScripts = {
 		// gen 1-2
 		var randFactor = Math.floor(Math.random()*39)+217;
 		baseDamage *= Math.floor(randFactor * 100 / 255) / 100;
-		this.debug('Randomizing base damage as to gen 1: Math.floor(randFactor * 100 / 255) / 100, rand factor is ' + randFactor);
 
 		// STAB
 		if (type !== '???' && pokemon.hasType(type)) {
@@ -300,7 +299,7 @@ exports.BattleScripts = {
 
 		var boostTable = [1, 4/3, 5/3, 2, 7/3, 8/3, 3];
 
-		// calculate true accuracy
+		// Calculate true accuracy
 		var accuracy = move.accuracy;
 		if (accuracy !== true) {
 			if (!move.ignoreAccuracy) {
@@ -318,21 +317,26 @@ exports.BattleScripts = {
 				}
 			}
 		}
-		if (move.ohko) { // bypasses accuracy modifiers
-			if (!target.volatiles['bounce'] && !target.volatiles['dig'] && !target.volatiles['dive'] && !target.volatiles['fly'] && !target.volatiles['shadowforce'] && !target.volatiles['skydrop']) {
+		
+		// Bypasses accuracy modifiers
+		if (move.ohko) { 
+			if (!target.volatiles['dig'] && !target.volatiles['fly']) {
 				accuracy = 30;
-				if (pokemon.level > target.level) accuracy += (pokemon.level - target.level);
+				if (pokemon.speed > target.speed) accuracy += (pokemon.speed - target.speed);
 			}
 		}
-		if (move.alwaysHit) accuracy = true; // bypasses ohko accuracy modifiers
+		
+		// Bypasses ohko accuracy modifiers
+		if (move.alwaysHit) accuracy = true; 
 		accuracy = this.runEvent('Accuracy', target, pokemon, move, accuracy);
+		// Gen 1, 1/256 chance of missing
 		if (accuracy !== true && (this.random(100) >= accuracy || this.random(256) === 1)) {
 			if (!spreadHit) this.attrLastMove('[miss]');
 			this.add('-miss', pokemon, target);
 			return false;
 		}
 
-		if ((move.affectedByImmunities && !target.runImmunity(move.type, true)) || (move.isSoundBased && (pokemon !== target || this.gen <= 4) && !target.runImmunity('sound', true))) {
+		if (move.affectedByImmunities && !target.runImmunity(move.type, true)) {
 			return false;
 		}
 
@@ -346,7 +350,7 @@ exports.BattleScripts = {
 					var roll = this.random(6);
 					hits = [2,2,3,3,4,5][roll];
 				} else {
-					hits = this.random(hits[0],hits[1]+1);
+					hits = this.random(hits[0], hits[1]+1);
 				}
 			}
 			hits = Math.floor(hits);
@@ -378,4 +382,4 @@ exports.BattleScripts = {
 
 		return damage;
 	}
-}
+};

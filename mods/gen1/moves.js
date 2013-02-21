@@ -518,9 +518,9 @@ exports.BattleMovedex = {
 		self: {
 			volatileStatus: 'mustrecharge'
 		},
-		onHit: function(target, source) {
+		onHit: function(target, pokemon) {
 			if (target.hp <= 0) {
-				source.removeVolatile('mustrecharge');
+				pokemon.removeVolatile('mustrecharge');
 				console.log('Removing recharge through faint');
 			}
 		},
