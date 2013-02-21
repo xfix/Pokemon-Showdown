@@ -150,6 +150,7 @@ exports.BattleScripts = {
 		if (move.basePowerCallback) {
 			basePower = move.basePowerCallback.call(this, pokemon, target, move);
 		}
+		this.debug(move.name + ', move of type ' + type + ' and ' + category + ' category.');
 		
 		// We check for Base Power
 		if (!basePower) {

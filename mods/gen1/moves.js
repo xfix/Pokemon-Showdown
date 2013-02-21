@@ -536,7 +536,7 @@ exports.BattleMovedex = {
 		priority: 0,
 		self: {
 			volatileStatus: 'mustrecharge'
-		}
+		},
 		secondary: false,
 		target: "normal",
 		type: "Normal"
