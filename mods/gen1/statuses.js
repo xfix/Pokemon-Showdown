@@ -169,17 +169,11 @@ exports.BattleStatuses = {
 		}
 	},
 	partiallytrapped: {
-		duration: 5,
-		durationCallback: function(target, source) {
-			if (source.item === 'gripclaw') return 6;
-			return this.random(5,7);
-		},
-		onStart: function(pokemon, source) {
-			this.add('-activate', pokemon, 'move: ' +this.effectData.sourceEffect, '[of] '+source);
-		},
+		duration: 1,
 		onBeforeMovePriority: 1,
 		onBeforeMove: function(pokemon) {
-			if (!this.runEvent('partiallytrapped', pokemon)) {
+			// We use try Flinch because it works in a similar fashion
+			if (!this.runEvent('Flinch', pokemon)) {
 				return;
 			}
 			this.add('cant', pokemon, 'partiallytrapped');
@@ -191,17 +185,32 @@ exports.BattleStatuses = {
 				pokemon.removeVolatile('partiallytrapped');
 				return;
 			}
-			if (this.effectData.source.item === 'bindingband') {
-				this.damage(pokemon.maxhp/8);
-			} else {
-				this.damage(pokemon.maxhp/16);
+		}
+	},
+	partialtrappinglock: {
+		durationCallback: function() {
+			var roll = this.random(6);
+			duration = [2,2,3,3,4,5][roll];
+			return duration;
+		},
+		onResidual: function(target) {
+			if (target.lastMove === 'struggle' || target.status === 'slp') {
+				delete target.volatiles['partialtrappinglock'];
 			}
 		},
-		onEnd: function(pokemon) {
-			this.add('-end', pokemon, this.effectData.sourceEffect, '[partiallytrapped]');
+		onStart: function(target, source, effect) {
+			this.effectData.move = effect.id;
 		},
 		onModifyPokemon: function(pokemon) {
-			pokemon.trapped = true;
+			if (!pokemon.hasMove(this.effectData.move)) {
+				return;
+			}
+			var moves = pokemon.moveset;
+			for (var i=0; i<moves.length; i++) {
+				if (moves[i].id !== this.effectData.move) {
+					moves[i].disabled = true;
+				}
+			}
 		}
 	},
 	lockedmove: {

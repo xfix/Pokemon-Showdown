@@ -165,7 +165,16 @@ exports.BattleMovedex = {
 		inherit: true,
 		category: "Special",
 		accuracy: 75,
-		pp: 10
+		basePower: 35,
+		pp: 10,
+		volatileStatus: 'partiallytrapped',
+		self: {
+			volatileStatus: 'partialtrappinglock'
+		},
+		onBeforeMove: function(pokemon, target, move) {
+			// Removes must recharge volatile even if it misses
+			target.removeVolatile('mustrecharge');
+		}
 	},
 	cometpunch: {
 		inherit: true
@@ -1239,7 +1248,10 @@ exports.BattleMovedex = {
 	},
 	wrap: {
 		inherit: true,
-		accuracy: 85
+		accuracy: 85,
+		onHit: function (target) {
+			target.removeVolatile('mustrecharge');
+		}
 	},
 	magikarpsrevenge: null
 };

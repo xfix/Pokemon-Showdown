@@ -131,6 +131,11 @@ exports.BattleScripts = {
 		if (move.damage) {
 			return move.damage;
 		}
+		
+		// Let's check if we are in middle of a partial trap sequence
+		if (pokemon.volatiles['partialtrappinglock']) {
+			return pokemon.volatiles['partialtrappinglock'].damage;
+		}
 
 		// There's no move for some reason, create it
 		if (!move) {
@@ -313,6 +318,12 @@ exports.BattleScripts = {
 		
 		// Calculate true accuracy
 		var accuracy = move.accuracy;
+		
+		// Partial trapping moves: true accuracy while it lasts
+		if (pokemon.volatiles['partialtrappinglock']) {
+			accuracy = true;
+		}
+		
 		if (accuracy !== true) {
 			if (!move.ignoreAccuracy) {
 				if (pokemon.boosts.accuracy > 0) {
@@ -403,6 +414,11 @@ exports.BattleScripts = {
 		if (!move.negateSecondary) {
 			this.singleEvent('AfterMoveSecondary', move, null, target, pokemon, move);
 			this.runEvent('AfterMoveSecondary', target, pokemon, move);
+		}
+		
+		// If we used a partial trapping move, we save the damage to repeat it
+		if (move.volatileStatus === 'partiallytrapped' && !pokemon.volatiles['partialtrappinglock'].damage) {
+			pokemon.volatiles['partialtrappinglock'].damage = damage;
 		}
 
 		return damage;
