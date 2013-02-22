@@ -134,7 +134,7 @@ exports.BattleScripts = {
 		
 		// Let's check if we are in middle of a partial trap sequence
 		if (pokemon.volatiles['partialtrappinglock'] && target !== pokemon) {
-			return pokemon.volatiles['partialtrappinglock'].dmgtodo;
+			return pokemon.volatiles['partialtrappinglock'].damage;
 		}
 
 		// There's no move for some reason, create it
@@ -322,6 +322,19 @@ exports.BattleScripts = {
 		// Partial trapping moves: true accuracy while it lasts
 		if (pokemon.volatiles['partialtrappinglock']) {
 			accuracy = true;
+			
+			// We also check current target
+			if (!pokemon.volatiles['partialtrappinglock'].target && target !== pokemon) {
+				pokemon.volatiles['partialtrappinglock'].target = target;
+			} else if (pokemon.volatiles['partialtrappinglock'].target !== target && target !== pokemon) {
+				// New target, we reset the move duration
+				var roll = this.random(6);
+				var duration = [2,2,3,3,4,5][roll];
+				pokemon.volatiles['partialtrappinglock'].duration = duration;
+				pokemon.volatiles['partialtrappinglock'].target = target;
+				
+				// TODO: ESTO NO FUNCIONA BIEN
+			}
 		}
 		
 		if (accuracy !== true) {
@@ -417,8 +430,8 @@ exports.BattleScripts = {
 		}
 		
 		// If we used a partial trapping move, we save the damage to repeat it
-		if (move.volatileStatus === 'partiallytrapped' && !pokemon.volatiles['partialtrappinglock'].dmgtodo) {
-			pokemon.volatiles['partialtrappinglock'].dmgtodo = damage;
+		if (move.volatileStatus === 'partiallytrapped' && !pokemon.volatiles['partialtrappinglock'].damage) {
+			pokemon.volatiles['partialtrappinglock'].damage = damage;
 		}
 
 		return damage;

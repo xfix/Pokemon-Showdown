@@ -104,7 +104,15 @@ exports.BattleMovedex = {
 	},
 	bind: {
 		inherit: true,
-		accuracy: 75
+		accuracy: 75,
+		volatileStatus: 'partiallytrapped',
+		self: {
+			volatileStatus: 'partialtrappinglock'
+		},
+		onBeforeMove: function(pokemon, target, move) {
+			// Removes must recharge volatile even if it misses
+			target.removeVolatile('mustrecharge');
+		}
 	},
 	bite: {
 		inherit: true,
@@ -406,7 +414,15 @@ exports.BattleMovedex = {
 	firespin: {
 		inherit: true,
 		accuracy: 70,
-		basePower: 15
+		basePower: 15,
+		volatileStatus: 'partiallytrapped',
+		self: {
+			volatileStatus: 'partialtrappinglock'
+		},
+		onBeforeMove: function(pokemon, target, move) {
+			// Removes must recharge volatile even if it misses
+			target.removeVolatile('mustrecharge');
+		}
 	},
 	fissure: {
 		inherit: true
@@ -1249,7 +1265,12 @@ exports.BattleMovedex = {
 	wrap: {
 		inherit: true,
 		accuracy: 85,
-		onHit: function (target) {
+		volatileStatus: 'partiallytrapped',
+		self: {
+			volatileStatus: 'partialtrappinglock'
+		},
+		onBeforeMove: function(pokemon, target, move) {
+			// Removes must recharge volatile even if it misses
 			target.removeVolatile('mustrecharge');
 		}
 	},
