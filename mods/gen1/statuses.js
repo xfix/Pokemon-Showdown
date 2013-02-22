@@ -147,6 +147,17 @@ exports.BattleStatuses = {
 			return false;
 		}
 	},
+	explosionflinch: {
+		duration: 1,
+		onBeforeMovePriority: 1,
+		onBeforeMove: function(pokemon) {
+			if (!this.runEvent('Flinch', pokemon)) {
+				return;
+			}
+			this.add('cant', pokemon, 'explosionflinch');
+			return false;
+		}
+	},
 	trapped: {
 		noCopy: true,
 		onModifyPokemon: function(pokemon) {

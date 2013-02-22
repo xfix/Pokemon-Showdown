@@ -71,7 +71,7 @@ exports.BattleScripts = {
 
 		// stat modifier effects
 		var statTable = {atk:'Atk', def:'Def', spa:'SpA', spd:'SpD', spe:'Spe'};
-		stat = selfB.runEvent('Modify'+statTable[statName], selfP, null, null, stat);
+		stat = this.runEvent('Modify'+statTable[statName], selfP, null, null, stat);
 		stat = Math.floor(stat);
 
 		if (unboosted) return stat;
@@ -301,12 +301,16 @@ exports.BattleScripts = {
 		return Math.floor(baseDamage);
 	},
 	rollMoveHit: function(target, pokemon, move, spreadHit) {
-		// We get the sub to the target to see if it existed
-		var targetSub = target.volatiles['substitute'];
-		var targetHadSub = (targetSub !== null && targetSub !== false && (typeof targetSub !== 'undefined'));
-
 		var boostTable = [1, 4/3, 5/3, 2, 7/3, 8/3, 3];
 
+		// Not selfdestructs if Substitute is gonna faint
+		var targetSub = target.volatiles['substitute'];
+		var doSelfDestruct = true;
+		var subHp = false;
+		if ((typeof targetSub === 'object') && targetSub !== null) {
+			var subHp = targetSub.hp;
+		}
+		
 		// Calculate true accuracy
 		var accuracy = move.accuracy;
 		if (accuracy !== true) {
@@ -387,11 +391,10 @@ exports.BattleScripts = {
 
 		if (!damage && damage !== 0) return false;
 		
-		// Not selfdestructs if Substitute is gonna faint
-		var targetSub = target.volatiles['substitute'];
-		var doSelfDestruct = true;
-		if (targetSub !== null && targetSub !== false && (typeof targetSub !== 'undefined')) {
-			doSelfDestruct = targetSub.hp <= damage;
+		// Checking if substitute fainted
+		var currentSub = target.volatiles['substitute'];
+		if (subHp && (currentSub === undefined || currentSub === null)) {
+			doSelfDestruct = false;
 		}
 		if (move.selfdestruct && doSelfDestruct) {
 			this.faint(pokemon, pokemon, move);
@@ -698,5 +701,43 @@ exports.BattleScripts = {
 			this.runEvent('AfterMoveSecondarySelf', pokemon, target, move);
 		}
 		return true;
+	},
+	heal: function(damage, target, source, effect) {
+		if (this.event) {
+			if (!target) target = this.event.target;
+			if (!source) source = this.event.source;
+			if (!effect) effect = this.effect;
+		}
+		effect = this.getEffect(effect);
+		if (damage && damage <= 1) damage = 1;
+		damage = Math.floor(damage);
+		// for things like Liquid Ooze, the Heal event still happens when nothing is healed.
+		damage = this.runEvent('TryHeal', target, source, effect, damage);
+		if (!damage) return 0;
+		if (!target || !target.hp) return 0;
+		if (target.hp >= target.maxhp) return 0;
+		damage = target.heal(damage, source, effect);
+		switch (effect.id) {
+		case 'leechseed':
+		case 'rest':
+			this.add('-heal', target, target.hpChange(damage), '[silent]');
+			break;
+		case 'drain':
+			this.add('-heal', target, target.hpChange(damage), '[from] drain', '[of] '+source);
+			break;
+		case 'wish':
+			break;
+		default:
+			if (effect.effectType === 'Move') {
+				this.add('-heal', target, target.hpChange(damage));
+			} else if (source && source !== target) {
+				this.add('-heal', target, target.hpChange(damage), '[from] '+effect.fullname, '[of] '+source);
+			} else {
+				this.add('-heal', target, target.hpChange(damage), '[from] '+effect.fullname);
+			}
+			break;
+		}
+		this.runEvent('Heal', target, source, effect, damage);
+		return damage;
 	}
 };

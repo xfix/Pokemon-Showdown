@@ -375,7 +375,10 @@ exports.BattleMovedex = {
 	explosion: {
 		inherit: true,
 		basePower: 340,
-		target: "normal"
+		target: "normal",
+		onHit: function (target) {
+			target.addVolatile('explosionflinch');
+		}
 	},
 	fireblast: {
 		inherit: true,
@@ -490,14 +493,23 @@ exports.BattleMovedex = {
 		inherit: true,
 		desc: "Eliminates any stat stage changes and status from all active Pokemon.",
 		shortDesc: "Eliminates all stat changes and status.",
-		onHitField: function() {
+		onHitField: function(target, source) {
 			this.add('-clearallboost');
+			this.debug(source.name);
 			for (var i=0; i<this.sides.length; i++) {
 				for (var j=0; j<this.sides[i].active.length; j++) {
+					var hasTox = (this.sides[i].active[j].status == 'tox');
 					this.sides[i].active[j].clearBoosts();
+					if (this.sides[i].active[j].id !== source.id) {
+						// Clears the status from the opponent
+						this.sides[i].active[j].clearStatus();
+					}
+					this.sides[i].removeSideCondition('lightscreen');
+					this.sides[i].removeSideCondition('reflect');
+					if (hasTox) this.sides[i].active[j].setStatus('psn');
+					this.sides[i].active[j].clearVolatile();
 				}
 			}
-			// TODO: add status clearing
 		}
 	},
 	headbutt: {
@@ -623,25 +635,30 @@ exports.BattleMovedex = {
 	},
 	lightscreen: {
 		inherit: true,
-		desc: "For 5 turns, the user and its party members double their Special Defense. Critical hits ignore this protection. It is removed from the user's side if the user is successfully hit by Haze.",
-		shortDesc: "For 5 turns, allies' Sp. Def is 2x.",
+		desc: "For 5 turns, the user doubles its Special Defense. Critical hits ignore this protection. It is removed from the user's side if the user is successfully hit by Haze.",
+		shortDesc: "For 5 turns, user's Sp. Def is 2x.",
 		effect: {
-			duration: 5,
+			// onModifySpD not working, use this by now
 			onFoeBasePower: function(basePower, attacker, defender, move) {
 				if (move.category === 'Special' && defender.side === this.effectData.target) {
 					if (!move.crit) {
-						// @TODO: Change this to double defense
-						this.debug('Light Screen weaken');
-						if (attacker.side.active.length > 1) return basePower*2/3;
-						return basePower / 2;
+						this.debug('Light Screen weaken')
+						return basePower/2;
 					}
 				}
 			},
+			/*onModifySpD: function(spd, pokemon) {
+				this.debug('Light screen doubles special defense');
+				return spd * 2;
+			},*/
 			onStart: function(side) {
 				this.add('-sidestart', side, 'move: Light Screen');
 			},
 			onResidualOrder: 21,
 			onResidualSubOrder: 1,
+			onSwitchOut: function (pokemon) {
+				pokemon.side.removeSideCondition('lightscreen');
+			},
 			onEnd: function(side) {
 				this.add('-sideend', side, 'move: Light Screen');
 			}
@@ -842,20 +859,26 @@ exports.BattleMovedex = {
 		desc: "The user has doubled Defense. Critical hits ignore this protection. It is removed from the user if it is successfully hit by Haze.",
 		shortDesc: "User's Defense is 2x.",
 		effect: {
+			// onModifyDef not working, meanwhile we use this
 			onFoeBasePower: function(basePower, attacker, defender, move) {
-				// @TODO: Make this double defense
 				if (move.category === 'Physical' && defender.side === this.effectData.target) {
-					if (!move.crit && attacker.ability !== 'infiltrator') {
+					if (!move.crit) {
 						this.debug('Reflect weaken');
-						if (attacker.side.active.length > 1) return basePower*2/3;
-						return basePower/2;
+						return basePower / 2;
 					}
 				}
 			},
+			/*onModifyDef: function(def, pokemon) {
+				this.debug('Reflect doubles defense');
+				return def * 2;
+			},*/
 			onStart: function(side) {
 				this.add('-sidestart', side, 'Reflect');
 			},
 			onResidualOrder: 21,
+			onSwitchOut: function (pokemon) {
+				pokemon.side.removeSideCondition('reflect');
+			},
 			onEnd: function(side) {
 				this.add('-sideend', side, 'Reflect');
 			}
@@ -911,7 +934,10 @@ exports.BattleMovedex = {
 	selfdestruct: {
 		inherit: true,
 		basePower: 260,
-		target: "normal"
+		target: "normal",
+		onHit: function (target) {
+			target.addVolatile('explosionflinch');
+		}
 	},
 	sharpen: {
 		inherit: true,
@@ -1065,9 +1091,9 @@ exports.BattleMovedex = {
 					// poison, confusion, the effect of partial trapping moves, secondary effect confusion, 
 					// stat reducing moves and Leech Seed.
 					var SubBlocked = {
-							leechseed:1, lockon:1, meanlook:1, mindreader:1, nightmare:1
+						lockon:1, meanlook:1, mindreader:1, nightmare:1
 					};
-					if (move.status || move.boosts || move.volatileStatus === 'confusion' || SubBlocked[move.id]) {
+					if (move.status === 'psn' || move.status === 'tox' || move.boosts || move.volatileStatus === 'confusion' || SubBlocked[move.id]) {
 						return false;
 					}
 					return;
