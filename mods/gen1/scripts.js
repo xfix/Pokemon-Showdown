@@ -133,8 +133,8 @@ exports.BattleScripts = {
 		}
 		
 		// Let's check if we are in middle of a partial trap sequence
-		if (pokemon.volatiles['partialtrappinglock']) {
-			return pokemon.volatiles['partialtrappinglock'].damage;
+		if (pokemon.volatiles['partialtrappinglock'] && target !== pokemon) {
+			return pokemon.volatiles['partialtrappinglock'].dmgtodo;
 		}
 
 		// There's no move for some reason, create it
@@ -417,8 +417,8 @@ exports.BattleScripts = {
 		}
 		
 		// If we used a partial trapping move, we save the damage to repeat it
-		if (move.volatileStatus === 'partiallytrapped' && !pokemon.volatiles['partialtrappinglock'].damage) {
-			pokemon.volatiles['partialtrappinglock'].damage = damage;
+		if (move.volatileStatus === 'partiallytrapped' && !pokemon.volatiles['partialtrappinglock'].dmgtodo) {
+			pokemon.volatiles['partialtrappinglock'].dmgtodo = damage;
 		}
 
 		return damage;
