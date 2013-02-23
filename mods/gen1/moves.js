@@ -106,6 +106,7 @@ exports.BattleMovedex = {
 	bind: {
 		inherit: true,
 		accuracy: 75,
+		affectedByImmunities: false,
 		volatileStatus: 'partiallytrapped',
 		self: {
 			volatileStatus: 'partialtrappinglock'
@@ -237,8 +238,10 @@ exports.BattleMovedex = {
 	},
 	counter: {
 		inherit: true,
+		affectedByImmunities: false,
 		damageCallback: function(pokemon) {
-			if (pokemon.lastAttackedBy && pokemon.lastAttackedBy.thisTurn && (this.getMove(pokemon.lastAttackedBy.move).category === 'Physical' || this.getmove(pokemon.lastAttackedBy.move).id === 'hiddenpower')) {
+			if (pokemon.lastAttackedBy && pokemon.lastAttackedBy.thisTurn 
+			&& (this.getMove(pokemon.lastAttackedBy.move).type === 'Normal' || this.getMove(pokemon.lastAttackedBy.move).type === 'Fighting')) {
 				return 2 * pokemon.lastAttackedBy.damage;
 			}
 			this.add('-fail',pokemon.id);
@@ -293,13 +296,13 @@ exports.BattleMovedex = {
 	disable: {
 		inherit: true,
 		accuracy: 55,
-		desc: "The target cannot choose its last move for 4-7 turns. Disable only works on one move at a time and fails if the target has not yet used a move or if its move has run out of PP. The target does nothing if it is about to use a move that becomes disabled.",
+		desc: "The target cannot choose a random move for 0-6 turns. Disable only works on one move at a time and fails if the target has not yet used a move or if its move has run out of PP. The target does nothing if it is about to use a move that becomes disabled.",
 		//shortDesc: "",
 		isBounceable: false,
 		volatileStatus: 'disable',
 		effect: {
 			durationCallback: function() {
-				return this.random(2,6);
+				return this.random(1, 7);
 			},
 			noCopy: true,
 			onStart: function(pokemon) {
@@ -310,15 +313,14 @@ exports.BattleMovedex = {
 					return false;
 				}
 				var moves = pokemon.moveset;
+				moves = moves.randomize();
 				for (var i=0; i<moves.length; i++) {
-					if (moves[i].id === pokemon.lastMove) {
-						if (!moves[i].pp) {
-							return false;
-						} else {
-							this.add('-start', pokemon, 'Disable', moves[i].move);
-							this.effectData.move = pokemon.lastMove;
-							return;
-						}
+					if (!moves[i].pp) {
+						return false;
+					} else {
+						this.add('-start', pokemon, 'Disable', moves[i].move);
+						this.effectData.move = moves[i].move;
+						return;
 					}
 				}
 				return false;
@@ -736,7 +738,36 @@ exports.BattleMovedex = {
 		type: "Normal"
 	},
 	mimic: {
-		inherit: true
+		inherit: true,
+		desc: "This move is replaced by a random move on target's moveset. The copied move has the maximum PP for that move. Ignores a target's Substitute.",
+		shortDesc: "A random target's move replaces this one.",
+		onHit: function (target, source) {
+			var disallowedMoves = {mimic:1, struggle:1, transform:1};
+			if (source.transformed) return false;
+			var moveslot = source.moves.indexOf('mimic');
+			if (moveslot === -1) return false;
+			//var move = Tools.getMove(target.lastMove);
+			var moves = target.moveset;
+			this.debug(moves);
+			for (var i=0; i<moves.length; i++) {
+				if (!moves[i].id in disallowedMoves) {
+					var move = moves[i];
+					break;
+				}
+			}
+			
+			source.moveset[moveslot] = {
+				move: move.name,
+				id: move.id,
+				pp: move.pp,
+				maxpp: move.pp,
+				target: move.target,
+				disabled: false,
+				used: false
+			};
+			source.moves[moveslot] = toId(move.name);
+			this.add('-start', source, 'Mimic', move.name);
+		}
 	},
 	minimize: {
 		inherit: true
@@ -1266,6 +1297,7 @@ exports.BattleMovedex = {
 	wrap: {
 		inherit: true,
 		accuracy: 85,
+		affectedByImmunities: false,
 		volatileStatus: 'partiallytrapped',
 		self: {
 			volatileStatus: 'partialtrappinglock'

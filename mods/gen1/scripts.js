@@ -324,9 +324,10 @@ exports.BattleScripts = {
 			accuracy = true;
 			
 			// We also check current target
-			if (!pokemon.volatiles['partialtrappinglock'].target && target !== pokemon) {
+			if (!pokemon.volatiles['partialtrappinglock'].target && (target !== pokemon)) {
 				pokemon.volatiles['partialtrappinglock'].target = target;
-			} else if (pokemon.volatiles['partialtrappinglock'].target !== target && target !== pokemon) {
+			}
+			if (pokemon.volatiles['partialtrappinglock'].target !== target && target !== pokemon) {
 				// New target, we reset the move duration
 				var roll = this.random(6);
 				var duration = [2,2,3,3,4,5][roll];
@@ -412,6 +413,11 @@ exports.BattleScripts = {
 		}
 
 		if (move.category !== 'Status') target.gotAttacked(move, damage, pokemon);
+		
+		// If it's the first hit on a Normal-type partially trap move, it hits Ghosts but damage is 0
+		if (move.volatileStatus === 'partiallytrapped' && target.hasType('Ghost')) {
+			damage = 0;
+		}
 
 		if (!damage && damage !== 0) return false;
 		

@@ -55,8 +55,10 @@ exports.BattleStatuses = {
 		onBeforeMove: function(pokemon, target, move) {
 			pokemon.statusData.time--;
 			this.add('cant', pokemon, 'slp');
-			if (pokemon.statusData.time <= 0) pokemon.cureStatus();
 			return false;
+		},
+		onAfterMove: function (pokemon, target, move) {
+			if (pokemon.statusData.time <= 0) pokemon.cureStatus();
 		}
 	},
 	frz: {

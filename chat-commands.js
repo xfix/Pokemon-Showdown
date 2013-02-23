@@ -459,11 +459,10 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			}
 			return parseCommand(user, '?', cmd, room, socket);
 		}
-		// temporarily disable this because blarajan
-		/* if (user.muted && !targetUser.can('mute', user)) {
+		if (user.muted && !targetUser.can('mute', user)) {
 			emit(socket, 'console', 'You can only private message members of the Moderation Team (users marked by %, @, &, or ~) when muted.');
 			return false;
-		} */
+		}
 
 		if (!user.named) {
 			emit(socket, 'console', 'You must choose a name before you can send private messages.');
