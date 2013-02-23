@@ -66,6 +66,7 @@ exports.BattleMovedex = {
 		desc: "The user spends two to three turns locked into this move and then, on the second turn after using this move, the user attacks the last Pokemon that hit it, inflicting double the damage in HP it lost during the two turns. If the last Pokemon that hit it is no longer on the field, the user attacks a random foe instead. If the user is prevented from moving during this move's use, the effect ends. This move ignores Accuracy and Evasion modifiers and can hit Ghost-types. Makes contact. Priority +1.",
 		shortDesc: "Waits 2-3 turns; deals double the damage taken.",
 		priority: 0,
+		accuracy: 100,
 		effect: {
 			duration: 2,
 			onLockMove: 'bide',
