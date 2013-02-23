@@ -53,19 +53,18 @@ exports.BattleStatuses = {
 		},
 		onBeforeMovePriority: 2,
 		onBeforeMove: function(pokemon, target, move) {
-			if (pokemon.getAbility().isHalfSleep) {
-				pokemon.statusData.time--;
-			}
 			pokemon.statusData.time--;
-			if (pokemon.statusData.time <= 0) {
-				pokemon.cureStatus();
-				return;
-			}
 			this.add('cant', pokemon, 'slp');
 			if (move.sleepUsable) {
 				return;
 			}
 			return false;
+		},
+		onAfterMoveSelf: function(pokemon, target, move) {
+			if (pokemon.statusData.time <= 0) {
+				pokemon.cureStatus();
+				return;
+			}
 		}
 	},
 	frz: {

@@ -735,16 +735,29 @@ function LobbyRoom(roomid) {
 			callback();
 		}) : fs.mkdir;
 		var date = new Date();
-		var path = 'logs/lobby';
-		mkdir(path, '0755', function() {
-			path += '/' + date.format('{yyyy}-{MM}');
-			mkdir(path, '0755', function() {
+		var basepath = 'logs/lobby/';
+		mkdir(basepath, '0755', function() {
+			var path = date.format('{yyyy}-{MM}');
+			mkdir(basepath + path, '0755', function() {
 				if (selfR.destroyingLog) return;
 				path += '/' + date.format('{yyyy}-{MM}-{dd}') + '.txt';
 				if (path !== selfR.logFilename) {
 					selfR.logFilename = path;
 					if (selfR.logFile) selfR.logFile.destroySoon();
-					selfR.logFile = fs.createWriteStream(path, {flags: 'a'});
+					selfR.logFile = fs.createWriteStream(basepath + path, {flags: 'a'});
+					// Create a symlink to today's lobby log.
+					// These operations need to be synchronous, but it's okay
+					// because this code is only executed once every 24 hours.
+					var link0 = basepath + 'today.txt.0';
+					try {
+						fs.unlinkSync(link0);
+					} catch (e) {} // file doesn't exist
+					try {
+						fs.symlinkSync(path, link0); // `basepath` intentionally not included
+						try {
+							fs.renameSync(link0, basepath + 'today.txt');
+						} catch (e) {} // OS doesn't support atomic rename
+					} catch (e) {} // OS doesn't support symlinks
 				}
 				var timestamp = +date;
 				date.advance('1 hour').reset('minutes').advance('1 second');
@@ -786,8 +799,8 @@ function LobbyRoom(roomid) {
 	};
 	if (config.loglobby) {
 		this.rollLogFile(true);
-		this.logEntry = function(entry) {
-			var timestamp = new Date().format('{HH}:{mm}:{ss} ');
+		this.logEntry = function(entry, date) {
+			var timestamp = (new Date()).format('{HH}:{mm}:{ss} ');
 			selfR.logFile.write(timestamp + entry + '\n');
 		};
 		this.logEntry('Lobby created');
@@ -797,6 +810,16 @@ function LobbyRoom(roomid) {
 	} else {
 		this.logEntry = function() { };
 	}
+
+	(function() {
+		const REPORT_USER_STATS_INTERVAL = 1000 * 60 * 10;
+		setInterval(function() {
+			LoginServer.request('updateuserstats', {
+				date: +date,
+				users: total
+			}, function() {});
+		}, REPORT_USER_STATS_INTERVAL);
+	})();
 
 	this.getUpdate = function(since, omitUsers, omitRoomList) {
 		var update = {room: roomid};
@@ -985,6 +1008,11 @@ function LobbyRoom(roomid) {
 				if (isPureLobbyChat && user.blockLobbyChat) continue;
 				user.sendTo(selfR, message);
 			}
+		}
+	};
+	this.sendIdentity = function(user) {
+		if (user && user.connected) {
+			selfR.send('|N|' + user.getIdentity() + '|' + user.userid);
 		}
 	};
 	this.sendAuth = function(message) {
