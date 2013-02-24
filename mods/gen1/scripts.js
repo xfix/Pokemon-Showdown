@@ -95,7 +95,9 @@ exports.BattleScripts = {
 		pokemon.lastDamage = 0;
 		var lockedMove = this.runEvent('LockMove', pokemon);
 		if (lockedMove === true) lockedMove = false;
-		if (!lockedMove) pokemon.deductPP(move, null, target);
+		if (!lockedMove && !pokemon.volatiles['partialtrappinglock']) {
+			pokemon.deductPP(move, null, target);
+		}
 		this.useMove(move, pokemon, target, sourceEffect);
 		this.runEvent('AfterMove', target, pokemon, move);
 		this.runEvent('AfterMoveSelf', pokemon, target, move);
@@ -110,7 +112,7 @@ exports.BattleScripts = {
 		}
 		
 		// For partial trapping moves, we are saving the target
-		if (move.volatileStatus === 'partiallytrapped') {
+		if (move.volatileStatus === 'partiallytrapped' && target && target.hp > 0) {
 			// Let's check if the lock exists
 			if (pokemon.volatiles['partialtrappinglock']) {
 				// Here the partialtrappinglock volatile has been already applied
@@ -126,6 +128,8 @@ exports.BattleScripts = {
 						pokemon.volatiles['partialtrappinglock'].locked = target;
 						// Duration reset thus partially trapped at 2 always
 						target.volatiles['partiallytrapped'].duration = 2;
+						// We deduct an additional PP that was not deducted earlier
+						pokemon.deductPP(move, null, target);
 					}
 				}
 			} // If we move to here, the move failed and there's no partial trapping lock
