@@ -297,11 +297,6 @@ exports.BattleScripts = {
 
 		if (move.category !== 'Status') target.gotAttacked(move, damage, pokemon);
 		
-		// If it's the first hit on a Normal-type partially trap move, it hits Ghosts but damage is 0
-		if (move.volatileStatus === 'partiallytrapped' && move.type === 'Normal' && target.hasType('Ghost')) {
-			damage = 0;
-		}
-
 		if (!damage && damage !== 0) return false;
 		
 		// Checking if substitute fainted
@@ -586,6 +581,11 @@ exports.BattleScripts = {
 		// If there's a fix move damage, we run it
 		if (move.damage) {
 			return move.damage;
+		}
+		
+		// If it's the first hit on a Normal-type partially trap move, it hits Ghosts but damage is 0
+		if (move.volatileStatus === 'partiallytrapped' && move.type === 'Normal' && target.hasType('Ghost')) {
+			return 0;
 		}
 		
 		// Let's check if we are in middle of a partial trap sequence
