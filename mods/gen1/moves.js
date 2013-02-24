@@ -42,12 +42,12 @@ exports.BattleMovedex = {
 	},
 	agility: {
 		inherit: true,
-		onHit: function (pokemon) {
+		onModifyMove: function(move, pokemon) {
+			// If there's a paralyse speed drop, it's negated by agility but not boost is gained
 			if (pokemon.volatiles['parspeeddrop']) {
 				pokemon.removeVolatile('parspeeddrop');
-				pokemon.boosts.spe = pokemon.boosts.spe - 2;
+				move.boosts = {};
 			}
-			
 		}
 	},
 	amnesia: {
