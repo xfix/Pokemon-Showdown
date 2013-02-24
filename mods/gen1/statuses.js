@@ -43,6 +43,9 @@ exports.BattleStatuses = {
 				this.add('cant', pokemon, 'par');
 				return false;
 			}
+		},
+		onSwitchIn: function (pokemon){
+			pokemon.addVolatile('parspeeddrop');
 		}
 	},
 	parspeeddrop: {

@@ -41,7 +41,14 @@ exports.BattleMovedex = {
 		inherit: true
 	},
 	agility: {
-		inherit: true
+		inherit: true,
+		onHit: function (pokemon) {
+			if (pokemon.volatiles['parspeeddrop']) {
+				pokemon.removeVolatile('parspeeddrop');
+				pokemon.boosts.spe = pokemon.boosts.spe - 2;
+			}
+			
+		}
 	},
 	amnesia: {
 		inherit: true,
@@ -265,6 +272,7 @@ exports.BattleMovedex = {
 	counter: {
 		inherit: true,
 		affectedByImmunities: false,
+		willCrit: false,
 		damageCallback: function(pokemon) {
 			if (pokemon.lastAttackedBy && pokemon.lastAttackedBy.thisTurn 
 			&& (this.getMove(pokemon.lastAttackedBy.move).type === 'Normal' || this.getMove(pokemon.lastAttackedBy.move).type === 'Fighting')) {
