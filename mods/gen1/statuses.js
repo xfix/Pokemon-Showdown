@@ -169,22 +169,17 @@ exports.BattleStatuses = {
 		}
 	},
 	partiallytrapped: {
-		duration: 1,
+		duration: 2,
 		onBeforeMovePriority: 1,
+		onStart: function(target, source, effect) {
+			this.add('-activate', target, 'move: ' + effect, '[of] ' + source);
+		},
 		onBeforeMove: function(pokemon) {
-			// We use try Flinch because it works in a similar fashion
-			if (!this.runEvent('Flinch', pokemon)) {
-				return;
-			}
 			this.add('cant', pokemon, 'partiallytrapped');
 			return false;
 		},
-		onResidualOrder: 11,
-		onResidual: function(pokemon) {
-			if (this.effectData.source && (!this.effectData.source.isActive || this.effectData.source.hp <= 0)) {
-				pokemon.removeVolatile('partiallytrapped');
-				return;
-			}
+		onEnd: function(pokemon) {
+			this.add('-end', pokemon, this.effectData.sourceEffect, '[partiallytrapped]');
 		}
 	},
 	partialtrappinglock: {
