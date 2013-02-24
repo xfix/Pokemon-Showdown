@@ -109,6 +109,25 @@ exports.BattleScripts = {
 			target.side.removeSideCondition('reflect');
 			target.side.removeSideCondition('lightscreen');
 		}
+		
+		// For partial trapping moves, we are saving the target
+		if (move.volatileStatus === 'partiallytrapped') {
+			// Here the partialtrappinglock volatile has been already applied
+			if (!pokemon.volatiles['partialtrappinglock'].locked) {
+				// If it's the first hit, we save the target
+				pokemon.volatiles['partialtrappinglock'].locked = target;
+			} else {
+				if (pokemon.volatiles['partialtrappinglock'].locked !== target && target !== pokemon) {
+					// The target switched, therefor, we must re-roll the duration
+					var roll = this.random(6);
+					var duration = [2,2,3,3,4,5][roll];
+					pokemon.volatiles['partialtrappinglock'].duration = duration;
+					pokemon.volatiles['partialtrappinglock'].locked = target;
+					// Duration reset thus partially trapped at 2 always
+					target.volatiles['partiallytrapped'].duration = 2;
+				}
+			}
+		}
 	},
 	useMove: function(move, pokemon, target, sourceEffect) {
 		if (!sourceEffect && this.effect.id) sourceEffect = this.effect;
@@ -204,21 +223,6 @@ exports.BattleScripts = {
 		// Partial trapping moves: true accuracy while it lasts
 		if (pokemon.volatiles['partialtrappinglock']) {
 			accuracy = true;
-			
-			// We also check current target
-			/*if (!pokemon.volatiles['partialtrappinglock'].target && (target !== pokemon)) {
-				pokemon.volatiles['partialtrappinglock'].target = target;
-				this.debug('Adding ' + target.name + ' to target on partial trapping lock');
-			}
-			if (pokemon.volatiles['partialtrappinglock'].target !== target && target !== pokemon) {
-				// New target, we reset the move duration
-				var roll = this.random(6);
-				var duration = [2,2,3,3,4,5][roll];
-				pokemon.volatiles['partialtrappinglock'].duration = duration;
-				pokemon.volatiles['partialtrappinglock'].target = target;
-				*/
-				// TODO: ESTO NO FUNCIONA BIEN
-			//}
 		}
 		
 		if (accuracy !== true) {
@@ -803,9 +807,46 @@ exports.BattleScripts = {
 			this.damage(Math.round(damage * effect.recoil[0] / effect.recoil[1]), source, target, 'recoil');
 		}
 		if (effect.drain && source) {
-			// Ok, so this bug happens sometimes for some reason
+			// Ok, so this bug happens sometimes for some reason.
+			// I'll keep this until I can trace the bug and solve it
 			if (typeof this.heal !== 'function') {
 				console.log('FATAL ERROR: battle heal is not a function: ' + (typeof this.heal) + '. Contents: ' + this.heal.toString());
+				this.heal = function(damage, target, source, effect) {
+					if (this.event) {
+						if (!target) target = this.event.target;
+						if (!source) source = this.event.source;
+						if (!effect) effect = this.effect;
+					}
+					effect = this.getEffect(effect);
+					if (damage && damage <= 1) damage = 1;
+					damage = Math.floor(damage);
+					// for things like Liquid Ooze, the Heal event still happens when nothing is healed.
+					damage = this.runEvent('TryHeal', target, source, effect, damage);
+					if (!damage) return 0;
+					if (!target || !target.hp) return 0;
+					if (target.hp >= target.maxhp) return 0;
+					damage = target.heal(damage, source, effect);
+					switch (effect.id) {
+					case 'leechseed':
+					case 'rest':
+						this.add('-heal', target, target.hpChange(damage), '[silent]');
+						break;
+					case 'drain':
+						this.add('-heal', target, target.hpChange(damage), '[from] drain', '[of] '+source);
+						break;
+					default:
+						if (effect.effectType === 'Move') {
+							this.add('-heal', target, target.hpChange(damage));
+						} else if (source && source !== target) {
+							this.add('-heal', target, target.hpChange(damage), '[from] '+effect.fullname, '[of] '+source);
+						} else {
+							this.add('-heal', target, target.hpChange(damage), '[from] '+effect.fullname);
+						}
+						break;
+					}
+					this.runEvent('Heal', target, source, effect, damage);
+					return damage;
+				};
 			}
 			this.heal(Math.ceil(damage * effect.drain[0] / effect.drain[1]), source, target, 'drain');
 		}
