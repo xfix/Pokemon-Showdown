@@ -99,12 +99,11 @@ exports.BattleScripts = {
 		this.useMove(move, pokemon, target, sourceEffect);
 		this.runEvent('AfterMove', target, pokemon, move);
 		this.runEvent('AfterMoveSelf', pokemon, target, move);
+		
 		// If rival fainted
 		if (target.hp <= 0) {
 			// We remove recharge
-			if (pokemon.volatiles['mustrecharge']) {
-				pokemon.removeVolatile('mustrecharge');
-			}
+			if (pokemon.volatiles['mustrecharge']) pokemon.removeVolatile('mustrecharge');
 			// We remove screens
 			target.side.removeSideCondition('reflect');
 			target.side.removeSideCondition('lightscreen');
@@ -112,21 +111,24 @@ exports.BattleScripts = {
 		
 		// For partial trapping moves, we are saving the target
 		if (move.volatileStatus === 'partiallytrapped') {
-			// Here the partialtrappinglock volatile has been already applied
-			if (!pokemon.volatiles['partialtrappinglock'].locked) {
-				// If it's the first hit, we save the target
-				pokemon.volatiles['partialtrappinglock'].locked = target;
-			} else {
-				if (pokemon.volatiles['partialtrappinglock'].locked !== target && target !== pokemon) {
-					// The target switched, therefor, we must re-roll the duration
-					var roll = this.random(6);
-					var duration = [2,2,3,3,4,5][roll];
-					pokemon.volatiles['partialtrappinglock'].duration = duration;
+			// Let's check if the lock exists
+			if (pokemon.volatiles['partialtrappinglock']) {
+				// Here the partialtrappinglock volatile has been already applied
+				if (!pokemon.volatiles['partialtrappinglock'].locked) {
+					// If it's the first hit, we save the target
 					pokemon.volatiles['partialtrappinglock'].locked = target;
-					// Duration reset thus partially trapped at 2 always
-					target.volatiles['partiallytrapped'].duration = 2;
+				} else {
+					if (pokemon.volatiles['partialtrappinglock'].locked !== target && target !== pokemon) {
+						// The target switched, therefor, we must re-roll the duration
+						var roll = this.random(6);
+						var duration = [2,2,3,3,4,5][roll];
+						pokemon.volatiles['partialtrappinglock'].duration = duration;
+						pokemon.volatiles['partialtrappinglock'].locked = target;
+						// Duration reset thus partially trapped at 2 always
+						target.volatiles['partiallytrapped'].duration = 2;
+					}
 				}
-			}
+			} // If we move to here, the move failed and there's no partial trapping lock
 		}
 	},
 	useMove: function(move, pokemon, target, sourceEffect) {
@@ -221,7 +223,7 @@ exports.BattleScripts = {
 		var accuracy = move.accuracy;
 		
 		// Partial trapping moves: true accuracy while it lasts
-		if (pokemon.volatiles['partialtrappinglock']) {
+		if (move.volatileStatus === 'partiallytrapped' && pokemon.volatiles['partialtrappinglock']) {
 			accuracy = true;
 		}
 		
@@ -486,7 +488,6 @@ exports.BattleScripts = {
 			if (moveData.volatileStatus) {
 				if (target.addVolatile(moveData.volatileStatus, pokemon, move)) {
 					didSomething = true;
-					this.debug('Adding volatileStatus ' + moveData.volatileStatus + ' to ' + pokemon.name);
 				}
 			}
 			if (moveData.sideCondition) {
@@ -593,7 +594,7 @@ exports.BattleScripts = {
 		}
 		
 		// Let's check if we are in middle of a partial trap sequence
-		if (pokemon.volatiles['partialtrappinglock'] && target !== pokemon) {
+		if (pokemon.volatiles['partialtrappinglock'] && (target !== pokemon) && (target === pokemon.volatiles['partialtrappinglock'].locked)) {
 			return pokemon.volatiles['partialtrappinglock'].damage;
 		}
 
@@ -618,7 +619,6 @@ exports.BattleScripts = {
 		if (move.basePowerCallback) {
 			basePower = move.basePowerCallback.call(this, pokemon, target, move);
 		}
-		this.debug(move.name + ', move of type ' + type + ' and ' + category + ' category.');
 		
 		// We check for Base Power
 		if (!basePower) {
