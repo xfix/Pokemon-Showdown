@@ -112,7 +112,7 @@ exports.BattleFormats = {
 		searchShow: true,
 		debug: true,
 		isTeambuilderFormat: true,
-		ruleset: ['Gen1 Pokemon', 'All Abilities', 'Sleep Clause', 'Species Clause', 'OHKO Clause'],
+		ruleset: ['Gen1 Pokemon', 'All Abilities', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Clause'],
 		banlist: ['Uber', 'Illegal']
 	},
 	unratedrandombattle: {
@@ -278,6 +278,11 @@ exports.BattleFormats = {
 				this.setWeather('Rain Dance');
 				delete this.weatherData.duration;
 			}
+			this.debug('Cutting teams down to three.');
+    		this.p1.pokemon = this.p1.pokemon.slice(0,3);
+	        this.p1.pokemonLeft = this.p1.pokemon.length;
+	        this.p2.pokemon = this.p2.pokemon.slice(0,3);
+	        this.p2.pokemonLeft = this.p2.pokemon.length;
 		},
 		onSwitchIn: function(pokemon) {
 			var greenPokemon = {
@@ -985,7 +990,6 @@ exports.BattleFormats = {
 	gen1pokemon: {
 		effectType: 'Banlist',
 		validateSet: function(set, format) {
-			var item = this.getItem(set.item);
 			var template = this.getTemplate(set.species);
 			var problems = [];
 			if (set.species === set.name) delete set.name;
@@ -1002,9 +1006,9 @@ exports.BattleFormats = {
 			if (set.moves && set.moves.length > 4) {
 				problems.push((set.name||set.species) + ' has more than four moves.');
 			}
-			if (item.name !== '') {
-				problems.push((set.name||set.species) + ' has an item.');
-			}
+
+			// Let's manually delete items.
+			set.item = '';
 			
 			// Automatically set ability to None
 			set.ability = 'None';

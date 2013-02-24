@@ -233,39 +233,21 @@ exports.BattleMovedex = {
 	},
 	conversion: {
 		inherit: true,
-		volatileStatus: 'conversion',	
+		volatileStatus: 'conversion',
+		accuracy: true,
+		target: "normal",
 		effect: {
-			onStart: function(pokemon) {
-				var possibleTypes = pokemon.moveset.map(function(val){
-					var move = this.getMove(val.id);
-					var noConversion = {conversion:1, curse:1};
-					if (!noConversion[move.id] && !pokemon.hasType(move.type)) {
-						return move.type;
-					}
-				}, this).compact();
-				if (!possibleTypes.length) {
-					this.add('-fail', pokemon);
-					return false;
-				}
-				this.effectData.type = possibleTypes[this.random(possibleTypes.length)];
-				this.add('-start', pokemon, 'typechange', this.effectData.type);
+			noCopy: true,
+			onStart: function(target, source) {
+				this.effectData.types = target.types;
+				this.add('-start', source, 'typechange', target.types.join(', '), '[from] move: Conversion', '[of] '+target);
 			},
-			onRestart: function(pokemon) {
-				var possibleTypes = pokemon.moveset.map(function(val){
-					var move = this.getMove(val.id);
-					if (move.id !== 'conversion' && !pokemon.hasType(move.type)) {
-						return move.type;
-					}
-				}, this).compact();
-				if (!possibleTypes.length) {
-					this.add('-fail', pokemon);
-					return false;
-				}
-				this.effectData.type = possibleTypes[this.random(possibleTypes.length)];
-				this.add('-start', pokemon, 'typechange', this.effectData.type);
+			onRestart: function(target, source) {
+				this.effectData.types = target.types;
+				this.add('-start', source, 'typechange', target.types.join(', '), '[from] move: Conversion', '[of] '+target);
 			},
 			onModifyPokemon: function(pokemon) {
-				pokemon.types = [this.effectData.type];
+				pokemon.types = this.effectData.types;
 			}
 		}
 	},
@@ -562,7 +544,7 @@ exports.BattleMovedex = {
 		type: "Normal"
 	},
 	harden: {
-		inherit: true
+		erit: true
 	},
 	haze: {
 		inherit: true,
@@ -570,7 +552,6 @@ exports.BattleMovedex = {
 		shortDesc: "Eliminates all stat changes and status.",
 		onHitField: function(target, source) {
 			this.add('-clearallboost');
-			this.debug(source.name);
 			for (var i=0; i<this.sides.length; i++) {
 				for (var j=0; j<this.sides[i].active.length; j++) {
 					var hasTox = (this.sides[i].active[j].status == 'tox');

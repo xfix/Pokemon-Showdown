@@ -20,15 +20,21 @@ exports.BattleStatuses = {
 		effectType: 'Status',
 		onStart: function(target) {
 			this.add('-status', target, 'brn');
-		},
-		onBasePower: function(basePower, attacker, defender, move) {
-			if (move && move.category === 'Physical' && attacker && attacker.ability !== 'guts') {
-				return basePower / 2;
-			}
+			target.addVolatile('brnattackdrop');
 		},
 		onResidualOrder: 9,
 		onResidual: function(pokemon) {
 			this.damage(pokemon.maxhp/8);
+		},
+		onSwitchIn: function (pokemon){
+			pokemon.addVolatile('brnattackdrop');
+		}
+	},
+	brnattackdrop: {
+		onBasePower: function(basePower, attacker, defender, move) {
+			if (move && move.category === 'Physical' && attacker) {
+				return basePower / 2;
+			}
 		}
 	},
 	par: {
