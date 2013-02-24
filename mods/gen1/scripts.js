@@ -802,7 +802,7 @@ exports.BattleScripts = {
 			this.damage(Math.round(damage * effect.recoil[0] / effect.recoil[1]), source, target, 'recoil');
 		}
 		if (effect.drain && source) {
-			// Ok, so this bug happens sometimes for some reason, I need to discover why
+			// Ok, so this bug happens sometimes for some reason
 			if (typeof this.heal !== 'function') {
 				console.log('FATAL ERROR: battle heal is not a function: ' + (typeof this.heal) + '. Contents: ' + this.heal.toString());
 			}
