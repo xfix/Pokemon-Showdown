@@ -1209,6 +1209,14 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			matched = true;
 			buffer += '&bull;<strong>PU</strong> is a metagame where only Pokemon below 3.41% usage statistics in NU are permitted. A full list of PU Pokemon here can be found at the bottom of this <a href="http://www.smogon.com/forums/showpost.php?p=4523893&postcount=1">post</a>.<br />';
 		}
+		if (target === 'all' || target === 'haxmons' || target === 'hax') {
+			matched = true;
+			buffer += '&bull;<strong>Haxmons</strong> is a metagame where hax always happens. What can miss will miss, secondary effects will always happen, all hits will be crit.<br />';
+		}
+		if (target === 'all' || target === 'outierboost' || target === 'tierboost') {
+			matched = true;
+			buffer += '&bull;<strong>Tier Boost</strong> is a metagame where Pokemon from lower tiers get a boost on their base stats. <a href="http://www.smogon.com/forums/showthread.php?t=3479358">Read more here</a><br />';
+		}
 		if (!matched) {
 			emit(socket, 'console', 'The Joim\'s Lab entry "'+target+'" was not found. Try /joimslab for general help.');
 			return false;

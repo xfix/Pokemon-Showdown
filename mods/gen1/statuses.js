@@ -3,6 +3,10 @@
  * Sleep lasted longer, had no reset on switch and took a whole turn to wake up.
  * Frozen only thaws when hit by fire or Haze.
  * 
+ * Secondary effects to status (-speed, -atk) worked differently, so they are
+ * separated as volatile statuses that are applied on switch in, removed
+ * under certain conditions and re-applied under other conditions.
+ * 
  * -Joim
  */
 function clampIntRange(num, min, max) {
@@ -31,9 +35,7 @@ exports.BattleStatuses = {
 		effectType: 'Status',
 		onStart: function(target) {
 			this.add('-status', target, 'par');
-		},
-		onModifySpe: function(spe, pokemon) {
-			return spe / 4;
+			target.addVolatile('parspeeddrop');
 		},
 		onBeforeMovePriority: 2,
 		onBeforeMove: function(pokemon) {
@@ -41,6 +43,11 @@ exports.BattleStatuses = {
 				this.add('cant', pokemon, 'par');
 				return false;
 			}
+		}
+	},
+	parspeeddrop: {
+		onModifySpe: function(spe, pokemon) {
+			return spe / 4;
 		}
 	},
 	slp: {
@@ -57,7 +64,7 @@ exports.BattleStatuses = {
 			this.add('cant', pokemon, 'slp');
 			return false;
 		},
-		onAfterMove: function (pokemon, target, move) {
+		onAfterMoveSelf: function (pokemon) {
 			if (pokemon.statusData.time <= 0) pokemon.cureStatus();
 		}
 	},

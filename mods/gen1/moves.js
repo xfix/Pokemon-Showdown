@@ -738,7 +738,7 @@ exports.BattleMovedex = {
 		type: "Normal"
 	},
 	mimic: {
-		inherit: true,
+		inherit: true/*,
 		desc: "This move is replaced by a random move on target's moveset. The copied move has the maximum PP for that move. Ignores a target's Substitute.",
 		shortDesc: "A random target's move replaces this one.",
 		onHit: function (target, source) {
@@ -749,13 +749,14 @@ exports.BattleMovedex = {
 			//var move = Tools.getMove(target.lastMove);
 			var moves = target.moveset;
 			this.debug(moves);
+			/*
 			for (var i=0; i<moves.length; i++) {
 				if (!moves[i].id in disallowedMoves) {
 					var move = moves[i];
 					break;
 				}
 			}
-			
+			Tools.getMove(move);
 			source.moveset[moveslot] = {
 				move: move.name,
 				id: move.id,
@@ -764,10 +765,10 @@ exports.BattleMovedex = {
 				target: move.target,
 				disabled: false,
 				used: false
-			};
-			source.moves[moveslot] = toId(move.name);
-			this.add('-start', source, 'Mimic', move.name);
-		}
+			};*/
+			//source.moves[moveslot] = toId(move.name);
+			//this.add('-start', source, 'Mimic', move.name);
+		//}
 	},
 	minimize: {
 		inherit: true

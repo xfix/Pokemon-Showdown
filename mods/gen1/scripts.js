@@ -29,54 +29,35 @@ exports.BattleScripts = {
 			this.add('debug', activity);
 		}
 	},
-	runMove: function(move, pokemon, target, sourceEffect) {
-		move = this.getMove(move);
-		if (!target) target = this.resolveTarget(pokemon, move);
-
-		this.setActiveMove(move, pokemon, target);
-
-		if (pokemon.movedThisTurn || !this.runEvent('BeforeMove', pokemon, target, move)) {
-			this.debug(''+pokemon.id+' move interrupted; movedThisTurn: '+pokemon.movedThisTurn);
-			this.clearActiveMove(true);
-			return;
-		}
-		if (move.beforeMoveCallback) {
-			if (move.beforeMoveCallback.call(this, pokemon, target, move)) {
-				this.clearActiveMove(true);
-				return;
-			}
-		}
-		pokemon.lastDamage = 0;
-		var lockedMove = this.runEvent('LockMove', pokemon);
-		if (lockedMove === true) lockedMove = false;
-		if (!lockedMove) pokemon.deductPP(move, null, target);
-		this.useMove(move, pokemon, target, sourceEffect);
-		this.runEvent('AfterMove', target, pokemon, move);
-		this.runEvent('AfterMoveSelf', pokemon, target, move);
-		if (target.hp <= 0 && pokemon.volatiles['mustrecharge']) {
-			pokemon.removeVolatile('mustrecharge');
-		}
-	},
 	getStat: function(statName, unboosted, unmodified) {
+		this.debug('Getting gen 1 stats');
 		statName = toId(statName);
 		var boost = selfP.boosts[statName];
 
-		if (statName === 'hp') return selfP.maxhp; // please just read .maxhp directly
+		if (statName === 'hp') return selfP.maxhp;
 
-		// base stat
+		// Base stat
 		var stat = selfP.baseStats[statName];
 		stat = Math.floor(Math.floor(2*stat+selfP.set.ivs[statName]+Math.floor(selfP.set.evs[statName]/4))*selfP.level / 100 + 5);
 
-		if (unmodified) return stat;
+		if (unmodified) {
+			if (stat > 999) stat = 999;
+			if (stat < 1) stat = 1;
+			return stat;
+		}
 
-		// stat modifier effects
+		// Stat modifier effects
 		var statTable = {atk:'Atk', def:'Def', spa:'SpA', spd:'SpD', spe:'Spe'};
 		stat = this.runEvent('Modify'+statTable[statName], selfP, null, null, stat);
 		stat = Math.floor(stat);
 
-		if (unboosted) return stat;
+		if (unboosted) {
+			if (stat > 999) stat = 999;
+			if (stat < 1) stat = 1;
+			return stat;
+		}
 
-		// stat boosts
+		// Stat boosts
 		var boostTable = [1,1.5,2,2.5,3,3.5,4];
 		if (boost > 6) boost = 6;
 		if (boost < -6) boost = -6;
@@ -92,218 +73,119 @@ exports.BattleScripts = {
 
 		return stat;
 	},
-	getDamage: function(pokemon, target, move, suppressMessages) {
-		// We get the move
-		if (typeof move === 'string') move = this.getMove(move);
-		if (typeof move === 'number') move = {
-			basePower: move,
-			type: '???',
-			category: 'Physical'
-		};
+	runMove: function(move, pokemon, target, sourceEffect) {
+		move = this.getMove(move);
+		if (!target) target = this.resolveTarget(pokemon, move);
 
-		// First of all, we test for immunities
-		if (move.affectedByImmunities) {
-			if (!target.runImmunity(move.type, true)) {
-				return false;
+		this.setActiveMove(move, pokemon, target);
+
+		if (pokemon.movedThisTurn || !this.runEvent('BeforeMove', pokemon, target, move)) {
+			this.debug(''+pokemon.id+' move interrupted; movedThisTurn: '+pokemon.movedThisTurn);
+			this.clearActiveMove(true);
+			// This is only run for sleep
+			this.runEvent('AfterMoveSelf', pokemon, target, move);
+			return;
+		}
+		if (move.beforeMoveCallback) {
+			if (move.beforeMoveCallback.call(this, pokemon, target, move)) {
+				this.clearActiveMove(true);
+				return;
 			}
 		}
-
-		// Is it ok?
-		if (move.ohko) {
-			if (target.speed > pokemon.speed) {
-				this.add('-failed', target);
-				return false;
+		pokemon.lastDamage = 0;
+		var lockedMove = this.runEvent('LockMove', pokemon);
+		if (lockedMove === true) lockedMove = false;
+		if (!lockedMove) pokemon.deductPP(move, null, target);
+		this.useMove(move, pokemon, target, sourceEffect);
+		this.runEvent('AfterMove', target, pokemon, move);
+		this.runEvent('AfterMoveSelf', pokemon, target, move);
+		// If rival fainted
+		if (target.hp <= 0) {
+			// We remove recharge
+			if (pokemon.volatiles['mustrecharge']) {
+				pokemon.removeVolatile('mustrecharge');
 			}
-			return target.maxhp;
+			// We remove screens
+			target.side.removeSideCondition('reflect');
+			target.side.removeSideCondition('lightscreen');
 		}
-		
-		// We edit the damage through move's damage callback
-		if (move.damageCallback) {
-			return move.damageCallback.call(this, pokemon, target);
+	},
+	useMove: function(move, pokemon, target, sourceEffect) {
+		if (!sourceEffect && this.effect.id) sourceEffect = this.effect;
+		move = this.getMove(move);
+		baseMove = move;
+		move = this.getMoveCopy(move);
+		if (!target) target = this.resolveTarget(pokemon, move);
+		if (move.target === 'self' || move.target === 'allies') {
+			target = pokemon;
 		}
-		
-		// We take damage from damage=level moves
-		if (move.damage === 'level') {
-			return pokemon.level;
+		if (sourceEffect) move.sourceEffect = sourceEffect.id;
+
+		this.setActiveMove(move, pokemon, target);
+
+		this.singleEvent('ModifyMove', move, null, pokemon, target, move, move);
+		if (baseMove.target !== move.target) {
+			// Target changed in ModifyMove, so we must adjust it here
+			target = this.resolveTarget(pokemon, move);
 		}
-		
-		// If there's a fix move damage, we run it
-		if (move.damage) {
-			return move.damage;
+		move = this.runEvent('ModifyMove', pokemon, target, move, move);
+		if (baseMove.target !== move.target) {
+			// Check again
+			target = this.resolveTarget(pokemon, move);
 		}
-		
-		// Let's check if we are in middle of a partial trap sequence
-		if (pokemon.volatiles['partialtrappinglock'] && target !== pokemon) {
-			return pokemon.volatiles['partialtrappinglock'].damage;
+		if (!move) return false;
+
+		var attrs = '';
+		var missed = false;
+		if (pokemon.fainted) {
+			// Removing screens upon faint
+			pokemon.side.removeSideCondition('reflect');
+			pokemon.side.removeSideCondition('lightscreen');
+			return false;
 		}
 
-		// There's no move for some reason, create it
-		if (!move) {
-			move = {};
+		if (move.isTwoTurnMove && !pokemon.volatiles[move.id]) {
+			attrs = '|[still]'; // Suppress the default move animation
 		}
-		
-		// We check the category and typing to calculate later on the damage
-		if (!move.category) move.category = 'Physical';
-		if (!move.defensiveCategory) move.defensiveCategory = move.category;
-		// '???' is typeless damage: used for Struggle and Confusion etc
-		if (!move.type) move.type = '???';
-		var type = move.type;
 
-		// In Gen 1 category deppends on attacking type
-		var specialTypes = {Fire:1, Water:1, Grass:1, Ice:1, Electric:1, Dark:1, Psychic:1, Dragon:1};
-		var category = (type in specialTypes)? 'Special' : 'Physical';
-		
-		// We get the base power and apply basePowerCallback if necessary
-		var basePower = move.basePower;
-		if (move.basePowerCallback) {
-			basePower = move.basePowerCallback.call(this, pokemon, target, move);
-		}
-		this.debug(move.name + ', move of type ' + type + ' and ' + category + ' category.');
-		
-		// We check for Base Power
-		if (!basePower) {
-			if (basePower === 0) return; // Returning undefined means not dealing damage
-			return basePower;
-		}
-		basePower = clampIntRange(basePower, 1);
+		var movename = move.name;
+		if (move.id === 'hiddenpower') movename = 'Hidden Power';
+		if (sourceEffect) attrs += '|[from]'+this.getEffect(sourceEffect);
+		this.addMove('move', pokemon, movename, target+attrs);
 
-		// Checking for the move's Critical Hit ratio
-		// First, we check if it's a 100% crit move
-		move.critRatio = clampIntRange(move.critRatio, 0, 5);
-		var critMult = [0, 16, 8, 4, 3, 2];
-		move.crit = move.willCrit || false;
-		var critRatio = 0;
-		// Otherwise, we calculate the critical hit chance
-		if (typeof move.willCrit === 'undefined') {
-			// In gen 1, the critical chance is based on speed
-			switch (move.critRatio) {
-			case 1:
-				// Normal crit-rate: BaseSpeed * 100 / 512.
-				critRatio = pokemon.baseStats['spe'] * 100 / 512;
-				break;
-			case 2:
-				// High crit-rate: BaseSpeed * 100 / 64
-				critRatio = pokemon.baseStats['spe'] * 100 / 64;
-				break;
-			case -2:
-				// Crit rate destroyed by Focus Energy (dumb trainer is dumb)
-				critRatio = (pokemon.baseStats['spe'] * 100 / 64) * 0.25;
-				this.debug('Using ruined normal crit-rate: (pokemon.baseStats[\'spe\'] * 100 / 64) * 0.25');
-				break;
-			case -1:
-				// High crit move ruined by Focus Energy. Deppends on speed
-				if (pokemon.speed > target.speed) {
-					// Critical rate not decreased if pokemon is faster than target
-					critRatio = pokemon.baseStats['spe'] * 100 / 64;
-					this.debug('Using ruined high crit-rate: pokemon.baseStats[\'spe\'] * 100 / 64');
-				} else {
-					// If you are slower, you can't crit on this moves
-					this.debug('Ruined crit rate, too slow, cannnot crit');
-					critRatio = false;
-				}
-				break;
+		if (!this.singleEvent('Try', move, null, pokemon, target, move)) {
+			return true;
+		}
+		if (!this.runEvent('TryMove', pokemon, target, move)) {
+			return true;
+		}
+
+		if (typeof move.affectedByImmunities === 'undefined') {
+			move.affectedByImmunities = (move.category !== 'Status');
+		}
+
+		var damage = false;
+		if (move.target === 'all' || move.target === 'foeSide' || move.target === 'allySide' || move.target === 'allyTeam') {
+			damage = this.moveHit(target, pokemon, move);
+		} else {
+			if (target.fainted) {
+				this.attrLastMove('[notarget]');
+				this.add('-notarget');
+				return true;
 			}
-			
-			// Last, we check deppending on ratio if the move hits
-			if (critRatio) {
-				critRatio = critRatio.floor();
-				var random = Math.random() * 100;
-				move.crit = (random.floor() <= critRatio);
-			}
-		}
-		if (move.crit) {
-			move.crit = this.runEvent('CriticalHit', target, null, move);
+			damage = this.rollMoveHit(target, pokemon, move);
 		}
 
-		// Happens after crit calculation
-		if (basePower) {
-			basePower = this.runEvent('BasePower', pokemon, target, move, basePower);
-			if (move.basePowerModifier) {
-				basePower *= move.basePowerModifier;
-			}
-		}
-		if (!basePower) return 0;
-		basePower = clampIntRange(basePower, 1);
-
-		// We now check for attacker and defender
-		var level = pokemon.level;
-		var attacker = pokemon;
-		var defender = target;
-		if (move.useTargetOffensive) attacker = target;
-		if (move.useSourceDefensive) defender = pokemon;
-		var atkType = (move.category === 'Physical')? 'atk' : 'spa';
-		var defType = (move.defensiveCategory === 'Physical')? 'atk' : 'spa';
-		var attack = attacker.getStat(atkType);
-		var defense = defender.getStat(defType);
-
-		if (move.crit) {
-			move.ignoreNegativeOffensive = true;
-			move.ignorePositiveDefensive = true;
-		}
-		if (move.ignoreNegativeOffensive && attack < attacker.getStat(atkType, true)) {
-			move.ignoreOffensive = true;
-		}
-		if (move.ignoreOffensive) {
-			this.debug('Negating (sp)atk boost/penalty.');
-			attack = attacker.getStat(atkType, true);
-		}
-		if (move.ignorePositiveDefensive && defense > target.getStat(defType, true)) {
-			move.ignoreDefensive = true;
-		}
-		if (move.ignoreDefensive) {
-			this.debug('Negating (sp)def boost/penalty.');
-			defense = target.getStat(defType, true);
+		if (!damage && damage !== 0) {
+			this.singleEvent('MoveFail', move, null, target, pokemon, move);
+			return true;
 		}
 
-		// Gen 1 damage formula: 
-		// ((((min(((((2 * L / 5 + 2)*Atk*BP)/max(1, Def))/50), 997) + 2)*Stab)*TypeEffect)/10)*Random/255
-		// Where: L: user level, A: current attack, P: move power, D: opponent current defense,
-		// S is the Stab modifier, T is the type effectiveness modifier, R is random between 217 and 255
-		// The max damage is 999
-		var baseDamage = Math.min(Math.floor(Math.floor(Math.floor(2 * level / 5 + 2) * attack * basePower / defense) / 50), 997) + 2;
-
-		// Crit damage addition (usually doubling)
-		if (move.crit) {
-			if (!suppressMessages) this.add('-crit', target);
-			baseDamage = this.modify(baseDamage, move.critModifier || 2);
+		if (!move.negateSecondary) {
+			this.singleEvent('AfterMoveSecondarySelf', move, null, pokemon, target, move);
+			this.runEvent('AfterMoveSecondarySelf', pokemon, target, move);
 		}
-		
-		// STAB damage bonus, the "???" type never gets STAB
-		if (type !== '???' && pokemon.hasType(type)) {
-			baseDamage = Math.floor(baseDamage * 1.5);
-		}
-		
-		// Type effectiveness
-		var totalTypeMod = this.getEffectiveness(type, target);
-		// Super effective attack
-		if (totalTypeMod > 0) {
-			if (!suppressMessages) this.add('-supereffective', target);
-			baseDamage *= 2;
-			if (totalTypeMod >= 2) {
-				baseDamage *= 2;
-			}
-		}
-		
-		// Resisted attack
-		if (totalTypeMod < 0) {
-			if (!suppressMessages) this.add('-resisted', target);
-			baseDamage = Math.floor(baseDamage / 2);
-			if (totalTypeMod <= -2) {
-				baseDamage = Math.floor(baseDamage / 2);
-			}
-		}
-
-		// Randomizer, it's a number between 217 and 255
-		var randFactor = Math.floor(Math.random()*39)+217;
-		baseDamage *= Math.floor(randFactor * 100 / 255) / 100;
-		
-		// If damage is less than 1, we return 1
-		if (basePower && !Math.floor(baseDamage)) {
-			return 1;
-		}
-
-		// We are done, this is the final damage
-		return Math.floor(baseDamage);
+		return true;
 	},
 	rollMoveHit: function(target, pokemon, move, spreadHit) {
 		var boostTable = [1, 4/3, 5/3, 2, 7/3, 8/3, 3];
@@ -665,77 +547,276 @@ exports.BattleScripts = {
 		
 		return damage;
 	},
-	useMove: function(move, pokemon, target, sourceEffect) {
-		if (!sourceEffect && this.effect.id) sourceEffect = this.effect;
-		move = this.getMove(move);
-		baseMove = move;
-		move = this.getMoveCopy(move);
-		if (!target) target = this.resolveTarget(pokemon, move);
-		if (move.target === 'self' || move.target === 'allies') {
-			target = pokemon;
-		}
-		if (sourceEffect) move.sourceEffect = sourceEffect.id;
+	getDamage: function(pokemon, target, move, suppressMessages) {
+		// We get the move
+		if (typeof move === 'string') move = this.getMove(move);
+		if (typeof move === 'number') move = {
+			basePower: move,
+			type: '???',
+			category: 'Physical'
+		};
 
-		this.setActiveMove(move, pokemon, target);
-
-		this.singleEvent('ModifyMove', move, null, pokemon, target, move, move);
-		if (baseMove.target !== move.target) {
-			// Target changed in ModifyMove, so we must adjust it here
-			target = this.resolveTarget(pokemon, move);
-		}
-		move = this.runEvent('ModifyMove', pokemon, target, move, move);
-		if (baseMove.target !== move.target) {
-			// Check again
-			target = this.resolveTarget(pokemon, move);
-		}
-		if (!move) return false;
-
-		var attrs = '';
-		var missed = false;
-		if (pokemon.fainted) return false;
-
-		if (move.isTwoTurnMove && !pokemon.volatiles[move.id]) {
-			attrs = '|[still]'; // Suppress the default move animation
-		}
-
-		var movename = move.name;
-		if (move.id === 'hiddenpower') movename = 'Hidden Power';
-		if (sourceEffect) attrs += '|[from]'+this.getEffect(sourceEffect);
-		this.addMove('move', pokemon, movename, target+attrs);
-
-		if (!this.singleEvent('Try', move, null, pokemon, target, move)) {
-			return true;
-		}
-		if (!this.runEvent('TryMove', pokemon, target, move)) {
-			return true;
-		}
-
-		if (typeof move.affectedByImmunities === 'undefined') {
-			move.affectedByImmunities = (move.category !== 'Status');
-		}
-
-		var damage = false;
-		if (move.target === 'all' || move.target === 'foeSide' || move.target === 'allySide' || move.target === 'allyTeam') {
-			damage = this.moveHit(target, pokemon, move);
-		} else {
-			if (target.fainted) {
-				this.attrLastMove('[notarget]');
-				this.add('-notarget');
-				return true;
+		// First of all, we test for immunities
+		if (move.affectedByImmunities) {
+			if (!target.runImmunity(move.type, true)) {
+				return false;
 			}
-			damage = this.rollMoveHit(target, pokemon, move);
 		}
 
-		if (!damage && damage !== 0) {
-			this.singleEvent('MoveFail', move, null, target, pokemon, move);
-			return true;
+		// Is it ok?
+		if (move.ohko) {
+			if (target.speed > pokemon.speed) {
+				this.add('-failed', target);
+				return false;
+			}
+			return target.maxhp;
+		}
+		
+		// We edit the damage through move's damage callback
+		if (move.damageCallback) {
+			return move.damageCallback.call(this, pokemon, target);
+		}
+		
+		// We take damage from damage=level moves
+		if (move.damage === 'level') {
+			return pokemon.level;
+		}
+		
+		// If there's a fix move damage, we run it
+		if (move.damage) {
+			return move.damage;
+		}
+		
+		// Let's check if we are in middle of a partial trap sequence
+		if (pokemon.volatiles['partialtrappinglock'] && target !== pokemon) {
+			return pokemon.volatiles['partialtrappinglock'].damage;
 		}
 
-		if (!move.negateSecondary) {
-			this.singleEvent('AfterMoveSecondarySelf', move, null, pokemon, target, move);
-			this.runEvent('AfterMoveSecondarySelf', pokemon, target, move);
+		// There's no move for some reason, create it
+		if (!move) {
+			move = {};
 		}
-		return true;
+		
+		// We check the category and typing to calculate later on the damage
+		if (!move.category) move.category = 'Physical';
+		if (!move.defensiveCategory) move.defensiveCategory = move.category;
+		// '???' is typeless damage: used for Struggle and Confusion etc
+		if (!move.type) move.type = '???';
+		var type = move.type;
+
+		// In Gen 1 category deppends on attacking type
+		var specialTypes = {Fire:1, Water:1, Grass:1, Ice:1, Electric:1, Dark:1, Psychic:1, Dragon:1};
+		var category = (type in specialTypes)? 'Special' : 'Physical';
+		
+		// We get the base power and apply basePowerCallback if necessary
+		var basePower = move.basePower;
+		if (move.basePowerCallback) {
+			basePower = move.basePowerCallback.call(this, pokemon, target, move);
+		}
+		this.debug(move.name + ', move of type ' + type + ' and ' + category + ' category.');
+		
+		// We check for Base Power
+		if (!basePower) {
+			if (basePower === 0) return; // Returning undefined means not dealing damage
+			return basePower;
+		}
+		basePower = clampIntRange(basePower, 1);
+
+		// Checking for the move's Critical Hit ratio
+		// First, we check if it's a 100% crit move
+		move.critRatio = clampIntRange(move.critRatio, 0, 5);
+		var critMult = [0, 16, 8, 4, 3, 2];
+		move.crit = move.willCrit || false;
+		var critRatio = 0;
+		// Otherwise, we calculate the critical hit chance
+		if (typeof move.willCrit === 'undefined') {
+			// In gen 1, the critical chance is based on speed
+			switch (move.critRatio) {
+			case 1:
+				// Normal crit-rate: BaseSpeed * 100 / 512.
+				critRatio = pokemon.baseStats['spe'] * 100 / 512;
+				break;
+			case 2:
+				// High crit-rate: BaseSpeed * 100 / 64
+				critRatio = pokemon.baseStats['spe'] * 100 / 64;
+				break;
+			case -2:
+				// Crit rate destroyed by Focus Energy (dumb trainer is dumb)
+				critRatio = (pokemon.baseStats['spe'] * 100 / 64) * 0.25;
+				this.debug('Using ruined normal crit-rate: (pokemon.baseStats[\'spe\'] * 100 / 64) * 0.25');
+				break;
+			case -1:
+				// High crit move ruined by Focus Energy. Deppends on speed
+				if (pokemon.speed > target.speed) {
+					// Critical rate not decreased if pokemon is faster than target
+					critRatio = pokemon.baseStats['spe'] * 100 / 64;
+					this.debug('Using ruined high crit-rate: pokemon.baseStats[\'spe\'] * 100 / 64');
+				} else {
+					// If you are slower, you can't crit on this moves
+					this.debug('Ruined crit rate, too slow, cannnot crit');
+					critRatio = false;
+				}
+				break;
+			}
+			
+			// Last, we check deppending on ratio if the move hits
+			if (critRatio) {
+				critRatio = critRatio.floor();
+				var random = Math.random() * 100;
+				move.crit = (random.floor() <= critRatio);
+			}
+		}
+		if (move.crit) {
+			move.crit = this.runEvent('CriticalHit', target, null, move);
+		}
+
+		// Happens after crit calculation
+		if (basePower) {
+			basePower = this.runEvent('BasePower', pokemon, target, move, basePower);
+			if (move.basePowerModifier) {
+				basePower *= move.basePowerModifier;
+			}
+		}
+		if (!basePower) return 0;
+		basePower = clampIntRange(basePower, 1);
+
+		// We now check for attacker and defender
+		var level = pokemon.level;
+		var attacker = pokemon;
+		var defender = target;
+		if (move.useTargetOffensive) attacker = target;
+		if (move.useSourceDefensive) defender = pokemon;
+		var atkType = (move.category === 'Physical')? 'atk' : 'spa';
+		var defType = (move.defensiveCategory === 'Physical')? 'atk' : 'spa';
+		var attack = attacker.getStat(atkType);
+		var defense = defender.getStat(defType);
+
+		if (move.crit) {
+			move.ignoreNegativeOffensive = true;
+			move.ignorePositiveDefensive = true;
+		}
+		if (move.ignoreNegativeOffensive && attack < attacker.getStat(atkType, true)) {
+			move.ignoreOffensive = true;
+		}
+		if (move.ignoreOffensive) {
+			this.debug('Negating (sp)atk boost/penalty.');
+			attack = attacker.getStat(atkType, true);
+		}
+		if (move.ignorePositiveDefensive && defense > target.getStat(defType, true)) {
+			move.ignoreDefensive = true;
+		}
+		if (move.ignoreDefensive) {
+			this.debug('Negating (sp)def boost/penalty.');
+			defense = target.getStat(defType, true);
+		}
+
+		// Gen 1 damage formula: 
+		// ((((min(((((2 * L / 5 + 2)*Atk*BP)/max(1, Def))/50), 997) + 2)*Stab)*TypeEffect)/10)*Random/255
+		// Where: L: user level, A: current attack, P: move power, D: opponent current defense,
+		// S is the Stab modifier, T is the type effectiveness modifier, R is random between 217 and 255
+		// The max damage is 999
+		var baseDamage = Math.min(Math.floor(Math.floor(Math.floor(2 * level / 5 + 2) * attack * basePower / defense) / 50), 997) + 2;
+
+		// Crit damage addition (usually doubling)
+		if (move.crit) {
+			if (!suppressMessages) this.add('-crit', target);
+			baseDamage = this.modify(baseDamage, move.critModifier || 2);
+		}
+		
+		// STAB damage bonus, the "???" type never gets STAB
+		if (type !== '???' && pokemon.hasType(type)) {
+			baseDamage = Math.floor(baseDamage * 1.5);
+		}
+		
+		// Type effectiveness
+		var totalTypeMod = this.getEffectiveness(type, target);
+		// Super effective attack
+		if (totalTypeMod > 0) {
+			if (!suppressMessages) this.add('-supereffective', target);
+			baseDamage *= 2;
+			if (totalTypeMod >= 2) {
+				baseDamage *= 2;
+			}
+		}
+		
+		// Resisted attack
+		if (totalTypeMod < 0) {
+			if (!suppressMessages) this.add('-resisted', target);
+			baseDamage = Math.floor(baseDamage / 2);
+			if (totalTypeMod <= -2) {
+				baseDamage = Math.floor(baseDamage / 2);
+			}
+		}
+
+		// Randomizer, it's a number between 217 and 255
+		var randFactor = Math.floor(Math.random()*39)+217;
+		baseDamage *= Math.floor(randFactor * 100 / 255) / 100;
+		
+		// If damage is less than 1, we return 1
+		if (basePower && !Math.floor(baseDamage)) {
+			return 1;
+		}
+
+		// We are done, this is the final damage
+		return Math.floor(baseDamage);
+	},
+	damage: function(damage, target, source, effect) {
+		if (this.event) {
+			if (!target) target = this.event.target;
+			if (!source) source = this.event.source;
+			if (!effect) effect = this.effect;
+		}
+		if (!target || !target.hp) return 0;
+		effect = this.getEffect(effect);
+		if (!(damage || damage === 0)) return damage;
+		if (damage !== 0) damage = clampIntRange(damage, 1);
+
+		if (effect.id !== 'struggle-recoil') { // Struggle recoil is not affected by effects
+			damage = this.runEvent('Damage', target, source, effect, damage);
+			if (!(damage || damage === 0)) {
+				this.debug('damage event failed');
+				return damage;
+			}
+		}
+		if (damage !== 0) damage = clampIntRange(damage, 1);
+		damage = target.damage(damage, source, effect);
+		if (source) source.lastDamage = damage;
+		var name = effect.fullname;
+		if (name === 'tox') name = 'psn';
+		switch (effect.id) {
+		case 'partiallytrapped':
+			this.add('-damage', target, target.hpChange(damage), '[from] '+this.effectData.sourceEffect.fullname, '[partiallytrapped]');
+			break;
+		default:
+			if (effect.effectType === 'Move') {
+				this.add('-damage', target, target.hpChange(damage));
+			} else if (source && source !== target) {
+				this.add('-damage', target, target.hpChange(damage), '[from] '+effect.fullname, '[of] '+source);
+			} else {
+				this.add('-damage', target, target.hpChange(damage), '[from] '+name);
+			}
+			break;
+		}
+
+		if (effect.recoil && source) {
+			this.damage(Math.round(damage * effect.recoil[0] / effect.recoil[1]), source, target, 'recoil');
+		}
+		if (effect.drain && source) {
+			// Ok, so this bug happens sometimes for some reason, I need to discover why
+			if (typeof this.heal !== 'function') {
+				console.log('FATAL ERROR: battle heal is not a function: ' + (typeof this.heal) + '. Contents: ' + this.heal.toString());
+			}
+			this.heal(Math.ceil(damage * effect.drain[0] / effect.drain[1]), source, target, 'drain');
+		}
+
+		if (target.fainted) this.faint(target);
+		else {
+			damage = this.runEvent('AfterDamage', target, source, effect, damage);
+			if (effect && !effect.negateSecondary) {
+				this.runEvent('Secondary', target, source, effect);
+			}
+		}
+		return damage;
 	},
 	heal: function(damage, target, source, effect) {
 		if (this.event) {
@@ -759,8 +840,6 @@ exports.BattleScripts = {
 			break;
 		case 'drain':
 			this.add('-heal', target, target.hpChange(damage), '[from] drain', '[of] '+source);
-			break;
-		case 'wish':
 			break;
 		default:
 			if (effect.effectType === 'Move') {
