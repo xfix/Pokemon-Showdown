@@ -115,6 +115,29 @@ exports.BattleFormats = {
 		ruleset: ['Gen1 Pokemon', 'All Abilities', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Clause'],
 		banlist: ['Uber', 'Illegal']
 	},
+	/*gen1randombattle: {
+		mod: 'gen1',
+		effectType: 'Format',
+		name: "[Gen1] Random Battle",
+		team: 'random',
+		canUseRandomTeam: true,
+		searchDefault: true,
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		ruleset: ['PotD', 'Pokemon', 'Sleep Clause']
+	},*/
+	gen1challengecup: {
+		mod: 'gen1',
+		effectType: 'Format',
+		name: "[Gen1] Challenge Cup",
+		team: 'randomCC',
+		canUseRandomTeam: true,
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		ruleset: ['Pokemon']
+	},
 	unratedrandombattle: {
 		effectType: 'Format',
 		name: "Unrated Random Battle",

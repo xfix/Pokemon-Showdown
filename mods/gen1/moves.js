@@ -667,7 +667,14 @@ exports.BattleMovedex = {
 					this.debug('Nothing to leech into');
 					return;
 				}
-				var damage = this.damage(pokemon.maxhp/8, pokemon, target);
+				// We check if target has Toxic to increase leeched damage
+				if (pokemon.status === 'tox') {
+					// Stage plus one since leech seed runs before Toxic
+					var toLeech = clampIntRange(pokemon.maxhp/16, 1) * (pokemon.statusData.stage + 1);
+				} else {
+					var toLeech = clampIntRange(pokemon.maxhp/16, 1);
+				}
+				var damage = this.damage(toLeech, pokemon, target);
 				if (damage) {
 					this.heal(damage, target, pokemon);
 				}
@@ -814,7 +821,7 @@ exports.BattleMovedex = {
 		priority: 0,
 		isNotProtectable: true,
 		onTryHit: function(target) {
-			var noMirrorMove = {acupressure:1, afteryou:1, aromatherapy:1, chatter:1, conversion2:1, curse:1, doomdesire:1, feint:1, finalgambit:1, focuspunch:1, futuresight:1, gravity:1, guardsplit:1, hail:1, haze:1, healbell:1, healpulse:1, helpinghand:1, lightscreen:1, luckychant:1, mefirst:1, mimic:1, mirrorcoat:1, mirrormove:1, mist:1, mudsport:1, naturepower:1, perishsong:1, powersplit:1, psychup:1, quickguard:1, raindance:1, reflect:1, reflecttype:1, roleplay:1, safeguard:1, sandstorm:1, sketch:1, spikes:1, spitup:1, stealthrock:1, sunnyday:1, tailwind:1, taunt:1, teeterdance:1, toxicspikes:1, transform:1, watersport:1, wideguard:1};
+			var noMirrorMove = {acupressure:1, afteryou:1, aromatherapy:1, chatter:1, feint:1, finalgambit:1, focuspunch:1, futuresight:1, gravity:1, guardsplit:1, hail:1, haze:1, healbell:1, healpulse:1, helpinghand:1, lightscreen:1, luckychant:1, mefirst:1, mimic:1, mirrorcoat:1, mirrormove:1, mist:1, mudsport:1, naturepower:1, perishsong:1, powersplit:1, psychup:1, quickguard:1, raindance:1, reflect:1, reflecttype:1, roleplay:1, safeguard:1, sandstorm:1, sketch:1, spikes:1, spitup:1, stealthrock:1, sunnyday:1, tailwind:1, taunt:1, teeterdance:1, toxicspikes:1, transform:1, watersport:1, wideguard:1};
 			if (!target.lastMove || noMirrorMove[target.lastMove] || this.getMove(target.lastMove).target === 'self') {
 				return false;
 			}
@@ -931,13 +938,13 @@ exports.BattleMovedex = {
 	recover: {
 		inherit: true,
 		pp: 20,
+		heal: null,
 		onHit: function(target) {
 			// Fail when health is 255 or 511 less than max
 			if (target.hp === (target.maxhp - 255) || target.hp === (target.maxhp - 511)) {
-				this.heal = [0,1];
 				return false;
 			}
-			this.heal = [1,2];
+			this.heal(Math.floor(target.maxhp / 2), target, target);
 		}
 	},
 	reflect: {
@@ -1063,13 +1070,13 @@ exports.BattleMovedex = {
 	},
 	softboiled: {
 		inherit: true,
+		heal: null,
 		onHit: function(target) {
 			// Fail when health is 255 or 511 less than max
 			if (target.hp === (target.maxhp - 255) || target.hp === (target.maxhp - 511)) {
-				this.heal = [0,1];
 				return false;
 			}
-			this.heal = [1,2];
+			this.heal(Math.floor(target.maxhp / 2), target, target);
 		}
 	},
 	solarbeam: {

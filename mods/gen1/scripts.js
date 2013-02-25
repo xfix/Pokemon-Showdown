@@ -811,47 +811,6 @@ exports.BattleScripts = {
 			this.damage(Math.round(damage * effect.recoil[0] / effect.recoil[1]), source, target, 'recoil');
 		}
 		if (effect.drain && source) {
-			// Ok, so this bug happens sometimes for some reason.
-			// I'll keep this until I can trace the bug and solve it
-			if (typeof this.heal !== 'function') {
-				console.log('FATAL ERROR: battle heal is not a function: ' + (typeof this.heal) + '. Contents: ' + this.heal.toString());
-				this.heal = function(damage, target, source, effect) {
-					if (this.event) {
-						if (!target) target = this.event.target;
-						if (!source) source = this.event.source;
-						if (!effect) effect = this.effect;
-					}
-					effect = this.getEffect(effect);
-					if (damage && damage <= 1) damage = 1;
-					damage = Math.floor(damage);
-					// for things like Liquid Ooze, the Heal event still happens when nothing is healed.
-					damage = this.runEvent('TryHeal', target, source, effect, damage);
-					if (!damage) return 0;
-					if (!target || !target.hp) return 0;
-					if (target.hp >= target.maxhp) return 0;
-					damage = target.heal(damage, source, effect);
-					switch (effect.id) {
-					case 'leechseed':
-					case 'rest':
-						this.add('-heal', target, target.hpChange(damage), '[silent]');
-						break;
-					case 'drain':
-						this.add('-heal', target, target.hpChange(damage), '[from] drain', '[of] '+source);
-						break;
-					default:
-						if (effect.effectType === 'Move') {
-							this.add('-heal', target, target.hpChange(damage));
-						} else if (source && source !== target) {
-							this.add('-heal', target, target.hpChange(damage), '[from] '+effect.fullname, '[of] '+source);
-						} else {
-							this.add('-heal', target, target.hpChange(damage), '[from] '+effect.fullname);
-						}
-						break;
-					}
-					this.runEvent('Heal', target, source, effect, damage);
-					return damage;
-				};
-			}
 			this.heal(Math.ceil(damage * effect.drain[0] / effect.drain[1]), source, target, 'drain');
 		}
 
@@ -864,40 +823,273 @@ exports.BattleScripts = {
 		}
 		return damage;
 	},
-	heal: function(damage, target, source, effect) {
-		if (this.event) {
-			if (!target) target = this.event.target;
-			if (!source) source = this.event.source;
-			if (!effect) effect = this.effect;
-		}
-		effect = this.getEffect(effect);
-		if (damage && damage <= 1) damage = 1;
-		damage = Math.floor(damage);
-		// for things like Liquid Ooze, the Heal event still happens when nothing is healed.
-		damage = this.runEvent('TryHeal', target, source, effect, damage);
-		if (!damage) return 0;
-		if (!target || !target.hp) return 0;
-		if (target.hp >= target.maxhp) return 0;
-		damage = target.heal(damage, source, effect);
-		switch (effect.id) {
-		case 'leechseed':
-		case 'rest':
-			this.add('-heal', target, target.hpChange(damage), '[silent]');
-			break;
-		case 'drain':
-			this.add('-heal', target, target.hpChange(damage), '[from] drain', '[of] '+source);
-			break;
-		default:
-			if (effect.effectType === 'Move') {
-				this.add('-heal', target, target.hpChange(damage));
-			} else if (source && source !== target) {
-				this.add('-heal', target, target.hpChange(damage), '[from] '+effect.fullname, '[of] '+source);
-			} else {
-				this.add('-heal', target, target.hpChange(damage), '[from] '+effect.fullname);
+	// This is random teams making for gen 1
+	randomCCTeam: function(side) {
+		var teamdexno = [];
+		var team = [];
+
+		//pick six random pokmeon--no repeats, even among formes
+		//also need to either normalize for formes or select formes at random
+		//unreleased are okay. No CAP for now, but maybe at some later date
+		for (var i=0; i<6; i++)
+		{
+			while (true) {
+				var x=Math.floor(Math.random()*150)+1;
+				if (teamdexno.indexOf(x) === -1) {
+					teamdexno.push(x);
+					break;
+				}
 			}
-			break;
 		}
-		this.runEvent('Heal', target, source, effect, damage);
-		return damage;
+
+		for (var i=0; i<6; i++) {
+
+			//choose forme
+			var formes = [];
+			for (var j in this.data.Pokedex) {
+				if (this.data.Pokedex[j].num === teamdexno[i] && this.getTemplate(this.data.Pokedex[j].species).learnset && this.data.Pokedex[j].species !== 'Pichu-Spiky-eared') {
+					formes.push(this.data.Pokedex[j].species);
+				}
+			}
+			var poke = formes.sample();
+			var template = this.getTemplate(poke);
+
+			//level balance--calculate directly from stats rather than using some silly lookup table
+			var mbstmin = 1307; //sunkern has the lowest modified base stat total, and that total is 807
+
+			var stats = template.baseStats;
+
+			// Modified base stat total assumes 30 IVs, 255 EVs in every stat
+			var mbst = (stats["hp"]*2+30+63+100)+10;
+			mbst += (stats["atk"]*2+30+63+100)+5;
+			mbst += (stats["def"]*2+30+63+100)+5;
+			mbst += (stats["spa"]*2+30+63+100)+5;
+			mbst += (stats["spd"]*2+30+63+100)+5;
+			mbst += (stats["spe"]*2+30+63+100)+5;
+			
+			var level = Math.floor(100*mbstmin/mbst); // Initial level guess will underestimate
+
+			while (level < 100) {
+				mbst = Math.floor((stats["hp"]*2+30+63+100)*level/100+10);
+				mbst += Math.floor(((stats["atk"]*2+30+63+100)*level/100+5)*level/100); //since damage is roughly proportional to lvl
+				mbst += Math.floor((stats["def"]*2+30+63+100)*level/100+5);
+				mbst += Math.floor(((stats["spa"]*2+30+63+100)*level/100+5)*level/100);
+				mbst += Math.floor((stats["spd"]*2+30+63+100)*level/100+5);
+				mbst += Math.floor((stats["spe"]*2+30+63+100)*level/100+5);
+
+				if (mbst >= mbstmin)
+					break;
+				level++;
+			}
+
+			// Random IVs
+			var ivs = {
+				hp: Math.floor(Math.random()*31),
+				atk: Math.floor(Math.random()*31),
+				def: Math.floor(Math.random()*31),
+				spa: Math.floor(Math.random()*31),
+				spd: Math.floor(Math.random()*31),
+				spe: Math.floor(Math.random()*31)
+			};
+
+			// ALl EVs
+			var evs = {
+				hp: 255,
+				atk: 255,
+				def: 255,
+				spa: 255,
+				spd: 255,
+				spe: 255
+			};
+
+			// Four random unique moves from movepool. don't worry about "attacking" or "viable"
+			var moves;
+			var pool = ['struggle'];
+			pool = Object.keys(template.learnset);
+			if (pool.length <= 4) {
+				moves = pool;
+			} else {
+				moves = pool.sample(4);
+			}
+
+			team.push({
+				name: poke,
+				moves: moves,
+				ability: 'None',
+				evs: evs,
+				ivs: ivs,
+				item: '',
+				level: level,
+				happiness: 0,
+				shiny: false,
+				nature: 'Serious'
+			});
+		}
+
+		return team;
+	},
+	randomTeam: function(side) {
+		var keys = [];
+		var pokemonLeft = 0;
+		var pokemon = [];
+		for (var i in this.data.FormatsData) {
+			//if (this.data.FormatsData[i].viableMoves) {
+				keys.push(i);
+			//}
+		}
+		keys = keys.randomize();
+
+		var ruleset = this.getFormat().ruleset;
+
+		for (var i=0; i<keys.length && pokemonLeft < 6; i++) {
+			var template = this.getTemplate(keys[i]);
+			if (!template || !template.name || !template.types) continue;
+			var set = this.randomSet(template, i);
+
+			pokemon.push(set);
+			pokemonLeft++;
+		}
+		
+		return pokemon;
+	},
+	randomSet: function(template, i) {
+		if (i === undefined) i = 1;
+		template = this.getTemplate(template);
+		if (!template.exists) template = this.getTemplate('pikachu'); // Because Gen 1
+
+		var moveKeys = Object.keys(template.viableMoves || template.learnset).randomize();
+		var moves = [];
+		var hasType = {};
+		hasType[template.types[0]] = true;
+		if (template.types[1]) hasType[template.types[1]] = true;
+		var hasMove = {};
+		var counter = {};
+		var setupType = '';
+
+		var j=0;
+		do {
+			hasMove = {};
+			counter = {
+				Physical: 0, Special: 0, Status: 0, damage: 0,
+				recoil: 0, inaccurate: 0,
+				physicalsetup: 0, specialsetup: 0, mixedsetup: 0
+			};
+			for (var k=0; k<moves.length; k++) {
+				var move = this.getMove(moves[k]);
+				var moveid = move.id;
+				hasMove[moveid] = true;
+				if (move.damage || move.damageCallback) {
+					counter['damage']++;
+				} else {
+					counter[move.category]++;
+				}
+				if (move.recoil) {
+					counter['recoil']++;
+				}
+				if (move.accuracy && move.accuracy !== true && move.accuracy < 90) {
+					counter['inaccurate']++;
+				}
+				var PhysicalSetup = {swordsdance:1};
+				var SpecialSetup = {amnesia:1};
+				var MixedSetup = {growth:1};
+				if (PhysicalSetup[moveid]) {
+					counter['physicalsetup']++;
+				}
+				if (SpecialSetup[moveid]) {
+					counter['specialsetup']++;
+				}
+				if (MixedSetup[moveid]) {
+					counter['mixedsetup']++;
+				}
+			}
+
+			if (counter['mixedsetup']) {
+				setupType = 'Mixed';
+			} else if (counter['specialsetup']) {
+				setupType = 'Special';
+			} else if (counter['physicalsetup']) {
+				setupType = 'Physical';
+			}
+
+			for (var k=0; k<moves.length; k++) {
+				var moveid = moves[k];
+				var move = this.getMove(moveid);
+				var rejected = false;
+				var isSetup = false;
+
+				switch (moveid) {
+				// bad after setup
+				case 'seismictoss': case 'nightshade':
+					if (setupType) rejected = true;
+					break;
+
+				// bit redundant to have both
+				case 'flamethrower':
+					if (hasMove['fireblast']) rejected = true;
+					break;
+				case 'icebeam':
+					if (hasMove['blizzard']) rejected = true;
+					break;
+				case 'surf':
+					if (hasMove['hydropump']) rejected = true;
+					break;
+				case 'petaldance': case 'solarbeam':
+					if (hasMove['megadrain'] || hasMove['razorleaf']) rejected = true;
+					break;
+				case 'megadrain':
+					if (hasMove['razorleaf']) rejected = true;
+					break;
+				case 'thunder':
+					if (hasMove['thunderbolt']) rejected = true;
+					break;
+				case 'bonemerang':
+					if (hasMove['earthquake']) rejected = true;
+					break;
+				case 'rest':
+					if (hasMove['recover'] || hasMove['softboiled']) rejected = true;
+					break;
+				case 'softboiled':
+					if (hasMove['recover']) rejected = true;
+					break;
+				} // End of switch for moveid
+				if (setupType === 'Physical' && move.category !== 'Physical' && counter['Physical'] < 2) {
+					rejected = true;
+				}
+				if (setupType === 'Special' && move.category !== 'Special' && counter['Special'] < 2) {
+					rejected = true;
+				}
+
+				if (rejected && j<moveKeys.length) {
+					moves.splice(k, 1);
+					break;
+				}
+			} // End of for
+		} while (moves.length<4 && j<moveKeys.length);
+
+		var levelScale = {
+			LC: 95,
+			UU: 78,
+			OU: 74,
+			Uber: 70
+		};
+		// Really bad Pokemon and jokemons
+		var customScale = {
+			Caterpie: 99, Kakuna: 99, Magikarp: 99, Metapod: 99, Weedle: 99,
+			Clefairy: 95, "Farfetch'd": 95, Jigglypuff: 95
+		};
+		var level = levelScale[template.tier] || 90;
+		if (customScale[template.name]) level = customScale[template.name];
+
+		return {
+			name: template.name,
+			moves: moves,
+			ability: 'None',
+			evs: {hp: 255, atk: 255, def: 255, spa: 255, spd: 255, spe: 255},
+			ivs: {hp: 30, atk: 30, def: 30, spa: 30, spd: 30, spe: 30},
+			item: '',
+			level: level,
+			shiny: false,
+			gender: false
+		};
 	}
 };
