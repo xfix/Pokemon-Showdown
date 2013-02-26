@@ -322,7 +322,7 @@ exports.BattleFormats = {
 				mrmime:1, tauros:1, kabuto:1, dragonite:1, mewtwo:1, marill:1, hoppip:1, espeon:1, teddiursa:1, ursaring:1, 
 				cascoon:1, taillow:1, swellow:1, pelipper:1, masquerain:1, azurill:1, minun:1, carvanha:1, huntail:1, bagon:1, 
 				shelgon:1, salamence:1, latios:1, tangrowth:1, seismitoad:1, jellicent:1, elektross:1, druddigon:1, 
-				bronzor:1, bronzong:1
+				bronzor:1, bronzong:1, gallade:1
 			};
 			if (pokemon.template.id in greenPokemon) {
 				this.add('-message', pokemon.name + " drank way too much!");
