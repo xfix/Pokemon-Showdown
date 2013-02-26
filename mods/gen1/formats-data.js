@@ -1,10 +1,8 @@
 /**
- * We need a fully new formats-data.js for the first 151 okemon just for the tiers.
+ * We need a fully new formats-data.js for the first 151 Pokemon just for the tiers.
  * Smogon's tiers for Gen 1 are OU and UU, Uber is just a banlist: Mew and Mewtwo.
  * I'm adding LC to be able to drive a Gen 1 LC unofficial other meta.
- * They can still be part of UU. 
- * 
- * -Joim
+ * They can still be part of UU.
  */
 exports.BattleFormatsData = {
 	bulbasaur: {
