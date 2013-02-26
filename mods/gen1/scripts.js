@@ -343,7 +343,7 @@ exports.BattleScripts = {
 		}
 		
 		// We get the sub to the target to see if it existed
-		var targetSub = target.volatiles['substitute'];
+		var targetSub = (target)? target.volatiles['substitute'] : false;
 		var targetHadSub = (targetSub !== null && targetSub !== false && (typeof targetSub !== 'undefined'));
 		
 		// TryHit events:
