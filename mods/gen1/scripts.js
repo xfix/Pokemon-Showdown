@@ -884,12 +884,12 @@ exports.BattleScripts = {
 
 			// Random IVs
 			var ivs = {
-				hp: Math.floor(Math.random()*16),
-				atk: Math.floor(Math.random()*16),
-				def: Math.floor(Math.random()*16),
-				spa: Math.floor(Math.random()*16),
-				spd: Math.floor(Math.random()*16),
-				spe: Math.floor(Math.random()*16)
+				hp: Math.floor(Math.random()*31),
+				atk: Math.floor(Math.random()*31),
+				def: Math.floor(Math.random()*31),
+				spa: Math.floor(Math.random()*31),
+				spd: Math.floor(Math.random()*31),
+				spe: Math.floor(Math.random()*31)
 			};
 
 			// ALl EVs
@@ -1085,7 +1085,7 @@ exports.BattleScripts = {
 			moves: moves,
 			ability: 'None',
 			evs: {hp: 255, atk: 255, def: 255, spa: 255, spd: 255, spe: 255},
-			ivs: {hp: 15, atk: 15, def: 15, spa: 15, spd: 15, spe: 15},
+			ivs: {hp: 30, atk: 30, def: 30, spa: 30, spd: 30, spe: 30},
 			item: '',
 			level: level,
 			shiny: false,

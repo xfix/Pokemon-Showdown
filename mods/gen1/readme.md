@@ -8,7 +8,7 @@ It was very different than the game we get to know today, and it was, in fact, v
 The mechanics were very different, and the game was quite glitched, but most glitches were important parts of the metagame.
 There were only 151 Pokemon plus Missingno, just a handful of moves, no abilities, no items, all stats were 
 EVd to the max and we had some kind of different IVs, which maxed at 15 and every point gave 2 to the stat, so in 
-a similar fashion, Pokes used to have 15 IVs on each stat.
+a similar fashion, Pokes used to have 30 IVs on each stat.
 
 The following sources have been used and extremly useful when developing this mod:
 https://raw.github.com/po-devs/pokemon-online/master/bin/database/rby-stuff.txt
