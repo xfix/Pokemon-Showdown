@@ -1236,7 +1236,14 @@ exports.BattleMovedex = {
 		category: "Physical"
 	},
 	swordsdance: {
-		inherit: true
+		inherit: true,
+		onModifyMove: function(move, pokemon) {
+			// If there's a burn attacl drop, it's negated by swords dance but not boost is gained
+			if (pokemon.volatiles['brnattackdrop']) {
+				pokemon.removeVolatile('brnattackdrop');
+				move.boosts = {};
+			}
+		}
 	},
 	tackle: {
 		inherit: true,
