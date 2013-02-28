@@ -390,7 +390,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			return false;
 		}
 
-		logModCommand(room, '' + targetUser.name + ' was warned by ' + user.name + ' (' + targets[1] + ')');
+		logModCommand(room, targetUser.name + ' was warned by ' + user.name + ' (' + targets[1] + ')');
 		targetUser.emit('message', 'You have been warned by ' + user.name + ' due to the following reason: &quot;' + targets[1] + '&quot;. Read the <a href="http://www.smogon.com/sim/rules">rules</a> to avoid further punishment for your behaviour.');
 		return false;
 		break;
@@ -467,6 +467,10 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		if (!user.named) {
 			emit(socket, 'console', 'You must choose a name before you can send private messages.');
 			return false;
+		}
+		
+		if (targetUser.blockChallenges) {
+			emit(socket, 'console', 'User ' + targetUser.name + ' is idle and might not answer' + ((targetUser.idleMessage !== false) ? ' (' + targetUser.idleMessage + ')' : '') + '.');
 		}
 
 		var message = {
@@ -1419,6 +1423,11 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		
 	case 'away':
 	case 'idle':
+		user.blockChallenges = true;
+		emit(socket, 'console', 'You are now idle and will thus block incoming challenge requests.');
+		return false;
+		break;
+		
 	case 'blockchallenges':
 		user.blockChallenges = true;
 		emit(socket, 'console', 'You are now blocking all incoming challenge requests.');
@@ -1426,6 +1435,10 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		break;
 
 	case 'back':
+		user.blockChallenges = false;
+		emit(socket, 'console', 'You are no longer idle.');
+		break;
+		
 	case 'allowchallenges':
 		user.blockChallenges = false;
 		emit(socket, 'console', 'You are available for challenges from now on.');

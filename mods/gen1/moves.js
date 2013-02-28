@@ -1,9 +1,6 @@
 /**
- * All Gen 1 moves have to be updated due to the 1/256 bug on accuracy: 
- * Even 100% accuracy moves had a 1/256 chance of failing.
+ * A lot of Gen 1 moves have to be updated due to different mechanics.
  * Some moves have had major changes, such as Bite's typing.
- * 
- * -Joim
  */
 function clampIntRange(num, min, max) {
 	num = Math.floor(num);
@@ -734,7 +731,7 @@ exports.BattleMovedex = {
 	lowkick: {
 		num: 67,
 		accuracy: 90,
-		basePower: 50,
+		basePower: 50
 	},
 	meditate: {
 		inherit: true
