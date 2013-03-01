@@ -65,6 +65,17 @@ exports.BattleFormats = {
 		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
 		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
 	},
+	wonkymons: {
+		mod: 'wonkymons',
+		effectType: 'Format',
+		name: "Wonkymons",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
+		banlist: ['Drizzle ++ Swift Swim']
+	},
 	haxmons: {
 		effectType: 'Format',
 		name: "Haxmons",
