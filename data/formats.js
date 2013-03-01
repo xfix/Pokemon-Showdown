@@ -74,7 +74,7 @@ exports.BattleFormats = {
 		searchShow: true,
 		isTeambuilderFormat: true,
 		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
-		banlist: ['Drizzle ++ Swift Swim']
+		banlist: ['Drizzle ++ Swift Swim', 'Elekid ++ Wonder Guard']
 	},
 	haxmons: {
 		effectType: 'Format',
