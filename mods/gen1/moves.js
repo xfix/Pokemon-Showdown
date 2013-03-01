@@ -894,7 +894,10 @@ exports.BattleMovedex = {
 		inherit: true
 	},
 	rage: {
-		inherit: true
+		inherit: true,
+		self: {
+			volatileStatus: 'rage'
+		}
 	},
 	razorleaf: {
 		inherit: true,

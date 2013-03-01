@@ -769,6 +769,42 @@ exports.BattleScripts = {
 		// We are done, this is the final damage
 		return Math.floor(baseDamage);
 	},
+	boost: function(boost, target, source, effect) {
+		// Editing boosts to take into account para and burn stat drops glitches
+		if (this.event) {
+			if (!target) target = this.event.target;
+			if (!source) source = this.event.source;
+			if (!effect) effect = this.effect;
+		}
+		if (!target || !target.hp) return 0;
+		effect = this.getEffect(effect);
+		boost = this.runEvent('Boost', target, source, effect, Object.clone(boost));
+		for (var i in boost) {
+			var currentBoost = {};
+			currentBoost[i] = boost[i];
+			if (boost[i] !== 0 && target.boostBy(currentBoost)) {
+				var msg = '-boost';
+				if (boost[i] < 0) {
+					msg = '-unboost';
+					boost[i] = -boost[i];
+				}
+				switch (effect.id) {
+				case 'intimidate':
+					this.add(msg, target, i, boost[i]);
+					break;
+				default:
+					if (effect.effectType === 'Move') {
+						this.add(msg, target, i, boost[i]);
+					} else {
+						this.add(msg, target, i, boost[i], '[from] '+effect.fullname);
+					}
+					break;
+				}
+				this.runEvent('AfterEachBoost', target, source, effect, currentBoost);
+			}
+		}
+		this.runEvent('AfterBoost', target, source, effect, boost);
+	},
 	damage: function(damage, target, source, effect) {
 		if (this.event) {
 			if (!target) target = this.event.target;
