@@ -220,7 +220,7 @@ exports.BattleScripts = {
 		var doSelfDestruct = true;
 		var subHp = false;
 		if ((typeof targetSub === 'object') && targetSub !== null) {
-			var subHp = targetSub.hp;
+			var subHp = (targetSub.hp !== false && targetSub.hp !== 0);
 		}
 		
 		// Calculate true accuracy
@@ -311,7 +311,7 @@ exports.BattleScripts = {
 		
 		// Checking if substitute fainted
 		var currentSub = target.volatiles['substitute'];
-		if (subHp && (currentSub === undefined || currentSub === null)) {
+		if (subHp === true && (currentSub === undefined || currentSub === null)) {
 			doSelfDestruct = false;
 		}
 		if (move.selfdestruct && doSelfDestruct) {
@@ -1127,5 +1127,9 @@ exports.BattleScripts = {
 			shiny: false,
 			gender: false
 		};
+	},
+	faint: function(pokemon, source, effect) {
+		pokemon.faint(source, effect);
+		this.queue = [];
 	}
 };

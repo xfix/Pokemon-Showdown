@@ -409,10 +409,7 @@ exports.BattleMovedex = {
 	explosion: {
 		inherit: true,
 		basePower: 340,
-		target: "normal",
-		onHit: function (target) {
-			target.addVolatile('explosionflinch');
-		}
+		target: "normal"
 	},
 	fireblast: {
 		inherit: true,
@@ -1028,10 +1025,7 @@ exports.BattleMovedex = {
 	selfdestruct: {
 		inherit: true,
 		basePower: 260,
-		target: "normal",
-		onHit: function (target) {
-			target.addVolatile('explosionflinch');
-		}
+		target: "normal"
 	},
 	sharpen: {
 		inherit: true,
