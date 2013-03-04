@@ -310,36 +310,26 @@ exports.BattleMovedex = {
 		inherit: true,
 		accuracy: 55,
 		desc: "The target cannot choose a random move for 0-6 turns. Disable only works on one move at a time and fails if the target has not yet used a move or if its move has run out of PP. The target does nothing if it is about to use a move that becomes disabled.",
-		//shortDesc: "",
-		isBounceable: false,
-		volatileStatus: 'disable',
 		effect: {
-			durationCallback: function() {
-				return this.random(1, 7);
+			duration: 4,
+			durationCallback: function(target, source, effect) {
+				var duration = this.random(1, 7);
+				return duration;
 			},
-			noCopy: true,
 			onStart: function(pokemon) {
 				if (!this.willMove(pokemon)) {
 					this.effectData.duration++;
 				}
-				if (!pokemon.lastMove) {
-					return false;
-				}
-				var moves = pokemon.moveset;
+				var moves = pokemon.moves;
 				moves = moves.randomize();
-				for (var i=0; i<moves.length; i++) {
-					if (!moves[i].pp) {
-						return false;
-					} else {
-						this.add('-start', pokemon, 'Disable', moves[i].move);
-						this.effectData.move = moves[i].move;
-						return;
-					}
-				}
-				return false;
+				var move = this.getMove(moves[0]);
+				this.add('-start', pokemon, 'Disable', move.name);
+				this.effectData.move = move.id;
+				return;
 			},
+			onResidualOrder: 14,
 			onEnd: function(pokemon) {
-				this.add('-message', pokemon.name+' is no longer disabled! (placeholder)');
+				this.add('-end', pokemon, 'Disable');
 			},
 			onBeforeMove: function(attacker, defender, move) {
 				if (move.id === this.effectData.move) {
@@ -777,14 +767,14 @@ exports.BattleMovedex = {
 			var moveslot = source.moves.indexOf('mimic');
 			if (moveslot === -1) return false;
 			var moves = target.moves;
-			moves.randomize();
+			moves = moves.randomize();
 			for (var i=0; i<moves.length; i++) {
 				if (!(moves[i] in disallowedMoves)) {
 					var move = moves[i];
 					break;
 				}
 			}
-			var move = Tools.getMove(move);
+			var move = this.getMove(move);
 			source.moveset[moveslot] = {
 				move: move.name,
 				id: move.id,
@@ -944,34 +934,29 @@ exports.BattleMovedex = {
 		}
 	},
 	reflect: {
-		inherit: true,
+		inherit: true/*,
 		desc: "The user has doubled Defense. Critical hits ignore this protection. It is removed from the user if it is successfully hit by Haze.",
 		shortDesc: "User's Defense is 2x.",
+		volatileStatus: 'reflect',
+		sideCondition: null,
+		target: 'self',
+		onTryHit: function (pokemon) {
+			if (pokemon.volatiles['reflect']) {
+				return false;
+			}
+		},
 		effect: {
-			// onModifyDef not working, meanwhile we use this
-			onFoeBasePower: function(basePower, attacker, defender, move) {
-				if (move.category === 'Physical' && defender.side === this.effectData.target) {
-					if (!move.crit) {
-						this.debug('Reflect weaken');
-						return basePower / 2;
-					}
-				}
-			},
-			/*onModifyDef: function(def, pokemon) {
+			duration: null,
+			durationCallback: null,
+			onFoeBasePower: null,
+			onStart: function(side) {},
+			onResidualOrder: null,
+			onModifyDef: function(def, pokemon) {
 				this.debug('Reflect doubles defense');
 				return def * 2;
-			},*/
-			onStart: function(side) {
-				this.add('-sidestart', side, 'Reflect');
 			},
-			onResidualOrder: 21,
-			onSwitchOut: function (pokemon) {
-				pokemon.side.removeSideCondition('reflect');
-			},
-			onEnd: function(side) {
-				this.add('-sideend', side, 'Reflect');
-			}
-		}
+			onEnd: function(side) {}
+		}*/
 	},
 	rest: {
 		inherit: true,
