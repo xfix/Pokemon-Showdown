@@ -109,8 +109,10 @@ exports.BattleStatuses = {
 			this.add('-status', target, 'tox');
 			this.effectData.stage = 0;
 		},
-		onSwitchIn: function() {
+		onSwitchIn: function(pokemon) {
 			this.effectData.stage = 0;
+			//pokemon.cureStatus();
+			pokemon.setStatus('psn');
 		},
 		onResidualOrder: 9,
 		onResidual: function(pokemon) {
