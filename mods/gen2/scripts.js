@@ -200,5 +200,9 @@ exports.BattleScripts = {
 
 		// We are done, this is the final damage
 		return Math.floor(baseDamage);
+	},
+	faint: function(pokemon, source, effect) {
+		pokemon.faint(source, effect);
+		this.queue = [];
 	}
 };
