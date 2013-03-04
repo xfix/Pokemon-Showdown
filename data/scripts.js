@@ -1430,8 +1430,10 @@ exports.BattleScripts = {
 			// Everyone will have Metronome. EVERYONE. Luck everywhere!
 			set.moves[0] = 'Metronome';
 			// Also everyone will have either Softboiled, Barrage or Egg Bomb since easter!
-			var secondMove = ['Softboiled', 'Barrage', 'Egg Bomb'].randomize();
-			set.moves[1] = secondMove[0];
+			var secondMove = ['softboiled', 'barrage', 'eggbomb'].randomize();
+			if (set.moves.indexOf(secondMove) === -1) {
+				set.moves[1] = secondMove[0];
+			}
 			// Don't worry, both attacks are boosted for this seasonal!
 			
 			// Also Super Luck or Serene Grace as an ability. Yay luck!
@@ -1444,11 +1446,6 @@ exports.BattleScripts = {
 				set.ability = abilities[0];
 			}
 			
-			// Jellicent must always be male to be green
-			if (template.id === 'Jellicent') {
-				set.gender = 'M';
-			}
-			
 			// These Pokemon must always be shiny to be green
 			if (template.id in mustBeShiny) {
 				set.shiny = true;
@@ -1457,6 +1454,14 @@ exports.BattleScripts = {
 			// We don't want choice items
 			if (['Choice Scarf', 'Choice Band', 'Choice Specs'].indexOf(set.item) > -1) {
 				set.item = 'Metronome';
+			}
+			// Avoid Toxic Orb Breloom
+			if (template.id === 'breloom' && set.item === 'Toxic Orb') {
+				set.item = 'Lum Berry';
+			}
+			// Change gems to Grass Gem
+			if (set.item.indexOf('Gem') > -1) {
+				set.item = 'Grass Gem';
 			}
 			team.push(set);
 		}
