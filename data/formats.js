@@ -124,7 +124,7 @@ exports.BattleFormats = {
 		debug: true,
 		isTeambuilderFormat: true,
 		ruleset: ['Gen1 Pokemon', 'All Abilities', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Clause'],
-		banlist: ['Uber', 'Illegal', 'Agility ++ Wrap']
+		banlist: ['Uber', 'Illegal']
 	},
 	gen1ubersdev: {
 		mod: 'gen1',
@@ -135,7 +135,7 @@ exports.BattleFormats = {
 		debug: true,
 		isTeambuilderFormat: true,
 		ruleset: ['Gen1 Pokemon', 'All Abilities', 'Sleep Clause', 'Species Clause'],
-		banlist: ['Illegal', 'Agility ++ Wrap']
+		banlist: ['Illegal']
 	},
 	/*gen1randombattle: {
 		mod: 'gen1',
