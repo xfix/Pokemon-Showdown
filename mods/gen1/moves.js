@@ -224,18 +224,6 @@ exports.BattleMovedex = {
 			}
 		}
 	},
-	cometpunch: {
-		inherit: true
-	},
-	confuseray: {
-		inherit: true
-	},
-	confusion: {
-		inherit: true
-	},
-	constrict: {
-		inherit: true
-	},
 	conversion: {
 		inherit: true,
 		volatileStatus: 'conversion',
@@ -273,12 +261,6 @@ exports.BattleMovedex = {
 		inherit: true,
 		category: "Special",
 		accuracy: 85
-	},
-	cut: {
-		inherit: true
-	},
-	defensecurl: {
-		inherit: true
 	},
 	dig: {
 		inherit: true,
@@ -361,12 +343,6 @@ exports.BattleMovedex = {
 		shortDesc: "Deals damage.",
 		secondary: null
 	},
-	doublekick: {
-		inherit: true
-	},
-	doubleteam: {
-		inherit: true
-	},
 	doubleedge: {
 		inherit: true,
 		name: "Double-Edge",
@@ -391,18 +367,9 @@ exports.BattleMovedex = {
 			}
 		}
 	},
-	drillpeck: {
-		inherit: true
-	},
 	earthquake: {
 		inherit: true,
 		category: "Physical"
-	},
-	eggbomb: {
-		inherit: true
-	},
-	ember: {
-		inherit: true
 	},
 	explosion: {
 		inherit: true,
@@ -448,12 +415,6 @@ exports.BattleMovedex = {
 				}
 			}
 		}
-	},
-	fissure: {
-		inherit: true
-	},
-	flamethrower: {
-		inherit: true
 	},
 	flash: {
 		inherit: true,
@@ -503,12 +464,6 @@ exports.BattleMovedex = {
 		target: "self",
 		type: "Normal"
 	},
-	furyattack: {
-		inherit: true
-	},
-	furyswipes: {
-		inherit: true
-	},
 	glare: {
 		inherit: true,
 		accuracy: 75,
@@ -528,16 +483,10 @@ exports.BattleMovedex = {
 			spd: 1
 		}
 	},
-	guillotine: {
-		inherit: true
-	},
 	gust: {
 		inherit: true,
 		category: "Physical",
 		type: "Normal"
-	},
-	harden: {
-		erit: true
 	},
 	haze: {
 		inherit: true,
@@ -561,9 +510,6 @@ exports.BattleMovedex = {
 			}
 		}
 	},
-	headbutt: {
-		inherit: true
-	},
 	hijumpkick: {
 		inherit: true,
 		basePower: 130,
@@ -576,16 +522,10 @@ exports.BattleMovedex = {
 			}
 		}
 	},
-	hornattack: {
-		inherit: true
-	},
 	horndrill: {
 		inherit: true,
 		desc: "Deals damage to one target equal to the target's maximum HP. Ignores accuracy and evasion modifiers. This attack's accuracy is equal to (user's level - target's level + 30)%, and fails if the target is faster.",
 		shortDesc: "OHKOs the target. Fails if user is slower than the target."
-	},
-	hydropump: {
-		inherit: true
 	},
 	hyperbeam: {
 		inherit: true,
@@ -603,15 +543,9 @@ exports.BattleMovedex = {
 		target: "normal",
 		type: "Normal"
 	},
-	hyperfang: {
-		inherit: true
-	},
 	hypnosis: {
 		inherit: true,
 		accuracy: 60
-	},
-	icebeam: {
-		inherit: true
 	},
 	icepunch: {
 		inherit: true,
@@ -630,12 +564,6 @@ exports.BattleMovedex = {
 	karatechop: {
 		inherit: true,
 		type: "Normal"
-	},
-	kinesis: {
-		inherit: true
-	},
-	leechlife: {
-		inherit: true
 	},
 	leechseed: {
 		inherit: true,
@@ -951,9 +879,6 @@ exports.BattleMovedex = {
 		basePower: 260,
 		target: "normal"
 	},
-	sharpen: {
-		inherit: true,
-	},
 	sing: {
 		inherit: true,
 		target: "normal"
@@ -988,9 +913,6 @@ exports.BattleMovedex = {
 			}
 			this.heal(Math.floor(target.maxhp / 2), target, target);
 		}
-	},
-	solarbeam: {
-		inherit: true
 	},
 	sonicboom: {
 		inherit: true,
@@ -1172,9 +1094,6 @@ exports.BattleMovedex = {
 	toxic: {
 		inherit: true,
 		accuracy: 85
-	},
-	transform: {
-		inherit: true
 	},
 	triattack: {
 		inherit: true,
