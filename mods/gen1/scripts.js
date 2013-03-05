@@ -679,18 +679,12 @@ exports.BattleScripts = {
 		var defense = defender.getStat(defType);
 
 		if (move.crit) {
-			move.ignoreNegativeOffensive = true;
-			move.ignorePositiveDefensive = true;
-		}
-		if (move.ignoreNegativeOffensive && attack < attacker.getStat(atkType, true)) {
 			move.ignoreOffensive = true;
+			move.ignoreDefensive = true;
 		}
 		if (move.ignoreOffensive) {
 			this.debug('Negating (sp)atk boost/penalty.');
 			attack = attacker.getStat(atkType, true);
-		}
-		if (move.ignorePositiveDefensive && defense > target.getStat(defType, true)) {
-			move.ignoreDefensive = true;
 		}
 		if (move.ignoreDefensive) {
 			this.debug('Negating (sp)def boost/penalty.');
