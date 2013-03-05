@@ -29,18 +29,21 @@ exports.BattleScripts = {
 			this.add('debug', activity);
 		}
 	},
-	// Gets the stat from BattlePokemon, checks it according to gen 1
-	getGen1Stat: function (stat, statName, pokemon) {
-		this.debug('Running gen1 stat change. Stat: ' + stat + '. statName: ' + statName + '. Pokemon: ' + pokemon.name);
+	// getStat callback for gen 1 stat dealing
+	getStatCallback: function (stat, statName, pokemon) {
+		this.debug('Gen 1 getStat callback');
 		// Hard coded Reflect and Light Screen boosts
 		if (pokemon.volatiles['reflectdef'] && statName === 'def') {
-			this.debug('Reflect doubling defense');
+			stat *= 2;
+			// Max on reflect is 1024
+			if (stat > 1024) stat = 1024;
+			if (stat < 1) stat = 1;
+		} else if (pokemon.volatiles['lightscreenspd'] && statName === 'spd') {
 			stat *= 2;
 			// Max on reflect is 1024
 			if (stat > 1024) stat = 1024;
 			if (stat < 1) stat = 1;
 		} else {
-			this.debug('Capping stats');
 			// Gen 1 caps stats at 999 and min is 1
 			if (stat > 999) stat = 999;
 			if (stat < 1) stat = 1;
@@ -672,26 +675,26 @@ exports.BattleScripts = {
 		if (move.useSourceDefensive) defender = pokemon;
 		var atkType = (move.category === 'Physical')? 'atk' : 'spa';
 		var defType = (move.defensiveCategory === 'Physical')? 'def' : 'spd';
-		var attack = this.getGen1Stat(attacker.getStat(atkType), atkType, pokemon);
-		var defense = this.getGen1Stat(defender.getStat(defType), defType, target);
+		var attack = attacker.getStat(atkType);
+		var defense = defender.getStat(defType);
 
 		if (move.crit) {
 			move.ignoreNegativeOffensive = true;
 			move.ignorePositiveDefensive = true;
 		}
-		if (move.ignoreNegativeOffensive && attack < this.getGen1Stat(attacker.getStat(atkType, true), atkType, pokemon)) {
+		if (move.ignoreNegativeOffensive && attack < attacker.getStat(atkType, true)) {
 			move.ignoreOffensive = true;
 		}
 		if (move.ignoreOffensive) {
 			this.debug('Negating (sp)atk boost/penalty.');
-			attack = this.getGen1Stat(attacker.getStat(atkType, true), atkType, pokemon);
+			attack = attacker.getStat(atkType, true);
 		}
-		if (move.ignorePositiveDefensive && defense > this.getGen1Stat(target.getStat(defType, true), defType, target)) {
+		if (move.ignorePositiveDefensive && defense > target.getStat(defType, true)) {
 			move.ignoreDefensive = true;
 		}
 		if (move.ignoreDefensive) {
 			this.debug('Negating (sp)def boost/penalty.');
-			defense = this.getGen1Stat(target.getStat(defType, true), defType, target);
+			defense = target.getStat(defType, true);
 		}
 
 		// Gen 1 damage formula: 

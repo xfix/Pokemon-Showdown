@@ -348,6 +348,10 @@ function BattlePokemon(set, side) {
 		} else {
 			stat = Math.floor(stat / boostTable[-boost]);
 		}
+		
+		if (selfB.getStatCallback) {
+			stat = selfB.getStatCallback(stat, statName, selfP);
+		}
 
 		return stat;
 	};
