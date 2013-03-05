@@ -31,7 +31,6 @@ exports.BattleScripts = {
 	},
 	// getStat callback for gen 1 stat dealing
 	getStatCallback: function (stat, statName, pokemon) {
-		this.debug('Gen 1 getStat callback for ' + statName + ' for ' + pokemon.name);
 		// Hard coded Reflect and Light Screen boosts
 		if (pokemon.volatiles['reflect'] && statName === 'def') {
 			this.debug('Reflect doubles Defense');
@@ -275,7 +274,6 @@ exports.BattleScripts = {
 					moveDamage = this.moveHit(target, pokemon, move);
 				}
 				if (moveDamage === false) break;
-				// Damage from each hit is individually counted for the purposes of Counter
 				damage = (moveDamage || 0);
 			}
 			move.damage = null;

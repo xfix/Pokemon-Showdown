@@ -126,6 +126,17 @@ exports.BattleFormats = {
 		ruleset: ['Gen1 Pokemon', 'All Abilities', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Clause'],
 		banlist: ['Uber', 'Illegal']
 	},
+	gen1uudev: {
+		mod: 'gen1',
+		effectType: 'Format',
+		name: "[Gen 1] UU Dev",
+		challengeShow: true,
+		searchShow: true,
+		debug: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Gen1 Pokemon', 'All Abilities', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Clause'],
+		banlist: ['Uber', 'OU', 'Illegal']
+	},
 	gen1ubersdev: {
 		mod: 'gen1',
 		effectType: 'Format',

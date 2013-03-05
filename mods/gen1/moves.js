@@ -67,12 +67,22 @@ exports.BattleMovedex = {
 			},
 			onStart: function(pokemon) {
 				this.effectData.totalDamage = 0;
+				this.effectData.lastDamage = 0;
 				this.add('-start', pokemon, 'Bide');
+			},
+			onHit: function(target, source, move) {
+				if (source && source !== target && move.category !== 'Physical' && move.category !== 'Special') {
+					damage = this.effectData.totalDamage;
+					this.effectData.totalDamage += damage;
+					this.effectData.lastDamage = damage;
+					this.effectData.sourcePosition = source.position;
+					this.effectData.sourceSide = source.side;
+				}
 			},
 			onDamage: function(damage, target, source, move) {
 				if (!source || source.side === target.side) return;
 				if (!move || move.effectType !== 'Move') return;
-				if (damage === 0 && this.effectData.lastDamage && this.effectData.lastDamage > 0) {
+				if (!damage && this.effectData.lastDamage > 0) {
 					damage = this.effectData.totalDamage;
 				}
 				this.effectData.totalDamage += damage;
@@ -673,63 +683,37 @@ exports.BattleMovedex = {
 		target: "normal",
 		type: "Grass"
 	},
-	leer: {
-		inherit: true
-	},
-	lick: {
-		inherit: true
-	},
 	lightscreen: {
-		inherit: true,
-		desc: "For 5 turns, the user doubles its Special Defense. Critical hits ignore this protection. It is removed from the user's side if the user is successfully hit by Haze.",
-		shortDesc: "For 5 turns, user's Sp. Def is 2x.",
-		effect: {
-			// onModifySpD not working, use this by now
-			onFoeBasePower: function(basePower, attacker, defender, move) {
-				if (move.category === 'Special' && defender.side === this.effectData.target) {
-					if (!move.crit) {
-						this.debug('Light Screen weaken')
-						return basePower/2;
-					}
-				}
-			},
-			/*onModifySpD: function(spd, pokemon) {
-				this.debug('Light screen doubles special defense');
-				return spd * 2;
-			},*/
-			onStart: function(side) {
-				this.add('-sidestart', side, 'move: Light Screen');
-			},
-			onResidualOrder: 21,
-			onResidualSubOrder: 1,
-			onSwitchOut: function (pokemon) {
-				pokemon.side.removeSideCondition('lightscreen');
-			},
-			onEnd: function(side) {
-				this.add('-sideend', side, 'move: Light Screen');
+		num: 113,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		desc: "For 5 turns, the user has double Special when attacked. Removed by Haze.",
+		shortDesc: "For 5 turns, user's Special is 2x when attacked.",
+		id: "lightscreen",
+		isViable: true,
+		name: "Light Screen",
+		pp: 30,
+		priority: 0,
+		isSnatchable: true,
+		secondary: false,
+		volatileStatus: 'lightscreen',
+		onTryHit: function (pokemon) {
+			if (pokemon.volatiles['lightscreen']) {
+				return false;
 			}
-		}
-	},
-	lovelykiss: {
-		inherit: true
+		},
+		target: "self",
+		type: "Psychic"
 	},
 	lowkick: {
 		num: 67,
 		accuracy: 90,
 		basePower: 50
 	},
-	meditate: {
-		inherit: true
-	},
 	megadrain: {
 		inherit: true,
 		pp: 10
-	},
-	megakick: {
-		inherit: true
-	},
-	megapunch: {
-		inherit: true
 	},
 	metronome: {
 		inherit: true,
@@ -786,15 +770,12 @@ exports.BattleMovedex = {
 			this.add('-start', source, 'Mimic', move.name);
 		}
 	},
-	minimize: {
-		inherit: true
-	},
 	mirrormove: {
 		num: 119,
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
-		desc: "The user uses the last move used by a selected adjacent target. The copied move is used against that target, if possible. Fails if the target has not yet used a move, or the last move used was Acupressure, After You, Aromatherapy, Chatter, Conversion 2, Counter, Curse, Doom Desire, Feint, Final Gambit, Focus Punch, Future Sight, Gravity, Guard Split, Hail, Haze, Heal Bell, Heal Pulse, Helping Hand, Light Screen, Lucky Chant, Me First, Mimic, Mirror Coat, Mist, Mud Sport, Nature Power, Perish Song, Power Split, Psych Up, Quick Guard, Rain Dance, Reflect, Reflect Type, Role Play, Safeguard, Sandstorm, Sketch, Spikes, Spit Up, Stealth Rock, Struggle, Sunny Day, Tailwind, Toxic Spikes, Transform, Water Sport, Wide Guard, or any move that is self-targeting.",
+		desc: "The user uses the last move used by a selected adjacent target. The copied move is used against that target, if possible. Fails if the target has not yet used a move, or the last move used was Counter, Haze, Light Screen, Mimic, Reflect, Struggle, Transform, or any move that is self-targeting.",
 		shortDesc: "User uses the target's last used move against it.",
 		id: "mirrormove",
 		name: "Mirror Move",
@@ -814,26 +795,14 @@ exports.BattleMovedex = {
 		target: "normal",
 		type: "Flying"
 	},
-	mist: {
-		inherit: true
-	},
 	nightshade: {
 		inherit: true,
 		affectedByImmunities: false
-	},
-	payday: {
-		inherit: true
-	},
-	peck: {
-		inherit: true
 	},
 	petaldance: {
 		inherit: true,
 		basePower: 120,
 		pp: 20
-	},
-	pinmissile: {
-		inherit: true
 	},
 	poisongas: {
 		inherit: true,
@@ -847,15 +816,6 @@ exports.BattleMovedex = {
 			chance: 20,
 			status: 'psn'
 		}
-	},
-	poisonpowder: {
-		inherit: true
-	},
-	pound: {
-		inherit: true
-	},
-	psybeam: {
-		inherit: true
 	},
 	psychic: {
 		inherit: true,
@@ -872,9 +832,6 @@ exports.BattleMovedex = {
 	psywave: {
 		inherit: true,
 		target: "normal"
-	},
-	quickattack: {
-		inherit: true
 	},
 	rage: {
 		inherit: true,
@@ -981,18 +938,6 @@ exports.BattleMovedex = {
 		secondary: null,
 		target: "normal"
 	},
-	rockthrow: {
-		inherit: true
-	},
-	rollingkick: {
-		inherit: true
-	},
-	sandattack: {
-		inherit: true
-	},
-	scratch: {
-		inherit: true
-	},
 	screech: {
 		inherit: true,
 		target: "normal"
@@ -1020,15 +965,6 @@ exports.BattleMovedex = {
 	skyattack: {
 		inherit: true,
 		critRatio: 1
-	},
-	slam: {
-		inherit: true,
-	},
-	slash: {
-		inherit: true,
-	},
-	sleeppowder: {
-		inherit: true,
 	},
 	sludge: {
 		inherit: true,
@@ -1060,23 +996,11 @@ exports.BattleMovedex = {
 		inherit: true,
 		category: "Physical"
 	},
-	spikecannon: {
-		inherit: true
-	},
-	splash: {
-		inherit: true
-	},
-	spore: {
-		inherit: true
-	},
 	stomp: {
 		inherit: true,
 		basePowerCallback: null,
 		desc: "Deals damage to one adjacent target with a 30% chance to flinch it.",
 		shortDesc: "30% chance to flinch the target."
-	},
-	strength: {
-		inherit: true
 	},
 	stringshot: {
 		inherit: true,
@@ -1105,12 +1029,6 @@ exports.BattleMovedex = {
 		secondary: false,
 		target: "normal",
 		type: "Normal"
-	},
-	stunspore: {
-		inherit: true
-	},
-	submission: {
-		inherit: true
 	},
 	substitute: {
 		num: 164,
@@ -1197,19 +1115,15 @@ exports.BattleMovedex = {
 		target: "self",
 		type: "Normal"
 	},
-	superfang: {
-		inherit: true
-	},
 	supersonic: {
 		inherit: true,
 		target: "normal"
 	},
-	surf: {
-		inherit: true
-	},
 	swift: {
 		inherit: true,
-		category: "Physical"
+		category: "Physical",
+		accuracy: true,
+		ignoreEvasion: true
 	},
 	swordsdance: {
 		inherit: true,
@@ -1229,12 +1143,6 @@ exports.BattleMovedex = {
 	tailwhip: {
 		inherit: true,
 		target: "normal"
-	},
-	takedown: {
-		inherit: true
-	},
-	teleport: {
-		inherit: true
 	},
 	thrash: {
 		inherit: true,
@@ -1261,12 +1169,6 @@ exports.BattleMovedex = {
 			}
 		}
 	},
-	thunderbolt: {
-		inherit: true
-	},
-	thundershock: {
-		inherit: true
-	},
 	toxic: {
 		inherit: true,
 		accuracy: 85
@@ -1279,22 +1181,10 @@ exports.BattleMovedex = {
 		category: "Physical",
 		secondary: null
 	},
-	twineedle: {
-		inherit: true
-	},
-	vicegrip: {
-		inherit: true
-	},
 	vinewhip: {
 		inherit: true,
 		category: "Special",
 		pp: 10
-	},
-	watergun: {
-		inherit: true
-	},
-	waterfall: {
-		inherit: true
 	},
 	whirlwind: {
 		inherit: true,
@@ -1307,9 +1197,6 @@ exports.BattleMovedex = {
 	wingattack: {
 		inherit: true,
 		basePower: 35
-	},
-	withdraw: {
-		inherit: true
 	},
 	wrap: {
 		inherit: true,
