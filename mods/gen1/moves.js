@@ -34,9 +34,6 @@ exports.BattleMovedex = {
 		target: "normal",
 		type: "Poison"
 	},
-	acidarmor: {
-		inherit: true
-	},
 	agility: {
 		inherit: true,
 		onModifyMove: function(move, pokemon) {
@@ -56,38 +53,46 @@ exports.BattleMovedex = {
 			spa: 2
 		}
 	},
-	aurorabeam: {
-		inherit: true
-	},
-	barrage: {
-		inherit: true
-	},
-	barrier: {
-		inherit: true
-	},
 	bide: {
 		inherit: true,
 		desc: "The user spends two to three turns locked into this move and then, on the second turn after using this move, the user attacks the last Pokemon that hit it, inflicting double the damage in HP it lost during the two turns. If the last Pokemon that hit it is no longer on the field, the user attacks a random foe instead. If the user is prevented from moving during this move's use, the effect ends. This move ignores Accuracy and Evasion modifiers and can hit Ghost-types. Makes contact. Priority +1.",
 		shortDesc: "Waits 2-3 turns; deals double the damage taken.",
 		priority: 0,
-		accuracy: 100,
+		accuracy: true,
+		ignoreEvasion: true,
 		effect: {
 			duration: 2,
-			onLockMove: 'bide',
+			durationCallBack: function (target, source, effect) {
+				return this.random(2, 3);
+			},
 			onStart: function(pokemon) {
 				this.effectData.totalDamage = 0;
 				this.add('-start', pokemon, 'Bide');
 			},
 			onDamage: function(damage, target, source, move) {
-				if (!move || move.effectType !== 'Move') return;
 				if (!source || source.side === target.side) return;
+				if (!move || move.effectType !== 'Move') return;
+				if (damage === 0 && this.effectData.lastDamage && this.effectData.lastDamage > 0) {
+					damage = this.effectData.totalDamage;
+				}
 				this.effectData.totalDamage += damage;
+				this.effectData.lastDamage = damage;
 				this.effectData.sourcePosition = source.position;
 				this.effectData.sourceSide = source.side;
 			},
 			onAfterSetStatus: function(status, pokemon) {
-				if (status.id === 'slp') {
-					pokemon.removeVolatile('bide');
+				// Sleep, freeze, partial trap will just pause duration
+				if (pokemon.volatiles['flinch']) {
+					pokemon.effectData.duration++;
+				} else if (pokemon.volatiles['partiallytrapped']) {
+					pokemon.effectData.duration++;
+				} else {
+					switch (status.id) {
+					case 'slp':
+					case 'frz':
+						pokemon.effectData.duration++;
+						break;
+					}
 				}
 			},
 			onBeforeMove: function(pokemon) {
@@ -103,9 +108,20 @@ exports.BattleMovedex = {
 				}
 				this.add('-message', pokemon.name+' is storing energy! (placeholder)');
 				return false;
+			},
+			onModifyPokemon: function(pokemon) {
+				if (!pokemon.hasMove('bide')) {
+					return;
+				}
+				var moves = pokemon.moveset;
+				for (var i=0; i<moves.length; i++) {
+					if (moves[i].id !== 'bide') {
+						moves[i].disabled = true;
+					}
+				}
 			}
 		},
-		type: "???"
+		type: "???" // Will look as Normal but it's STAB-less
 	},
 	bind: {
 		inherit: true,
@@ -135,7 +151,6 @@ exports.BattleMovedex = {
 	},
 	bite: {
 		inherit: true,
-		num: 44,
 		accuracy: 100,
 		basePower: 60,
 		category: "Physical",
@@ -154,17 +169,12 @@ exports.BattleMovedex = {
 		type: "Normal"
 	},
 	blizzard: {
-		num: 59,
+		inherit: true,
 		accuracy: 90,
 		basePower: 120,
 		category: "Special",
 		desc: "Deals damage to the target and has a 10% chance to freeze it.",
 		shortDesc: "10% chance to freeze the foe.",
-		id: "blizzard",
-		isViable: true,
-		name: "Blizzard",
-		pp: 5,
-		priority: 0,
 		secondary: {
 			chance: 10,
 			status: 'frz'
@@ -172,21 +182,9 @@ exports.BattleMovedex = {
 		target: "normal",
 		type: "Ice"
 	},
-	bodyslam: {
-		inherit: true
-	},
-	boneclub: {
-		inherit: true
-	},
-	bonemerang: {
-		inherit: true
-	},
 	bubble: {
 		inherit: true,
 		target: "normal"
-	},
-	bubblebeam: {
-		inherit: true
 	},
 	clamp: {
 		inherit: true,
@@ -946,9 +944,9 @@ exports.BattleMovedex = {
 		pp: 20,
 		priority: 0,
 		isSnatchable: true,
-		volatileStatus: 'reflectdef',
+		volatileStatus: 'reflect',
 		onTryHit: function (pokemon) {
-			if (pokemon.volatiles['reflectdef']) {
+			if (pokemon.volatiles['reflect']) {
 				return false;
 			}
 		},

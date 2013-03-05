@@ -31,14 +31,16 @@ exports.BattleScripts = {
 	},
 	// getStat callback for gen 1 stat dealing
 	getStatCallback: function (stat, statName, pokemon) {
-		this.debug('Gen 1 getStat callback');
+		this.debug('Gen 1 getStat callback for ' + statName + ' for ' + pokemon.name);
 		// Hard coded Reflect and Light Screen boosts
-		if (pokemon.volatiles['reflectdef'] && statName === 'def') {
+		if (pokemon.volatiles['reflect'] && statName === 'def') {
+			this.debug('Reflect doubles Defense');
 			stat *= 2;
 			// Max on reflect is 1024
 			if (stat > 1024) stat = 1024;
 			if (stat < 1) stat = 1;
-		} else if (pokemon.volatiles['lightscreenspd'] && statName === 'spd') {
+		} else if (pokemon.volatiles['lightscreen'] && statName === 'spd') {
+			this.debug('Light Screen doubles Special Defense');
 			stat *= 2;
 			// Max on reflect is 1024
 			if (stat > 1024) stat = 1024;
