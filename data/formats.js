@@ -115,10 +115,11 @@ exports.BattleFormats = {
 	        'Keldeo', 'Keldeo-Resolute',  'Meloetta', 'Genesect'
 	    ]
     },
-	gen1oudev: {
+	gen1oud {
 		mod: 'gen1',
 		effectType: 'Format',
-		name: "[Gen 1] OU Dev",
+		name: "[Gen 1] OU",
+		rated: true,
 		challengeShow: true,
 		searchShow: true,
 		debug: true,
@@ -126,10 +127,11 @@ exports.BattleFormats = {
 		ruleset: ['Gen1 Pokemon', 'All Abilities', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Clause'],
 		banlist: ['Uber', 'Illegal']
 	},
-	gen1uudev: {
+	gen1uu: {
 		mod: 'gen1',
 		effectType: 'Format',
-		name: "[Gen 1] UU Dev",
+		name: "[Gen 1] UU",
+		rated: true,
 		challengeShow: true,
 		searchShow: true,
 		debug: true,
@@ -137,16 +139,43 @@ exports.BattleFormats = {
 		ruleset: ['Gen1 Pokemon', 'All Abilities', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Clause'],
 		banlist: ['Uber', 'OU', 'Illegal']
 	},
-	gen1ubersdev: {
+	gen1ubers: {
 		mod: 'gen1',
 		effectType: 'Format',
-		name: "[Gen 1] Ubers Dev",
+		name: "[Gen 1] Ubers",
+		rated: true,
 		challengeShow: true,
 		searchShow: true,
 		debug: true,
 		isTeambuilderFormat: true,
 		ruleset: ['Gen1 Pokemon', 'All Abilities', 'Sleep Clause', 'Species Clause'],
 		banlist: ['Illegal']
+	},
+	gen1uu: {
+		mod: 'gen1',
+		effectType: 'Format',
+		name: "[Gen 1] UU",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		debug: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Gen1 Pokemon', 'All Abilities', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Clause'],
+		banlist: ['Uber', 'OU', 'Illegal']
+	},
+	gen1lc: {
+		mod: 'gen1',
+		effectType: 'Format',
+		name: "[Gen 1] LC",
+		maxLevel: 5,
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		debug: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Gen1 Pokemon', 'All Abilities', 'Little Cup', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Clause'],
+		banlist: ['Uber', 'OU', 'UU', 'Illegal', 'Sonicboom', 'Dragon Rage']
+
 	},
 	/*gen1randombattle: {
 		mod: 'gen1',
