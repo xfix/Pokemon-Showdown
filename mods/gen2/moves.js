@@ -28,5 +28,10 @@ exports.BattleMovedex = {
 		}
 	},
 	fakeout: null,
+	rage: {
+		// todo
+		// Rage boosts in Gens 2-4 is for the duration of Rage only
+		// Disable does not build
+	},
 	magikarpsrevenge: null
 };
