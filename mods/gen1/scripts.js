@@ -29,47 +29,22 @@ exports.BattleScripts = {
 			this.add('debug', activity);
 		}
 	},
-	getStat: function(statName, unboosted, unmodified) {
-		this.debug('Getting gen 1 stats');
-		statName = toId(statName);
-		var boost = selfP.boosts[statName];
-
-		if (statName === 'hp') return selfP.maxhp;
-
-		// Base stat
-		var stat = selfP.baseStats[statName];
-		stat = Math.floor(Math.floor(2*stat+selfP.set.ivs[statName]+Math.floor(selfP.set.evs[statName]/4))*selfP.level / 100 + 5);
-
-		if (unmodified) {
-			if (stat > 999) stat = 999;
+	// Gets the stat from BattlePokemon, checks it according to gen 1
+	getGen1Stat: function (stat, statName, pokemon) {
+		this.debug('Running gen1 stat change. Stat: ' + stat + '. statName: ' + statName + '. Pokemon: ' + pokemon.name);
+		// Hard coded Reflect and Light Screen boosts
+		if (pokemon.volatiles['reflectdef'] && statName === 'def') {
+			this.debug('Reflect doubling defense');
+			stat *= 2;
+			// Max on reflect is 1024
+			if (stat > 1024) stat = 1024;
 			if (stat < 1) stat = 1;
-			return stat;
-		}
-
-		// Stat modifier effects
-		var statTable = {atk:'Atk', def:'Def', spa:'SpA', spd:'SpD', spe:'Spe'};
-		stat = this.runEvent('Modify'+statTable[statName], selfP, null, null, stat);
-		stat = Math.floor(stat);
-
-		if (unboosted) {
-			if (stat > 999) stat = 999;
-			if (stat < 1) stat = 1;
-			return stat;
-		}
-
-		// Stat boosts
-		var boostTable = [1,1.5,2,2.5,3,3.5,4];
-		if (boost > 6) boost = 6;
-		if (boost < -6) boost = -6;
-		if (boost >= 0) {
-			stat = Math.floor(stat * boostTable[boost]);
 		} else {
-			stat = Math.floor(stat / boostTable[-boost]);
+			this.debug('Capping stats');
+			// Gen 1 caps stats at 999 and min is 1
+			if (stat > 999) stat = 999;
+			if (stat < 1) stat = 1;
 		}
-		
-		// Gen 1 caps stats at 999 and min is 1
-		if (stat > 999) stat = 999;
-		if (stat < 1) stat = 1;
 
 		return stat;
 	},
@@ -696,27 +671,27 @@ exports.BattleScripts = {
 		if (move.useTargetOffensive) attacker = target;
 		if (move.useSourceDefensive) defender = pokemon;
 		var atkType = (move.category === 'Physical')? 'atk' : 'spa';
-		var defType = (move.defensiveCategory === 'Physical')? 'atk' : 'spa';
-		var attack = attacker.getStat(atkType);
-		var defense = defender.getStat(defType);
+		var defType = (move.defensiveCategory === 'Physical')? 'def' : 'spd';
+		var attack = this.getGen1Stat(attacker.getStat(atkType), atkType, pokemon);
+		var defense = this.getGen1Stat(defender.getStat(defType), defType, target);
 
 		if (move.crit) {
 			move.ignoreNegativeOffensive = true;
 			move.ignorePositiveDefensive = true;
 		}
-		if (move.ignoreNegativeOffensive && attack < attacker.getStat(atkType, true)) {
+		if (move.ignoreNegativeOffensive && attack < this.getGen1Stat(attacker.getStat(atkType, true), atkType, pokemon)) {
 			move.ignoreOffensive = true;
 		}
 		if (move.ignoreOffensive) {
 			this.debug('Negating (sp)atk boost/penalty.');
-			attack = attacker.getStat(atkType, true);
+			attack = this.getGen1Stat(attacker.getStat(atkType, true), atkType, pokemon);
 		}
-		if (move.ignorePositiveDefensive && defense > target.getStat(defType, true)) {
+		if (move.ignorePositiveDefensive && defense > this.getGen1Stat(target.getStat(defType, true), defType, target)) {
 			move.ignoreDefensive = true;
 		}
 		if (move.ignoreDefensive) {
 			this.debug('Negating (sp)def boost/penalty.');
-			defense = target.getStat(defType, true);
+			defense = this.getGen1Stat(target.getStat(defType, true), defType, target);
 		}
 
 		// Gen 1 damage formula: 

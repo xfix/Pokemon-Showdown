@@ -927,36 +927,34 @@ exports.BattleMovedex = {
 		heal: null,
 		onHit: function(target) {
 			// Fail when health is 255 or 511 less than max
-			if (target.hp === (target.maxhp - 255) || target.hp === (target.maxhp - 511)) {
+			if (target.hp === (target.maxhp - 255) || target.hp === (target.maxhp - 511) || target.hp === target.maxhp) {
 				return false;
 			}
 			this.heal(Math.floor(target.maxhp / 2), target, target);
 		}
 	},
 	reflect: {
-		inherit: true/*,
+		num: 115,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
 		desc: "The user has doubled Defense. Critical hits ignore this protection. It is removed from the user if it is successfully hit by Haze.",
 		shortDesc: "User's Defense is 2x.",
-		volatileStatus: 'reflect',
-		sideCondition: null,
-		target: 'self',
+		id: "reflect",
+		isViable: true,
+		name: "Reflect",
+		pp: 20,
+		priority: 0,
+		isSnatchable: true,
+		volatileStatus: 'reflectdef',
 		onTryHit: function (pokemon) {
-			if (pokemon.volatiles['reflect']) {
+			if (pokemon.volatiles['reflectdef']) {
 				return false;
 			}
 		},
-		effect: {
-			duration: null,
-			durationCallback: null,
-			onFoeBasePower: null,
-			onStart: function(side) {},
-			onResidualOrder: null,
-			onModifyDef: function(def, pokemon) {
-				this.debug('Reflect doubles defense');
-				return def * 2;
-			},
-			onEnd: function(side) {}
-		}*/
+		secondary: false,
+		target: "self",
+		type: "Psychic"
 	},
 	rest: {
 		inherit: true,
@@ -1051,7 +1049,7 @@ exports.BattleMovedex = {
 		heal: null,
 		onHit: function(target) {
 			// Fail when health is 255 or 511 less than max
-			if (target.hp === (target.maxhp - 255) || target.hp === (target.maxhp - 511)) {
+			if (target.hp === (target.maxhp - 255) || target.hp === (target.maxhp - 511) || target.hp === target.maxhp) {
 				return false;
 			}
 			this.heal(Math.floor(target.maxhp / 2), target, target);
