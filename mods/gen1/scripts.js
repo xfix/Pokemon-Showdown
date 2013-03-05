@@ -787,18 +787,18 @@ exports.BattleScripts = {
 				if (boost[i] < 0) {
 					msg = '-unboost';
 					boost[i] = -boost[i];
-				}
-				switch (effect.id) {
-				case 'intimidate':
-					this.add(msg, target, i, boost[i]);
-					break;
-				default:
-					if (effect.effectType === 'Move') {
-						this.add(msg, target, i, boost[i]);
-					} else {
-						this.add(msg, target, i, boost[i], '[from] '+effect.fullname);
+					// Re-add attack and speed drops if not present
+					if (i === 'atk' && target.status === 'brn' && !target.volatiles['brnattackdrop']) {
+						target.addVolatile('brnattackdrop');
 					}
-					break;
+					if (i === 'spe' && target.status === 'par' && !target.volatiles['parspeeddrop']) {
+						target.addVolatile('parspeeddrop');
+					}
+				}
+				if (effect.effectType === 'Move') {
+					this.add(msg, target, i, boost[i]);
+				} else {
+					this.add(msg, target, i, boost[i], '[from] '+effect.fullname);
 				}
 				this.runEvent('AfterEachBoost', target, source, effect, currentBoost);
 			}
