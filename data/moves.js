@@ -1933,7 +1933,6 @@ exports.BattleMovedex = {
 		boosts: {
 			spe: -2
 		},
-		affectedByImmunities: true,
 		secondary: false,
 		target: "normal",
 		type: "Grass"
@@ -3167,6 +3166,7 @@ exports.BattleMovedex = {
 			if (target.hp > pokemon.hp) {
 				return target.hp - pokemon.hp;
 			}
+			this.add('-immune', target, '[msg]');
 			return false;
 		},
 		category: "Physical",
@@ -3272,7 +3272,7 @@ exports.BattleMovedex = {
 	"eruption": {
 		num: 284,
 		accuracy: 100,
-		basePower: 0,
+		basePower: 150,
 		basePowerCallback: function(pokemon) {
 			return 150*pokemon.hp/pokemon.maxhp;
 		},
@@ -4329,7 +4329,7 @@ exports.BattleMovedex = {
 		basePowerCallback: function(pokemon) {
 			var actives = pokemon.side.active;
 			for (var i=0; i<actives.length; i++) {
-				if (actives[i] && actives[i].lastMove === 'fusionflare' && actives[i].movedThisTurn) {
+				if (actives[i] && actives[i].moveThisTurn === 'fusionflare') {
 					this.debug('double power');
 					return 200;
 				}
@@ -4355,7 +4355,7 @@ exports.BattleMovedex = {
 		basePowerCallback: function(pokemon) {
 			var actives = pokemon.side.active;
 			for (var i=0; i<actives.length; i++) {
-				if (actives[i] && actives[i].lastMove === 'fusionbolt' && actives[i].movedThisTurn) {
+				if (actives[i] && actives[i].moveThisTurn === 'fusionbolt') {
 					this.debug('double power');
 					return 200;
 				}
@@ -4644,7 +4644,6 @@ exports.BattleMovedex = {
 		priority: 0,
 		isSoundBased: true,
 		status: 'slp',
-		affectedByImmunities: true,
 		secondary: false,
 		target: "normal",
 		type: "Grass"
@@ -4687,7 +4686,7 @@ exports.BattleMovedex = {
 				var applies = false;
 				if (pokemon.removeVolatile('bounce') || pokemon.removeVolatile('fly') || pokemon.removeVolatile('skydrop')) {
 					applies = true;
-					pokemon.movedThisTurn = true;
+					this.cancelMove(pokemon);
 				}
 				if (pokemon.volatiles['magnetrise']) {
 					applies = true;
@@ -6522,7 +6521,6 @@ exports.BattleMovedex = {
 		priority: 0,
 		isBounceable: true,
 		volatileStatus: 'leechseed',
-		affectedByImmunities: true,
 		effect: {
 			onStart: function(target) {
 				this.add('-start', target, 'move: Leech Seed');
@@ -7676,7 +7674,7 @@ exports.BattleMovedex = {
 	},
 	"mudsport": {
 		num: 300,
-		accuracy: 100,
+		accuracy: true,
 		basePower: 0,
 		category: "Status",
 		desc: "Until the user is no longer active, all Electric-type attacks used by any active Pokemon have their power reduced to 0.33x. Fails if this move is already in effect; not stackable.",
@@ -8264,7 +8262,6 @@ exports.BattleMovedex = {
 		pp: 35,
 		priority: 0,
 		status: 'psn',
-		affectedByImmunities: true,
 		secondary: false,
 		target: "normal",
 		type: "Poison"
@@ -8737,13 +8734,13 @@ exports.BattleMovedex = {
 	"punishment": {
 		num: 386,
 		accuracy: 100,
-		basePower: 60,
+		basePower: 0,
 		basePowerCallback: function(pokemon, target) {
 			return 60 + 20 * target.positiveBoosts();
 		},
 		category: "Physical",
 		desc: "Deals damage to one adjacent target. Power is equal to 60+(X*20), where X is the target's total stat stage changes that are greater than 0, but not more than 200 power. Makes contact.",
-		shortDesc: "+20 power for each of the target's stat boosts.",
+		shortDesc: "60 power+20 for each of the target's stat boosts.",
 		id: "punishment",
 		name: "Punishment",
 		pp: 5,
@@ -8794,7 +8791,6 @@ exports.BattleMovedex = {
 				var sources = this.effectData.sources;
 				for (var i=0; i<sources.length; i++) {
 					this.runMove('pursuit', sources[i], pokemon);
-					sources[i].movedThisTurn = true;
 				}
 			}
 		},
@@ -8934,10 +8930,19 @@ exports.BattleMovedex = {
 		self: {
 			volatileStatus: 'rage'
 		},
-		onHit: function(target, source) {
-			// Renew rage's duration when it's used
-			if (source.volatiles['rage']) {
-				source.volatiles['rage'].duration = 2;
+		effect: {
+			onStart: function(pokemon) {
+				this.add('-singlemove', pokemon, 'Rage');
+			},
+			onHit: function(target, source, move) {
+				if (target !== source && move.category !== 'Status') {
+					this.boost({atk:1});
+				}
+			},
+			onBeforeMovePriority: 100,
+			onBeforeMove: function(pokemon) {
+				this.debug('removing Rage before attack');
+				pokemon.removeVolatile('rage');
 			}
 		},
 		secondary: false,
@@ -10684,7 +10689,6 @@ exports.BattleMovedex = {
 		pp: 15,
 		priority: 0,
 		status: 'slp',
-		affectedByImmunities: true,
 		secondary: false,
 		target: "normal",
 		type: "Grass"
@@ -10801,7 +10805,7 @@ exports.BattleMovedex = {
 				if ((pokemon.hasType('Flying') && !pokemon.volatiles['roost']) || pokemon.ability === 'levitate') applies = true;
 				if (pokemon.removeVolatile('fly') || pokemon.removeVolatile('bounce')) {
 					applies = true;
-					pokemon.movedThisTurn = true;
+					this.cancelMove(pokemon);
 				}
 				if (pokemon.volatiles['magnetrise']) {
 					applies = true;
@@ -10816,7 +10820,7 @@ exports.BattleMovedex = {
 			},
 			onRestart: function(pokemon) {
 				if (pokemon.removeVolatile('fly') || pokemon.removeVolatile('bounce')) {
-					pokemon.movedThisTurn = true;
+					this.cancelMove(pokemon);
 					this.add('-start', pokemon, 'Smack Down');
 				}
 			},
@@ -10985,7 +10989,6 @@ exports.BattleMovedex = {
 				pokemon.types = ['Water'];
 			}
 		},
-		affectedByImmunities: true,
 		secondary: false,
 		target: "normal",
 		type: "Water"
@@ -11183,14 +11186,19 @@ exports.BattleMovedex = {
 			return pokemon.volatiles['stockpile'].layers * 100;
 		},
 		category: "Special",
-		desc: "Deals damage to one adjacent target. Power is equal to 100 times the user's Stockpile count. Fails if the user's Stockpile count is 0. After dealing damage, the user's Defense and Special Defense decrease by as many stages as Stockpile had increased them, and the user's Stockpile count resets to 0.",
+		desc: "Deals damage to one adjacent target. Power is equal to 100 times the user's Stockpile count. Fails if the user's Stockpile count is 0. Whether or not this move is successful, the user's Defense and Special Defense decrease by as many stages as Stockpile had increased them, and the user's Stockpile count resets to 0.",
 		shortDesc: "More power with more uses of Stockpile.",
 		id: "spitup",
 		name: "Spit Up",
 		pp: 10,
 		priority: 0,
-		onTryHit: function(target, pokemon) {
-			if (!pokemon.volatiles['stockpile'] || !pokemon.volatiles['stockpile'].layers) return false;
+		onTry: function(pokemon) {
+			if (!pokemon.volatiles['stockpile']) {
+				this.add('-fail', pokemon);
+				return false;
+			}
+		},
+		onAfterMove: function(pokemon) {
 			pokemon.removeVolatile('stockpile');
 		},
 		secondary: false,
@@ -11252,7 +11260,6 @@ exports.BattleMovedex = {
 		pp: 15,
 		priority: 0,
 		status: 'slp',
-		affectedByImmunities: true,
 		secondary: false,
 		target: "normal",
 		type: "Grass"
@@ -11333,20 +11340,21 @@ exports.BattleMovedex = {
 		effect: {
 			onStart: function(target) {
 				this.effectData.layers = 1;
-				this.add('-start',target,'stockpile'+this.effectData.layers);
-				this.boost({def:1, spd:1});
+				this.add('-start', target, 'stockpile'+this.effectData.layers);
+				this.boost({def:1, spd:1}, target, target, this.getMove('stockpile'));
 			},
 			onRestart: function(target) {
 				if (this.effectData.layers < 3) {
 					this.effectData.layers++;
-					this.add('-start',target,'stockpile'+this.effectData.layers);
-					this.boost({def:1, spd:1});
+					this.add('-start', target, 'stockpile'+this.effectData.layers);
+					this.boost({def:1, spd:1}, target, target, this.getMove('stockpile'));
 				}
 			},
 			onEnd: function(target) {
 				var layers = this.effectData.layers * -1;
 				this.effectData.layers = 0;
-				this.boost({def:layers, spd:layers});
+				this.boost({def:layers, spd:layers}, target, target, this.getMove('stockpile'));
+				this.add('-end', target, 'move: Stockpile');
 			}
 		},
 		secondary: false,
@@ -11548,7 +11556,6 @@ exports.BattleMovedex = {
 		pp: 30,
 		priority: 0,
 		status: 'par',
-		affectedByImmunities: true,
 		secondary: false,
 		target: "normal",
 		type: "Grass"
@@ -12447,7 +12454,6 @@ exports.BattleMovedex = {
 		pp: 10,
 		priority: 0,
 		status: 'tox',
-		affectedByImmunities: true,
 		secondary: false,
 		target: "normal",
 		type: "Poison"
@@ -13095,7 +13101,7 @@ exports.BattleMovedex = {
 	"waterspout": {
 		num: 323,
 		accuracy: 100,
-		basePower: 0,
+		basePower: 150,
 		basePowerCallback: function(pokemon) {
 			return 150*pokemon.hp/pokemon.maxhp;
 		},
@@ -13277,7 +13283,6 @@ exports.BattleMovedex = {
 		pp: 15,
 		priority: 0,
 		status: 'brn',
-		affectedByImmunities: true,
 		secondary: false,
 		target: "normal",
 		type: "Fire"
@@ -13457,7 +13462,6 @@ exports.BattleMovedex = {
 			}
 			return false;
 		},
-		affectedByImmunities: true,
 		secondary: false,
 		target: "normal",
 		type: "Grass"

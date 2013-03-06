@@ -6,8 +6,15 @@ exports.BattleScripts = {
 
 		this.setActiveMove(move, pokemon, target);
 
-		if (pokemon.movedThisTurn || !this.runEvent('BeforeMove', pokemon, target, move)) {
-			this.debug(''+pokemon.id+' move interrupted; movedThisTurn: '+pokemon.movedThisTurn);
+		if (pokemon.moveThisTurn) {
+			// THIS IS PURELY A SANITY CHECK
+			// DO NOT TAKE ADVANTAGE OF THIS TO PREVENT A POKEMON FROM MOVING;
+			// USE this.cancelMove INSTEAD
+			this.debug(''+pokemon.id+' INCONSISTENT STATE, ALREADY MOVED: '+pokemon.moveThisTurn);
+			this.clearActiveMove(true);
+			return;
+		}
+		if (!this.runEvent('BeforeMove', pokemon, target, move)) {
 			this.clearActiveMove(true);
 			return;
 		}
@@ -24,6 +31,8 @@ exports.BattleScripts = {
 			pokemon.deductPP(move, null, target);
 		}
 		this.useMove(move, pokemon, target, sourceEffect);
+		pokemon.moveUsed(move);
+		this.singleEvent('AfterMove', move, null, pokemon, target, move);
 		this.runEvent('AfterMove', target, pokemon, move);
 		this.runEvent('AfterMoveSelf', pokemon, target, move);
 	},
@@ -602,6 +611,7 @@ exports.BattleScripts = {
 				ability: ability,
 				evs: evs,
 				ivs: ivs,
+				nature: nature,
 				item: item,
 				level: level,
 				happiness: happiness,
@@ -1247,8 +1257,7 @@ exports.BattleScripts = {
 			ivs: ivs,
 			item: item,
 			level: level,
-			shiny: (Math.random()*1024<=1),
-			gender: false
+			shiny: (Math.random()*1024<=1)
 		};
 	},
 	randomTeam: function(side) {
@@ -1400,7 +1409,7 @@ exports.BattleScripts = {
 			'machoke', 'machamp', 'doduo', 'dodrio', 'grimer', 'muk', 'kingler', 'cubone', 'marowak', 'hitmonlee', 'tangela', 
 			'mrmime', 'tauros', 'kabuto', 'dragonite', 'mewtwo', 'marill', 'hoppip', 'espeon', 'teddiursa', 'ursaring', 
 			'cascoon', 'taillow', 'swellow', 'pelipper', 'masquerain', 'azurill', 'minun', 'carvanha', 'huntail', 'bagon', 
-			'shelgon', 'salamence', 'latios', 'tangrowth', 'seismitoad', 'jellicent', 'eelektross', 'druddigon', 'bronzor', 
+			'shelgon', 'salamence', 'latios', 'tangrowth', 'seismitoad', 'eelektross', 'druddigon', 'bronzor', 
 			'bronzong', 'murkrow', 'honchkrow', 'absol', 'pidove', 'tranquill', 'unfezant', 'dunsparce', 'jirachi', 
 			'deerling', 'sawsbuck', 'meloetta', 'cherrim', 'gloom', 'vileplume', 'bellossom', 'lileep', 'venusaur', 
 			'sunflora', 'gallade', 'vullaby'
@@ -1461,42 +1470,15 @@ exports.BattleScripts = {
 			}
 			// Change gems to Grass Gem
 			if (set.item.indexOf('Gem') > -1) {
-				set.item = 'Grass Gem';
+				if (set.moves.indexOf('barrage') > -1 || set.moves.indexOf('eggbomb') > -1 || set.moves.indexOf('gigadrain') > -1) {
+					set.item = 'Grass Gem';
+				} else {
+					set.item = 'Metronome';
+				}
 			}
 			team.push(set);
 		}
 
-		return team;
-	},
-	random101Team: function(side) {
-		var keys = [];
-		var pokemonLeft = 0;
-		var pokemon = [];
-		var team = [];
-		// Rain, sun, sand, hail, weatherless, hyper offense, Baton Pass, Gimmicky
-		var leads = {'politoed':15, 'ninetales':30, 'tyranitar+hippowdown':45, 'abomasnow':55, 'terrakion':65, 'latios':80, 'smeargle':85, 'durant':90};
-		//leads = leads.randomize();
-		var random = this.random(89) + 1;
-		for (var key in leads) {
-			if (leads[key] <= random) {
-				var lead = leads[key];
-				break;
-			}
-		}
-		// Sand team
-		if (lead.indexOf('+') > -1) {
-			var possibles = leads.split('+');
-			random = this.random(99) + 1;
-			if (random < 40) {
-				lead = leads[0];
-			} else if (random < 81) {
-				lead = leads[1];
-			} else {
-				lead = leads[0];
-				team.push(leads[1]);
-			}
-		}
-		
 		return team;
 	}
 };
