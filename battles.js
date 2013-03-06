@@ -357,8 +357,8 @@ var BattlePokemon = (function() {
 			stat = Math.floor(stat / boostTable[-boost]);
 		}
 		
-		if (selfB.getStatCallback) {
-			stat = selfB.getStatCallback(stat, statName, selfP);
+		if (this.battle.getStatCallback) {
+			stat = this.battle.getStatCallback(stat, statName, selfP);
 		}
 
 		return stat;
