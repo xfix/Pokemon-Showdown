@@ -44,9 +44,14 @@ Sleep lasts 1-7 turns and you wake up at the end of the turn.
 
 1/256 miss
 ----------
+All moves but Swift and Bide have a 1/256 chance to miss.
 
 Partial Trapping Moves
 ----------------------
+Partial trapping moves let eiher Pokemon switch but target will be unable to move for its duration.
 
-Move differences
-----------------
+Glitches not implemented
+------------------------
+Being fully paralysed or self-hit from confusion in the immune turn of Fly or Dig granted you immunity for the rest of the match 
+until you switch or use Fly/Dig again.
+This glitch is deemed game-breaking, relies in luck to reproduce and it's not part of the metagame, so it's not implemented.

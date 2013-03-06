@@ -6,9 +6,7 @@
  * Additionally, egg groups, gender ratio, and abilities can be deleted to keep this clean.
  * Obnoxiously, the first ability (0) must be kept to make it easier for users, as otherwise
  * Illegal banlist will check for no ability or "None" ability if users use the teambuilder
- * and do not change the default ability. This will be solved in the future.
- * 
- * -Joim
+ * and do not change the default ability.
  */
 exports.BattlePokedex = {
 missingno:{num:0,species:"Missingno.",types:["Normal","Normal"],gender:"N",baseStats:{hp:33,atk:136,def:0,spa:6,spd:6,spe:29},abilities:{0:"Download"},heightm:3,weightkg:1590.8,color:"Gray"},

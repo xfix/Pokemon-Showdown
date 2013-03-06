@@ -192,7 +192,7 @@ exports.BattleFormats = {
 	gen1challengecup: {
 		mod: 'gen1',
 		effectType: 'Format',
-		name: "[Gen1] Challenge Cup",
+		name: "[Gen 1] Challenge Cup",
 		team: 'randomCC',
 		canUseRandomTeam: true,
 		rated: true,

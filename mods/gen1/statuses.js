@@ -6,8 +6,6 @@
  * Secondary effects to status (-speed, -atk) worked differently, so they are
  * separated as volatile statuses that are applied on switch in, removed
  * under certain conditions and re-applied under other conditions.
- * 
- * -Joim
  */
 function clampIntRange(num, min, max) {
 	num = Math.floor(num);
