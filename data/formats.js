@@ -115,7 +115,7 @@ exports.BattleFormats = {
 	        'Keldeo', 'Keldeo-Resolute',  'Meloetta', 'Genesect'
 	    ]
     },
-	gen1oud {
+	gen1ou: {
 		mod: 'gen1',
 		effectType: 'Format',
 		name: "[Gen 1] OU",
