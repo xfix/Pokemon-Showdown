@@ -348,7 +348,7 @@ exports.BattleFormats = {
 		challengeShow: true,
 		searchShow: true,
 		ruleset: ['PotD', 'Pokemon', 'Sleep Clause']
-	},*/
+	},
 	seasonalspringforward: {
 		effectType: 'Format',
 		name: "[Seasonal] Spring Forward",
