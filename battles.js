@@ -358,7 +358,7 @@ var BattlePokemon = (function() {
 		}
 		
 		if (this.battle.getStatCallback) {
-			stat = this.battle.getStatCallback(stat, statName, selfP);
+			stat = this.battle.getStatCallback(stat, statName, this);
 		}
 
 		return stat;
