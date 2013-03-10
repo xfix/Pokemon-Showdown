@@ -793,8 +793,11 @@ module.exports = (function () {
 				problems.push(name+" has more than 510 total EVs.");
 			}
 
-			// Don't check abilities for Illegal All Abilities 
-			if (format.ruleset.indexOf('All Abilities') === -1) {
+			// Don't check abilities for metagames with All Abilities 
+			if (this.gen <= 2) {
+				set.ability = '';
+			}
+			if (!banlistTable['ignoreillegalabilities']) {
 				if (ability.name !== template.abilities['0'] &&
 					ability.name !== template.abilities['1'] &&
 					ability.name !== template.abilities['DW']) {
