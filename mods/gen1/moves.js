@@ -846,8 +846,8 @@ exports.BattleMovedex = {
 			if (!target.setStatus('slp')) return false;
 			// Fail glitch when hp is 255/511 less than max
 			if (target.hp === (target.maxhp - 255) || target.hp === (target.maxhp - 511)) return false;
-			target.statusData.time = 3;
-			target.statusData.startTime = 3;
+			target.statusData.time = 2;
+			target.statusData.startTime = 2;
 			this.heal(target.maxhp); // Aeshetic only as the healing happens after you fall asleep in-game
 			this.add('-status', target, 'slp', '[from] move: Rest');
 		}
@@ -998,6 +998,28 @@ exports.BattleMovedex = {
 			onTryHitPriority: -1,
 			onTryHit: function(target, source, move) {
 				if (move.category === 'Status') {
+					// First of all we check for Bide
+					if (target.volatiles['bide'] && this.effectData.totalDamage) {
+						damage = this.effectData.totalDamage;
+						this.effectData.totalDamage += damage;
+						this.effectData.lastDamage = damage;
+						this.effectData.sourcePosition = source.position;
+						this.effectData.sourceSide = source.side;
+					}
+					/*
+					 * onDamage: function(damage, target, source, move) {
+							if (!source || source.side === target.side) return;
+							if (!move || move.effectType !== 'Move') return;
+							if (!damage && this.effectData.lastDamage > 0) {
+								damage = this.effectData.totalDamage;
+							}
+							this.effectData.totalDamage += damage;
+							this.effectData.lastDamage = damage;
+							this.effectData.sourcePosition = source.position;
+							this.effectData.sourceSide = source.side;
+						},
+					 */
+					
 					// In gen 1 it only blocks:
 					// poison, confusion, the effect of partial trapping moves, secondary effect confusion, 
 					// stat reducing moves and Leech Seed.
