@@ -593,20 +593,7 @@ exports.BattleFormats = {
 			
 			move.type = type;
 			
-			if (move.id === 'taunt') {
-				move.onTryHit = function (target, source, move) {
-					this.add('-message', source.name + ': Hey, ' + target.name + ', you fight like a cow!');
-				};
-				move.onHit = function (target, source, move) {
-					this.add('-message', target.name + ": I'm gonna gut you alive, " + source.name + '!!');
-				};
-				move.onMoveFail = function(target, source, move) {
-					// Returns false so move calls onHit and onMoveFail
-					if (!target.volatiles['taunt']) {
-						this.add('-message', target.name + ': Do you call that an insult, ' + source.name + '?');
-					}
-				};
-			}
+			
 		},
 		ruleset: ['PotD', 'Pokemon', 'Sleep Clause']
 	},
