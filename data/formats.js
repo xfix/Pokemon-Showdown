@@ -536,13 +536,16 @@ exports.BattleFormats = {
 		onSwitchIn: function(pokemon) {
 			var stonedPokemon = {koffing:1, weezing:1, slowpoke:1, slowbro:1, slowking:1, psyduck:1, spinda:1};
 			var stonerQuotes = ['your face is green!', 'I just realised that Arceus fainted for our sins', 'I can, you know, feel the colors', 
-			"you're my bro", "I'm imaginining a new color!", "I'm smelling the things I see!", 'hehe, hehe, funny', "I'm hungry!" , 'we are pokemanz'       
-			];
+			"you're my bro", "I'm imaginining a new color!", "I'm smelling the things I see!", 'hehe, hehe, funny', "I'm hungry!" , 'we are pokemanz',        
+			'Did you know that Eevee backwards is eevee?! AMAZING', 'aaaam gonna be the verrrry best like no one evar wasss'];
 			if (pokemon.template.id in stonedPokemon) {
 				var name = (pokemon.ability === 'illusion' && pokemon.illusion)? pokemon.illusion.toString().substr(4, pokemon.illusion.toString().length) : pokemon.name;
 				var random = this.random(stonerQuotes.length);
 				this.add('-message', name + ": Duuuuuude, " + stonerQuotes[random]);
 				this.boost({spe:-1, def:1, spd:1}, pokemon, pokemon, {fullname:'high'});
+			}
+			if (pokemon.template.id === 'magikarp') {
+				this.add('-message', "OH FUCK IT'S MAGIKARP!! Better forfeit NOW!!");
 			}
 		},
 		onModifyMove: function(move) {
@@ -592,6 +595,17 @@ exports.BattleFormats = {
 			}
 			
 			move.type = type;
+			// Changing name
+			if (move.accuracy !== true && move.accuracy < 100) {
+				if (move.name.indexOf(' ') > -1) {
+					var nameParts = move.name.split(' ');
+					move.name = nameParts[0] + ' Miss';
+				} else if (move.id === 'willowisp') {
+					move.name = 'Will-O-Miss';
+				} else {
+					move.name = move.name.substr(0, move.name.length - 2) + 'fail';
+				}
+			}
 			
 			if (move.id === 'bulkup') {
 				move.onHit = function (target, source, move) {
@@ -600,7 +614,8 @@ exports.BattleFormats = {
 				};
 			} else if (move.id === 'charm' || move.id === 'sweetkiss' || move.id === 'attract') {
 				var pickUpLines = ['have you been to Fukushima recently? Because you are glowing tonight!', 
-				'did it hurt when you fell to the earth? Because you must be an angel!', 'can I buy you a drink?'];
+				'did it hurt when you fell to the earth? Because you must be an angel!', 'can I buy you a drink?',
+				'roses are red / lemons are sour / spread your legs / and give me an hour', "roses are red / violets are red / I'm not good with colors"];
 				pickUpLines = pickUpLines.randomize();
 				move.onTryHit = function (target, source, move) {
 					var name = (source.ability === 'illusion' && source.illusion)? source.illusion.toString().substr(4, source.illusion.toString().length) : source.name;
@@ -612,11 +627,20 @@ exports.BattleFormats = {
 					var rejectLines = ['Uuuh... how about no', "gtfo I'm taken", 'I have to water the plants. On Easter Island. For a year. Bye',
 					'GO AWAY CREEP', 'Why do you smell like rotten eggs?', "I wouldn't date you even if you were the last Pokemon on earth."];
 					rejectLines = rejectLines.randomize();
+					var targetName = (target.ability === 'illusion' && target.illusion)? target.illusion.toString().substr(4, target.illusion.toString().length) : target.name;
                     if (!target.volatiles['attract']) {
-                        this.add('-message', target.name + ': ' + rejectLines[0]);
+                        this.add('-message', targetName + ': ' + rejectLines[0]);
                     }
                 };
 			}
+		},
+		onFaint: function (pokemon) {
+			// A haiku every time a Pokemon faints
+			var haikus = ["You suck a lot / You are a bad trainer / let a mon faint", "they see me driving / round town with the girl i love / and I'm like, haikou",
+			"Ain't no Pokemon tough enough / ain't no bulk decent enough / ain't no recovery good enough / to keep me from fainting you, babe",
+			"Roses are red / violetes are blue / you must be on some med / 'coz as a trainer you suck"];
+			haikus = haikus.randomize();
+			this.add('-message', haikus[0]);
 		},
 		ruleset: ['PotD', 'Pokemon', 'Sleep Clause']
 	},
