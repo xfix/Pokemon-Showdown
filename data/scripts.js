@@ -1490,12 +1490,12 @@ exports.BattleScripts = {
 	randomSeasonalFFTeam: function(side) {
 		// Seasonal Pokemon list
 		var seasonalPokemonList = [
-			'missingno', 'koffing', 'weezing', 'slowpoke', 'slowbro', 'slowking', 'psyduck', 'spinda', 'whimsicott', 'liepard', 'sableye',
+			'missingno', 'koffing', 'weezing', 'slowpoke', 'slowbro', 'slowking', 'psyduck', 'spinda'/*, 'whimsicott', 'liepard', 'sableye',
 			'thundurus', 'tornadus', 'illumise', 'murkrow', 'purrloin', 'riolu', 'volbeat', 'rotomheat', 'rotomfan', 'haunter',
 			'gengar', 'gastly', 'gliscor', 'venusaur', 'serperior', 'sceptile', 'shiftry', 'torterra', 'meganium', 'leafeon', 'roserade',
 			'amoonguss', 'parasect', 'breloom', 'abomasnow', 'rotommow', 'wormadam', 'tropius', 'lilligant', 'ludicolo', 'cacturne',
 			'vileplume', 'bellosom', 'victreebel', 'jumpluff', 'carnivine', 'sawsbuck', 'virizion', 'shaymin', 'arceusgrass', 'shayminsky',
-			'tangrowth', 'pansage', 'maractus', 'cradily', 'celebi', 'exeggutor'
+			'tangrowth', 'pansage', 'maractus', 'cradily', 'celebi', 'exeggutor'*/
 		];
 		seasonalPokemonList = seasonalPokemonList.randomize();
 		var team = [];
@@ -1524,7 +1524,7 @@ exports.BattleScripts = {
 				// Some serious missingno nerfing so it's just a fun annoying Poke
 				set.item = 'Flame Orb';
 				set.level = 255;
-				set.moves = ['Trick', 'Stored Power', 'Thunder Wave', 'FeatherDance'];
+				set.moves = ['Trick', 'Stored Power', 'Thunder Wave', 'Taunt'];
 				set.evs = {hp: 4, def: 0, spd: 0, spa: 0, atk: 255, spe: 255};
 				set.ivs = {hp: 0, def: 0, spd: 0, spa: 0, atk: 0, spe: 0};
 				set.nature = 'Brave';

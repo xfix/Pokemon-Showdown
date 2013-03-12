@@ -534,7 +534,79 @@ exports.BattleFormats = {
 			delete this.weatherData.duration;
 		},
 		onSwitchIn: function(pokemon) {
-			// Do something
+			var stonedPokemon = {koffing:1, weezing:1, slowpoke:1, slowbro:1, slowking:1, psyduck:1, spinda:1};
+			var stonerQuotes = ['your face is green!', 'I just realised that Arceus fainted for our sins', 'I can, you know, feel the colors', 
+			"you're my bro", "I'm imaginining a new color!", "I'm smelling the things I see!", 'hehe, hehe, funny', "I'm hungry!" , 'we are pokemanz'       
+			];
+			if (pokemon.template.id in stonedPokemon) {
+				var name = (pokemon.ability === 'illusion' && pokemon.illusion)? pokemon.illusion.toString().substr(4, pokemon.illusion.toString().length) : pokemon.name;
+				var random = this.random(stonerQuotes.length);
+				this.add('-message', name + ": Duuuuuude, " + stonerQuotes[random]);
+				this.boost({spe:-1, def:1, spd:1}, pokemon, pokemon, {fullname:'high'});
+			}
+		},
+		onModifyMove: function(move) {
+			var type = '';
+			switch (move.type.toLowerCase()){
+			case 'rock':
+			case 'ground':
+				type = 'Grass';
+				break;
+			case 'fire':
+			case 'bug':
+				type = 'Water';
+				break;
+			case 'water':
+			case 'grass':
+				type = 'Fire';
+				break;
+			case 'flying':
+				type = 'Fighting';
+				break;
+			case 'fighting':
+				type = 'Flying';
+				break;
+			case 'dark':
+				type = 'Bug';
+				break;
+			case 'dragon':
+			case 'electric':
+				type = 'Ice';
+				break;
+			case 'ghost':
+				type = 'Normal';
+				break;
+			case 'ice':
+				type = 'Electric';
+				break;
+			case 'normal':
+			case 'poison':
+				type = 'Ghost';
+				break;
+			case 'psychic':
+				type = 'Dark';
+				break;
+			case 'steel':
+				type = 'Poison';
+				break;
+			}
+			
+			move.type = type;
+			
+			if (move.id === 'taunt') {
+				move.onTryHit = function (target, source, move) {
+					this.add('-message', source.name + ': Hey, ' + target.name + ', you fight like a cow!');
+				};
+				move.onHit = function (target, source, move) {
+					this.add('-message', target.name + ": I'm gonna gut you alive, " + source.name + '!!');
+				};
+				move.onMoveFail = function(target, source, move) {
+					// Returns false so move calls onHit and onMoveFail
+					if (!target.volatiles['taunt']) {
+						this.add('-message', target.name + ': Do you call that an insult, ' + source.name + '?');
+					}
+				};
+			}
 		},
 		ruleset: ['PotD', 'Pokemon', 'Sleep Clause']
 	},
