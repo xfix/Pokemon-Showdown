@@ -511,6 +511,33 @@ exports.BattleFormats = {
 		},
 		ruleset: ['PotD', 'Pokemon', 'Sleep Clause']
 	},
+	seasonalfoolsfestival: {
+		effectType: 'Format',
+		name: "[Seasonal] Fools Festival",
+		team: 'randomSeasonalFF',
+		canUseRandomTeam: true,
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		onBegin: function() {
+			var dice = this.random(100);
+			if (dice < 65) {
+				this.add('-message', "April showers bring May flowers...");
+				this.setWeather('Rain Dance');
+			} else if (dice < 95) {
+				this.add('-message', "What a wonderful spring day! Let's go picnic!");
+				this.setWeather('Sunny Day');
+			} else {
+				this.add('-message', "Bollocks, it's hailing?! In april?! Curse you, spring!!");
+				this.setWeather('Hail');
+			}
+			delete this.weatherData.duration;
+		},
+		onSwitchIn: function(pokemon) {
+			// Do something
+		},
+		ruleset: ['PotD', 'Pokemon', 'Sleep Clause']
+	},
 	challengecup: {
 		effectType: 'Format',
 		name: "Challenge Cup",

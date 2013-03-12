@@ -396,9 +396,9 @@ exports.BattleItems = {
 			type: "Normal"
 		},
 		onSourceBasePower: function(basePower, user, target, move) {
-			if (move.type === 'Normal') {
+			if (move.type === 'Normal' && !target.volatiles['substitute']) {
 				if (target.eatItem()) {
-					this.debug('-50% reduction' && !target.volatiles['substitute']);
+					this.debug('-50% reduction');
 					return basePower * 0.5;
 				}
 			}
