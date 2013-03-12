@@ -1490,12 +1490,12 @@ exports.BattleScripts = {
 	randomSeasonalFFTeam: function(side) {
 		// Seasonal Pokemon list
 		var seasonalPokemonList = [
-			'missingno', 'koffing', 'weezing', 'slowpoke', 'slowbro', 'slowking', 'psyduck', 'spinda'/*, 'whimsicott', 'liepard', 'sableye',
+			'missingno', 'koffing', 'weezing', 'slowpoke', 'slowbro', 'slowking', 'psyduck', 'spinda', 'whimsicott', 'liepard', 'sableye',
 			'thundurus', 'tornadus', 'illumise', 'murkrow', 'purrloin', 'riolu', 'volbeat', 'rotomheat', 'rotomfan', 'haunter',
 			'gengar', 'gastly', 'gliscor', 'venusaur', 'serperior', 'sceptile', 'shiftry', 'torterra', 'meganium', 'leafeon', 'roserade',
 			'amoonguss', 'parasect', 'breloom', 'abomasnow', 'rotommow', 'wormadam', 'tropius', 'lilligant', 'ludicolo', 'cacturne',
 			'vileplume', 'bellosom', 'victreebel', 'jumpluff', 'carnivine', 'sawsbuck', 'virizion', 'shaymin', 'arceusgrass', 'shayminsky',
-			'tangrowth', 'pansage', 'maractus', 'cradily', 'celebi', 'exeggutor'*/
+			'tangrowth', 'pansage', 'maractus', 'cradily', 'celebi', 'exeggutor'
 		];
 		seasonalPokemonList = seasonalPokemonList.randomize();
 		var team = [];
@@ -1551,6 +1551,13 @@ exports.BattleScripts = {
 				set.evs = {hp: 252, def: 184, spd: 0, spa: 0, atk: 0, spe: 72};
 				set.ivs = {hp: 31, def: 31, spd: 31, spa: 0, atk: 31, spe: 31};
 				set.nature = 'Impish';
+			}
+			
+			// This is purely for the lulz
+			if (set.ability === 'Prankster' && !('attract' in set.moves) && this.random(100) < 50) {
+				var attractMoves = ['Attract', 'Charm'];
+				attractMoves = attractMoves.randomize();
+				set.moves[3] = attractMoves[0];
 			}
 			team.push(set);
 		}

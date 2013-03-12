@@ -593,7 +593,30 @@ exports.BattleFormats = {
 			
 			move.type = type;
 			
-			
+			if (move.id === 'bulkup') {
+				move.onHit = function (target, source, move) {
+					var name = (target.ability === 'illusion' && target.illusion)? target.illusion.toString().substr(4, target.illusion.toString().length) : target.name;
+					this.add('-message', name + ': Do you even lift, bro?!');
+				};
+			} else if (move.id === 'charm' || move.id === 'sweetkiss' || move.id === 'attract') {
+				var pickUpLines = ['have you been to Fukushima recently? Because you are glowing tonight!', 
+				'did it hurt when you fell to the earth? Because you must be an angel!', 'can I buy you a drink?'];
+				pickUpLines = pickUpLines.randomize();
+				move.onTryHit = function (target, source, move) {
+					var name = (source.ability === 'illusion' && source.illusion)? source.illusion.toString().substr(4, source.illusion.toString().length) : source.name;
+					var targetName = (target.ability === 'illusion' && target.illusion)? target.illusion.toString().substr(4, target.illusion.toString().length) : target.name;
+					this.add('-message', name + ': Hey, ' + targetName + ', ' + pickUpLines[0]);
+				};
+				move.onMoveFail = function(target, source, move) {
+                    // Returns false so move calls onHit and onMoveFail
+					var rejectLines = ['Uuuh... how about no', "gtfo I'm taken", 'I have to water the plants. On Easter Island. For a year. Bye',
+					'GO AWAY CREEP', 'Why do you smell like rotten eggs?', "I wouldn't date you even if you were the last Pokemon on earth."];
+					rejectLines = rejectLines.randomize();
+                    if (!target.volatiles['attract']) {
+                        this.add('-message', target.name + ': ' + rejectLines[0]);
+                    }
+                };
+			}
 		},
 		ruleset: ['PotD', 'Pokemon', 'Sleep Clause']
 	},
