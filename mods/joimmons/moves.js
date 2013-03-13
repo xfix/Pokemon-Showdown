@@ -1,116 +1,204 @@
 exports.BattleMovedex = {
-	leechseed: {
-		inherit: true,
-		accuracy: 100
-	},
-	gravity: {
-		inherit: true,
-		effect: {
-			duration: 7,
-			durationCallback: function(target, source, effect) {
-				if (source && source.ability === 'persistent') {
-					return 9;
+		blastburn: {
+			inherit: true,
+			basePower: 100,
+			willCrit: true
+		},
+		leechseed: {
+			inherit: true,
+			accuracy: 100
+		},
+		frenzyplant: {
+			inherit: true,
+			basePower: 100,
+			willCrit: true
+		},
+		gigaimpact: {
+			inherit: true,
+			basePower: 100,
+			willCrit: true
+		},
+		gravity: {
+			inherit: true,
+			effect: {
+				duration: 7,
+				durationCallback: function(target, source, effect) {
+					if (source && source.ability === 'persistent') {
+						return 9;
+					}
+					return 7;
+				},
+				onStart: function() {
+					this.add('-fieldstart', 'move: Gravity');
+				},
+				onAccuracy: function(accuracy) {
+					if (typeof accuracy !== 'number') return;
+					return accuracy * 5/3;
+				},
+				onModifyPokemonPriority: 100,
+				onModifyPokemon: function(pokemon) {
+					pokemon.negateImmunity['Ground'] = true;
+					var disabledMoves = {bounce:1, fly:1, hijumpkick:1, jumpkick:1, magnetrise:1, skydrop:1, splash:1, telekinesis:1};
+					for (var m in disabledMoves) {
+						pokemon.disabledMoves[m] = true;
+					}
+					var applies = false;
+					if (pokemon.removeVolatile('bounce') || pokemon.removeVolatile('fly') || pokemon.removeVolatile('skydrop')) {
+						applies = true;
+						this.cancelMove(pokemon);
+					}
+					if (pokemon.volatiles['magnetrise']) {
+						applies = true;
+						delete pokemon.volatiles['magnetrise'];
+					}
+					if (pokemon.volatiles['telekinesis']) {
+						applies = true;
+						delete pokemon.volatiles['telekinesis'];
+					}
+					if (applies) this.add('-activate', pokemon, 'Gravity');
+				},
+				onBeforeMove: function(pokemon, target, move) {
+					var disabledMoves = {bounce:1, fly:1, hijumpkick:1, jumpkick:1, magnetrise:1, skydrop:1, splash:1, telekinesis:1};
+					if (disabledMoves[move.id]) {
+						this.add('cant', pokemon, 'move: Gravity', move);
+						return false;
+					}
+				},
+				onResidualOrder: 22,
+				onEnd: function() {
+					this.add('-fieldend', 'move: Gravity');
 				}
-				return 7;
-			},
-			onStart: function() {
-				this.add('-fieldstart', 'move: Gravity');
-			},
-			onAccuracy: function(accuracy) {
-				if (typeof accuracy !== 'number') return;
-				return accuracy * 5/3;
-			},
-			onModifyPokemonPriority: 100,
-			onModifyPokemon: function(pokemon) {
-				pokemon.negateImmunity['Ground'] = true;
-				var disabledMoves = {bounce:1, fly:1, hijumpkick:1, jumpkick:1, magnetrise:1, skydrop:1, splash:1, telekinesis:1};
-				for (var m in disabledMoves) {
-					pokemon.disabledMoves[m] = true;
-				}
-				var applies = false;
-				if (pokemon.removeVolatile('bounce') || pokemon.removeVolatile('fly') || pokemon.removeVolatile('skydrop')) {
-					applies = true;
-					this.cancelMove(pokemon);
-				}
-				if (pokemon.volatiles['magnetrise']) {
-					applies = true;
-					delete pokemon.volatiles['magnetrise'];
-				}
-				if (pokemon.volatiles['telekinesis']) {
-					applies = true;
-					delete pokemon.volatiles['telekinesis'];
-				}
-				if (applies) this.add('-activate', pokemon, 'Gravity');
-			},
-			onBeforeMove: function(pokemon, target, move) {
-				var disabledMoves = {bounce:1, fly:1, hijumpkick:1, jumpkick:1, magnetrise:1, skydrop:1, splash:1, telekinesis:1};
-				if (disabledMoves[move.id]) {
-					this.add('cant', pokemon, 'move: Gravity', move);
-					return false;
-				}
-			},
-			onResidualOrder: 22,
-			onEnd: function() {
-				this.add('-fieldend', 'move: Gravity');
 			}
-		}
-	},
-	scald: {
-		inherit: true,
-		accuracy: 50,
-		secondary: {
-			chance: 100,
-			status: 'brn'
-		}
-	},
-	stealthrock: {
-		inherit: true,
-		effect: {
-			// this is a side condition
-			onStart: function(side) {
-				this.add('-sidestart',side,'move: Stealth Rock');
-			},
-			onSwitchIn: function(pokemon) {
-				var typeMod = this.getEffectiveness('Rock', pokemon);
-				var factor = 16;
-				if (typeMod == 1) factor = 8;
-				if (typeMod >= 2) factor = 4;
-				if (typeMod == -1) factor = 32;
-				if (typeMod <= -2) factor = 64;
-				var damage = this.damage(pokemon.maxhp/factor);
-			}
-		}
-	},
-	toxic: {
-		inherit: true,
-		accuracy: 100
-	},
-	trickrom: {
-		inherit: true,
-		effect: {
-			duration: 7,
-			durationCallback: function(target, source, effect) {
-				if (source && source.ability === 'persistent') {
-					return 9;
+		},
+		hydrocannon: {
+			inherit: true,
+			basePower: 100,
+			willCrit: true
+		},
+		hyperbeam: {
+			inherit: true,
+			basePower: 100,
+			willCrit: true
+		},
+		"iciclerock": {
+			num: 1000,
+			accuracy: true,
+			basePower: 0,
+			category: "Status",
+			desc: "Sets up a hazard on the foe's side of the field, damaging each foe that switches in. Can be used only once before failing. Foes lose 1/64, 1/32, 1/16, 1/8, or 1/4 of their maximum HP, rounded down, based on their weakness to the Ice-type; 0.25x, 0.5x, neutral, 2x, or 4x, respectively. Can be removed from the foe's side if any foe uses Rapid Spin or is hit by Defog. Pokemon protected by Magic Coat or the Ability Magic Bounce are unaffected and instead use this move themselves.",
+			shortDesc: "Hurts foes on switch-in. Factors Ice weakness.",
+			id: "iciclerock",
+			isViable: true,
+			name: "Icicle Rock",
+			pp: 20,
+			priority: 0,
+			isBounceable: true,
+			sideCondition: 'iciclerock',
+			effect: {
+				// this is a side condition
+				onStart: function(side) {
+					this.add('-sidestart',side,'move: Icicle Rock');
+				},
+				onSwitchIn: function(pokemon) {
+					var typeMod = this.getEffectiveness('Ice', pokemon);
+					var factor = 16;
+					if (typeMod == 1) factor = 8;
+					if (typeMod >= 2) factor = 4;
+					if (typeMod == -1) factor = 32;
+					if (typeMod <= -2) factor = 64;
+					var damage = this.damage(pokemon.maxhp/factor);
 				}
-				return 7;
 			},
-			onStart: function(target, source) {
-				this.add('-fieldstart', 'move: Trick Room', '[of] '+source);
-			},
-			onModifySpePriority: -100,
-			onModifySpe: function(spe) {
-				// just for fun: Trick Room glitch
-				if (spe < 1810) return -spe;
-			},
-			onResidualOrder: 23,
-			onEnd: function() {
-				this.add('-fieldend', 'move: Trick Room');
+			secondary: false,
+			target: "foeSide",
+			type: "Ice"
+		},
+		rapidspin: {
+			inherit: true,
+			self: {
+				onHit: function(pokemon) {
+					if (pokemon.hp && pokemon.removeVolatile('leechseed')) {
+						this.add('-end', pokemon, 'Leech Seed', '[from] move: Rapid Spin', '[of] '+pokemon);
+					}
+					var sideConditions = {spikes:1, toxicspikes:1, stealthrock:1, iciclerock:1};
+					for (var i in sideConditions) {
+						if (pokemon.hp && pokemon.side.removeSideCondition(i)) {
+							this.add('-sideend', pokemon.side, this.getEffect(i).name, '[from] move: Rapid Spin', '[of] '+pokemon);
+						}
+					}
+					if (pokemon.hp && pokemon.volatiles['partiallytrapped']) {
+						this.add('-remove', pokemon, pokemon.volatiles['partiallytrapped'].sourceEffect.name, '[from] move: Rapid Spin', '[of] '+pokemon, '[partiallytrapped]');
+						delete pokemon.volatiles['partiallytrapped'];
+					}
+				}
 			}
+		},
+		roaroftime: {
+			inherit: true,
+			basePower: 100,
+			willCrit: true
+		},
+		rockwrecker: {
+			inherit: true,
+			basePower: 100,
+			willCrit: true
+		},
+		scald: {
+			inherit: true,
+			accuracy: 50,
+			secondary: {
+				chance: 100,
+				status: 'brn'
+			}
+		},
+		stealthrock: {
+			inherit: true,
+			effect: {
+				// this is a side condition
+				onStart: function(side) {
+					this.add('-sidestart',side,'move: Stealth Rock');
+				},
+				onSwitchIn: function(pokemon) {
+					var typeMod = this.getEffectiveness('Rock', pokemon);
+					var factor = 16;
+					if (typeMod == 1) factor = 8;
+					if (typeMod >= 2) factor = 4;
+					if (typeMod == -1) factor = 32;
+					if (typeMod <= -2) factor = 64;
+					var damage = this.damage(pokemon.maxhp/factor);
+				}
+			}
+		},
+		toxic: {
+			inherit: true,
+			accuracy: 100
+		},
+		trickrom: {
+			inherit: true,
+			effect: {
+				duration: 7,
+				durationCallback: function(target, source, effect) {
+					if (source && source.ability === 'persistent') {
+						return 9;
+					}
+					return 7;
+				},
+				onStart: function(target, source) {
+					this.add('-fieldstart', 'move: Trick Room', '[of] '+source);
+				},
+				onModifySpePriority: -100,
+				onModifySpe: function(spe) {
+					// just for fun: Trick Room glitch
+					if (spe < 1810) return -spe;
+				},
+				onResidualOrder: 23,
+				onEnd: function() {
+					this.add('-fieldend', 'move: Trick Room');
+				}
+			}
+		},
+		willowisp: {
+			inherit: true,
+			accuracy: 100
 		}
-	},
-	willowisp: {
-		inherit: true,
-		accuracy: 100
-	}
 };
