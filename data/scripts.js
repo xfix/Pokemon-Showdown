@@ -1540,7 +1540,7 @@ exports.BattleScripts = {
 				set.nature = 'Careful';
 			} else if (template.id in {gastly:1, haunter:1, gengar:1}) {
 				// Gengar line, troll SubDisable set
-				set.item = 'Black Sludge';
+				set.item = 'Leftovers';
 				set.moves = ['Substitute', 'Disable', 'Shadow Ball', 'Focus Blast'];
 				set.evs = {hp: 4, def: 0, spd: 0, spa: 252, atk: 0, spe: 252};
 				set.nature = 'Timid';
@@ -1567,6 +1567,11 @@ exports.BattleScripts = {
 				var attractMoves = ['Attract', 'Charm'];
 				attractMoves = attractMoves.randomize();
 				set.moves[3] = attractMoves[0];
+			}
+			
+			// Illusion poison types -.-
+			if (set.item === 'Black Sludge') {
+				set.item = 'Leftovers';
 			}
 			team.push(set);
 		}
