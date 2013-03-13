@@ -615,7 +615,9 @@ exports.BattleFormats = {
 			} else if (move.id === 'charm' || move.id === 'sweetkiss' || move.id === 'attract') {
 				var pickUpLines = ['have you been to Fukushima recently? Because you are glowing tonight!', 
 				'did it hurt when you fell to the earth? Because you must be an angel!', 'can I buy you a drink?',
-				'roses are red / lemons are sour / spread your legs / and give me an hour', "roses are red / violets are red / I'm not good with colors"];
+				'roses are red / lemons are sour / spread your legs / and give me an hour', 
+				"roses are red / violets are red / I'm not good with colors", "Let's go watch cherry bossoms together (´･ω･`)",
+				"Will you be my Denko? (´･ω･`)"];
 				pickUpLines = pickUpLines.randomize();
 				move.onTryHit = function (target, source, move) {
 					var name = (source.ability === 'illusion' && source.illusion)? source.illusion.toString().substr(4, source.illusion.toString().length) : source.name;
@@ -638,7 +640,7 @@ exports.BattleFormats = {
 			// A haiku every time a Pokemon faints
 			var haikus = ["You suck a lot / You are a bad trainer / let a mon faint", "they see me driving / round town with the girl i love / and I'm like, haikou",
 			"Ain't no Pokemon tough enough / ain't no bulk decent enough / ain't no recovery good enough / to keep me from fainting you, babe",
-			"Roses are red / violetes are blue / you must be on some med / 'coz as a trainer you suck"];
+			"Roses are red / violets are blue / you must be on some med / 'coz as a trainer you suck"];
 			haikus = haikus.randomize();
 			this.add('-message', haikus[0]);
 		},

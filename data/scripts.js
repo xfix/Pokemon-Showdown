@@ -1524,13 +1524,13 @@ exports.BattleScripts = {
 				// Some serious missingno nerfing so it's just a fun annoying Poke
 				set.item = 'Flame Orb';
 				set.level = 255;
-				set.moves = ['Trick', 'Stored Power', 'Thunder Wave', 'Taunt'];
+				set.moves = ['Trick', 'Stored Power', 'Thunder Wave', 'Taunt', 'Encore', 'Attract', 'Charm'];
 				set.evs = {hp: 4, def: 0, spd: 0, spa: 0, atk: 255, spe: 255};
 				set.ivs = {hp: 0, def: 0, spd: 0, spa: 0, atk: 0, spe: 0};
 				set.nature = 'Brave';
 			} else if (template.id === 'rotomheat') {
 				set.item = 'Flame Orb';
-				if (!('trick' in set.moves)) {
+				if ((!('trick' in set.moves)) && (!('Trick' in set.moves))) {
 					set.moves[3] = 'Trick';
 				}
 			} else if (template.id === 'riolu') {
@@ -1547,7 +1547,7 @@ exports.BattleScripts = {
 			} else if (template.id === 'gliscor') {
 				set.item = 'Toxic Orb';
 				set.ability = 'Poison Heal';
-				set.moves = ['Substitute', 'Protect', 'Toxic', 'Fling'];
+				set.moves = ['Substitute', 'Protect', 'Toxic', 'Earthquake'];
 				set.evs = {hp: 252, def: 184, spd: 0, spa: 0, atk: 0, spe: 72};
 				set.ivs = {hp: 31, def: 31, spd: 31, spa: 0, atk: 31, spe: 31};
 				set.nature = 'Impish';
@@ -1559,11 +1559,12 @@ exports.BattleScripts = {
 				set.evs = {hp: 0, def: 0, spd: 0, spa: 252, atk: 4, spe: 252};
 				set.ivs = {hp: 31, def: 31, spd: 31, spa: 31, atk: 31, spe: 31};
 				set.nature = 'Modest';
-				set.level = '100';
+			} else if (template.id === 'purrloin') {
+				set.item = 'Eviolite';
 			}
 			
 			// This is purely for the lulz
-			if (set.ability === 'Prankster' && !('attract' in set.moves) && this.random(100) < 50) {
+			if (set.ability === 'Prankster' && !('attract' in set.moves) && !('charm' in set.moves) && this.random(100) < 50) {
 				var attractMoves = ['Attract', 'Charm'];
 				attractMoves = attractMoves.randomize();
 				set.moves[3] = attractMoves[0];
