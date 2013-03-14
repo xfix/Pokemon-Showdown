@@ -6,14 +6,19 @@ exports.BattleScripts = {
 			if (this.data.FormatsData[i]) tier = this.data.FormatsData[i].tier;
 			switch (tier) {
 			case 'BL':
+				adjustment = 2;
+				break;
 			case 'UU':
 				adjustment = 5;
 				break;
 			case 'BL2':
+				adjustment = 7;
+				break;
 			case 'RU':
 				adjustment = 10;
 				break;
 			case 'BL3':
+				adjustment = 12;
 			case 'NU':
 			case 'NFE':
 				adjustment = 15;
@@ -22,7 +27,6 @@ exports.BattleScripts = {
 				adjustment = 20;
 				break;
 			}
-
 			this.data.Pokedex[i].baseStats.hp += adjustment;
 			this.data.Pokedex[i].baseStats.atk += adjustment;
 			this.data.Pokedex[i].baseStats.def += adjustment;

@@ -1,7 +1,5 @@
 exports.BattleFormats = {
-
 	// formats
-
 	randombattle: {
 		effectType: 'Format',
 		name: "Random Battle",
@@ -12,6 +10,18 @@ exports.BattleFormats = {
 		challengeShow: true,
 		searchShow: true,
 		ruleset: ['PotD', 'Pokemon', 'Sleep Clause']
+	},
+	joimmons: {
+		mod: 'joimmons',
+		effectType: 'Format',
+		name: 'Joimmons',
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		debug: true,
+		ruleset: ['CAP Pokemon', 'Standard DW', 'Team Preview'],
+		banlist: []
 	},
 	ouclearskies: {
 		effectType: 'Format',

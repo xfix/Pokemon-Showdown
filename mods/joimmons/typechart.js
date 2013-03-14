@@ -1,6 +1,7 @@
 exports.BattleTypeChart = {
   "Bug": {
     "damageTaken": {
+    	toxicrain: 3,
       "Bug": 0,
       "Dark": 0,
       "Dragon": 0,
@@ -16,7 +17,7 @@ exports.BattleTypeChart = {
       "Poison": 0,
       "Psychic": 0,
       "Rock": 1,
-      "Steel": 0,
+      "Steel": 2,
       "Water": 0
     },
     "HPivs": {"atk":30,"def":30,"spd":30}
@@ -92,7 +93,7 @@ exports.BattleTypeChart = {
     "damageTaken": {
       "Bug": 2,
       "Dark": 2,
-      "Dragon": 0,
+      "Dragon": 2,
       "Electric": 0,
       "Fighting": 0,
       "Fire": 0,
@@ -228,7 +229,7 @@ exports.BattleTypeChart = {
       frz: 3,
       "Bug": 0,
       "Dark": 0,
-      "Dragon": 0,
+      "Dragon": 2,
       "Electric": 0,
       "Fighting": 1,
       "Fire": 1,
@@ -250,7 +251,7 @@ exports.BattleTypeChart = {
     "damageTaken": {
       "Bug": 0,
       "Dark": 0,
-      "Dragon": 0,
+      "Dragon": 2,
       "Electric": 0,
       "Fighting": 1,
       "Fire": 0,
@@ -343,7 +344,7 @@ exports.BattleTypeChart = {
       tox: 3,
       sandstorm: 3,
       toxicrain: 3,
-      "Bug": 2,
+      "Bug": 1,
       "Dark": 2,
       "Dragon": 2,
       "Electric": 0,

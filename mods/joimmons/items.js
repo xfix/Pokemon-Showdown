@@ -21,6 +21,48 @@ exports.BattleItems = {
 			},
 			desc: "Raises the Base Power of Giratina's STAB moves 20% and transforms Giratina into Giratina-O when held. Cannot be removed or given to Giratina in battle. If Mewtwo holds this item, it's transformed into Mewtwo Orb."
 		},
+		"lightball": {
+			id: "lightball",
+			name: "Light Ball",
+			spritenum: 251,
+			fling: {
+				basePower: 30,
+				status: 'par'
+			},
+			onModifyAtk: function(atk, pokemon) {
+				if (pokemon.template.species === 'Pikachu') {
+					return atk * 2;
+				}
+				if (pokemon.template.species === 'Pichu') {
+					return atk * 2.5;
+				}
+			},
+			onModifySpA: function(spa, pokemon) {
+				if (pokemon.template.species === 'Pikachu') {
+					return spa * 2;
+				}
+				if (pokemon.template.species === 'Pichu') {
+					return spa * 2.5;
+				}
+			},
+			onModifyDef: function(def, pokemon) {
+				if (pokemon.template.species === 'Pikachu') {
+					return def * 2;
+				}
+				if (pokemon.template.species === 'Pichu') {
+					return def * 2.5;
+				}
+			},
+			onModifySpD: function(spd, pokemon) {
+				if (pokemon.template.species === 'Pikachu') {
+					return spd * 2;
+				}
+				if (pokemon.template.species === 'Pichu') {
+					return spd * 2.5;
+				}
+			},
+			desc: "Doubles Pikachu's Attack and Special Attack."
+		},
 		souldew: {
 			inherit: true,
 			onModifySpA: function(spa, pokemon) {
@@ -50,12 +92,12 @@ exports.BattleItems = {
 			},
 			onModifyDef: function(def, pokemon) {
 				if (pokemon.template.species === 'Spiritomb') {
-					return def*2;
+					return def*1.5;
 				}
 			},
 			onModifySpD: function(spd, pokemon) {
 				if (pokemon.template.species === 'Spiritomb') {
-					return spd*2;
+					return spd*1.5;
 				}
 			},
 			onModifySpe: function(spe, pokemon) {
@@ -65,11 +107,6 @@ exports.BattleItems = {
 			},
 			onResidualOrder: 5,
 			onResidualSubOrder: 2,
-			onResidual: function(pokemon) {
-				if (pokemon.template.species === 'Spiritomb') {
-					this.heal(pokemon.maxhp/16);
-				}
-			},
 			desc: "Does a number of effects."
 		}
 };

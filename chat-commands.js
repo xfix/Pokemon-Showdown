@@ -1182,6 +1182,10 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			matched = true;
 			buffer += 'Welcome to <strong>Joim\'s Lab</strong>! This is a Server to test <strong>Other Metagames</strong> and possible contributions to PS main server.<br />';
 		}
+		if (target === 'all' || target === 'joimmons') {
+			matched = true;
+			buffer += '&bull;<strong>Joimmons</strong> is a wacky new meta that basically changes the game. <a href="http://www.smogon.com/forums/showthread.php?t=3480501">Read more here</a><br />';
+		}
 		if (target === 'all' || target === 'clearskies') {
 			matched = true;
 			buffer += '&bull;<strong>Clear Skies</strong> is similar to regular OU but without auto-weather abilities (such as Drizzle).<br />';
