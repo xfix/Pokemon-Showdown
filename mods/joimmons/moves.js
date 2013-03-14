@@ -155,6 +155,7 @@ exports.BattleMovedex = {
 		},
 		scald: {
 			inherit: true,
+			basePower: 100,
 			accuracy: 50,
 			secondary: {
 				chance: 100,
