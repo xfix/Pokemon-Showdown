@@ -100,9 +100,9 @@ var BattleRoom = (function() {
 						self.addRaw('Ladder (probably) updated, but score could not be retrieved ('+error+').');
 						self.update();
 						// log the battle anyway
-						if (!Tools.getFormat(self.format).noLog) {
+						//if (!Tools.getFormat(self.format).noLog) {
 							self.logBattle(p1score);
-						}
+						//}
 						return;
 					} else {
 						try {
@@ -131,9 +131,9 @@ var BattleRoom = (function() {
 							self.update();
 						}
 
-						if (!Tools.getFormat(self.format).noLog) {
+						//if (!Tools.getFormat(self.format).noLog) {
 							self.logBattle(p1score, p1rating, p2rating);
-						}
+						//}
 					}
 				});
 			}
