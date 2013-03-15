@@ -70,6 +70,7 @@ exports.BattleStatuses = {
 				}
 			},
 			onAccuracy: function(accuracy, move) {
+				this.debug('Toxic Rain increases Poison-type accuracy');
 				if (typeof accuracy !== 'number') return;
 				if (move.type === 'Poison') return 100;
 			},

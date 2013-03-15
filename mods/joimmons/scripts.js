@@ -168,6 +168,7 @@ exports.BattleScripts = {
 
 		// STAB
 		if (type !== '???' && (pokemon.hasType(type) || (pokemon.hasType('Dragon') && type === 'Fire'))) {
+			this.debug('STAB boost');
 			// The "???" type never gets STAB
 			// Not even if you Roost in Gen 4 and somehow manage to use
 			// Struggle in the same turn.

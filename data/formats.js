@@ -20,7 +20,7 @@ exports.BattleFormats = {
 		searchShow: true,
 		isTeambuilderFormat: true,
 		debug: true,
-		ruleset: ['CAP Pokemon', 'Standard DW', 'Team Preview', 'Evasion Abilities Clause'],
+		ruleset: ['CAP Pokemon', 'Standard DW', 'Team Preview', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Moody Clause', 'Evasion Moves Clause'],
 		banlist: ['Uber', 'Soul Dew']
 	},
 	joimmonsubers: {
@@ -32,7 +32,7 @@ exports.BattleFormats = {
 		searchShow: true,
 		isTeambuilderFormat: true,
 		debug: true,
-		ruleset: ['CAP Pokemon', 'Standard DW', 'Team Preview'],
+		ruleset: ['CAP Pokemon', 'Standard DW', 'Team Preview', 'Species Clause'],
 		banlist: []
 	},
 	joimmonsdoubles: {

@@ -91,17 +91,17 @@ exports.BattleItems = {
 				}
 			},
 			onModifyDef: function(def, pokemon) {
-				if (pokemon.template.species === 'Spiritomb') {
+				if (pokemon.template.species === 'Spiritomb' && pokemon.ability !== 'shadowtag') {
 					return def*1.5;
 				}
 			},
 			onModifySpD: function(spd, pokemon) {
-				if (pokemon.template.species === 'Spiritomb') {
+				if (pokemon.template.species === 'Spiritomb' && pokemon.ability !== 'shadowtag') {
 					return spd*1.5;
 				}
 			},
 			onModifySpe: function(spe, pokemon) {
-				if (pokemon.template.species === 'Spiritomb') {
+				if (pokemon.template.species === 'Spiritomb' && pokemon.ability !== 'shadowtag') {
 					return spe*2;
 				}
 			},

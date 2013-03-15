@@ -46,6 +46,10 @@ exports.BattleMovedex = {
 			basePower: 100,
 			willCrit: true
 		},
+		focusblast: {
+			inherit: true,
+			accuracy: 85
+		},
 		gigaimpact: {
 			inherit: true,
 			basePower: 100,
@@ -199,6 +203,12 @@ exports.BattleMovedex = {
 					var damage = this.damage(pokemon.maxhp/factor);
 				}
 			}
+		},
+		stoneedge: {
+			inherit: true,
+			accuracy: 100,
+			basePower: 95,
+			critRatio: 1
 		},
 		toxic: {
 			inherit: true,
