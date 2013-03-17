@@ -581,6 +581,8 @@ exports.BattleFormats = {
 			}
 			if (pokemon.template.id === 'magikarp') {
 				this.add('-message', "OH FUCK IT'S MAGIKARP!! Better forfeit NOW!!");
+			} else if (pokemon.template.id === 'ludicolo') {
+				this.add('-message', "¡Ay, ay, ay! ¡Vámonos de fiesta, ya llegó Ludicolo!");
 			}
 		},
 		onModifyMove: function(move) {

@@ -37,10 +37,6 @@ exports.BattleMovedex = {
 			basePower: 100,
 			willCrit: true
 		},
-		leechseed: {
-			inherit: true,
-			accuracy: 100
-		},
 		frenzyplant: {
 			inherit: true,
 			basePower: 100,
@@ -116,6 +112,33 @@ exports.BattleMovedex = {
 			inherit: true,
 			basePower: 100,
 			willCrit: true
+		},
+		leechseed: {
+			inherit: true,
+			accuracy: 100,
+			effect: {
+				onStart: function(target) {
+					this.add('-start', target, 'move: Leech Seed');
+				},
+				onResidualOrder: 8,
+				onResidual: function(pokemon) {
+					var target = pokemon.side.foe.active[pokemon.volatiles['leechseed'].sourcePosition];
+					if (!target || target.fainted || target.hp <= 0) {
+						this.debug('Nothing to leech into');
+						return;
+					}
+					var typeMod = this.getEffectiveness('Grass', pokemon);
+					var factor = 8;
+					if (typeMod == 1) factor = 4;
+					if (typeMod >= 2) factor = 2;
+					if (typeMod == -1) factor = 16;
+					if (typeMod <= -2) factor = 32;
+					var damage = this.damage(pokemon.maxhp/factor, pokemon, target);
+					if (damage) {
+						this.heal(damage, target, pokemon);
+					}
+				}
+			},
 		},
 		psystrike: {
 			inherit: true,
@@ -230,6 +253,35 @@ exports.BattleMovedex = {
 			secondary: false,
 			target: "all",
 			type: "Water"
+		},
+		toxicspikes: {
+			inherit: true,
+			effect: {
+				// this is a side condition
+				onStart: function(side) {
+					this.add('-sidestart', side, 'move: Toxic Spikes');
+					this.effectData.layers = 1;
+				},
+				onRestart: function(side) {
+					if (this.effectData.layers < 2) {
+						this.add('-sidestart', side, 'move: Toxic Spikes');
+						this.effectData.layers++;
+					}
+				},
+				onSwitchIn: function(pokemon) {
+					if (!pokemon.runImmunity('Ground')) return;
+					if (pokemon.hasType('Poison')) {
+						this.add('-sideend', pokemon.side, 'move: Toxic Spikes', '[of] '+pokemon);
+						pokemon.side.removeSideCondition('toxicspikes');
+					}
+					if (!pokemon.runImmunity('Poison')) return;
+					if (this.effectData.layers >= 2) {
+						pokemon.trySetStatus('tox');
+					} else {
+						pokemon.trySetStatus('psn');
+					}
+				}
+			},
 		},
 		trickroom: {
 			num: 433,

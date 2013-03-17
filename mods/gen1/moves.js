@@ -26,11 +26,10 @@ exports.BattleMovedex = {
 	},
 	agility: {
 		inherit: true,
-		onModifyMove: function(move, pokemon) {
-			// If there's a paralyse speed drop, it's negated by agility but not boost is gained
+		onHit: function(pokemon) {
+			// If there's a paralyse speed drop, it's negated by agility
 			if (pokemon.volatiles['parspeeddrop']) {
 				pokemon.removeVolatile('parspeeddrop');
-				move.boosts = {};
 			}
 		}
 	},
@@ -60,7 +59,7 @@ exports.BattleMovedex = {
 		effect: {
 			duration: 2,
 			durationCallBack: function (target, source, effect) {
-				return this.random(2, 3);
+				return this.random(3, 4);
 			},
 			onStart: function(pokemon) {
 				this.effectData.totalDamage = 0;
@@ -77,6 +76,27 @@ exports.BattleMovedex = {
 				}
 			},
 			onDamage: function(damage, target, source, move) {
+				if (!source || source.side === target.side) return;
+				if (!move || move.effectType !== 'Move') return;
+				if (!damage && this.effectData.lastDamage > 0) {
+					damage = this.effectData.totalDamage;
+				}
+				this.effectData.totalDamage += damage;
+				this.effectData.lastDamage = damage;
+				this.effectData.sourcePosition = source.position;
+				this.effectData.sourceSide = source.side;
+			},
+			onAfterSubStatus: function (target, source, move, damage) {
+				if (source && source !== target) {
+					damage = this.effectData.totalDamage;
+					this.effectData.totalDamage += damage;
+					this.effectData.lastDamage = damage;
+					this.effectData.sourcePosition = source.position;
+					this.effectData.sourceSide = source.side;
+				}
+			},
+			onAfterSubDamage: function (target, source, move, damage) {
+				this.debug('onAfterSubDamage on Bide. target: ' + target.name + '. Source: ' + source.name + '. Move: ' + move.name + '. Damage: ' + damage);
 				if (!source || source.side === target.side) return;
 				if (!move || move.effectType !== 'Move') return;
 				if (!damage && this.effectData.lastDamage > 0) {
@@ -173,29 +193,12 @@ exports.BattleMovedex = {
 		},
 		target: "normal"
 	},
-	bodyslam: {
-		inherit: true,
-		secondary: {
-			chance: 30,
-			status: 'par'
-		}
-	},
 	boneclub: {
 		inherit: true,
 		secondary: {
 			chance: 10,
 			volatileStatus: 'flinch'
 		}
-	},
-	bubble: {
-		inherit: true,
-		secondary: {
-			chance: 10,
-			boosts: {
-				spe: -1
-			}
-		},
-		target: "normal"
 	},
 	bubblebeam: {
 		inherit: true,
@@ -274,7 +277,8 @@ exports.BattleMovedex = {
 		willCrit: false,
 		damageCallback: function(pokemon) {
 			if (pokemon.lastAttackedBy && pokemon.lastAttackedBy.thisTurn 
-			&& (this.getMove(pokemon.lastAttackedBy.move).type === 'Normal' || this.getMove(pokemon.lastAttackedBy.move).type === 'Fighting')) {
+			&& ((this.getMove(pokemon.lastAttackedBy.move).type === 'Normal' || this.getMove(pokemon.lastAttackedBy.move).type === 'Fighting'))
+			&& this.getMove(pokemon.lastAttackedBy.move).id !== 'seismictoss') {
 				return 2 * pokemon.lastAttackedBy.damage;
 			}
 			this.add('-fail',pokemon.id);
@@ -494,6 +498,14 @@ exports.BattleMovedex = {
 		inherit: true,
 		accuracy: 75
 	},
+	growl: {
+		inherit: true,
+		onHit: function(target, source) {
+			if (target.status === 'brn' && !target.volatiles['brnattackdrop']) {
+				target.addVolatile('brnattackdrop');
+			}
+		}
+	},
 	growth: {
 		inherit: true,
 		desc: "Raises the user's Special by 1 stage.",
@@ -525,8 +537,14 @@ exports.BattleMovedex = {
 					}
 					this.sides[i].removeSideCondition('lightscreen');
 					this.sides[i].removeSideCondition('reflect');
-					if (hasTox) this.sides[i].active[j].setStatus('psn');
-					this.sides[i].active[j].clearVolatile();
+					// Turns toxic to poison for user
+					if (hasTox && this.sides[i].active[j].id === source.id) {
+						this.sides[i].active[j].setStatus('psn');
+					}
+					// Clears volatile only from user
+					if (this.sides[i].active[j].id === source.id) {
+						this.sides[i].active[j].clearVolatile();
+					}
 				}
 			}
 		}
@@ -654,7 +672,11 @@ exports.BattleMovedex = {
 		inherit: true,
 		accuracy: 90,
 		basePower: 50,
-		basePowerCallback: undefined
+		basePowerCallback: undefined,
+		secondary: {
+			chance: 30,
+			volatileStatus: 'flinch'
+		}
 	},
 	megadrain: {
 		inherit: true,
@@ -962,6 +984,14 @@ exports.BattleMovedex = {
 			volatileStatus: 'flinch'
 		}
 	},
+	stringshot: {
+		inherit: true,
+		onHit: function(target, source) {
+			if (target.status === 'par' && !target.volatiles['parspeeddrop']) {
+				target.addVolatile('parspeeddrop');
+			}
+		}
+	},
 	struggle: {
 		num: 165,
 		accuracy: 100,
@@ -1034,11 +1064,13 @@ exports.BattleMovedex = {
 					var SubBlocked = {
 						lockon:1, meanlook:1, mindreader:1, nightmare:1
 					};
-					if (move.status === 'psn' || move.status === 'tox' || move.boosts || move.volatileStatus === 'confusion' || SubBlocked[move.id]) {
+					if (move.status === 'psn' || move.status === 'tox' || (move.boosts && target !== source) || move.volatileStatus === 'confusion' || SubBlocked[move.id]) {
 						return false;
 					}
+					this.runEvent('AfterSubStatus', target, source, move, damage);
 					return;
 				}
+				if (move.volatileStatus && target === source) return;
 				var damage = this.getDamage(source, target, move);
 				if (!damage) return null;
 				damage = this.runEvent('SubDamage', target, source, move, damage);
@@ -1056,9 +1088,10 @@ exports.BattleMovedex = {
 					this.damage(Math.round(damage * move.recoil[0] / move.recoil[1]), source, target, 'recoil');
 				}
 				// Attacker does not heal from drain if substitute breaks
-				if (move.drain && target.volatiles['substitute'].hp > 0) {
+				if (move.drain && target.volatiles['substitute'] && target.volatiles['substitute'].hp > 0) {
 					this.heal(Math.ceil(damage * move.drain[0] / move.drain[1]), source, target, 'drain');
 				}
+				this.debug('onTryHit sub before asd. target: ' + target.name + '. Source: ' + source.name + '. Move: ' + move.name + '. Damage: ' + damage);
 				this.runEvent('AfterSubDamage', target, source, move, damage);
 				// Add here counter damage
 				if (!target.lastAttackedBy) target.lastAttackedBy = {pokemon: source, thisTurn: true};
@@ -1080,11 +1113,10 @@ exports.BattleMovedex = {
 	},
 	swordsdance: {
 		inherit: true,
-		onModifyMove: function(move, pokemon) {
-			// If there's a burn attacl drop, it's negated by swords dance but not boost is gained
+		onHit: function(pokemon) {
+			// If there's a burn attack drop, it's negated by swords dance
 			if (pokemon.volatiles['brnattackdrop']) {
 				pokemon.removeVolatile('brnattackdrop');
-				move.boosts = {};
 			}
 		}
 	},
