@@ -1495,7 +1495,7 @@ exports.BattleScripts = {
 			'gengar', 'gastly', 'gliscor', 'venusaur', 'serperior', 'sceptile', 'shiftry', 'torterra', 'meganium', 'leafeon', 'roserade',
 			'amoonguss', 'parasect', 'breloom', 'abomasnow', 'rotommow', 'wormadam', 'tropius', 'lilligant', 'ludicolo', 'cacturne',
 			'vileplume', 'bellossom', 'victreebel', 'jumpluff', 'carnivine', 'sawsbuck', 'virizion', 'shaymin', 'arceusgrass', 'shayminsky',
-			'tangrowth', 'pansage', 'maractus', 'cradily', 'celebi', 'exeggutor', 'magikarp', 'ferrothorn', 'zorua', 'zoroark'
+			'tangrowth', 'pansage', 'maractus', 'cradily', 'celebi', 'exeggutor', 'magikarp', 'ferrothorn', 'zorua', 'zoroark', 'dialga'
 		];
 		seasonalPokemonList = seasonalPokemonList.randomize();
 		var team = [];
@@ -1530,9 +1530,7 @@ exports.BattleScripts = {
 				set.nature = 'Brave';
 			} else if (template.id === 'rotomheat') {
 				set.item = 'Flame Orb';
-				if ((!('trick' in set.moves)) && (!('Trick' in set.moves))) {
-					set.moves[3] = 'Trick';
-				}
+				set.moves = ['Overheat', 'Volt Switch', 'Pain Split', 'Trick'];
 			} else if (template.id === 'riolu') {
 				set.item = 'Eviolite';
 				set.moves = ['Copycat', 'Roar', 'Drain Punch', 'Substitute'];
@@ -1570,10 +1568,17 @@ exports.BattleScripts = {
 				set.moves[3] = attractMoves[0];
 			}
 			
-			// Illusion poison types -.-
+			// Fix things here
 			if (set.item === 'Black Sludge') {
 				set.item = 'Leftovers';
 			}
+			if (template.id === 'breloom' && set.item === 'Toxic Orb' && set.ability !== 'Poison Heal') {
+				set.item = 'Muscle Band';
+			}
+			if (template-id === 'dialga') {
+				set.level = 60;
+			}
+			
 			team.push(set);
 		}
 
