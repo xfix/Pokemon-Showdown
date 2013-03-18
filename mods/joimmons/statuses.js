@@ -69,10 +69,10 @@ exports.BattleStatuses = {
 					this.add('-weather', 'ToxicRain');
 				}
 			},
-			onAccuracy: function(accuracy, move) {
+			onModifyMove: function(move) {
 				this.debug('Toxic Rain increases Poison-type accuracy');
-				if (typeof accuracy !== 'number') return;
-				if (move.type === 'Poison') return 100;
+				if (typeof move.accuracy !== 'number') return;
+				if (move.type === 'Poison') move.accuracy = 100;
 			},
 			onResidualOrder: 1,
 			onResidual: function() {
