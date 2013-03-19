@@ -159,6 +159,7 @@ module.exports = (function () {
 				else if (template.num >= 1) template.gen = 1;
 				else template.gen = 0;
 			}
+			if (!template.minLevel) template.minLevel = 1;
 		}
 		return template;
 	};
@@ -816,6 +817,10 @@ module.exports = (function () {
 						lsetData.sources = ['5D'];
 					}
 				}
+			}
+			// Check for max level
+			if (set.level < set.minLevel) {
+				problems.push(name+" must be at least level " + set.minLevel + ".");
 			}
 		}
 		if (set.moves && Array.isArray(set.moves)) {
