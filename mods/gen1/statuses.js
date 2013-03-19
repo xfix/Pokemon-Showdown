@@ -23,8 +23,13 @@ exports.BattleStatuses = {
 		onAfterMoveSelf: function(pokemon) {
 			this.damage(pokemon.maxhp/16);
 		},
-		onSwitchIn: function (pokemon){
+		onSwitchIn: function (pokemon) {
 			pokemon.addVolatile('brnattackdrop');
+			if (pokemon.side.foe.active) {
+				if (pokemon.speed <= pokemon.side.foe.active[0].speed) {
+					this.damage(pokemon.maxhp/16);
+				}
+			}
 		}
 	},
 	brnattackdrop: {
@@ -97,6 +102,13 @@ exports.BattleStatuses = {
 		},
 		onAfterMoveSelf: function(pokemon) {
 			this.damage(pokemon.maxhp/16);
+		},
+		onSwitchIn: function (pokemon) {
+			if (pokemon.side.foe.active[0]) {
+				if (pokemon.speed <= pokemon.side.foe.active[0].speed) {
+					this.damage(pokemon.maxhp/16);
+				}
+			}
 		}
 	},
 	tox: {

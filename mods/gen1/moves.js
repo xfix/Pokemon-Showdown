@@ -628,7 +628,7 @@ exports.BattleMovedex = {
 				}
 				var damage = this.damage(toLeech, target, source, 'move: Leech Seed');
 				if (damage) {
-					this.heal(damage, source, target, 'move: Leech Seed');
+					this.heal(damage, source, target);
 				}
 			}
 		},

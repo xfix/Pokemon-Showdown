@@ -111,8 +111,6 @@ exports.BattleScripts = {
 						// We deduct an additional PP that was not deducted earlier
 						var moveIndex = -1;
 						for (var i=0; i<4; i++) {
-							this.debug('Seeking move ' + move.id);
-							this.debig('See: ' + pokemon.moveset[i].id);
 							if (pokemon.moveset[i].id === move.id) {
 								moveIndex = i;
 								break;
@@ -157,7 +155,6 @@ exports.BattleScripts = {
 		if (!move) return false;
 
 		var attrs = '';
-		var missed = false;
 		if (pokemon.fainted) {
 			// Removing screens upon faint
 			pokemon.side.removeSideCondition('reflect');
@@ -216,6 +213,7 @@ exports.BattleScripts = {
 		// Calculate true accuracy
 		var accuracy = move.accuracy;
 		if (accuracy !== true) {
+			this.debug('Accuracy check');
 			accuracy = Math.floor(accuracy*255/100);
 		}
 		
