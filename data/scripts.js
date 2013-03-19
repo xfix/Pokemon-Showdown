@@ -1559,6 +1559,14 @@ exports.BattleScripts = {
 				set.nature = 'Modest';
 			} else if (template.id === 'purrloin') {
 				set.item = 'Eviolite';
+			} else if (template.id === 'dialga') {
+				set.level = 60;
+			} else if (template.id === 'sceptile') {
+				var items = ['Lum Berry', 'Occa Berry', 'Yache Berry', 'Sitrus Berry'];
+				items = items.randomize();
+				set.item = items[0];
+			} else if (template.id === 'breloom' && set.item === 'Toxic Orb' && set.ability !== 'Poison Heal') {
+				set.item = 'Muscle Band';
 			}
 			
 			// This is purely for the lulz
@@ -1568,15 +1576,9 @@ exports.BattleScripts = {
 				set.moves[3] = attractMoves[0];
 			}
 			
-			// Fix things here
+			// For poison types with Illusion
 			if (set.item === 'Black Sludge') {
 				set.item = 'Leftovers';
-			}
-			if (template.id === 'breloom' && set.item === 'Toxic Orb' && set.ability !== 'Poison Heal') {
-				set.item = 'Muscle Band';
-			}
-			if (template-id === 'dialga') {
-				set.level = 60;
 			}
 			
 			team.push(set);

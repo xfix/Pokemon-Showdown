@@ -57,20 +57,8 @@ exports.BattleFormats = {
 		searchShow: true,
 		debug: true,
 		isTeambuilderFormat: true,
-		ruleset: ['Gen1 Pokemon', 'All Abilities', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Clause'],
+		ruleset: ['Gen1 Pokemon', 'All Abilities', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Clause', 'Freeze Clause'],
 		banlist: ['Uber', 'Illegal']
-	},
-	gen1uu: {
-		mod: 'gen1',
-		effectType: 'Format',
-		name: "[Gen 1] UU",
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		debug: true,
-		isTeambuilderFormat: true,
-		ruleset: ['Gen1 Pokemon', 'All Abilities', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Clause'],
-		banlist: ['Uber', 'OU', 'Illegal']
 	},
 	gen1ubers: {
 		mod: 'gen1',
@@ -93,7 +81,7 @@ exports.BattleFormats = {
 		searchShow: true,
 		debug: true,
 		isTeambuilderFormat: true,
-		ruleset: ['Gen1 Pokemon', 'All Abilities', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Clause'],
+		ruleset: ['Gen1 Pokemon', 'All Abilities', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Clause', 'Freeze Clause'],
 		banlist: ['Uber', 'OU', 'Illegal']
 	},
 	gen1lc: {
@@ -106,7 +94,7 @@ exports.BattleFormats = {
 		searchShow: true,
 		debug: true,
 		isTeambuilderFormat: true,
-		ruleset: ['Gen1 Pokemon', 'All Abilities', 'Little Cup', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Clause'],
+		ruleset: ['Gen1 Pokemon', 'All Abilities', 'Little Cup', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Clause', 'Freeze Clause'],
 		banlist: ['Uber', 'OU', 'UU', 'Illegal', 'Sonicboom', 'Dragon Rage']
 
 	},
@@ -796,6 +784,7 @@ exports.BattleFormats = {
 		challengeShow: true,
 		searchShow: true,
 		isTeambuilderFormat: true,
+		debug: true,
 		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
 		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
 	},

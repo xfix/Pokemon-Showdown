@@ -365,7 +365,7 @@ Simulator = require('./simulator.js');
 lockdown = false;
 
 mutedIps = {};
-bannedIps = {};
+bannedIps = {'208.88.175.76':'dinosaurrar', '86.6.84.250':'chacknorris7', '174.101.165.118':'thewonderfulkyurem'};
 nameLockedIps = {};
 
 function resolveUser(you, socket) {

@@ -982,15 +982,15 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 
 	case 'groups':
 	case '!groups':
+		var message = '<div class="message-groups">' +
+		'+ <b>Voice</b> - They can use ! commands like !groups, and talk during moderated chat<br />' +
+		'% <b>Driver</b> - The above, and they can also mute users and run tournaments<br />' +
+		'@ <b>Moderator</b> - The above, and they can ban users and check for alts<br />' +
+		'&amp; <b>Leader</b> - The above, and they can promote moderators and force ties<br />'+
+		'~ <b>Administrator</b> - They can do anything, like change what this message says'+
+		'</div>';
 		showOrBroadcastStart(user, cmd, room, socket, message);
-		showOrBroadcast(user, cmd, room, socket,
-			'<div class="message-groups">' +
-			'+ <b>Voice</b> - They can use ! commands like !groups, and talk during moderated chat<br />' +
-			'% <b>Driver</b> - The above, and they can also mute users and run tournaments<br />' +
-			'@ <b>Moderator</b> - The above, and they can ban users and check for alts<br />' +
-			'&amp; <b>Leader</b> - The above, and they can promote moderators and force ties<br />'+
-			'~ <b>Administrator</b> - They can do anything, like change what this message says'+
-			'</div>');
+		showOrBroadcast(user, cmd, room, socket, message);
 		return false;
 		break;
 		
@@ -998,6 +998,31 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 	case '!magic':
 		showOrBroadcastStart(user, cmd, room, socket, message);
 		showOrBroadcast(user, cmd, room, socket, '(づ｡◕‿‿◕｡)づ・。*。✧・゜゜・。✧。*・゜゜・✧。・­­­­­゜゜・。*。・゜*✧');
+		return false;
+		break;
+		
+	case 'dice':
+	case '!dice':
+		target = parseInt(target);
+		if (!target) target = 6;
+		var dice = Math.ceil(Math.random() * target);
+		showOrBroadcastStart(user, cmd, room, socket, message);
+		showOrBroadcast(user, cmd, room, socket, 'The dice rolled a ' + dice + '.');
+		return false;
+		break;
+		
+	case 'flip':
+	case 'coin':
+	case '!flip':
+	case '!coin':
+		var coin = Math.ceil(Math.random() * 2);
+		if (coin === 1)  {
+			coin = 'tails';
+		} else {
+			coin = 'heads';
+		}
+		showOrBroadcastStart(user, cmd, room, socket, message);
+		showOrBroadcast(user, cmd, room, socket, 'The coin ended up on ' + coin + '.');
 		return false;
 		break;
 
@@ -1249,10 +1274,12 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 	case 'dex':
 	case 'pokedex':
 	case 'strategy':
+	case 'smogdex':
 	case '!analysis':
 	case '!dex':
 	case '!pokedex':
 	case '!strategy':
+	case '!smogdex':
 		var targets = target.split(',');
 		var template = Tools.getTemplate(targets[0]);
 		var generation = (targets[1] || "bw").trim().toLowerCase();

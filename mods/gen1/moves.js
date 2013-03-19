@@ -789,7 +789,12 @@ exports.BattleMovedex = {
 		inherit: true,
 		self: {
 			volatileStatus: 'rage'
-		}
+		},
+		onMoveFail: function(target, source, move) {
+			mode.onModifyMove = function (move) {
+				move.accuracy = 1 / 256;
+			};
+		},
 	},
 	razorleaf: {
 		inherit: true,

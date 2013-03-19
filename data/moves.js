@@ -3992,13 +3992,17 @@ exports.BattleMovedex = {
 		isContact: true,
 		isPunchAttack: true,
 		beforeTurnCallback: function(pokemon) {
+			this.debug('Starting Focus Punch');
 			pokemon.addVolatile('focuspunch');
 		},
 		beforeMoveCallback: function(pokemon) {
 			if (!pokemon.removeVolatile('focuspunch')) {
-				return false;
+				this.debug('Focus Punch not started, failing');
+				this.add('cant', pokemon, 'flinch', 'Focus Punch');
+				return true;
 			}
 			if (pokemon.lastAttackedBy && pokemon.lastAttackedBy.damage && pokemon.lastAttackedBy.thisTurn) {
+				this.debug('Pokemon attacked, Focus Punch failing');
 				this.add('cant', pokemon, 'flinch', 'Focus Punch');
 				return true;
 			}
