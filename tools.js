@@ -819,8 +819,8 @@ module.exports = (function () {
 				}
 			}
 			// Check for max level
-			if (set.level < set.minLevel) {
-				problems.push(name+" must be at least level " + set.minLevel + ".");
+			if (set.level < template.minLevel) {
+				problems.push(name+" must be at least level " + template.minLevel + ".");
 			}
 		}
 		if (set.moves && Array.isArray(set.moves)) {

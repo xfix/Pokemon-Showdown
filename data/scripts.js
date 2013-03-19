@@ -1495,7 +1495,7 @@ exports.BattleScripts = {
 			'gengar', 'gastly', 'gliscor', 'venusaur', 'serperior', 'sceptile', 'shiftry', 'torterra', 'meganium', 'leafeon', 'roserade',
 			'amoonguss', 'parasect', 'breloom', 'abomasnow', 'rotommow', 'wormadam', 'tropius', 'lilligant', 'ludicolo', 'cacturne',
 			'vileplume', 'bellossom', 'victreebel', 'jumpluff', 'carnivine', 'sawsbuck', 'virizion', 'shaymin', 'arceusgrass', 'shayminsky',
-			'tangrowth', 'pansage', 'maractus', 'cradily', 'celebi', 'exeggutor', 'magikarp', 'ferrothorn', 'zorua', 'zoroark', 'dialga'
+			'tangrowth', 'pansage', 'maractus', 'cradily', 'celebi', 'exeggutor', 'ferrothorn', 'zorua', 'zoroark', 'dialga'
 		];
 		seasonalPokemonList = seasonalPokemonList.randomize();
 		var team = [];
@@ -1549,14 +1549,6 @@ exports.BattleScripts = {
 				set.evs = {hp: 252, def: 184, spd: 0, spa: 0, atk: 0, spe: 72};
 				set.ivs = {hp: 31, def: 31, spd: 31, spa: 0, atk: 31, spe: 31};
 				set.nature = 'Impish';
-			} else if (template.id === 'magikarp') {
-				// FUCK YEAH MAGIKARP
-				set.item = 'Life Orb';
-				set.ability = 'Swift Swim';
-				set.moves = ["Magikarp's Revenge", 'Hydro Pump', 'Bounce', 'Flail'];
-				set.evs = {hp: 0, def: 0, spd: 0, spa: 252, atk: 4, spe: 252};
-				set.ivs = {hp: 31, def: 31, spd: 31, spa: 31, atk: 31, spe: 31};
-				set.nature = 'Modest';
 			} else if (template.id === 'purrloin') {
 				set.item = 'Eviolite';
 			} else if (template.id === 'dialga') {

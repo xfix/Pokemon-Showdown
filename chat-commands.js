@@ -39,6 +39,68 @@ var crypto = require('crypto');
 
 var modlog = modlog || fs.createWriteStream('logs/modlog.txt', {flags:'a+'});
 
+/*
+var sticks = {
+		newGame: {0:[true], 1:[true, true], 2:[true, true, true], 3:[true, true, true, true], 4:[true, true, true, true, true]},
+		game: {},
+		p1: false,
+		p2: false,
+		round: 0,
+		turn: 0,
+		init: function (room) {
+			rooms[room].addRaw('A new game of sticks has started! Type !sticks join to join.');
+		},
+		join: function (player) {
+			if (p1 === false) {
+				this.p1 = player;
+			} else if (p2 === false) {
+				this.p2 = player;
+			} else {
+				rooms[room].addRaw('The sticks game is full.');
+			}
+		},
+		start: function () {
+			if (p1 !== false && p2 !== false && round === 0) {
+				round++;
+				var who = Math.ceil(Math.random() * 2);
+				var name = '';
+				if (who === 1) {
+					this.turn = 1;
+					name = p1.name;
+				} else {
+					this.turn = 2;
+					name = p2.name;
+				}
+				this.game = this.newGame;
+				rooms[room].addRaw("It's " + name + "'s turn.");
+			}
+		},
+		show: function () {
+			var count = 1;
+			for (var i in this.game) {
+				var empty = true;
+				var row = i;
+				var line = '' + count + ': ';
+				for (var n in i) {
+					if (n) {
+						line += '| ';
+						empty = false;
+					} else {
+						line += '_ ';
+					}
+				}
+				if (!empty) {
+					rooms[room].addRaw(line);
+				}
+			}
+		},
+		take: function (player, take) {
+			if (player.num === turn) {
+				
+			}
+		}
+};*/
+
 function parseCommandLocal(user, cmd, target, room, socket, message) {
 	if (!room) return;
 	cmd = cmd.toLowerCase();
@@ -1025,7 +1087,22 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		showOrBroadcast(user, cmd, room, socket, 'The coin ended up on ' + coin + '.');
 		return false;
 		break;
-
+		
+	case 'denko':
+	case '!denko':
+		target = parseInt(target);
+		if (!target) target = 1;
+		if (target > 25) target = 25;
+		if (target < 1) target = 1;
+		var denko = '';
+		for (var i=0; i<target; i++) {
+			denko += '(´･ω･`)';
+		}
+		showOrBroadcastStart(user, cmd, room, socket, message);
+		showOrBroadcast(user, cmd, room, socket, denko);
+		return false;
+		break;
+		
 	case 'opensource':
 	case '!opensource':
 		showOrBroadcastStart(user, cmd, room, socket, message);
@@ -1828,6 +1905,26 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		emit(socket, 'console', 'Removed \"'+target+'\" from the list of banned words.');
 		return false;
 		break;
+	case 'uptime':
+	case '!uptime':
+		var uptime = process.uptime();
+		var uptimeText;
+		if (uptime > 24*60*60) {
+		var uptimeDays = Math.floor(uptime/(24*60*60));
+		uptimeText = ''+uptimeDays+' '+(uptimeDays == 1 ? 'day' : 'days');
+		var uptimeHours = Math.floor(uptime/(60*60)) - uptimeDays*24;
+		if (uptimeHours) uptimeText += ', '+uptimeHours+' '+(uptimeHours == 1 ? 'hour' : 'hours');
+		} else {
+		uptimeText = uptime.seconds().duration();
+		}
+		showOrBroadcastStart(user, cmd, room, socket, message);
+		showOrBroadcast(user, cmd, room, socket,
+		'<div class="infobox">' +
+		'Uptime: <b>'+uptimeText+'</b>'+
+		'</div>');
+		return false;
+		break;
+	
 	case 'help':
 	case 'commands':
 	case 'h':

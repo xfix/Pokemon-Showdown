@@ -91,7 +91,6 @@ exports.BattleFormats = {
 		maxLevel: 5,
 		rated: true,
 		challengeShow: true,
-		searchShow: true,
 		debug: true,
 		isTeambuilderFormat: true,
 		ruleset: ['Gen1 Pokemon', 'All Abilities', 'Little Cup', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Clause', 'Freeze Clause'],
@@ -121,6 +120,14 @@ exports.BattleFormats = {
 		searchShow: true,
 		ruleset: ['Pokemon']
 	},
+	gen1customgame: {
+		mod: 'gen1',
+		effectType: 'Format',
+		name: "[Gen 1] Custom Game",
+		challengeShow: true,
+		debug: true,
+		ruleset: ['Pokemon']
+	},
 	ouclearskies: {
 		effectType: 'Format',
 		name: "OU Clear Skies",
@@ -141,9 +148,9 @@ exports.BattleFormats = {
 		ruleset: ['Pokemon', 'Standard', 'Team Preview'],
 		banlist: ['Kyogre', 'Arceus', 'Mewtwo', 'Palkia', 'Rayquaza', 'Dialga', 'Arceus-Steel', 'Arceus-Ghost', 'Arceus-Dark', 'Arceus-Rock', 'Arceus-Psychic', 'Soul Dew', 'Kyurem-White', 'Reshiram', 'Zekrom']
 	},
-	ouallabilities: {
+	allabilities: {
 		effectType: 'Format',
-		name: "OU All Abilities",
+		name: "All Abilities",
 		challengeDefault: true,
 		rated: true,
 		challengeShow: true,
@@ -162,10 +169,10 @@ exports.BattleFormats = {
 		ruleset: ['Six Moves', 'Standard', 'Team Preview'],
 		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
 	},
-	outierboost: {
+	outiershift: {
 		mod: 'tierboost',
 		effectType: 'Format',
-		name: "OU Tier Boost",
+		name: "OU Tier Shift",
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
@@ -223,14 +230,6 @@ exports.BattleFormats = {
 	        'Keldeo', 'Keldeo-Resolute',  'Meloetta', 'Genesect'
 	    ]
     },
-	unratedrandombattle: {
-		effectType: 'Format',
-		name: "Unrated Random Battle",
-		team: 'random',
-		canUseRandomTeam: true,
-		searchShow: true,
-		ruleset: ['Random Battle']
-	},
 	seasonalseasoningsgreetings: {
 		effectType: 'Format',
 		name: "[Seasonal] Seasoning's Greetings",
@@ -571,9 +570,6 @@ exports.BattleFormats = {
 			// Pokemon switch in messages
 			var msg = '';
 			switch (name) {
-			case 'Magikarp':
-				msg = "OH FUCK IT'S MAGIKARP!! Better forfeit NOW!!";
-				break;
 			case 'Ludicolo':
 				msg = "¡Ay, ay, ay! ¡Vámonos de fiesta, ya llegó Ludicolo!";
 				break;
@@ -667,19 +663,7 @@ exports.BattleFormats = {
 				}
 				
 				move.type = type;
-				this.addRaw('-message', 'lol trolled, I changed yo move type');
-			}
-			
-			// Changing name
-			if (move.accuracy !== true && move.accuracy < 100) {
-				if (move.name.indexOf(' ') > -1) {
-					var nameParts = move.name.split(' ');
-					move.name = nameParts[0] + ' Miss';
-				} else if (move.id === 'willowisp') {
-					move.name = 'Will-O-Miss';
-				} else {
-					move.name = move.name.substr(0, move.name.length - 2) + 'fail';
-				}
+				this.add('-message', 'lol trolled, I changed yo move type');
 			}
 			
 			// Additional changes
@@ -788,30 +772,6 @@ exports.BattleFormats = {
 		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
 		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
 	},
-	//oucurrent: {
-	//	effectType: 'Format',
-	//	name: "OU (current)",
-	//	challengeDefault: true,
-	//	rated: true,
-	//	challengeShow: true,
-	//	searchShow: true,
-	//	isTeambuilderFormat: true,
-	//	ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
-	//	banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
-	//},
-	/*oususpecttest: {
-		effectType: 'Format',
-		name: "OU (suspect test)",
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		teambuilderFormat: 'ou',
-		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
-		//  banlist: [
-			// 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fighting', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus', 'Arceus-Poison', 'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water', 'Blaziken', 'Darkrai', 'Deoxys', 'Deoxys-Attack', 'Deoxys-Speed', 'Dialga', 'Excadrill', 'Giratina', 'Giratina-Origin', 'Groudon', 'Ho-Oh', 'Kyogre', 'Lugia', 'Manaphy', 'Mewtwo', 'Palkia', 'Rayquaza', 'Reshiram', 'Shaymin-Sky', 'Thundurus', 'Zekrom', 'Kyurem-White', 'Drizzle ++ Swift Swim', 'Soul Dew'
-		// ] 
-		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew', 'Deoxys-Defense']
-	},*/
 	cap: {
 		effectType: 'Format',
 		name: "CAP",
@@ -879,7 +839,6 @@ exports.BattleFormats = {
 		maxLevel: 5,
 		rated: true,
 		challengeShow: true,
-		searchShow: true,
 		ruleset: ['Pokemon', 'Standard', 'Team Preview', 'Little Cup'],
 		banlist: ['Sonicboom', 'Dragon Rage', 'Berry Juice', 'Soul Dew']
 	},
@@ -889,7 +848,6 @@ exports.BattleFormats = {
 		maxLevel: 5,
 		rated: true,
 		challengeShow: true,
-		searchShow: true,
 		ruleset: ['LC'],
 		banlist: ['Abra', 'Aipom', 'Archen', 'Aron', 'Axew', 'Bronzor', 'Chinchou', 'Clamperl', 'Cottonee', 'Cranidos', 'Croagunk', 'Diglett', 'Dratini', 'Drifloon', 'Drilbur', 'Dwebble', 'Elekid', 'Ferroseed', 'Foongus', 'Frillish', 'Gastly', 'Hippopotas', 'Houndour', 'Larvesta', 'Lileep', 'Magnemite', 'Meowth', 'Mienfoo', 'Misdreavus', 'Munchlax', 'Murkrow', 'Onix', 'Pawniard', 'Ponyta', 'Porygon', 'Riolu', 'Sandshrew', 'Scraggy', 'Shellder', 'Snover', 'Staryu', 'Taillow', 'Tentacool', 'Timburr', 'Tirtouga']
 	},
@@ -985,14 +943,6 @@ exports.BattleFormats = {
 		name: "[Gen 3] Custom Game",
 		challengeShow: true,
 		ruleset: []
-	},
-	gen1customgame: {
-		mod: 'gen1',
-		effectType: 'Format',
-		name: "[Gen 1] Custom Game",
-		challengeShow: true,
-		debug: true,
-		ruleset: ['Pokemon']
 	},
 	gennextnextou: {
 		mod: 'gennext',
@@ -1136,7 +1086,6 @@ exports.BattleFormats = {
 		maxLevel: 5,
 		rated: true,
 		challengeShow: true,
-		searchShow: true,
 		isTeambuilderFormat: true,
 		ruleset: ['Pokemon', 'Standard', 'Team Preview', 'Little Cup'],
 		banlist: ['Sonicboom', 'Dragon Rage', 'Berry Juice', 'Carvanha', 'Meditite', 'Gligar', 'Scyther', 'Sneasel', 'Tangela', 'Vulpix', 'Yanma', 'Soul Dew']

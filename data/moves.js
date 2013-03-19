@@ -3997,9 +3997,7 @@ exports.BattleMovedex = {
 		},
 		beforeMoveCallback: function(pokemon) {
 			if (!pokemon.removeVolatile('focuspunch')) {
-				this.debug('Focus Punch not started, failing');
-				this.add('cant', pokemon, 'flinch', 'Focus Punch');
-				return true;
+				return false;
 			}
 			if (pokemon.lastAttackedBy && pokemon.lastAttackedBy.damage && pokemon.lastAttackedBy.thisTurn) {
 				this.debug('Pokemon attacked, Focus Punch failing');
