@@ -109,7 +109,23 @@ exports.BattleScripts = {
 						// Duration reset thus partially trapped at 2 always
 						target.volatiles['partiallytrapped'].duration = 2;
 						// We deduct an additional PP that was not deducted earlier
-						pokemon.deductPP(move, null, target);
+						var moveIndex = -1;
+						for (var i=0; i<4; i++) {
+							this.debug('Seeking move ' + move.id);
+							this.debig('See: ' + pokemon.moveset[i].id);
+							if (pokemon.moveset[i].id === move.id) {
+								moveIndex = i;
+								break;
+							}
+						}
+						if (pokemon.moveset[moveIndex].pp > 0) {
+							pokemon.deductPP(move, null, target);
+						} else {
+							this.debug('Partial Trapping PP bug, rolling over to max PP');
+							// Partial trapping moves roll over to max PP if reused on 0 PP while in lock and in switch
+							this.debug('Setting ' + pokemon.moveset[moveIndex].id + ' to ' + move.maxpp + 'pp.');
+							pokemon.moveset[moveIndex].pp = move.maxpp;
+						}
 					}
 				}
 			} // If we move to here, the move failed and there's no partial trapping lock
