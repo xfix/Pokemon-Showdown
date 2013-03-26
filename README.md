@@ -86,6 +86,7 @@ Credits
 ------------------------------------------------------------------------
 
 Pokemon Showdown was created by Guangcong Luo [Zarel].
+This is a branch for Joim's lab maintained by Joim.
 
 Developers
 
@@ -98,3 +99,6 @@ Contributors
 - [The Immortal]
 - [Marty-D]
 - Cody Thompson [Rising_Dusk]
+
+Contributors to Joim's Lab
+- [MJB]
