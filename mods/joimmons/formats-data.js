@@ -88,6 +88,13 @@ exports.BattleFormatsData = {
 			dreamWorldRelease: true,
 			tier: "OU"
 		},
+		slaking: {
+			viableMoves: {"return":1,"earthquake":1,"pursuit":1,"firepunch":1,"suckerpunch":1,"doubleedge":1,"retaliate":1,"gigaimpact":1,"hammerarm":1},
+			eventPokemon: [
+				{"generation":4,"level":50,"gender":"M","nature":"Adamant","moves":["gigaimpact","return","shadowclaw","aerialace"]}
+			],
+			tier: "OU"
+		},
 		tornadustherian: {
 			viableMoves: {"hurricane":1,"airslash":1,"focusblast":1,"uturn":1,"heatwave":1},
 			tier: "OU"
