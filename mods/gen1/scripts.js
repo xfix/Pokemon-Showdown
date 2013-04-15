@@ -75,7 +75,18 @@ exports.BattleScripts = {
 		pokemon.lastDamage = 0;
 		var lockedMove = this.runEvent('LockMove', pokemon);
 		if (lockedMove === true) lockedMove = false;
+		var moveIndex = -1;
+		for (var i=0; i<4; i++) {
+			if (pokemon.moveset[i].id === move.id) {
+				moveIndex = i;
+				break;
+			}
+		}
+		//pokemon.moveset[moveIndex].pp
 		if (!lockedMove && !pokemon.volatiles['partialtrappinglock']) {
+			if (move.secondary !== 'partiallytrapped') {
+				
+			}
 			pokemon.deductPP(move, null, target);
 		}
 		this.useMove(move, pokemon, target, sourceEffect);
