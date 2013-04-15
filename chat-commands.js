@@ -1044,7 +1044,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 
 	case 'groups':
 	case '!groups':
-		var message = '<div class="message-groups">' +
+		var groups = '<div class="message-groups">' +
 		'+ <b>Voice</b> - They can use ! commands like !groups, and talk during moderated chat<br />' +
 		'% <b>Driver</b> - The above, and they can also mute users and run tournaments<br />' +
 		'@ <b>Moderator</b> - The above, and they can ban users and check for alts<br />' +
@@ -1052,7 +1052,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		'~ <b>Administrator</b> - They can do anything, like change what this message says'+
 		'</div>';
 		showOrBroadcastStart(user, cmd, room, socket, message);
-		showOrBroadcast(user, cmd, room, socket, message);
+		showOrBroadcast(user, cmd, room, socket, groups);
 		return false;
 		break;
 		
