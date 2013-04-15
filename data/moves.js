@@ -81,8 +81,8 @@ exports.BattleMovedex = {
 		accuracy: 100,
 		basePower: 55,
 		basePowerCallback: function(pokemon) {
-			if (!pokemon.item || pokemon.item === 'flyinggem') {
-				this.debug("Power doubled for no item.");
+			if (!pokemon.item) {
+				this.debug("Power doubled for no item");
 				return 110;
 			}
 			return 55;
@@ -406,7 +406,6 @@ exports.BattleMovedex = {
 			}
 			this.add('-cureteam',source,'[from] move: Aromatherapy');
 		},
-		secondary: false,
 		target: "allyTeam",
 		type: "Grass"
 	},
@@ -1123,7 +1122,7 @@ exports.BattleMovedex = {
 				return;
 			}
 			this.add('-prepare', attacker, move.name, defender);
-			if (!this.runEvent('ChargeMove', attacker, defender)) {
+			if (!this.runEvent('ChargeMove', attacker, defender, move)) {
 				this.add('-anim', attacker, move.name, defender);
 				return;
 			}
@@ -2074,11 +2073,11 @@ exports.BattleMovedex = {
 				delete move.volatileStatus;
 				delete move.onHit;
 				move.self = { boosts: {atk:1,def:1,spe:-1}};
-				move.target = "self";
+				move.target = move.nonGhostTarget;
 			}
 		},
-		onTryHit: function(target, source) {
-			if (target.volatiles.curse) return false;
+		onTryHit: function(target, source, move) {
+			if (move.volatileStatus && target.volatiles.curse) return false;
 		},
 		onHit: function(target, source) {
 			this.directDamage(source.maxhp/2, source, source);
@@ -2094,7 +2093,7 @@ exports.BattleMovedex = {
 		},
 		secondary: false,
 		target: "normal",
-		ghostTarget: "self",
+		nonGhostTarget: "self",
 		type: "Ghost"
 	},
 	"cut": {
@@ -2264,7 +2263,7 @@ exports.BattleMovedex = {
 		stallingMove: true, // Note: stallingMove is not used anywhere.
 		volatileStatus: 'protect',
 		onTryHit: function(pokemon) {
-			return this.willAct() && this.runEvent('StallMove', pokemon);
+			return !!this.willAct() && this.runEvent('StallMove', pokemon);
 		},
 		onHit: function(pokemon) {
 			pokemon.addVolatile('stall');
@@ -2291,7 +2290,7 @@ exports.BattleMovedex = {
 				return;
 			}
 			this.add('-prepare', attacker, move.name, defender);
-			if (!this.runEvent('ChargeMove', attacker, defender)) {
+			if (!this.runEvent('ChargeMove', attacker, defender, move)) {
 				this.add('-anim', attacker, move.name, defender);
 				return;
 			}
@@ -2420,7 +2419,7 @@ exports.BattleMovedex = {
 				return;
 			}
 			this.add('-prepare', attacker, move.name, defender);
-			if (!this.runEvent('ChargeMove', attacker, defender)) {
+			if (!this.runEvent('ChargeMove', attacker, defender, move)) {
 				this.add('-anim', attacker, move.name, defender);
 				return;
 			}
@@ -3188,7 +3187,7 @@ exports.BattleMovedex = {
 		accuracy: 100,
 		basePower: 0,
 		category: "Status",
-		desc: "Causes one adjacent target's Ability to become the same as the user's. Fails if the target's Ability is Multitype, Truant, or the same Ability as the user, or if the user's Ability is Flower Gift, Forecast, Illusion, Imposter, Multitype, Trace, Wonder Guard, or Zen Mode. Pokemon protected by Magic Coat or the Ability Magic Bounce are unaffected and instead use this move themselves.",
+		desc: "Causes one adjacent target's Ability to become the same as the user's. Fails if the target's Ability is Multitype, Truant, or the same Ability as the user, or if the user's Ability is Flower Gift, Forecast, Illusion, Imposter, Multitype, Trace, or Zen Mode. Pokemon protected by Magic Coat or the Ability Magic Bounce are unaffected and instead use this move themselves.",
 		shortDesc: "The target's Ability changes to match the user's.",
 		id: "entrainment",
 		name: "Entrainment",
@@ -3198,7 +3197,7 @@ exports.BattleMovedex = {
 		onTryHit: function(target, source) {
 			if (target === source) return false;
 			var bannedTargetAbilities = {multitype:1, truant:1};
-			var bannedSourceAbilities = {flowergift:1, forecast:1, illusion:1, imposter:1, multitype:1, trace:1, wonderguard:1, zenmode:1};
+			var bannedSourceAbilities = {flowergift:1, forecast:1, illusion:1, imposter:1, multitype:1, trace:1, zenmode:1};
 			if (bannedTargetAbilities[target.ability] || bannedSourceAbilities[source.ability] || target.ability === source.ability) {
 				return false;
 			}
@@ -3631,20 +3630,20 @@ exports.BattleMovedex = {
 		accuracy: 100,
 		basePower: 0,
 		basePowerCallback: function(pokemon, target) {
-			var hpPercent = pokemon.hpPercent(pokemon.hp);
-			if (hpPercent <= 5) {
+			var ratio = pokemon.hp * 48 / pokemon.maxhp;
+			if (ratio < 2) {
 				return 200;
 			}
-			if (hpPercent <= 10) {
+			if (ratio < 5) {
 				return 150;
 			}
-			if (hpPercent <= 20) {
+			if (ratio < 10) {
 				return 100;
 			}
-			if (hpPercent <= 35) {
+			if (ratio < 17) {
 				return 80;
 			}
-			if (hpPercent <= 70) {
+			if (ratio < 33) {
 				return 40;
 			}
 			return 20;
@@ -3902,7 +3901,7 @@ exports.BattleMovedex = {
 				return;
 			}
 			this.add('-prepare', attacker, move.name, defender);
-			if (!this.runEvent('ChargeMove', attacker, defender)) {
+			if (!this.runEvent('ChargeMove', attacker, defender, move)) {
 				this.add('-anim', attacker, move.name, defender);
 				return;
 			}
@@ -4125,7 +4124,7 @@ exports.BattleMovedex = {
 				return;
 			}
 			this.add('-prepare', attacker, move.name, defender);
-			if (!this.runEvent('ChargeMove', attacker, defender)) {
+			if (!this.runEvent('ChargeMove', attacker, defender, move)) {
 				this.add('-anim', attacker, move.name, defender);
 				return;
 			}
@@ -5027,7 +5026,6 @@ exports.BattleMovedex = {
 			}
 			this.add('-cureteam', source, '[from] move: HealBell');
 		},
-		secondary: false,
 		target: "allyTeam",
 		type: "Normal"
 	},
@@ -5113,8 +5111,11 @@ exports.BattleMovedex = {
 		pp: 10,
 		priority: 0,
 		isSnatchable: true,
-		onTryHit: function(pokemon) {
-			if (pokemon.side.pokemonLeft <= 1) return false;
+		onTryHit: function(pokemon, target, move) {
+			if (pokemon.side.pokemonLeft <= 1) {
+				delete move.selfdestruct;
+				return false;
+			}
 		},
 		selfdestruct: true,
 		sideCondition: 'healingwish',
@@ -5132,7 +5133,7 @@ exports.BattleMovedex = {
 					var source = this.effectData.source;
 					var damage = target.heal(target.maxhp);
 					target.setStatus('');
-					this.add('-heal',target,target.getHealth(),'[from] move: Healing Wish');
+					this.add('-heal',target,target.getHealth,'[from] move: Healing Wish');
 					target.side.removeSideCondition('healingwish');
 				}
 			}
@@ -5907,7 +5908,7 @@ exports.BattleMovedex = {
 				return;
 			}
 			this.add('-prepare', attacker, move.name, defender);
-			if (!this.runEvent('ChargeMove', attacker, defender)) {
+			if (!this.runEvent('ChargeMove', attacker, defender, move)) {
 				this.add('-anim', attacker, move.name, defender);
 				return;
 			}
@@ -6695,8 +6696,11 @@ exports.BattleMovedex = {
 		pp: 10,
 		priority: 0,
 		isSnatchable: true,
-		onTryHit: function(pokemon) {
-			if (pokemon.side.pokemonLeft <= 1) return false;
+		onTryHit: function(pokemon, target, move) {
+			if (pokemon.side.pokemonLeft <= 1) {
+				delete move.selfdestruct;
+				return false;
+			}
 		},
 		selfdestruct: true,
 		sideCondition: 'lunardance',
@@ -6717,7 +6721,7 @@ exports.BattleMovedex = {
 					for (var m in target.moveset) {
 						target.moveset[m].pp = target.moveset[m].maxpp;
 					}
-					this.add('-heal',target,target.getHealth(),'[from] move: Lunar Dance');
+					this.add('-heal',target,target.getHealth,'[from] move: Lunar Dance');
 					target.side.removeSideCondition('lunardance');
 				}
 			}
@@ -6782,22 +6786,30 @@ exports.BattleMovedex = {
 			onStart: function(target) {
 				this.add('-singleturn', target, 'move: Magic Coat');
 			},
-			onAllyTryFieldHit: function(target, source, move) {
+			onTryHitPriority: 2,
+			onTryHit: function(target, source, move) {
 				if (target === source) return;
+				if (move.hasBounced) return;
 				if (typeof move.isBounceable === 'undefined') {
 					move.isBounceable = !!(move.category === 'Status' && (move.status || move.boosts || move.volatileStatus === 'confusion' || move.forceSwitch));
-				}
-				if (move.target !== 'foeSide' && target !== this.effectData.target) {
-					return;
-				}
-				if (move.hasBounced) {
-					return;
 				}
 				if (move.isBounceable) {
 					var newMove = this.getMoveCopy(move.id);
 					newMove.hasBounced = true;
-					this.add('-activate', target, 'move: Magic Coat', newMove, '[of] '+source);
-					this.moveHit(source, target, newMove);
+					this.useMove(newMove, target, source);
+					return null;
+				}
+			},
+			onAllyTryHitSide: function(target, source, move) {
+				if (target.side === source.side) return;
+				if (move.hasBounced) return;
+				if (typeof move.isBounceable === 'undefined') {
+					move.isBounceable = !!(move.category === 'Status' && (move.status || move.boosts || move.volatileStatus === 'confusion' || move.forceSwitch));
+				}
+				if (move.isBounceable) {
+					var newMove = this.getMoveCopy(move.id);
+					newMove.hasBounced = true;
+					this.useMove(newMove, target, source);
 					return null;
 				}
 			}
@@ -6983,8 +6995,11 @@ exports.BattleMovedex = {
 		onHit: function(target, pokemon) {
 			var decision = this.willMove(target);
 			if (decision) {
+				var noMeFirst = {
+					chatter:1, counter:1, covet:1, focuspunch:1, mefirst:1, metalburst:1, mirrorcoat:1, struggle:1, thief:1
+				};
 				var move = this.getMove(decision.move);
-				if (move.category !== 'Status') {
+				if (move.category !== 'Status' && !noMeFirst[move]) {
 					pokemon.addVolatile('mefirst');
 					this.useMove(move, pokemon);
 					return;
@@ -7692,6 +7707,9 @@ exports.BattleMovedex = {
 				pokemon.setItem('');
 			}
 		},
+		onTryHit: function(target, source) {
+			if (!source.volatiles['naturalgift']) return false;
+		},
 		onModifyMove: function(move, pokemon) {
 			if (pokemon.volatiles['naturalgift']) move.type = pokemon.volatiles['naturalgift'].type;
 		},
@@ -7905,7 +7923,7 @@ exports.BattleMovedex = {
 		id: "outrage",
 		isViable: true,
 		name: "Outrage",
-		pp: 15,
+		pp: 10,
 		priority: 0,
 		isContact: true,
 		self: {
@@ -7952,7 +7970,7 @@ exports.BattleMovedex = {
 			var averagehp = Math.floor((target.hp + pokemon.hp) / 2) || 1;
 			target.sethp(averagehp);
 			pokemon.sethp(averagehp);
-			this.add('-sethp', target, target.getHealth(), pokemon, pokemon.hpChange(), '[from] move: Pain Split');
+			this.add('-sethp', target, target.getHealth, pokemon, pokemon.getHealth, '[from] move: Pain Split');
 		},
 		secondary: false,
 		target: "normal",
@@ -8435,7 +8453,7 @@ exports.BattleMovedex = {
 		stallingMove: true, // Note: stallingMove is not used anywhere.
 		volatileStatus: 'protect',
 		onTryHit: function(pokemon) {
-			return this.willAct() && this.runEvent('StallMove', pokemon);
+			return !!this.willAct() && this.runEvent('StallMove', pokemon);
 		},
 		onHit: function(pokemon) {
 			pokemon.addVolatile('stall');
@@ -8445,7 +8463,7 @@ exports.BattleMovedex = {
 			onStart: function(target) {
 				this.add('-singleturn', target, 'Protect');
 			},
-			onTryHitPriority: 1,
+			onTryHitPriority: 3,
 			onTryHit: function(target, source, move) {
 				if (move.breaksProtect) {
 					target.removeVolatile('Protect');
@@ -8702,7 +8720,7 @@ exports.BattleMovedex = {
 				this.debug('Pursuit start');
 				var sources = this.effectData.sources;
 				for (var i=0; i<sources.length; i++) {
-					this.cancelMove(pokemon);
+					this.cancelMove(sources[i]);
 					this.runMove('pursuit', sources[i], pokemon);
 				}
 			}
@@ -8784,7 +8802,7 @@ exports.BattleMovedex = {
 			onStart: function(target, source) {
 				this.add('-singleturn', source, 'Quick Guard');
 			},
-			onTryHitPriority: 1,
+			onTryHitPriority: 4,
 			onTryHit: function(target, source, effect) {
 				// Quick Guard only blocks moves with a natural positive priority
 				// (e.g. it doesn't block 0 priority moves boosted by Prankster)
@@ -8984,7 +9002,7 @@ exports.BattleMovedex = {
 				return;
 			}
 			this.add('-prepare', attacker, move.name, defender);
-			if (!this.runEvent('ChargeMove', attacker, defender)) {
+			if (!this.runEvent('ChargeMove', attacker, defender, move)) {
 				this.add('-anim', attacker, move.name, defender);
 				return;
 			}
@@ -9247,20 +9265,20 @@ exports.BattleMovedex = {
 		accuracy: 100,
 		basePower: 0,
 		basePowerCallback: function(pokemon, target) {
-			var hpPercent = pokemon.hpPercent(pokemon.hp);
-			if (hpPercent <= 5) {
+			var ratio = pokemon.hp * 48 / pokemon.maxhp;
+			if (ratio < 2) {
 				return 200;
 			}
-			if (hpPercent <= 10) {
+			if (ratio < 5) {
 				return 150;
 			}
-			if (hpPercent <= 20) {
+			if (ratio < 10) {
 				return 100;
 			}
-			if (hpPercent <= 35) {
+			if (ratio < 17) {
 				return 80;
 			}
-			if (hpPercent <= 70) {
+			if (ratio < 33) {
 				return 40;
 			}
 			return 20;
@@ -10049,7 +10067,7 @@ exports.BattleMovedex = {
 				return;
 			}
 			this.add('-prepare', attacker, move.name, defender);
-			if (!this.runEvent('ChargeMove', attacker, defender)) {
+			if (!this.runEvent('ChargeMove', attacker, defender, move)) {
 				this.add('-anim', attacker, move.name, defender);
 				return;
 			}
@@ -10378,11 +10396,12 @@ exports.BattleMovedex = {
 				return;
 			}
 			this.add('-prepare', attacker, move.name, defender);
-			if (!this.runEvent('ChargeMove', attacker, defender)) {
+			attacker.addVolatile(move.id, defender);
+			if (!this.runEvent('ChargeMove', attacker, defender, move)) {
 				this.add('-anim', attacker, move.name, defender);
+				attacker.removeVolatile(move.id);
 				return;
 			}
-			attacker.addVolatile(move.id, defender);
 			return null;
 		},
 		effect: {
@@ -10413,7 +10432,7 @@ exports.BattleMovedex = {
 				return;
 			}
 			this.add('-prepare', attacker, move.name, defender);
-			if (!this.runEvent('ChargeMove', attacker, defender)) {
+			if (!this.runEvent('ChargeMove', attacker, defender, move)) {
 				this.add('-anim', attacker, move.name, defender);
 				return;
 			}
@@ -10436,7 +10455,7 @@ exports.BattleMovedex = {
 		accuracy: 100,
 		basePower: 60,
 		category: "Physical",
-		desc: "Deals damage to one adjacent or non-adjacent target. This attack takes the target into the air with the user on the first turn and strikes on the second. On the first turn, the user and the target avoid all attacks other than Gust, Hurricane, Sky Uppercut, Smack Down, Thunder, and Twister. The user and the target cannot make a move between turns. If the user is holding a Power Herb, the move completes in one turn. This move has no effect on Flying-types. Fails on the first turn if the target is an ally or if the target has a Substitute. This move cannot be used while Gravity is in effect. Makes contact.",
+		desc: "Deals damage to one adjacent or non-adjacent target. This attack takes the target into the air with the user on the first turn and strikes on the second. On the first turn, the user and the target avoid all attacks other than Gust, Hurricane, Sky Uppercut, Smack Down, Thunder, and Twister. The user and the target cannot make a move between turns. This move has no effect on Flying-types. Fails on the first turn if the target is an ally or if the target has a Substitute. This move cannot be used while Gravity is in effect. Makes contact.",
 		shortDesc: "User and foe fly up turn 1. Damages on turn 2.",
 		id: "skydrop",
 		name: "Sky Drop",
@@ -10445,6 +10464,7 @@ exports.BattleMovedex = {
 		isContact: true,
 		isTwoTurnMove: true,
 		onTry: function(attacker, defender, move) {
+			if (defender.fainted) return false;
 			if (attacker.removeVolatile(move.id)) {
 				return;
 			}
@@ -10461,10 +10481,6 @@ exports.BattleMovedex = {
 				return null;
 			}
 			this.add('-prepare', attacker, move.name, defender);
-			if (!this.runEvent('ChargeMove', attacker, defender)) {
-				this.add('-anim', attacker, move.name, defender);
-				return;
-			}
 			attacker.addVolatile(move.id, defender);
 			return null;
 		},
@@ -10944,7 +10960,7 @@ exports.BattleMovedex = {
 				return;
 			}
 			this.add('-prepare', attacker, move.name, defender);
-			if (this.isWeather('sunnyday') || !this.runEvent('ChargeMove', attacker, defender)) {
+			if (this.isWeather('sunnyday') || !this.runEvent('ChargeMove', attacker, defender, move)) {
 				this.add('-anim', attacker, move.name, defender);
 				return;
 			}
@@ -11518,8 +11534,8 @@ exports.BattleMovedex = {
 				this.effectData.hp = Math.floor(target.maxhp/4);
 				delete target.volatiles['partiallytrapped'];
 			},
-			onTryHitPriority: -1,
-			onTryHit: function(target, source, move) {
+			onTryPrimaryHitPriority: -1,
+			onTryPrimaryHit: function(target, source, move) {
 				if (target === source) {
 					this.debug('sub bypass: self hit');
 					return;
@@ -13139,7 +13155,7 @@ exports.BattleMovedex = {
 			onStart: function(target, source) {
 				this.add('-singleturn', source, 'Wide Guard');
 			},
-			onTryHitPriority: 1,
+			onTryHitPriority: 4,
 			onTryHit: function(target, source, effect) {
 				// Wide Guard blocks damaging spread moves
 				if (effect && (effect.category === 'Status' || (effect.target !== 'allAdjacent' && effect.target !== 'allAdjacentFoes'))) {
@@ -13236,7 +13252,7 @@ exports.BattleMovedex = {
 				if (!target.fainted) {
 					var source = this.effectData.source;
 					var damage = this.heal(this.effectData.hp, target, target);
-					if (damage) this.add('-heal', target, target.hpChange(damage), '[from] move: Wish', '[wisher] '+source.name);
+					if (damage) this.add('-heal', target, target.getHealth, '[from] move: Wish', '[wisher] '+source.name);
 				}
 			}
 		},

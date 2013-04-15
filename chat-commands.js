@@ -38,68 +38,7 @@ var crypto = require('crypto');
  */
 
 var modlog = modlog || fs.createWriteStream('logs/modlog.txt', {flags:'a+'});
-
-/*
-var sticks = {
-		newGame: {0:[true], 1:[true, true], 2:[true, true, true], 3:[true, true, true, true], 4:[true, true, true, true, true]},
-		game: {},
-		p1: false,
-		p2: false,
-		round: 0,
-		turn: 0,
-		init: function (room) {
-			rooms[room].addRaw('A new game of sticks has started! Type !sticks join to join.');
-		},
-		join: function (player) {
-			if (p1 === false) {
-				this.p1 = player;
-			} else if (p2 === false) {
-				this.p2 = player;
-			} else {
-				rooms[room].addRaw('The sticks game is full.');
-			}
-		},
-		start: function () {
-			if (p1 !== false && p2 !== false && round === 0) {
-				round++;
-				var who = Math.ceil(Math.random() * 2);
-				var name = '';
-				if (who === 1) {
-					this.turn = 1;
-					name = p1.name;
-				} else {
-					this.turn = 2;
-					name = p2.name;
-				}
-				this.game = this.newGame;
-				rooms[room].addRaw("It's " + name + "'s turn.");
-			}
-		},
-		show: function () {
-			var count = 1;
-			for (var i in this.game) {
-				var empty = true;
-				var row = i;
-				var line = '' + count + ': ';
-				for (var n in i) {
-					if (n) {
-						line += '| ';
-						empty = false;
-					} else {
-						line += '_ ';
-					}
-				}
-				if (!empty) {
-					rooms[room].addRaw(line);
-				}
-			}
-		},
-		take: function (player, take) {
-			if (player.num === turn) {
-				
-			}
-		}
-};*/
+var updateServerLock = false;
 
 function parseCommandLocal(user, cmd, target, room, socket, message) {
 	if (!room) return;
@@ -138,7 +77,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 				room: room.id
 			};
 			if (user.can('ip', targetUser)) {
-				userdetails.ip = targetUser.ip;
+				userdetails.ips = Object.keys(targetUser.ips);
 			}
 			emit(socket, 'command', userdetails);
 		} else if (cmd === 'roomlist') {
@@ -155,6 +94,18 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 	case 'me':
 	case 'mee':
 		if (canTalk(user, room)) return true;
+		break;
+
+	case '!birkal':
+	case 'birkal':
+		if (canTalk(user, room) && user.can('broadcast') && room.id === 'lobby') {
+			if (cmd === '!birkal') {
+				room.add('|c|'+user.getIdentity()+'|!birkal '+target, true);
+			}
+			room.logEntry(user.name + ' used /birkal ' + target);
+			room.add('|c| Birkal|/me '+target, true);
+			return false;
+		}
 		break;
 
 	case 'namelock':
@@ -218,8 +169,9 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			}
 		}
 		if (removed) {
-			if (Users.get(target)) {
-				rooms.lobby.usersChanged = true;
+			var targetUser = Users.get(target);
+			if (targetUser) {
+				rooms.lobby.sendIdentity(targetUser);
 			}
 			logModCommand(room,user.name+" unlocked the name of "+target+".");
 		} else {
@@ -278,7 +230,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 				if (!first) output += ' | ';
 				first = false;
 
-				output += '<a href="/'+i+'" onclick="return selectTab(\''+i+'\');">'+i+'</a>';
+				output += '<a href="/'+i+'" room="'+i+'">'+i+'</a>';
 			}
 			if (!output) {
 				emit(socket, 'console', ""+targetUser.name+" is offline.");
@@ -350,7 +302,8 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 				emit(socket, 'console', '(Unregistered)');
 			}
 			if (user.can('ip', targetUser)) {
-				emit(socket, 'console', 'IP: '+targetUser.ip);
+				var ips = Object.keys(targetUser.ips);
+				emit(socket, 'console', 'IP' + ((ips.length > 1) ? 's' : '') + ': ' + ips.join(', '));
 			}
 			var output = 'In rooms: ';
 			var first = true;
@@ -358,7 +311,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 				if (!first) output += ' | ';
 				first = false;
 
-				output += '<a href="/'+i+'" onclick="return selectTab(\''+i+'\');">'+i+'</a>';
+				output += '<a href="/'+i+'" room="'+i+'">'+i+'</a>';
 			}
 			emit(socket, 'console', {rawMessage: output});
 		}
@@ -417,28 +370,6 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 
 		logModCommand(room,''+targetUser.name+' was kicked to the Rules page by '+user.name+'' + (targets[1] ? " (" + targets[1] + ")" : ""));
 		targetUser.emit('console', {evalRulesRedirect: 1});
-		return false;
-		break;
-		
-	case 'warn':
-		if (!target) return parseCommand(user, '?', cmd, room, socket);
-		var targets = splitTarget(target);
-		var targetUser = targets[0];
-		if (!targetUser || !targetUser.connected) {
-			emit(socket, 'console', 'User '+targets[2]+' not found.');
-			return false;
-		}
-		if (!targets[1]) {
-			emit(socket, 'console', 'You need a reason to warn a user.');
-			return false;
-		}
-		if (!user.can('warn', targetUser)) {
-			emit(socket, 'console', '/warn - Access denied.');
-			return false;
-		}
-
-		logModCommand(room, targetUser.name + ' was warned by ' + user.name + ' (' + targets[1] + ')');
-		targetUser.emit('message', 'You have been warned by ' + user.name + ' due to the following reason: &quot;' + targets[1] + '&quot;. Read the <a href="http://www.smogon.com/sim/rules">rules</a> to avoid further punishment for your behaviour.');
 		return false;
 		break;
 
@@ -506,18 +437,15 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			}
 			return parseCommand(user, '?', cmd, room, socket);
 		}
-		if (user.muted && !targetUser.can('mute', user)) {
+		// temporarily disable this because blarajan
+		/* if (user.muted && !targetUser.can('mute', user)) {
 			emit(socket, 'console', 'You can only private message members of the Moderation Team (users marked by %, @, &, or ~) when muted.');
 			return false;
-		}
+		} */
 
 		if (!user.named) {
 			emit(socket, 'console', 'You must choose a name before you can send private messages.');
 			return false;
-		}
-		
-		if (targetUser.blockChallenges) {
-			emit(socket, 'console', 'User ' + targetUser.name + ' is idle and might not answer' + ((targetUser.idleMessage !== false) ? ' (' + targetUser.idleMessage + ')' : '') + '.');
 		}
 
 		var message = {
@@ -535,7 +463,8 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 	case 'ip':
 	case 'getip':
 		if (!target) {
-			emit(socket, 'console', 'Your IP is: '+user.ip);
+			var ips = Object.keys(user.ips);
+			emit(socket, 'console', 'Your IP' + ((ips.length > 1) ? 's are' : ' is') + ': ' + ips.join(', '));
 			return false;
 		}
 		var targetUser = Users.get(target);
@@ -547,7 +476,8 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			emit(socket, 'console', '/ip - Access denied.');
 			return false;
 		}
-		emit(socket, 'console', 'User '+targetUser.name+' has IP: '+targetUser.ip);
+		var ips = Object.keys(targetUser.ips);
+		emit(socket, 'console', 'User ' + targetUser.name + ' has IP' + ((ips.length > 1) ? 's' : '') + ': ' + ips.join(', '));
 		return false;
 		break;
 
@@ -571,12 +501,15 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		if (alts.length) logModCommand(room,""+targetUser.name+"'s alts were also muted: "+alts.join(", "));
 
 		targetUser.muted = true;
+		rooms.lobby.sendIdentity(targetUser);
 		for (var i=0; i<alts.length; i++) {
 			var targetAlt = Users.get(alts[i]);
-			if (targetAlt) targetAlt.muted = true;
+			if (targetAlt) {
+				targetAlt.muted = true;
+				rooms.lobby.sendIdentity(targetAlt);
+			}
 		}
 
-		rooms.lobby.usersChanged = true;
 		return false;
 		break;
 
@@ -597,13 +530,18 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		if (alts.length) logModCommand(room,""+targetUser.name+"'s alts were also muted: "+alts.join(", "));
 
 		targetUser.muted = true;
-		mutedIps[targetUser.ip] = targetUser.userid;
+		rooms.lobby.sendIdentity(targetUser);
+		for (var ip in targetUser.ips) {
+			mutedIps[ip] = targetUser.userid;
+		}
 		for (var i=0; i<alts.length; i++) {
 			var targetAlt = Users.get(alts[i]);
-			if (targetAlt) targetAlt.muted = true;
+			if (targetAlt) {
+				targetAlt.muted = true;
+				rooms.lobby.sendIdentity(targetAlt);
+			}
 		}
 
-		rooms.lobby.usersChanged = true;
 		return false;
 		break;
 
@@ -635,7 +573,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		}
 
 		targetUser.muted = false;
-		rooms.lobby.usersChanged = true;
+		rooms.lobby.sendIdentity(targetUser);
 		logModCommand(room,''+targetUser.name+' was unmuted by '+user.name+'.');
 		return false;
 		break;
@@ -671,9 +609,17 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			emit(socket, 'console', '/promote - WARNING: This user is offline and could be unregistered. Use /forcepromote if you\'re sure you want to risk it.');
 			return false;
 		}
-		var groupName = config.groups[nextGroup].name || nextGroup || '';
-		logModCommand(room,''+name+' was '+(isDemotion?'demoted':'promoted')+' to ' + (groupName.trim() || 'a regular user') + ' by '+user.name+'.', isDemotion);
-		if (targetUser && targetUser.connected) room.send('|N|'+targetUser.getIdentity()+'|'+targetUser.userid);
+		var groupName = (config.groups[nextGroup].name || nextGroup || '').trim() || 'a regular user';
+		var entry = ''+name+' was '+(isDemotion?'demoted':'promoted')+' to ' + groupName + ' by '+user.name+'.';
+		logModCommand(room, entry, isDemotion);
+		if (isDemotion) {
+			rooms.lobby.logEntry(entry);
+			emit(socket, 'console', 'You demoted ' + name + ' to ' + groupName + '.');
+			if (targetUser) {
+				targetUser.emit('console', 'You were demoted to ' + groupName + ' by ' + user.name + '.');
+			}
+		}
+		rooms.lobby.sendIdentity(targetUser);
 		return false;
 		break;
 
@@ -735,12 +681,12 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			break;
 		}
 		if (config.modchat === true) {
-			room.addRaw('<div class="message-modchat-enable"><b>Moderated chat was enabled!</b><br />Only registered users can talk.</div>');
+			room.addRaw('<div class="broadcast-red"><b>Moderated chat was enabled!</b><br />Only registered users can talk.</div>');
 		} else if (!config.modchat) {
-			room.addRaw('<div class="message-modchat-disable"><b>Moderated chat was disabled!</b><br />Anyone may talk now.</div>');
+			room.addRaw('<div class="broadcast-blue"><b>Moderated chat was disabled!</b><br />Anyone may talk now.</div>');
 		} else {
 			var modchat = sanitize(config.modchat);
-			room.addRaw('<div class="message-modchat-group"><b>Moderated chat was set to '+modchat+'!</b><br />Only users of rank '+modchat+' and higher can talk.</div>');
+			room.addRaw('<div class="broadcast-red"><b>Moderated chat was set to '+modchat+'!</b><br />Only users of rank '+modchat+' and higher can talk.</div>');
 		}
 		logModCommand(room,user.name+' set modchat to '+config.modchat,true);
 		return false;
@@ -752,7 +698,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			emit(socket, 'console', '/declare - Access denied.');
 			return false;
 		}
-		room.addRaw('<div class="message-declare"><b>'+target+'</b></div>');
+		room.addRaw('<div class="broadcast-blue"><b>'+target+'</b></div>');
 		logModCommand(room,user.name+' declared '+target,true);
 		return false;
 		break;
@@ -774,27 +720,14 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			return false;
 		}
 
-		if (target === 'all') {
-			for (var i in require.cache) delete require.cache[i];
-			Tools = require('./tools.js');
-
-			parseCommand = require('./chat-commands.js').parseCommand;
-
-			sim = require('./battles.js');
-			BattlePokemon = sim.BattlePokemon;
-			BattleSide = sim.BattleSide;
-			Battle = sim.Battle;
-			emit(socket, 'console', 'The game engine has been hot-patched.');
-			return false;
-		} else if (target === 'data') {
-			for (var i in require.cache) delete require.cache[i];
-			Tools = require('./tools.js');
-			emit(socket, 'console', 'Game resources have been hot-patched.');
-			return false;
-		} else if (target === 'chat') {
-			for (var i in require.cache) delete require.cache[i];
+		if (target === 'chat') {
+			delete require.cache[require.resolve('./chat-commands.js')];
 			parseCommand = require('./chat-commands.js').parseCommand;
 			emit(socket, 'console', 'Chat commands have been hot-patched.');
+			return false;
+		} else if (target === 'battles') {
+			Simulator.SimulatorProcess.respawn();
+			emit(socket, 'console', 'Battles have been hotpatched. Any battles started after now will use the new code; however, in-progress battles will continue to use the old code.');
 			return false;
 		}
 		emit(socket, 'console', 'Your hot-patch command was unrecognized.');
@@ -836,7 +769,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		}
 		LoginServer.disabled = true;
 		logModCommand(room, 'The ladder was disabled by ' + user.name + '.', true);
-		room.addRaw('<div class="chat-command-message message-disable-ladder"><b>Due to high server load, the ladder has been temporarily disabled</b><br />Rated games will no longer update the ladder. It will be back momentarily.</div>');
+		room.addRaw('<div class="broadcast-red"><b>Due to high server load, the ladder has been temporarily disabled</b><br />Rated games will no longer update the ladder. It will be back momentarily.</div>');
 		return false;
 		break;
 	case 'enableladder':
@@ -850,13 +783,19 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		}
 		LoginServer.disabled = false;
 		logModCommand(room, 'The ladder was enabled by ' + user.name + '.', true);
-		room.addRaw('<div class="message-enableladder"><b>The ladder is now back.</b><br />Rated games will update the ladder now.</div>');
+		room.addRaw('<div class="broadcast-green"><b>The ladder is now back.</b><br />Rated games will update the ladder now.</div>');
 		return false;
 		break;
 
 	case 'savereplay':
 		if (!room || !room.battle) return false;
-		var data = room.log.join("\n");
+		var logidx = 2; // spectator log (no exact HP)
+		if (room.battle.ended) {
+			// If the battle is finished when /savereplay is used, include
+			// exact HP in the replay log.
+			logidx = 3;
+		}
+		var data = room.getLog(logidx).join("\n");
 		var datahash = crypto.createHash('md5').update(data.replace(/[^(\x20-\x7F)]+/g,'')).digest('hex');
 
 		LoginServer.request('prepreplay', {
@@ -892,6 +831,11 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			}
 		}
 		user.rename(targetName, targetToken, targetAuth, socket);
+		return false;
+		break;
+
+	case 'logout':
+		user.resetName();
 		return false;
 		break;
 
@@ -966,6 +910,10 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 	case '!data':
 	case 'stats':
 	case '!stats':
+	case 'dex':
+	case '!dex':
+	case 'pokedex':
+	case '!pokedex':
 		showOrBroadcastStart(user, cmd, room, socket, message);
 		var dataMessages = getDataMessage(target);
 		for (var i=0; i<dataMessages.length; i++) {
@@ -984,13 +932,17 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 	case '!learn':
 	case 'learnall':
 	case '!learnall':
-		var lsetData = {};
+	case 'learn5':
+	case '!learn5':
+		var lsetData = {set:{}};
 		var targets = target.split(',');
 		if (!targets[1]) return parseCommand(user, 'help', 'learn', room, socket);
 		var template = Tools.getTemplate(targets[0]);
 		var move = {};
 		var problem;
 		var all = (cmd.substr(cmd.length-3) === 'all');
+
+		if (cmd === 'learn5' || cmd === '!learn5') lsetData.set.level = 5;
 
 		showOrBroadcastStart(user, cmd, room, socket, message);
 
@@ -1010,7 +962,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			problem = Tools.checkLearnset(move, template, lsetData);
 			if (problem) break;
 		}
-		var buffer = ''+template.name+(problem?" <strong class=\"message-learn-cannotlearn\">can't</strong> learn ":" <strong class=\"message-learn-canlearn\">can</strong> learn ")+(targets.length>2?"these moves":move.name);
+		var buffer = ''+template.name+(problem?" <span class=\"message-learn-cannotlearn\">can't</span> learn ":" <span class=\"message-learn-canlearn\">can</span> learn ")+(targets.length>2?"these moves":move.name);
 		if (!problem) {
 			var sourceNames = {E:"egg",S:"event",D:"dream world"};
 			if (lsetData.sources || lsetData.sourcesBefore) buffer += " only when obtained from:<ul class=\"message-learn-list\">";
@@ -1042,72 +994,55 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		return false;
 		break;
 
+	case 'uptime':
+	case '!uptime':
+		var uptime = process.uptime();
+		var uptimeText;
+		if (uptime > 24*60*60) {
+			var uptimeDays = Math.floor(uptime/(24*60*60));
+			uptimeText = ''+uptimeDays+' '+(uptimeDays == 1 ? 'day' : 'days');
+			var uptimeHours = Math.floor(uptime/(60*60)) - uptimeDays*24;
+			if (uptimeHours) uptimeText += ', '+uptimeHours+' '+(uptimeHours == 1 ? 'hour' : 'hours');
+		} else {
+			uptimeText = uptime.seconds().duration();
+		}
+		showOrBroadcastStart(user, cmd, room, socket, message);
+		showOrBroadcast(user, cmd, room, socket,
+			'<div class="infobox">' +
+			'Uptime: <b>'+uptimeText+'</b>'+
+			'</div>');
+		return false;
+		break;
+
+	case 'version':
+	case '!version':
+		showOrBroadcastStart(user, cmd, room, socket, message);
+		showOrBroadcast(user, cmd, room, socket,
+			'<div class="infobox">' +
+			'Version: <b><a href="http://pokemonshowdown.com/versions#' + parseCommandLocal.serverVersion + '" target="_blank">' + parseCommandLocal.serverVersion + '</a></b>' +
+			'</div>');
+		return false;
+		break;
+
 	case 'groups':
 	case '!groups':
-		var groups = '<div class="message-groups">' +
-		'+ <b>Voice</b> - They can use ! commands like !groups, and talk during moderated chat<br />' +
-		'% <b>Driver</b> - The above, and they can also mute users and run tournaments<br />' +
-		'@ <b>Moderator</b> - The above, and they can ban users and check for alts<br />' +
-		'&amp; <b>Leader</b> - The above, and they can promote moderators and force ties<br />'+
-		'~ <b>Administrator</b> - They can do anything, like change what this message says'+
-		'</div>';
 		showOrBroadcastStart(user, cmd, room, socket, message);
-		showOrBroadcast(user, cmd, room, socket, groups);
+		showOrBroadcast(user, cmd, room, socket,
+			'<div class="infobox">' +
+			'+ <b>Voice</b> - They can use ! commands like !groups, and talk during moderated chat<br />' +
+			'% <b>Driver</b> - The above, and they can also mute users and run tournaments<br />' +
+			'@ <b>Moderator</b> - The above, and they can ban users and check for alts<br />' +
+			'&amp; <b>Leader</b> - The above, and they can promote moderators and force ties<br />'+
+			'~ <b>Administrator</b> - They can do anything, like change what this message says'+
+			'</div>');
 		return false;
 		break;
-		
-	case 'magic':
-	case '!magic':
-		showOrBroadcastStart(user, cmd, room, socket, message);
-		showOrBroadcast(user, cmd, room, socket, '(づ｡◕‿‿◕｡)づ・。*。✧・゜゜・。✧。*・゜゜・✧。・­­­­­゜゜・。*。・゜*✧');
-		return false;
-		break;
-		
-	case 'dice':
-	case '!dice':
-		target = parseInt(target);
-		if (!target) target = 6;
-		var dice = Math.ceil(Math.random() * target);
-		showOrBroadcastStart(user, cmd, room, socket, message);
-		showOrBroadcast(user, cmd, room, socket, 'The dice rolled a ' + dice + '.');
-		return false;
-		break;
-		
-	case 'flip':
-	case 'coin':
-	case '!flip':
-	case '!coin':
-		var coin = Math.ceil(Math.random() * 2);
-		if (coin === 1)  {
-			coin = 'tails';
-		} else {
-			coin = 'heads';
-		}
-		showOrBroadcastStart(user, cmd, room, socket, message);
-		showOrBroadcast(user, cmd, room, socket, 'The coin ended up on ' + coin + '.');
-		return false;
-		break;
-		
-	case 'denko':
-	case '!denko':
-		target = parseInt(target);
-		if (!target) target = 1;
-		if (target > 25) target = 25;
-		if (target < 1) target = 1;
-		var denko = '';
-		for (var i=0; i<target; i++) {
-			denko += '(´･ω･`)';
-		}
-		showOrBroadcastStart(user, cmd, room, socket, message);
-		showOrBroadcast(user, cmd, room, socket, denko);
-		return false;
-		break;
-		
+
 	case 'opensource':
 	case '!opensource':
 		showOrBroadcastStart(user, cmd, room, socket, message);
 		showOrBroadcast(user, cmd, room, socket,
-			'<div class="message-opensource">Pokemon Showdown is open source:<br />- Language: JavaScript<br />- <a href="https://github.com/Joimer/Pokemon-Showdown/commits/master" target="_blank">What\'s new?</a><br />- <a href="https://github.com/Joimer/Pokemon-Showdown" target="_blank">Server source code</a><br />- <a href="https://github.com/Zarel/Pokemon-Showdown-Client" target="_blank">Client source code</a></div>');
+			'<div class="infobox">Pokemon Showdown is open source:<br />- Language: JavaScript<br />- <a href="https://github.com/Zarel/Pokemon-Showdown/commits/master" target="_blank">What\'s new?</a><br />- <a href="https://github.com/Zarel/Pokemon-Showdown" target="_blank">Server source code</a><br />- <a href="https://github.com/Zarel/Pokemon-Showdown-Client" target="_blank">Client source code</a></div>');
 		return false;
 		break;
 
@@ -1115,7 +1050,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 	case '!avatars':
 		showOrBroadcastStart(user, cmd, room, socket, message);
 		showOrBroadcast(user, cmd, room, socket,
-			'<div class="message-avatars">Want a custom avatar?<br />- <a href="/sprites/trainers/" target="_blank">How to change your avatar</a></div>');
+			'<div class="infobox">Want a custom avatar?<br />- <a href="/sprites/trainers/" target="_blank">How to change your avatar</a></div>');
 		return false;
 		break;
 
@@ -1125,7 +1060,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 	case '!introduction':
 		showOrBroadcastStart(user, cmd, room, socket, message);
 		showOrBroadcast(user, cmd, room, socket,
-			'<div class="message-intro">New to competitive pokemon?<br />' +
+			'<div class="infobox">New to competitive pokemon?<br />' +
 			'- <a href="http://www.smogon.com/dp/articles/intro_comp_pokemon" target="_blank">An introduction to competitive pokemon</a><br />' +
 			'- <a href="http://www.smogon.com/bw/articles/bw_tiers" target="_blank">What do "OU", "UU", etc mean?</a><br />' +
 			'- <a href="http://www.smogon.com/bw/banlist/" target="_blank">What are the rules for each format? What is "Sleep Clause"?</a>' +
@@ -1139,7 +1074,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 	case '!calculator':
 		showOrBroadcastStart(user, cmd, room, socket, message);
 		showOrBroadcast(user, cmd , room , socket,
-			'<div class="message-calc">Pokemon Showdown! damage calculator. (Courtesy of Honko)<br />' +
+			'<div class="infobox">Pokemon Showdown! damage calculator. (Courtesy of Honko)<br />' +
 			'- <a href="http://pokemonshowdown.com/damagecalc/" target="_blank">Damage Calculator</a><br />' +
 			'</div>');
 		return false;
@@ -1149,7 +1084,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 	case '!cap':
 		showOrBroadcastStart(user, cmd, room, socket, message);
 		showOrBroadcast(user, cmd, room, socket,
-			'<div class="message-cap">An introduction to the Create-A-Pokemon project:<br />' +
+			'<div class="infobox">An introduction to the Create-A-Pokemon project:<br />' +
 			'- <a href="http://www.smogon.com/cap/" target="_blank">CAP project website and description</a><br />' +
 			'- <a href="http://www.smogon.com/forums/showthread.php?t=48782" target="_blank">What Pokemon have been made?</a><br />' +
 			'- <a href="http://www.smogon.com/forums/showthread.php?t=3464513" target="_blank">Talk about the metagame here</a><br />' +
@@ -1164,13 +1099,14 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 	case '!othermetas':
 		showOrBroadcastStart(user, cmd, room, socket, message);
 		showOrBroadcast(user, cmd, room, socket,
-			'<div class="message-othermetas">Information on the Other Metagames:<br />' +
+			'<div class="infobox">Information on the Other Metagames:<br />' +
 			'- <a href="http://www.smogon.com/forums/showthread.php?t=3463764" target="_blank">Balanced Hackmons</a><br />' +
 			'- <a href="http://www.smogon.com/forums/showthread.php?t=3471810" target="_blank">Dream World OU</a><br />' +
 			'- <a href="http://www.smogon.com/forums/showthread.php?t=3467120" target="_blank">Glitchmons</a><br />' +
-			'- <a href="http://www.smogon.com/sim/seasonal" target="_blank">Seasonal: Spring Forward</a><br />' +
+			'- <a href="http://www.smogon.com/sim/seasonal" target="_blank">Seasonal: Fools Festival</a><br />' +
 			'- <a href="http://www.smogon.com/forums/showthread.php?t=3476469" target="_blank">Smogon Doubles</a><br />' +
-			'- <a href="http://www.smogon.com/forums/showthread.php?t=3471161" target="_blank">VGC 2013</a>' +
+			'- <a href="http://www.smogon.com/forums/showthread.php?t=3471161" target="_blank">VGC 2013</a><br />' +
+			'- <a href="http://www.smogon.com/forums/showthread.php?t=3481155" target="_blank">OM of the Month: Tier Shift</a>' +
 			'</div>');
 		return false;
 		break;
@@ -1181,7 +1117,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 	case '!rule':
 		showOrBroadcastStart(user, cmd, room, socket, message);
 		showOrBroadcast(user, cmd, room, socket,
-			'<div class="message-rules">Please follow the rules:<br />' +
+			'<div class="infobox">Please follow the rules:<br />' +
 			'- <a href="http://pokemonshowdown.com/rules" target="_blank">Rules</a><br />' +
 			'</div>');
 		return false;
@@ -1190,7 +1126,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 	case 'faq':
 	case '!faq':
 		target = target.toLowerCase();
-		var buffer = '<div class="message-faq">';
+		var buffer = '<div class="infobox">';
 		var matched = false;
 		if (!target || target === 'all') {
 			matched = true;
@@ -1225,109 +1161,6 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		showOrBroadcast(user, cmd, room, socket, buffer);
 		return false;
 		break;
-		
-	case 'teach':
-	case '!teach':
-		target = target.toLowerCase();
-		var buffer = '<div class="message-faq">';
-		var matched = false;
-		if (!target || target === 'all') {
-			matched = true;
-			buffer += '<a href="http://www.smogon.com/forums/forumdisplay.php?f=28" target="_blank">The metagame forums, where you can become a true Pokemon Master</a><br />';
-			buffer += 'Type /othermetas or /om for information on the Other Metagames.<br />';
-		}
-		if (target === 'all' || target === 'evs' || target === 'ivs' || target === 'ev' || target === 'iv') {
-			matched = true;
-			buffer += '<a href="http://www.smogon.com/ingame/misc/evs_ivs" target="_blank">An introduction to the EVs and IVs</a><br />';
-		}
-		if (target === 'all' || target === 'item' || target === 'items') {
-			matched = true;
-			buffer += '<a href="http://www.smogon.com/bw/items/" target="_blank">Learn everything about competitive viable items</a><br />';
-		}
-		if (target === 'all' || target === 'rmt' || target === 'teammaking' || target === 'teams') {
-			matched = true;
-			buffer += '<a href="http://www.smogon.com/forums/forumdisplay.php?f=52" target="_blank">Learn everything about team making</a><br />';
-		}
-		if (target === 'all' || target === 'uber' || target === 'ubers') {
-			matched = true;
-			buffer += '<a href="http://www.smogon.com/forums/forumdisplay.php?f=160" target="_blank">Learn everything about the Ubers metagame</a><br />';
-		}
-		if (target === 'all' || target === 'ou' || target === 'overused') {
-			matched = true;
-			buffer += '<a href="http://www.smogon.com/forums/forumdisplay.php?f=203" target="_blank">Learn everything about the OU metagame</a><br />';
-		}
-		if (target === 'all' || target === 'uu' || target === 'underused') {
-			matched = true;
-			buffer += '<a href="http://www.smogon.com/forums/forumdisplay.php?f=170" target="_blank">Learn everything about the UU metagame</a><br />';
-		}
-		if (target === 'all' || target === 'ru' || target === 'rarelyused') {
-			matched = true;
-			buffer += '<a href="http://www.smogon.com/forums/forumdisplay.php?f=178" target="_blank">Learn everything about the RU metagame</a><br />';
-		}
-		if (target === 'all' || target === 'nu' || target === 'neverused') {
-			matched = true;
-			buffer += '<a href="http://www.smogon.com/forums/forumdisplay.php?f=185" target="_blank">Learn everything about the NU metagame</a><br />';
-		}
-		if (target === 'all' || target === 'lc' || target === 'littlecup') {
-			matched = true;
-			buffer += '<a href="http://www.smogon.com/forums/forumdisplay.php?f=161" target="_blank">Learn everything about the LC metagame</a><br />';
-		}
-		if (!matched) {
-			emit(socket, 'console', 'The entry "'+target+'" for /teach was not found. Try /teach for general help.');
-			return false;
-		}
-		buffer += '</div>';
-		showOrBroadcastStart(user, cmd, room, socket, message);
-		showOrBroadcast(user, cmd, room, socket, buffer);
-		return false;
-		break;
-		
-	case 'joimslab':
-	case '!joimslab':
-		target = target.toLowerCase();
-		var buffer = '<div style="border:1px solid #6688AA;padding:2px 4px">';
-		var matched = false;
-		if (!target || target === 'all') {
-			matched = true;
-			buffer += 'Welcome to <strong>Joim\'s Lab</strong>! This is a Server to test <strong>Other Metagames</strong> and possible contributions to PS main server.<br />';
-		}
-		if (target === 'all' || target === 'joimmons') {
-			matched = true;
-			buffer += '&bull;<strong>Joimmons</strong> is a wacky new meta that basically changes the game. <a href="http://www.smogon.com/forums/showthread.php?t=3480501">Read more here</a><br />';
-		}
-		if (target === 'all' || target === 'clearskies') {
-			matched = true;
-			buffer += '&bull;<strong>Clear Skies</strong> is similar to regular OU but without auto-weather abilities (such as Drizzle).<br />';
-		}
-		if (target === 'all' || target === 'banless' || target === 'lenient') {
-			matched = true;
-			buffer += '&bull;<strong>OU Lenient</strong> is a metagame with only a limited amount of disallowed Pokemon. As of now, the banlist consists of: Kyogre, Arceus, Mewtwo, Palkia, Rayquaza, Dialga, Arceus-Steel, Arceus-Ghost, Arceus-Dark, Arceus-Rock, Arceus-Psychic, Kyurem-white, Reshiram, Zekrom and the item Soul Dew.<br />';
-		}
-		if (target === 'all' || target === 'gbusingles') {
-			matched = true;
-			buffer += '&bull;<strong>GBU Singles</strong> is a single battle metagame with Nintendo\'s rules (Item Clause and 3v3 rather than 6v6).<br />';
-		}
-		if (target === 'all' || target === 'pu') {
-			matched = true;
-			buffer += '&bull;<strong>PU</strong> is a metagame where only Pokemon below 3.41% usage statistics in NU are permitted. A full list of PU Pokemon here can be found at the bottom of this <a href="http://www.smogon.com/forums/showpost.php?p=4523893&postcount=1">post</a>.<br />';
-		}
-		if (target === 'all' || target === 'haxmons' || target === 'hax') {
-			matched = true;
-			buffer += '&bull;<strong>Haxmons</strong> is a metagame where hax always happens. What can miss will miss, secondary effects will always happen, all hits will be crit.<br />';
-		}
-		if (target === 'all' || target === 'outierboost' || target === 'tierboost') {
-			matched = true;
-			buffer += '&bull;<strong>Tier Boost</strong> is a metagame where Pokemon from lower tiers get a boost on their base stats. <a href="http://www.smogon.com/forums/showthread.php?t=3479358">Read more here</a><br />';
-		}
-		if (!matched) {
-			emit(socket, 'console', 'The Joim\'s Lab entry "'+target+'" was not found. Try /joimslab for general help.');
-			return false;
-		}
-		buffer += '</div>';
-		showOrBroadcastStart(user, cmd, room, socket, message);
-		showOrBroadcast(user, cmd, room, socket, buffer);
-		return false;
-		break;
 
 	case 'banlists':
 	case 'tiers':
@@ -1335,7 +1168,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 	case '!tiers':
 		showOrBroadcastStart(user, cmd, room, socket, message);
 		showOrBroadcast(user, cmd, room, socket,
-			'<div class="message-tiers">Smogon tiers:<br />' +
+			'<div class="infobox">Smogon tiers:<br />' +
 			'- <a href="http://www.smogon.com/bw/banlist/" target="_blank">The banlists for each tier</a><br />' +
 			'- <a href="http://www.smogon.com/bw/tiers/uber" target="_blank">Uber Pokemon</a><br />' +
 			'- <a href="http://www.smogon.com/bw/tiers/ou" target="_blank">Overused Pokemon</a><br />' +
@@ -1348,74 +1181,101 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		break;
 
 	case 'analysis':
-	case 'dex':
-	case 'pokedex':
-	case 'strategy':
-	case 'smogdex':
 	case '!analysis':
-	case '!dex':
-	case '!pokedex':
+	case 'strategy':
 	case '!strategy':
+	case 'smogdex':
 	case '!smogdex':
 		var targets = target.split(',');
-		var template = Tools.getTemplate(targets[0]);
+		var pokemon = Tools.getTemplate(targets[0]);
+		var item = Tools.getItem(targets[0]);
+		var move = Tools.getMove(targets[0]);
+		var ability = Tools.getAbility(targets[0]);
+		var atLeastOne = false;
 		var generation = (targets[1] || "bw").trim().toLowerCase();
 		var genNumber = 5;
 
 		showOrBroadcastStart(user, cmd, room, socket, message);
 
-		if(!template.exists) {
-			showOrBroadcast(user, cmd, room, socket, 'Pokemon "'+template.id+'" not found.');
-			return false;
-		}
-
-		if(generation === "bw" || generation === "bw2" || generation === "5" || generation === "five")
+		if (generation === "bw" || generation === "bw2" || generation === "5" || generation === "five") {
 			generation = "bw";
-		else if(generation === "dp" || generation === "dpp" || generation === "4" || generation === "four") {
+		} else if (generation === "dp" || generation === "dpp" || generation === "4" || generation === "four") {
 			generation = "dp";
 			genNumber = 4;
-		}
-		else if(generation === "adv" || generation === "rse" || generation === "rs" || generation === "3" || generation === "three") {
+		} else if (generation === "adv" || generation === "rse" || generation === "rs" || generation === "3" || generation === "three") {
 			generation = "rs";
 			genNumber = 3;
-		}
-		else if(generation === "gsc" || generation === "gs" || generation === "2" || generation === "two") {
+		} else if (generation === "gsc" || generation === "gs" || generation === "2" || generation === "two") {
 			generation = "gs";
 			genNumber = 2;
-		}
-		else if(generation === "rby" || generation === "rb" || generation === "1" || generation === "one") {
+		} else if(generation === "rby" || generation === "rb" || generation === "1" || generation === "one") {
 			generation = "rb";
 			genNumber = 1;
-		}
-		else {
+		} else {
 			generation = "bw";
 		}
-
-		if (genNumber < template.gen) {
-			showOrBroadcast(user, cmd, room, socket, template.name+' did not exist in '+generation.toUpperCase()+'!');
+		
+		// Pokemon
+		if (pokemon.exists) {
+			atLeastOne = true;
+			if (genNumber < pokemon.gen) {
+				showOrBroadcast(user, cmd, room, socket, pokemon.name+' did not exist in '+generation.toUpperCase()+'!');
+				return false;
+			}
+			if (pokemon.tier === 'G4CAP' || pokemon.tier === 'G5CAP') {
+				generation = "cap";
+			}
+	
+			var poke = pokemon.name.toLowerCase();
+			if (poke === 'nidoranm') poke = 'nidoran-m';
+			if (poke === 'nidoranf') poke = 'nidoran-f';
+			if (poke === 'farfetch\'d') poke = 'farfetchd';
+			if (poke === 'mr. mime') poke = 'mr_mime';
+			if (poke === 'mime jr.') poke = 'mime_jr';
+			if (poke === 'deoxys-attack' || poke === 'deoxys-defense' || poke === 'deoxys-speed' || poke === 'kyurem-black' || poke === 'kyurem-white') poke = poke.substr(0,8);
+			if (poke === 'wormadam-trash') poke = 'wormadam-s';
+			if (poke === 'wormadam-sandy') poke = 'wormadam-g';
+			if (poke === 'rotom-wash' || poke === 'rotom-frost' || poke === 'rotom-heat') poke = poke.substr(0,7);
+			if (poke === 'rotom-mow') poke = 'rotom-c';
+			if (poke === 'rotom-fan') poke = 'rotom-s';
+			if (poke === 'giratina-origin' || poke === 'tornadus-therian' || poke === 'landorus-therian') poke = poke.substr(0,10);
+			if (poke === 'shaymin-sky') poke = 'shaymin-s';
+			if (poke === 'arceus') poke = 'arceus-normal';
+			if (poke === 'thundurus-therian') poke = 'thundurus-t';
+	
+			showOrBroadcast(user, cmd, room, socket,
+				'<a href="http://www.smogon.com/'+generation+'/pokemon/'+poke+'" target="_blank">'+generation.toUpperCase()+' '+pokemon.name+' analysis</a>, brought to you by <a href="http://www.smogon.com" target="_blank">Smogon University</a>');
+		}
+		
+		// Item
+		if (item.exists && genNumber > 1) {
+			atLeastOne = true;
+			var itemName = item.name.toLowerCase().replace(' ', '_');
+			showOrBroadcast(user, cmd, room, socket,
+					'<a href="http://www.smogon.com/'+generation+'/items/'+itemName+'" target="_blank">'+generation.toUpperCase()+' '+item.name+' item analysis</a>, brought to you by <a href="http://www.smogon.com" target="_blank">Smogon University</a>');
+		}
+		
+		// Ability
+		if (ability.exists && genNumber > 2) {
+			atLeastOne = true;
+			var abilityName = ability.name.toLowerCase().replace(' ', '_');
+			showOrBroadcast(user, cmd, room, socket,
+					'<a href="http://www.smogon.com/'+generation+'/abilities/'+abilityName+'" target="_blank">'+generation.toUpperCase()+' '+ability.name+' ability analysis</a>, brought to you by <a href="http://www.smogon.com" target="_blank">Smogon University</a>');
+		}
+		
+		// Move
+		if (move.exists) {
+			atLeastOne = true;
+			var moveName = move.name.toLowerCase().replace(' ', '_');
+			showOrBroadcast(user, cmd, room, socket,
+					'<a href="http://www.smogon.com/'+generation+'/moves/'+moveName+'" target="_blank">'+generation.toUpperCase()+' '+move.name+' move analysis</a>, brought to you by <a href="http://www.smogon.com" target="_blank">Smogon University</a>');
+		}
+		
+		if (!atLeastOne) {
+			showOrBroadcast(user, cmd, room, socket, 'Pokemon, item, move, or ability not found for generation ' + generation.toUpperCase() + '.');
 			return false;
 		}
-
-		var poke = template.name.toLowerCase();
-
-		if (poke === 'nidoranm') poke = 'nidoran-m';
-		if (poke === 'nidoranf') poke = 'nidoran-f';
-		if (poke === 'farfetch\'d') poke = 'farfetchd';
-		if (poke === 'mr. mime') poke = 'mr_mime';
-		if (poke === 'mime jr.') poke = 'mime_jr';
-		if (poke === 'deoxys-attack' || poke === 'deoxys-defense' || poke === 'deoxys-speed' || poke === 'kyurem-black' || poke === 'kyurem-white') poke = poke.substr(0,8);
-		if (poke === 'wormadam-trash') poke = 'wormadam-s';
-		if (poke === 'wormadam-sandy') poke = 'wormadam-g';
-		if (poke === 'rotom-wash' || poke === 'rotom-frost' || poke === 'rotom-heat') poke = poke.substr(0,7);
-		if (poke === 'rotom-mow') poke = 'rotom-c';
-		if (poke === 'rotom-fan') poke = 'rotom-s';
-		if (poke === 'giratina-origin' || poke === 'tornadus-therian' || poke === 'landorus-therian') poke = poke.substr(0,10);
-		if (poke === 'shaymin-sky') poke = 'shaymin-s';
-		if (poke === 'arceus') poke = 'arceus-normal';
-		if (poke === 'thundurus-therian') poke = 'thundurus-t';
-
-		showOrBroadcast(user, cmd, room, socket,
-			'<a href="http://www.smogon.com/'+generation+'/pokemon/'+poke+'" target="_blank">'+generation.toUpperCase()+' '+template.name+' analysis</a>, brought to you by <a href="http://www.smogon.com" target="_blank">Smogon University</a>');
+		
 		return false;
 		break;
 
@@ -1523,11 +1383,6 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		
 	case 'away':
 	case 'idle':
-		user.blockChallenges = true;
-		emit(socket, 'console', 'You are now idle and will thus block incoming challenge requests.');
-		return false;
-		break;
-		
 	case 'blockchallenges':
 		user.blockChallenges = true;
 		emit(socket, 'console', 'You are now blocking all incoming challenge requests.');
@@ -1535,10 +1390,6 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		break;
 
 	case 'back':
-		user.blockChallenges = false;
-		emit(socket, 'console', 'You are no longer idle.');
-		break;
-		
 	case 'allowchallenges':
 		user.blockChallenges = false;
 		emit(socket, 'console', 'You are available for challenges from now on.');
@@ -1607,10 +1458,12 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 	case 'timer':
 		target = toId(target);
 		if (room.requestKickInactive) {
-			if (target === 'off') {
+			if (target === 'off' || target === 'stop') {
 				room.stopKickInactive(user, user.can('timer'));
-			} else {
+			} else if (target === 'on' || !target) {
 				room.requestKickInactive(user, user.can('timer'));
+			} else {
+				emit(socket, 'console', "'"+target+"' is not a recognized timer state.");
 			}
 		} else {
 			emit(socket, 'console', 'You can only set the timer from inside a room.');
@@ -1674,11 +1527,13 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		}
 
 		config.potd = target;
-		Simulator.eval('config.potd = \''+toId(target)+'\'');
+		Simulator.SimulatorProcess.eval('config.potd = \''+toId(target)+'\'');
 		if (target) {
-			logModCommand(room, 'The Pokemon of the Day was changed to '+target+' by '+user.name+'.');
+			rooms.lobby.addRaw('<div class="broadcast-blue"><b>The Pokemon of the Day is now '+target+'!</b><br />This Pokemon will be guaranteed to show up in random battles.</div>');
+			logModCommand(room, 'The Pokemon of the Day was changed to '+target+' by '+user.name+'.', true);
 		} else {
-			logModCommand(room, 'The Pokemon of the Day was removed by '+user.name+'.');
+			rooms.lobby.addRaw('<div class="broadcast-blue"><b>The Pokemon of the Day was removed!</b><br />No pokemon will be guaranteed in random battles.</div>');
+			logModCommand(room, 'The Pokemon of the Day was removed by '+user.name+'.', true);
 		}
 		return false;
 		break;
@@ -1691,7 +1546,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 
 		lockdown = true;
 		for (var id in rooms) {
-			rooms[id].addRaw('<div class="message-lockdown"><b>The server is restarting soon.</b><br />Please finish your battles quickly. No new battles can be started until the server resets in a few minutes.</div>');
+			rooms[id].addRaw('<div class="broadcast-red"><b>The server is restarting soon.</b><br />Please finish your battles quickly. No new battles can be started until the server resets in a few minutes.</div>');
 			if (rooms[id].requestKickInactive) rooms[id].requestKickInactive(user, true);
 		}
 
@@ -1708,7 +1563,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 
 		lockdown = false;
 		for (var id in rooms) {
-			rooms[id].addRaw('<div class="message-endlockdown"><b>The server shutdown was canceled.</b></div>');
+			rooms[id].addRaw('<div class="broadcast-green"><b>The server shutdown was canceled.</b></div>');
 		}
 
 		rooms.lobby.logEntry(user.name + ' used /endlockdown');
@@ -1727,7 +1582,22 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			return false;
 		}
 
-		process.exit();
+		if (updateServerLock) {
+			emit(socket, 'console', 'Wait for /updateserver to finish before using /kill.');
+			return false;
+		}
+
+		rooms.lobby.destroyLog(function() {
+			rooms.lobby.logEntry(user.name + ' used /kill');
+		}, function() {
+			process.exit();
+		});
+
+		// Just in the case the above never terminates, kill the process
+		// after 10 seconds.
+		setTimeout(function() {
+			process.exit();
+		}, 10000);
 		return false;
 		break;
 
@@ -1760,7 +1630,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		break;
 
 	case 'updateserver':
-		if (!user.can('console')) {
+		if (!user.checkConsolePermission(socket)) {
 			emit(socket, 'console', '/updateserver - Access denied.');
 			return false;
 		}
@@ -1819,7 +1689,8 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 
 		lockdown = false;
 		config.modchat = false;
-		rooms.lobby.addRaw('<div class="message-crashfixed"><b>We fixed the crash without restarting the server!</b><br />You may resume talking in the lobby and starting new battles.</div>');
+		rooms.lobby.addRaw('<div class="broadcast-green"><b>We fixed the crash without restarting the server!</b><br />You may resume talking in the lobby and starting new battles.</div>');
+		rooms.lobby.logEntry(user.name + ' used /crashfixed');
 		return false;
 		break;
 	case 'crashnoted':
@@ -1835,7 +1706,8 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 
 		lockdown = false;
 		config.modchat = false;
-		rooms.lobby.addRaw('<div class="message-crashnoted"><b>We have logged the crash and are working on fixing it!</b><br />You may resume talking in the lobby and starting new battles.</div>');
+		rooms.lobby.addRaw('<div class="broadcast-green"><b>We have logged the crash and are working on fixing it!</b><br />You may resume talking in the lobby and starting new battles.</div>');
+		rooms.lobby.logEntry(user.name + ' used /crashnoted');
 		return false;
 		break;
 	case 'modlog':
@@ -1905,26 +1777,6 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		emit(socket, 'console', 'Removed \"'+target+'\" from the list of banned words.');
 		return false;
 		break;
-	case 'uptime':
-	case '!uptime':
-		var uptime = process.uptime();
-		var uptimeText;
-		if (uptime > 24*60*60) {
-		var uptimeDays = Math.floor(uptime/(24*60*60));
-		uptimeText = ''+uptimeDays+' '+(uptimeDays == 1 ? 'day' : 'days');
-		var uptimeHours = Math.floor(uptime/(60*60)) - uptimeDays*24;
-		if (uptimeHours) uptimeText += ', '+uptimeHours+' '+(uptimeHours == 1 ? 'hour' : 'hours');
-		} else {
-		uptimeText = uptime.seconds().duration();
-		}
-		showOrBroadcastStart(user, cmd, room, socket, message);
-		showOrBroadcast(user, cmd, room, socket,
-		'<div class="infobox">' +
-		'Uptime: <b>'+uptimeText+'</b>'+
-		'</div>');
-		return false;
-		break;
-	
 	case 'help':
 	case 'commands':
 	case 'h':
@@ -2088,12 +1940,12 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			emit(socket, 'console', '/demote [username], [group] - Demotes the user to the specified group or previous ranked group. Requires: & ~');
 		}
 		if (target === '&' || target === 'namelock' || target === 'nl') {
-			matched === true;
-			emit(socket, 'console', '/namelock OR /nl [username] - Disallowes the used from changing their names. Requires: & ~');
+			matched = true;
+			emit(socket, 'console', '/namelock OR /nl [username] - Prevents the user from changing their name. Requires: & ~');
 		}
 		if (target === '&' || target === 'unnamelock') {
-			matched === true;
-			emit(socket, 'console', '/unnamelock - Removes name lock from user. Requres: & ~');
+			matched = true;
+			emit(socket, 'console', '/unnamelock - Removes namelock from user. Requres: & ~');
 		}
 		if (target === '&' || target === 'forcerenameto' || target === 'frt') {
 			matched = true;
@@ -2124,9 +1976,16 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			matched = true;
 			emit(socket, 'console', 'Hot-patching the game engine allows you to update parts of Showdown without interrupting currently-running battles. Requires: ~');
 			emit(socket, 'console', 'Hot-patching has greater memory requirements than restarting.');
-			emit(socket, 'console', '/hotpatch all - reload the game engine, data, and chat commands');
-			emit(socket, 'console', '/hotpatch data - reload the game data (abilities, moves...)');
 			emit(socket, 'console', '/hotpatch chat - reload chat-commands.js');
+			emit(socket, 'console', '/hotpatch battles - spawn new simulator processes');
+		}
+		if (target === '~' || target === 'lockdown') {
+			matched = true;
+			emit(socket, 'console', '/lockdown - locks down the server, which prevents new battles from starting so that the server can eventually be restarted. Requires: ~');
+		}
+		if (target === '~' || target === 'kill') {
+			matched = true;
+			emit(socket, 'console', '/kill - kills the server. Can\'t be done unless the server is in lockdown state. Requires: ~');
 		}
 		if (target === 'all' || target === 'help' || target === 'h' || target === '?' || target === 'commands') {
 			matched = true;
@@ -2173,9 +2032,10 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		return false;
 	}
 
-	if (message.match(/\bnimp\.org\b/)) {
-		// spam site
-		// todo: custom banlists
+	var blacklist = config.blacklist || [/\bnimp\.org\b/];
+	if (blacklist.any(function(r) {
+		return r.test(message);
+	})) {
 		return false;
 	}
 
@@ -2284,5 +2144,37 @@ function logModCommand(room, result, noBroadcast) {
 	if (!noBroadcast) room.add(result);
 	modlog.write('['+(new Date().toJSON())+'] ('+room.id+') '+result+'\n');
 }
+
+// This function uses synchronous IO in order to keep it relatively simple.
+// The function takes about 0.023 seconds to run on one tested computer,
+// which is acceptable considering how long the server takes to start up
+// anyway (several seconds).
+parseCommandLocal.computeServerVersion = function() {
+	/**
+	 * `filelist.txt` is a list of all the files in this project. It is used
+	 * for computing a checksum of the project for the /version command. This
+	 * information cannot be determined at runtime because the user may not be
+	 * using a git repository (for example, the user may have downloaded an
+	 * archive of the files).
+	 *
+	 * `filelist.txt` is generated by running `git ls-files > filelist.txt`.
+	 */
+	var filenames;
+	try {
+		var data = fs.readFileSync('filelist.txt', {encoding: 'utf8'});
+		filenames = data.split('\n');
+	} catch (e) {
+		return 0;
+	}
+	var hash = crypto.createHash('md5');
+	for (var i = 0; i < filenames.length; ++i) {
+		try {
+			hash.update(fs.readFileSync(filenames[i]));
+		} catch (e) {}
+	}
+	return hash.digest('hex');
+};
+
+parseCommandLocal.serverVersion = parseCommandLocal.computeServerVersion();
 
 exports.parseCommand = parseCommandLocal;

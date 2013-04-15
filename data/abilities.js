@@ -136,6 +136,11 @@ exports.BattleAbilities = {
 				pokemon.trapped = true;
 			}
 		},
+		onFoeMaybeTrapPokemon: function(pokemon) {
+			if (pokemon.runImmunity('Ground', false)) {
+				pokemon.maybeTrapped = true;
+			}
+		},
 		id: "arenatrap",
 		name: "Arena Trap",
 		rating: 5,
@@ -312,7 +317,7 @@ exports.BattleAbilities = {
 		},
 		id: "cutecharm",
 		name: "Cute Charm",
-		rating: 2,
+		rating: 1,
 		num: 56
 	},
 	"damp": {
@@ -637,7 +642,7 @@ exports.BattleAbilities = {
 			}
 			if (!warnMoves.length) return;
 			var warnMove = warnMoves[this.random(warnMoves.length)];
-			this.add('-activate', pokemon, 'ability: Forewarn', warnMove);
+			this.add('-activate', pokemon, 'ability: Forewarn', warnMove[0], warnMove[1]);
 		},
 		id: "forewarn",
 		name: "Forewarn",
@@ -1121,22 +1126,30 @@ exports.BattleAbilities = {
 		shortDesc: "This Pokemon blocks certain status moves and uses the move itself.",
 		id: "magicbounce",
 		name: "Magic Bounce",
-		onAllyTryFieldHit: function(target, source, move) {
+		onTryHitPriority: 1,
+		onTryHit: function(target, source, move) {
 			if (target === source) return;
+			if (move.hasBounced) return;
 			if (typeof move.isBounceable === 'undefined') {
-					move.isBounceable = !!(move.category === 'Status' && (move.status || move.boosts || move.volatileStatus === 'confusion' || move.forceSwitch));
-			}
-			if (move.target !== 'foeSide' && target !== this.effectData.target) {
-				return;
-			}
-			if (move.hasBounced) {
-				return;
+				move.isBounceable = !!(move.category === 'Status' && (move.status || move.boosts || move.volatileStatus === 'confusion' || move.forceSwitch));
 			}
 			if (move.isBounceable) {
 				var newMove = this.getMoveCopy(move.id);
 				newMove.hasBounced = true;
-				this.add('-activate', target, 'ability: Magic Bounce', newMove, '[of] '+source);
-				this.moveHit(source, target, newMove);
+				this.useMove(newMove, target, source);
+				return null;
+			}
+		},
+		onAllyTryHitSide: function(target, source, move) {
+			if (target.side === source.side) return;
+			if (move.hasBounced) return;
+			if (typeof move.isBounceable === 'undefined') {
+				move.isBounceable = !!(move.category === 'Status' && (move.status || move.boosts || move.volatileStatus === 'confusion' || move.forceSwitch));
+			}
+			if (move.isBounceable) {
+				var newMove = this.getMoveCopy(move.id);
+				newMove.hasBounced = true;
+				this.useMove(newMove, target, source);
 				return null;
 			}
 		},
@@ -1181,6 +1194,11 @@ exports.BattleAbilities = {
 		onFoeModifyPokemon: function(pokemon) {
 			if (pokemon.hasType('Steel')) {
 				pokemon.trapped = true;
+			}
+		},
+		onFoeMaybeTrapPokemon: function(pokemon) {
+			if (pokemon.hasType('Steel')) {
+				pokemon.maybeTrapped = true;
 			}
 		},
 		id: "magnetpull",
@@ -1637,7 +1655,7 @@ exports.BattleAbilities = {
 		},
 		id: "raindish",
 		name: "Rain Dish",
-		rating: 1,
+		rating: 1.5,
 		num: 44
 	},
 	"rattled": {
@@ -1845,6 +1863,11 @@ exports.BattleAbilities = {
 		onFoeModifyPokemon: function(pokemon) {
 			if (pokemon.ability !== 'shadowtag') {
 				pokemon.trapped = true;
+			}
+		},
+		onFoeMaybeTrapPokemon: function(pokemon) {
+			if (pokemon.ability !== 'shadowtag') {
+				pokemon.maybeTrapped = true;
 			}
 		},
 		id: "shadowtag",
@@ -2509,7 +2532,7 @@ exports.BattleAbilities = {
 		onTryHit: function(target, source, move) {
 			if (target !== source && move.type === 'Electric') {
 				var d = target.heal(target.maxhp/4);
-				this.add('-heal',target,d+target.getHealth(),'[from] ability: Volt Absorb');
+				this.add('-heal',target,target.getHealth,'[from] ability: Volt Absorb');
 				return null;
 			}
 		},
@@ -2524,7 +2547,7 @@ exports.BattleAbilities = {
 		onTryHit: function(target, source, move) {
 			if (target !== source && move.type === 'Water') {
 				var d = target.heal(target.maxhp/4);
-				this.add('-heal',target,d+target.getHealth(),'[from] ability: Water Absorb');
+				this.add('-heal',target,target.getHealth,'[from] ability: Water Absorb');
 				return null;
 			}
 		},
@@ -2582,22 +2605,11 @@ exports.BattleAbilities = {
 	"wonderguard": {
 		desc: "This Pokemon only receives damage from attacks belonging to types that cause Super Effective to this Pokemon. Wonder Guard does not protect a Pokemon from status ailments (burn, freeze, paralysis, poison, sleep, Toxic or any of their side effects or damage), recoil damage nor the moves Beat Up, Bide, Doom Desire, Fire Fang, Future Sight, Hail, Leech Seed, Sandstorm, Spikes, Stealth Rock and Struggle. Wonder Guard cannot be Skill Swapped nor Role Played. Trace, however, does copy Wonder Guard.",
 		shortDesc: "This Pokemon can only be damaged by super effective moves and indirect damage.",
-		onDamagePriority: 10,
-		onDamage: function(damage, target, source, effect) {
-			if (effect.effectType !== 'Move') return;
-			if (effect.type === '???' || effect.id === 'Struggle') return;
-			this.debug('Wonder Guard immunity: '+effect.id);
-			if (this.getEffectiveness(effect.type, target) <= 0) {
-				this.add('-activate',target,'ability: Wonder Guard');
-				return null;
-			}
-		},
-		onSubDamage: function(damage, target, source, effect) {
-			if (effect.effectType !== 'Move') return;
-			if (target.negateImmunity[effect.type]) return;
-			this.debug('Wonder Guard immunity: '+effect.id);
-			if (this.getEffectiveness(effect.type, target) <= 0) {
-				this.add('-activate',target,'ability: Wonder Guard');
+		onTryHit: function(target, source, move) {
+			if (target === source || move.category === 'Status' || move.type === '???' || move.id === 'struggle') return;
+			this.debug('Wonder Guard immunity: '+move.id);
+			if (this.getEffectiveness(move.type, target) <= 0) {
+				this.add('-activate', target, 'ability: Wonder Guard');
 				return null;
 			}
 		},
@@ -2618,7 +2630,7 @@ exports.BattleAbilities = {
 		},
 		id: "wonderskin",
 		name: "Wonder Skin",
-		rating: 1,
+		rating: 3,
 		num: 147
 	},
 	"zenmode": {
@@ -2691,22 +2703,34 @@ exports.BattleAbilities = {
 		id: "rebound",
 		isNonstandard: true,
 		name: "Rebound",
-		onAllyTryFieldHit: function(target, source, move) {
-			if (target === source) return;
+		onTryHitPriority: 1,
+		onTryHit: function(target, source, move) {
 			if (this.effectData.target.activeTurns) return;
+
+			if (target === source) return;
+			if (move.hasBounced) return;
 			if (typeof move.isBounceable === 'undefined') {
-				move.isBounceable = !!(move.status || move.forceSwitch);
-			}
-			if (move.target !== 'foeSide' && target !== this.effectData.target) {
-				return;
-			}
-			if (this.pseudoWeather['magicbounce']) {
-				return;
+				move.isBounceable = !!(move.category === 'Status' && (move.status || move.boosts || move.volatileStatus === 'confusion' || move.forceSwitch));
 			}
 			if (move.isBounceable) {
-				this.addPseudoWeather('magicbounce');
-				this.add('-activate', target, 'ability: Rebound', move, '[of] '+source);
-				this.moveHit(source, source, move);
+				var newMove = this.getMoveCopy(move.id);
+				newMove.hasBounced = true;
+				this.useMove(newMove, target, source);
+				return null;
+			}
+		},
+		onAllyTryHitSide: function(target, source, move) {
+			if (this.effectData.target.activeTurns) return;
+
+			if (target.side === source.side) return;
+			if (move.hasBounced) return;
+			if (typeof move.isBounceable === 'undefined') {
+				move.isBounceable = !!(move.category === 'Status' && (move.status || move.boosts || move.volatileStatus === 'confusion' || move.forceSwitch));
+			}
+			if (move.isBounceable) {
+				var newMove = this.getMoveCopy(move.id);
+				newMove.hasBounced = true;
+				this.useMove(newMove, target, source);
 				return null;
 			}
 		},

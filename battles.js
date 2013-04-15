@@ -130,6 +130,10 @@ var BattlePokemon = (function() {
 		this.battle = side.battle;
 		if (typeof set === 'string') set = {name: set};
 
+		// "pre-bound" functions for nicer syntax (avoids repeated use of `bind`)
+		this.getHealth = BattlePokemon.getHealth.bind(this);
+		this.getDetails = BattlePokemon.getDetails.bind(this);
+
 		this.set = set;
 
 		this.baseTemplate = this.battle.getTemplate(set.species || set.name);
@@ -197,7 +201,7 @@ var BattlePokemon = (function() {
 					id: move.id,
 					pp: (move.noPPBoosts ? move.pp : move.pp * 8/5),
 					maxpp: (move.noPPBoosts ? move.pp : move.pp * 8/5),
-					target: (move.ghostTarget && (this.types[0]==='Ghost'||this.types[1]==='Ghost') ? move.ghostTarget : move.target),
+					target: (move.nonGhostTarget && !this.hasType('Ghost') ? move.nonGhostTarget : move.target),
 					disabled: false,
 					used: false
 				});
@@ -252,6 +256,7 @@ var BattlePokemon = (function() {
 	}
 
 	BattlePokemon.prototype.trapped = false;
+	BattlePokemon.prototype.maybeTrapped = false;
 	BattlePokemon.prototype.hp = 0;
 	BattlePokemon.prototype.maxhp = 100;
 	BattlePokemon.prototype.illusion = null;
@@ -284,9 +289,10 @@ var BattlePokemon = (function() {
 		if (this.isActive) return fullname.substr(0,2) + positionList[this.position] + fullname.substr(2);
 		return fullname;
 	};
-	BattlePokemon.prototype.getDetails = function() {
-		if (this.illusion) return this.illusion.details + '|' + this.getHealth();
-		return this.details + '|' + this.getHealth();
+	// "static" function
+	BattlePokemon.getDetails = function(side) {
+		if (this.illusion) return this.illusion.details + '|' + this.getHealth(side);
+		return this.details + '|' + this.getHealth(side);
 	};
 	BattlePokemon.prototype.update = function(init) {
 		// reset for Light Metal etc
@@ -294,7 +300,7 @@ var BattlePokemon = (function() {
 		// reset for diabled moves
 		this.disabledMoves = {};
 		this.negateImmunity = {};
-		this.trapped = false;
+		this.trapped = this.maybeTrapped = false;
 		// reset for ignore settings
 		this.ignore = {};
 		for (var i in this.moveset) {
@@ -302,6 +308,26 @@ var BattlePokemon = (function() {
 		}
 		if (init) return;
 
+		this.battle.runEvent('MaybeTrapPokemon', this);
+		for (var i = 0; i < this.battle.sides.length; ++i) {
+			var side = this.battle.sides[i];
+			if (side === this.side) continue;
+			for (var j = 0; j < side.active.length; ++j) {
+				var pokemon = side.active[j];
+				if (!pokemon || pokemon.fainted ||
+					!pokemon.template.abilities) continue;
+				for (var k in pokemon.template.abilities) {
+					var ability = pokemon.template.abilities[k];
+					if (ability === pokemon.ability) {
+						// This event was already run above so we don't need
+						// to run it again.
+						continue;
+					}
+					this.battle.singleEvent('FoeMaybeTrapPokemon',
+						this.battle.getAbility(ability), {}, this, pokemon);
+				}
+			}
+		}
 		this.battle.runEvent('ModifyPokemon', this);
 
 		this.speed = this.getStat('spe');
@@ -439,8 +465,8 @@ var BattlePokemon = (function() {
 	BattlePokemon.prototype.getRequestData = function() {
 		return {
 			moves: this.getMoves(),
-			trapped: this.trapped
-		}
+			maybeTrapped: this.maybeTrapped
+		};
 	};
 	BattlePokemon.prototype.positiveBoosts = function() {
 		var boosts = 0;
@@ -921,34 +947,24 @@ var BattlePokemon = (function() {
 		this.update();
 		return true;
 	};
-	BattlePokemon.prototype.hpPercent = function(d) {
-		//var percent = Math.floor(d*100/this.maxhp + 0.5);
-		var pixels = Math.floor(d*48/this.maxhp + 0.5) || 1;
-		if (d <= 0) pixels = 0;
-		if (pixels >= 48 && d < this.maxhp) pixels = 47;
-		return Math.floor(pixels*100/48);
-	};
-	BattlePokemon.prototype.getHealth = function(realHp) {
-		if (this.fainted) return ' (0 fnt)';
-		//var hpp = Math.floor(48*this.hp/this.maxhp) || 1;
+	// "static" function
+	BattlePokemon.getHealth = function(side) {
+		if (!this.hp) return '0 fnt';
 		var hpstring;
-		if (realHp) {
+		if ((side === true) || (this.side === side) || this.battle.getFormat().debug) {
 			hpstring = ''+this.hp+'/'+this.maxhp;
 		} else {
-			//var hpp = Math.floor(this.hp*100/this.maxhp + 0.5) || 1;
-			//if (!this.hp) hpp = 0;
-			//hpstring = ''+hpp+'/100';
-			var pixels = Math.floor(this.hp*48/this.maxhp + 0.5) || 1;
-			if (this.hp <= 0) pixels = 0;
-			if (pixels >= 48 && this.hp < this.maxhp) pixels = 47;
-			hpstring = ''+pixels+'/48';
+			var ratio = this.hp / this.maxhp;
+			var pixels = Math.floor(ratio * 48) || 1;
+			hpstring = '' + pixels + '/48';
+			if ((pixels === 9) && (ratio > 0.2)) {
+				hpstring += 'y'; // force yellow HP bar
+			} else if ((pixels === 24) && (ratio > 0.5)) {
+				hpstring += 'g'; // force green HP bar
+			}
 		}
-		var status = '';
-		if (this.status) status = ' '+this.status;
-		return ' ('+hpstring+status+')';
-	};
-	BattlePokemon.prototype.hpChange = function(d) {
-		return ''+this.hpPercent(d)+this.getHealth();
+		if (this.status) hpstring += ' ' + this.status;
+		return hpstring;
 	};
 	BattlePokemon.prototype.runImmunity = function(type, message) {
 		if (this.fainted) {
@@ -1030,7 +1046,7 @@ var BattleSide = (function() {
 			data.pokemon.push({
 				ident: pokemon.fullname,
 				details: pokemon.details,
-				condition: pokemon.getHealth(true),
+				condition: pokemon.getHealth(pokemon.side),
 				active: (pokemon.position < pokemon.side.active.length),
 				moves: pokemon.moves.map(function(move) {
 					if (move === 'hiddenpower') {
@@ -1089,6 +1105,10 @@ var BattleSide = (function() {
 		delete this.sideConditions[status.id];
 		this.battle.update();
 		return true;
+	};
+	BattleSide.prototype.emitCallback = function() {
+		this.battle.send('callback', this.id + "\n" +
+			Array.prototype.slice.call(arguments).join('|'));
 	};
 	BattleSide.prototype.emitUpdate = function(update) {
 		update.room = this.battle.id;
@@ -1628,9 +1648,9 @@ var Battle = (function() {
 					ModifyAtk: 1, ModifyDef: 1, ModifySpA: 1, ModifySpD: 1, ModifySpe: 1,
 					ModifyBoost: 1,
 					TryHit: 1,
+					TryHitSide: 1,
 					TrySecondaryHit: 1,
 					Hit: 1,
-					TryFieldHit: 1,
 					Boost: 1,
 					DragOut: 1
 				};
@@ -1646,7 +1666,7 @@ var Battle = (function() {
 				}
 				continue;
 			}
-			if (target.ignore && target.ignore[status.effectType+'Target']) {
+			if (target.ignore && (target.ignore[status.effectType+'Target'] || target.ignore[eventid+'Target'])) {
 				this.debug(eventid+' handler suppressed by Air Lock');
 				continue;
 			}
@@ -1930,7 +1950,7 @@ var Battle = (function() {
 			});
 		} else {
 			this.p1.decision = true;
-			this.p1.emitUpdate({request: {wait: true}});
+			this.p1.emitUpdate({request: {wait: true, side: this.p1.getData()}});
 		}
 
 		if (p2request) {
@@ -1940,7 +1960,7 @@ var Battle = (function() {
 			});
 		} else {
 			this.p2.decision = true;
-			this.p2.emitUpdate({request: {wait: true}});
+			this.p2.emitUpdate({request: {wait: true, side: this.p2.getData()}});
 		}
 
 		if (this.p2.decision && this.p1.decision) {
@@ -2013,7 +2033,7 @@ var Battle = (function() {
 		for (var m in pokemon.moveset) {
 			pokemon.moveset[m].used = false;
 		}
-		this.add('switch', side.active[pos], side.active[pos].getDetails());
+		this.add('switch', side.active[pos], side.active[pos].getDetails);
 		pokemon.update();
 		this.runEvent('SwitchIn', pokemon);
 		this.addQueue({pokemon: pokemon, choice: 'runSwitch'});
@@ -2068,7 +2088,7 @@ var Battle = (function() {
 		for (var m in pokemon.moveset) {
 			pokemon.moveset[m].used = false;
 		}
-		this.add('drag', side.active[pos], side.active[pos].getDetails());
+		this.add('drag', side.active[pos], side.active[pos].getDetails);
 		pokemon.update();
 		this.runEvent('SwitchIn', pokemon);
 		this.addQueue({pokemon: pokemon, choice: 'runSwitch'});
@@ -2121,6 +2141,8 @@ var Battle = (function() {
 		this.add('gametype', this.gameType);
 
 		var format = this.getFormat();
+		Tools.mod(format.mod).getBanlistTable(format); // fill in format ruleset
+
 		this.add('tier', format.name);
 		if (this.rated) {
 			this.add('rated');
@@ -2201,7 +2223,7 @@ var Battle = (function() {
 			if (target.illusion && effect && effect.effectType === 'Move') {
 				this.debug('illusion cleared');
 				target.illusion = null;
-				this.add('replace', target, target.getDetails());
+				this.add('replace', target, target.getDetails);
 			}
 		}
 		if (damage !== 0) damage = clampIntRange(damage, 1);
@@ -2211,15 +2233,15 @@ var Battle = (function() {
 		if (name === 'tox') name = 'psn';
 		switch (effect.id) {
 		case 'partiallytrapped':
-			this.add('-damage', target, target.hpChange(damage), '[from] '+this.effectData.sourceEffect.fullname, '[partiallytrapped]');
+			this.add('-damage', target, target.getHealth, '[from] '+this.effectData.sourceEffect.fullname, '[partiallytrapped]');
 			break;
 		default:
 			if (effect.effectType === 'Move') {
-				this.add('-damage', target, target.hpChange(damage));
+				this.add('-damage', target, target.getHealth);
 			} else if (source && source !== target) {
-				this.add('-damage', target, target.hpChange(damage), '[from] '+effect.fullname, '[of] '+source);
+				this.add('-damage', target, target.getHealth, '[from] '+effect.fullname, '[of] '+source);
 			} else {
-				this.add('-damage', target, target.hpChange(damage), '[from] '+name);
+				this.add('-damage', target, target.getHealth, '[from] '+name);
 			}
 			break;
 		}
@@ -2253,10 +2275,10 @@ var Battle = (function() {
 		damage = target.damage(damage, source, effect);
 		switch (effect.id) {
 		case 'strugglerecoil':
-			this.add('-damage', target, target.hpChange(damage), '[from] recoil');
+			this.add('-damage', target, target.getHealth, '[from] recoil');
 			break;
 		default:
-			this.add('-damage', target, target.hpChange(damage));
+			this.add('-damage', target, target.getHealth);
 			break;
 		}
 		if (target.fainted) this.faint(target);
@@ -2280,20 +2302,20 @@ var Battle = (function() {
 		switch (effect.id) {
 		case 'leechseed':
 		case 'rest':
-			this.add('-heal', target, target.hpChange(damage), '[silent]');
+			this.add('-heal', target, target.getHealth, '[silent]');
 			break;
 		case 'drain':
-			this.add('-heal', target, target.hpChange(damage), '[from] drain', '[of] '+source);
+			this.add('-heal', target, target.getHealth, '[from] drain', '[of] '+source);
 			break;
 		case 'wish':
 			break;
 		default:
 			if (effect.effectType === 'Move') {
-				this.add('-heal', target, target.hpChange(damage));
+				this.add('-heal', target, target.getHealth);
 			} else if (source && source !== target) {
-				this.add('-heal', target, target.hpChange(damage), '[from] '+effect.fullname, '[of] '+source);
+				this.add('-heal', target, target.getHealth, '[from] '+effect.fullname, '[of] '+source);
 			} else {
-				this.add('-heal', target, target.hpChange(damage), '[from] '+effect.fullname);
+				this.add('-heal', target, target.getHealth, '[from] '+effect.fullname);
 			}
 			break;
 		}
@@ -2344,6 +2366,15 @@ var Battle = (function() {
 			}
 			return target.maxhp;
 		}
+
+		if (!move.basePowerMultiplier && move.category !== 'Status') {
+			// happens before basePowerCallback so Acrobatics works correctly
+			// activates constant damage moves
+			// but NOT OHKO moves
+			move.basePowerMultiplier = this.runEvent('BasePowerMultiplier', pokemon, target, move, 1);
+			if (move.basePowerMultiplier != 1) this.debug('multiplier: '+move.basePowerMultiplier);
+		}
+
 		if (move.damageCallback) {
 			return move.damageCallback.call(this, pokemon, target);
 		}
@@ -2390,8 +2421,11 @@ var Battle = (function() {
 		if (basePower) {
 			basePower = this.runEvent('BasePower', pokemon, target, move, basePower);
 
+			if (move.basePowerMultiplier && move.basePowerMultiplier != 1) {
+				basePower = this.modify(basePower, move.basePowerMultiplier);
+			}
 			if (move.basePowerModifier) {
-				basePower *= move.basePowerModifier;
+				basePower = this.modify(basePower, move.basePowerModifier);
 			}
 		}
 		if (!basePower) return 0;
@@ -2981,6 +3015,11 @@ var Battle = (function() {
 		// This condition can occur.
 		if (!side.currentRequest) return;
 
+		if (side.decision && side.decision.finalDecision) {
+			this.debug("Can't cancel decision: the last pokemon could have been trapped");
+			return;
+		}
+
 		side.decision = false;
 	};
 	/**
@@ -3053,9 +3092,20 @@ var Battle = (function() {
 
 			case 'switch':
 				if (i > side.active.length || i > side.pokemon.length) continue;
-				if (side.pokemon[i].trapped && side.currentRequest === 'move') {
-					this.debug("Can't switch: The active pokemon is trapped");
-					return false;
+				if (side.currentRequest === 'move') {
+					if (side.pokemon[i].trapped) {
+						//this.debug("Can't switch: The active pokemon is trapped");
+						side.emitCallback('trapped', i);
+						return false;
+					} else if (side.pokemon[i].maybeTrapped) {
+						var finalDecision = true;
+						for (var j = i + 1; j < side.active.length; ++j) {
+							if (side.active[j] && !side.active[j].fainted) {
+								finalDecision = false;
+							}
+						}
+						decisions.finalDecision = decisions.finalDecision || finalDecision;
+					}
 				}
 
 				data = parseInt(data, 10)-1;
@@ -3125,7 +3175,28 @@ var Battle = (function() {
 		return decisions;
 	};
 	Battle.prototype.add = function() {
-		this.log.push('|'+Array.prototype.slice.call(arguments).join('|'));
+		var parts = Array.prototype.slice.call(arguments);
+		var functions = parts.map(function(part) {
+			return typeof part === 'function';
+		});
+		if (functions.indexOf(true) < 0) {
+			this.log.push('|'+parts.join('|'));
+		} else {
+			this.log.push('|split');
+			var sides = this.sides.concat(null, true);
+			for (var i = 0; i < sides.length; ++i) {
+				var line = '';
+				for (var j = 0; j < parts.length; ++j) {
+					line += '|';
+					if (functions[j]) {
+						line += parts[j](sides[i]);
+					} else {
+						line += parts[j];
+					}
+				}
+				this.log.push(line);
+			}
+		}
 	};
 	Battle.prototype.addMove = function() {
 		this.lastMoveLine = this.log.length;

@@ -5,7 +5,6 @@ var THROTTLE_DELAY = 900;
 var users = {};
 var prevUsers = {};
 var numUsers = 0;
-var numConnections = 0;
 
 function getUser(name, exactName) {
 	if (!name || name === '!') return null;
@@ -28,19 +27,26 @@ function searchUser(name) {
 	}
 	return users[userid];
 }
-function nameLock(user,name,ip) {
-	ip = ip||user.ip;
+
+// This function is terrible code that doesn't work as the original author intended.
+function nameLock(user, name) {
+	var locks = Object.values(Object.select(nameLockedIps, user.ips));
+	if (locks.length > 0) {
+		// Arbitrarily pick the first lock if there is more than one...
+		return user.nameLock(locks[0]);
+	}
 	var userid = toUserid(name);
-	if(nameLockedIps[ip]) {
-		return user.nameLock(nameLockedIps[ip]);
-	} for(var i in nameLockedIps) {
-		if((userid && toUserid(nameLockedIps[i])==userid)||user.userid==toUserid(nameLockedIps[i])) {
-			nameLockedIps[ip] = nameLockedIps[i];
-			return user.nameLock(nameLockedIps[ip]);
+	for (var i in nameLockedIps) {
+		if ((userid && toUserid(nameLockedIps[i]) === userid) || user.userid === toUserid(nameLockedIps[i])) {
+			for (var ip in user.ips) {
+				nameLockedIps[ip] = nameLockedIps[i];
+			}
+			return user.nameLock(nameLockedIps[i]);
 		}
 	}
-	return name||user.name;
+	return name || user.name;
 }
+
 function connectUser(socket, room) {
 	var connection = new Connection(socket, true);
 	if (connection.banned) return connection;
@@ -126,7 +132,6 @@ var User = (function () {
 	function User(connection) {
 		numUsers++;
 		this.mmrCache = {};
-		this.token = ''+connection.socket.id;
 		this.guestNum = numUsers;
 		this.name = 'Guest '+numUsers;
 		this.named = false;
@@ -142,9 +147,10 @@ var User = (function () {
 
 		if (connection.user) connection.user = this;
 		this.connections = [connection];
-		this.ip = connection.ip;
+		this.ips = {}
+		this.ips[connection.ip] = 1;
 
-		this.muted = !!ipSearch(this.ip,mutedIps);
+		this.muted = !!ipSearch(connection.ip, mutedIps);
 		this.prevNames = {};
 		this.battles = {};
 		this.roomCount = {};
@@ -208,17 +214,6 @@ var User = (function () {
 			return true;
 		}
 
-		// The console permission is incredibly powerful because it allows
-		// the execution of abitrary shell commands on the local computer.
-		// As such, it can only be used from a specified whitelist of IPs
-		// and userids.
-		if (permission === 'console') {
-			var whitelist = config.consoleips || ['127.0.0.1'];
-			if (whitelist.indexOf(this.ip) < 0 && whitelist.indexOf(this.userid) < 0) {
-				return false;
-			}
-		}
-
 		var group = this.group;
 		var groupData = config.groups[group];
 		var checkedGroups = {};
@@ -257,6 +252,27 @@ var User = (function () {
 		}
 		return false;
 	};
+	/**
+	 * Permission check for using the dev console
+	 *
+	 * The `console` permission is incredibly powerful because it allows the
+	 * execution of abitrary shell commands on the local computer As such, it
+	 * can only be used from a specified whitelist of IPs and userids. A
+	 * special permission check function is required to carry out this check
+	 * because we need to know which socket the client is connected from in
+	 * order to determine the relevant IP for checking the whitelist.
+	 */
+	User.prototype.checkConsolePermission = function(socket) {
+		if (!this.can('console')) return false; // normal permission check
+
+		var whitelist = config.consoleips || ['127.0.0.1'];
+		var connection = this.getConnectionFromSocket(socket);
+		if (!connection) return false; // should be impossible
+		if (whitelist.indexOf(connection.ip) >= 0) return true; // on the IP whitelist
+		if (whitelist.indexOf(this.userid) >= 0) return true; // on the userid whitelist
+
+		return false;
+	};
 	// Special permission check is needed for promoting and demoting
 	User.prototype.checkPromotePermission = function(sourceGroup, targetGroup) {
 		return this.can('promote', {group:sourceGroup}) && this.can('promote', {group:targetGroup});
@@ -291,17 +307,12 @@ var User = (function () {
 		users[this.userid] = this;
 		this.authenticated = !!authenticated;
 
-		if (config.localsysop && this.ip === '127.0.0.1') {
-			this.group = config.groupsranking[config.groupsranking.length - 1];
-		}
-
 		for (var i=0; i<this.connections.length; i++) {
 			//console.log(''+name+' renaming: socket '+i+' of '+this.connections.length);
 			emit(this.connections[i].socket, 'update', {
 				name: name,
 				userid: this.userid,
-				named: true,
-				token: this.token
+				named: true
 			});
 		}
 		var joining = !this.named;
@@ -334,14 +345,14 @@ var User = (function () {
 		this.userid = userid;
 		users[this.userid] = this;
 		this.authenticated = false;
+		this.group = config.groupsranking[0];
 
 		for (var i=0; i<this.connections.length; i++) {
 			console.log(''+name+' renaming: socket '+i+' of '+this.connections.length);
 			emit(this.connections[i].socket, 'update', {
 				name: name,
 				userid: this.userid,
-				named: false,
-				token: this.token
+				named: false
 			});
 		}
 		this.named = false;
@@ -511,6 +522,7 @@ var User = (function () {
 				else if (userid === "mjb") avatar = 1011;
 				else if (userid === "marty") avatar = 1012;
 				else if (userid === "theimmortal") avatar = 1013;
+				else if (userid === "aurora") avatar = 292;
 
 				if (usergroups[userid]) {
 					group = usergroups[userid].substr(0,1);
@@ -526,12 +538,23 @@ var User = (function () {
 				for (var i in this.roomCount) {
 					Rooms.get(i,'lobby').leave(this);
 				}
+				if (!user.authenticated) {
+					if (Object.isEmpty(Object.select(this.ips, user.ips))) {
+						user.muted = this.muted;
+					}
+				}
 				for (var i=0; i<this.connections.length; i++) {
 					//console.log(''+this.name+' preparing to merge: socket '+i+' of '+this.connections.length);
 					user.merge(this.connections[i]);
 				}
 				this.roomCount = {};
 				this.connections = [];
+				// merge IPs
+				for (var ip in this.ips) {
+					if (user.ips[ip]) user.ips[ip] += this.ips[ip];
+					else user.ips[ip] = this.ips[ip];
+				}
+				this.ips = {};
 				this.markInactive();
 				if (!this.authenticated) {
 					this.group = config.groupsranking[0];
@@ -539,11 +562,8 @@ var User = (function () {
 
 				user.group = group;
 				if (avatar) user.avatar = avatar;
-				if (!user.authenticated && (this.ip !== user.ip)) {
-					user.muted = this.muted;
-				}
+
 				user.authenticated = authenticated;
-				user.ip = this.ip;
 
 				if (userid !== this.userid) {
 					// doing it this way mathematically ensures no cycles
@@ -560,7 +580,6 @@ var User = (function () {
 			}
 
 			// rename success
-			this.token = token;
 			this.group = group;
 			if (avatar) this.avatar = avatar;
 			return this.forceRename(name, authenticated);
@@ -575,17 +594,6 @@ var User = (function () {
 		}
 		this.renamePending = false;
 	};
-	User.prototype.add = function(name, connection, token) {
-		// name is ignored - this is intentional
-		if (connection.banned || this.token !== token) {
-			return false;
-		}
-		this.connected = true;
-		connection.user = this;
-		this.connections.push(connection);
-		this.ip = connection.ip;
-		return connection;
-	};
 	User.prototype.merge = function(connection) {
 		this.connected = true;
 		this.connections.push(connection);
@@ -593,8 +601,7 @@ var User = (function () {
 		emit(connection.socket, 'update', {
 			name: this.name,
 			userid: this.userid,
-			named: true,
-			token: this.token
+			named: true
 		});
 		connection.user = this;
 		for (var i in connection.rooms) {
@@ -650,6 +657,7 @@ var User = (function () {
 					this.leaveRoom(connection.rooms[j], socket);
 				}
 				connection.user = null;
+				--this.ips[connection.ip];
 				this.connections.splice(i,1);
 				break;
 			}
@@ -669,12 +677,11 @@ var User = (function () {
 	User.prototype.getAlts = function() {
 		var alts = [];
 		for (var i in users) {
-			if (users[i].ip === this.ip && users[i] !== this) {
-				if (!users[i].named && !users[i].connected) {
-					continue;
-				}
-				alts.push(users[i].name);
-			}
+			if (users[i] === this) continue;
+			if (Object.isEmpty(Object.select(this.ips, users[i].ips))) continue;
+			if (!users[i].named && !users[i].connected) continue;
+
+			alts.push(users[i].name);
 		}
 		return alts;
 	};
@@ -682,12 +689,12 @@ var User = (function () {
 		var result = this;
 		var groupRank = config.groupsranking.indexOf(this.group);
 		for (var i in users) {
-			if (users[i].ip === this.ip && users[i] !== this) {
-				if (config.groupsranking.indexOf(users[i].group) > groupRank) {
-					result = users[i];
-					groupRank = config.groupsranking.indexOf(users[i].group);
-				}
-			}
+			if (users[i] === this) continue;
+			if (Object.isEmpty(Object.select(this.ips, users[i].ips))) continue;
+			if (config.groupsranking.indexOf(users[i].group) <= groupRank) continue;
+
+			result = users[i];
+			groupRank = config.groupsranking.indexOf(users[i].group);
 		}
 		return result;
 	};
@@ -726,41 +733,54 @@ var User = (function () {
 	User.prototype.nameLock = function(targetName, recurse) {
 		var targetUser = getUser(targetName);
 		if (!targetUser) return targetName;
-		if (nameLockedIps[this.ip] === targetName || !targetUser.ip || targetUser.ip === this.ip) {
-			nameLockedIps[this.ip] = targetName;
-			if (recurse) {
-				for (var i in users) {
-					if (users[i].ip === this.ip && users[i] !== this) {
-						users[i].destroy();
-					}
-				}
-				this.forceRename(targetName, this.authenticated);
-			}
+		if ((Object.values(Object.select(nameLockedIps, this.ips)).indexOf(targetName) < 0) &&
+				targetUser.connected &&
+				Object.isEmpty(Object.select(this.ips, targetUser.ips))) {
+			return targetName;
 		}
+		for (var ip in this.ips) {
+			nameLockedIps[ip] = targetName;
+		}
+		if (!recurse) return targetName;
+		for (var i in users) {
+			if (users[i] === this) continue;
+			if (Object.isEmpty(Object.select(this.ips, users[i].ips))) continue;
+			users[i].destroy();
+		}
+		this.forceRename(targetName, this.authenticated);
 		return targetName;
 	};
 	User.prototype.nameLocked = function() {
-		if (nameLockedIps[this.ip]) {
-			this.nameLock(nameLockedIps[this.ip]);
+		var locks = Object.values(Object.select(nameLockedIps, this.ips));
+		if (locks.length > 0) {
+			// If the user is locked to more than one name (it's not obvious
+			// whether this is possible), just arbitrarily pick the first one.
+			this.nameLock(locks[0]);
 			return true;
 		}
+		// This code attempts to catch namelocked users logging in from another
+		// IP, and thereby add that IP to the list of namelocked IPs. However,
+		// this code is terrible and doesn't actually work as designed.
 		for (var i in nameLockedIps) {
-			if (nameLockedIps[i] === this.name) {
-				nameLockedIps[this.ip] = nameLockedIps[i];
-				this.nameLock(nameLockedIps[this.ip]);
-				return true;
+			if (nameLockedIps[i] !== this.name) continue;
+			for (var ip in this.ips) {
+				nameLockedIps[ip] = nameLockedIps[i];
 			}
+			this.nameLock(this.name);
+			return true;
 		}
 		return false;
 	};
 	User.prototype.ban = function(noRecurse) {
 		// no need to recurse, since the root for-loop already bans everything with your IP
 		if (!noRecurse) for (var i in users) {
-			if (users[i].ip === this.ip && users[i] !== this) {
-				users[i].ban(true);
-			}
+			if (users[i] === this) continue;
+			if (Object.isEmpty(Object.select(this.ips, users[i].ips))) continue;
+			users[i].ban(true);
 		}
-		bannedIps[this.ip] = this.userid;
+		for (var ip in this.ips) {
+			bannedIps[ip] = this.userid;
+		}
 		this.destroy();
 	};
 	User.prototype.destroy = function() {
@@ -780,6 +800,7 @@ var User = (function () {
 			} else {
 				connection.socket.end();
 			}
+			--this.ips[connection.ip];
 		}
 		this.connections = [];
 	};
@@ -952,11 +973,8 @@ var User = (function () {
 			}
 		} else if (now < this.lastChatMessage + THROTTLE_DELAY) {
 			this.chatQueue = [[message, room, socket]];
-			// Needs to be a closure so the "this" variable stays correct. I think.
-			var self = this;
-			this.chatQueueTimeout = setTimeout(function() {
-				self.processChatQueue();
-			}, THROTTLE_DELAY);
+			this.chatQueueTimeout = setTimeout(
+				this.processChatQueue.bind(this), THROTTLE_DELAY);
 		} else {
 			this.lastChatMessage = now;
 			room.chat(this, message, socket);
@@ -977,11 +995,8 @@ var User = (function () {
 		toChat[1].chat(this, toChat[0], toChat[2]);
 
 		if (this.chatQueue.length) {
-			// Needs to be a closure so the "this" variable stays correct. I think.
-			var self = this;
-			this.chatQueueTimeout = setTimeout(function() {
-				self.processChatQueue();
-			}, THROTTLE_DELAY);
+			this.chatQueueTimeout = setTimeout(
+				this.processChatQueue.bind(this), THROTTLE_DELAY);
 		} else {
 			this.chatQueue = null;
 			this.chatQueueTimeout = null;
@@ -1007,9 +1022,6 @@ var Connection = (function () {
 		this.rooms = {};
 
 		this.user = user;
-
-		numConnections++;
-		this.id = 'p'+numConnections;
 
 		this.ip = '';
 		if (socket.remoteAddress) {

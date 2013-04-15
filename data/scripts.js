@@ -30,8 +30,8 @@ exports.BattleScripts = {
 		if (!lockedMove) {
 			pokemon.deductPP(move, null, target);
 		}
-		this.useMove(move, pokemon, target, sourceEffect);
 		pokemon.moveUsed(move);
+		this.useMove(move, pokemon, target, sourceEffect);
 		this.singleEvent('AfterMove', move, null, pokemon, target, move);
 		this.runEvent('AfterMove', target, pokemon, move);
 		this.runEvent('AfterMoveSelf', pokemon, target, move);
@@ -89,6 +89,15 @@ exports.BattleScripts = {
 
 		var damage = false;
 		if (move.target === 'all' || move.target === 'foeSide' || move.target === 'allySide' || move.target === 'allyTeam') {
+			if (move.target === 'all') {
+				damage = this.runEvent('TryHitField', target, pokemon, move);
+			} else {
+				damage = this.runEvent('TryHitSide', target, pokemon, move);
+			}
+			if (!damage) {
+				if (damage === false) this.add('-fail', target);
+				return true;
+			}
 			damage = this.moveHit(target, pokemon, move);
 		} else if (move.target === 'allAdjacent' || move.target === 'allAdjacentFoes') {
 			var targets = [];
@@ -118,7 +127,7 @@ exports.BattleScripts = {
 			if (targets.length > 1) move.spreadHit = true;
 			damage = 0;
 			for (var i=0; i<targets.length; i++) {
-				damage += (this.rollMoveHit(targets[i], pokemon, move, true) || 0);
+				damage += (this.tryMoveHit(targets[i], pokemon, move, true) || 0);
 			}
 			if (!pokemon.hp) pokemon.faint();
 		} else {
@@ -134,12 +143,19 @@ exports.BattleScripts = {
 			if (target.side.active.length > 1) {
 				target = this.runEvent('RedirectTarget', pokemon, pokemon, move, target);
 			}
-			damage = this.rollMoveHit(target, pokemon, move);
+			damage = this.tryMoveHit(target, pokemon, move);
+		}
+		if (!pokemon.hp) {
+			this.faint(pokemon, pokemon, move);
 		}
 
-		if (!damage && damage !== 0) {
+		if (!damage && damage !== 0 && damage !== undefined) {
 			this.singleEvent('MoveFail', move, null, target, pokemon, move);
 			return true;
+		}
+
+		if (move.selfdestruct) {
+			this.faint(pokemon, pokemon, move);
 		}
 
 		if (!move.negateSecondary) {
@@ -148,9 +164,35 @@ exports.BattleScripts = {
 		}
 		return true;
 	},
-	rollMoveHit: function(target, pokemon, move, spreadHit) {
+	tryMoveHit: function(target, pokemon, move, spreadHit) {
 		if (move.selfdestruct && spreadHit) {
 			pokemon.hp = 0;
+		}
+
+		if ((move.affectedByImmunities && !target.runImmunity(move.type, true)) || (move.isSoundBased && (pokemon !== target || this.gen <= 4) && !target.runImmunity('sound', true))) {
+			return false;
+		}
+
+		this.setActiveMove(move, pokemon, target);
+		var hitResult = true;
+
+		if (typeof move.affectedByImmunities === 'undefined') {
+			move.affectedByImmunities = (move.category !== 'Status');
+		}
+
+		hitResult = this.runEvent('TryHit', target, pokemon, move);
+		if (!hitResult) {
+			if (hitResult === false) this.add('-fail', target);
+			if (hitResult !== 0) { // special Substitute hit flag
+				return false;
+			}
+		}
+
+		if (hitResult === 0) {
+			target = null;
+		} else if (!hitResult) {
+			if (hitResult === false) this.add('-fail', target);
+			return false;
 		}
 
 		var boostTable = [1, 4/3, 5/3, 2, 7/3, 8/3, 3];
@@ -190,10 +232,6 @@ exports.BattleScripts = {
 			return false;
 		}
 
-		if ((move.affectedByImmunities && !target.runImmunity(move.type, true)) || (move.isSoundBased && (pokemon !== target || this.gen <= 4) && !target.runImmunity('sound', true))) {
-			return false;
-		}
-
 		var damage = 0;
 		pokemon.lastDamage = 0;
 		if (move.multihit) {
@@ -226,11 +264,7 @@ exports.BattleScripts = {
 
 		if (move.category !== 'Status') target.gotAttacked(move, damage, pokemon);
 
-		if (move.selfdestruct) {
-			this.faint(pokemon, pokemon, move);
-		}
-
-		if (!damage && damage !== 0) return false;
+		if (!damage && damage !== 0) return damage;
 
 		if (!move.negateSecondary) {
 			this.singleEvent('AfterMoveSecondary', move, null, target, pokemon, move);
@@ -243,18 +277,14 @@ exports.BattleScripts = {
 		var damage = 0;
 		move = this.getMoveCopy(move);
 
-		if (!isSecondary && !isSelf) this.setActiveMove(move, pokemon, target);
-		var hitResult = true;
 		if (!moveData) moveData = move;
+		var hitResult = true;
 
-		if (typeof move.affectedByImmunities === 'undefined') {
-			move.affectedByImmunities = (move.category !== 'Status');
-		}
-	
 		// TryHit events:
 		//   STEP 1: we see if the move will succeed at all:
 		//   - TryHit, TryHitSide, or TryHitField are run on the move,
-		//     depending on move target
+		//     depending on move target (these events happen in useMove
+		//     or tryMoveHit, not below)
 		//   == primary hit line ==
 		//   Everything after this only happens on the primary hit (not on
 		//   secondary or self-hits)
@@ -277,56 +307,33 @@ exports.BattleScripts = {
 		//   use `target`.
 		//   It is the `TryFieldHit` event handler's responsibility to read
 		//   move.target and react accordingly.
-		//   An exception is `TryHitSide`, which is passed the target side.
+		//   An exception is `TryHitSide` as a single event (but not as a normal
+		//   event), which is passed the target side.
 
-		// Note 2:
-		//   In case you didn't notice, FieldHit and HitField mean different things.
-		//     TryFieldHit - something in the field was hit
-		//     TryHitField - our move has a target of 'all' i.e. the field, and hit
-		//   This is a VERY important distinction: Every move triggers
-		//   TryFieldHit, but only  moves with a target of "all" (e.g.
-		//   Haze) trigger TryHitField.
+		if (move.target === 'all' && !isSelf) {
+			hitResult = this.singleEvent('TryHitField', moveData, {}, target, pokemon, move);
+		} else if ((move.target === 'foeSide' || move.target === 'allySide') && !isSelf) {
+			hitResult = this.singleEvent('TryHitSide', moveData, {}, target.side, pokemon, move);
+		} else if (target) {
+			hitResult = this.singleEvent('TryHit', moveData, {}, target, pokemon, move);
+		}
+		if (!hitResult) {
+			if (hitResult === false) this.add('-fail', target);
+			return false;
+		}
 
-		if (target) {
-			if (move.target === 'all' && !isSelf) {
-				hitResult = this.singleEvent('TryHitField', moveData, {}, target, pokemon, move);
-			} else if ((move.target === 'foeSide' || move.target === 'allySide') && !isSelf) {
-				hitResult = this.singleEvent('TryHitSide', moveData, {}, target.side, pokemon, move);
-			} else {
-				hitResult = this.singleEvent('TryHit', moveData, {}, target, pokemon, move);
-			}
-			if (!hitResult) {
-				if (hitResult === false) this.add('-fail', target);
-				return false;
-			}
-			// only run the hit events for the hit itself, not the secondary or self hits
-			if (!isSelf && !isSecondary) {
-				if (move.target === 'all') {
-					hitResult = this.runEvent('TryHitField', target, pokemon, move);
-				} else if (move.target === 'foeSide' || move.target === 'allySide') {
-					hitResult = this.runEvent('TryHitSide', target, pokemon, move);
-				} else {
-					hitResult = this.runEvent('TryHit', target, pokemon, move);
-				}
-				if (!hitResult) {
-					if (hitResult === false) this.add('-fail', target);
-					if (hitResult !== 0) { // special Substitute hit flag
-						return false;
-					}
-				}
-				if (!this.runEvent('TryFieldHit', target, pokemon, move)) {
-					return false;
-				}
-			} else if (isSecondary && !moveData.self) {
-				hitResult = this.runEvent('TrySecondaryHit', target, pokemon, moveData);
-			}
-
+		if (target && !isSecondary && !isSelf) {
+			hitResult = this.runEvent('TryPrimaryHit', target, pokemon, moveData);
 			if (hitResult === 0) {
+				hitResult = true;
 				target = null;
-			} else if (!hitResult) {
-				if (hitResult === false) this.add('-fail', target);
-				return false;
 			}
+		}
+		if (target && isSecondary && !moveData.self) {
+			hitResult = this.runEvent('TrySecondaryHit', target, pokemon, moveData);
+		}
+		if (!hitResult) {
+			return false;
 		}
 
 		if (target) {
@@ -355,24 +362,30 @@ exports.BattleScripts = {
 					damage = target.hp - 1;
 				}
 				damage = this.damage(damage, target, pokemon, move);
-				if (!(damage || damage === 0)) return false;
+				if (!(damage || damage === 0)) {
+					this.debug('damage interrupted');
+					return false;
+				}
 				didSomething = true;
 			} else if (damage === false && typeof hitResult === 'undefined') {
 				this.add('-fail', target);
 			}
 			if (damage === false || damage === null) {
+				this.debug('damage calculation interrupted');
 				return false;
 			}
 			if (moveData.boosts && !target.fainted) {
 				this.boost(moveData.boosts, target, pokemon, move);
+				didSomething = true;
 			}
 			if (moveData.heal && !target.fainted) {
 				var d = target.heal(Math.round(target.maxhp * moveData.heal[0] / moveData.heal[1]));
 				if (!d) {
 					this.add('-fail', target);
+					this.debug('heal interrupted');
 					return false;
 				}
-				this.add('-heal', target, target.hpChange(d));
+				this.add('-heal', target, target.getHealth);
 				didSomething = true;
 			}
 			if (moveData.status) {
@@ -425,8 +438,10 @@ exports.BattleScripts = {
 					this.runEvent('Hit', target, pokemon, move);
 				}
 			}
+
 			if (!hitResult && !didSomething) {
 				if (hitResult === false) this.add('-fail', target);
+				this.debug('move failed because it did nothing');
 				return false;
 			}
 		}
@@ -678,7 +693,7 @@ exports.BattleScripts = {
 			hasMove = {};
 			counter = {
 				Physical: 0, Special: 0, Status: 0, damage: 0,
-				technician: 0, skilllink: 0, contrary: 0, sheerforce: 0, ironfist: 0,
+				technician: 0, skilllink: 0, contrary: 0, sheerforce: 0, ironfist: 0, adaptability: 0, hustle: 0,
 				recoil: 0, inaccurate: 0,
 				physicalsetup: 0, specialsetup: 0, mixedsetup: 0
 			};
@@ -703,6 +718,10 @@ exports.BattleScripts = {
 				if (move.recoil) {
 					counter['recoil']++;
 				}
+				if (move.basePower || move.basePowerCallback) {
+					if (hasType[move.type]) counter['adaptability']++;
+					if (move.category === 'Physical') counter['hustle']++;
+				}
 				if (move.secondary) {
 					if (move.secondary.chance < 50) {
 						counter['sheerforce'] -= 5;
@@ -720,7 +739,7 @@ exports.BattleScripts = {
 					counter['contrary']++;
 				}
 				var PhysicalSetup = {
-					swordsdance:1, dragondance:1, coil:1, bulkup:1, curse:1, bellydrum:1
+					swordsdance:1, dragondance:1, coil:1, bulkup:1, curse:1, bellydrum:1, shiftgear:1, honeclaws:1, howl:1
 				};
 				var SpecialSetup = {
 					nastyplot:1, tailglow:1, quiverdance:1, calmmind:1
@@ -763,7 +782,7 @@ exports.BattleScripts = {
 					if (!hasMove['flail'] && !hasMove['endeavor'] && !hasMove['reversal']) rejected = true;
 					break;
 				case 'focuspunch':
-					if (!hasMove['substitute']) rejected = true;
+					if (hasMove['sleeptalk'] || !hasMove['substitute']) rejected = true;
 					break;
 				case 'storedpower':
 					if (!hasMove['cosmicpower'] && !setupType) rejected = true;
@@ -795,23 +814,29 @@ exports.BattleScripts = {
 				case 'knockoff': case 'perishsong': case 'magiccoat': case 'spikes':
 					if (setupType) rejected = true;
 					break;
-				case 'uturn': case 'voltswitch': case 'relicsong':
+				case 'uturn': case 'voltswitch':
+					if (setupType || hasMove['agility'] || hasMove['rockpolish'] || hasMove['magnetrise']) rejected = true;
+					break;
+				case 'relicsong':
 					if (setupType) rejected = true;
 					break;
 				case 'pursuit': case 'protect': case 'haze': case 'stealthrock':
 					if (setupType || (hasMove['rest'] && hasMove['sleeptalk'])) rejected = true;
 					break;
 				case 'trick': case 'switcheroo':
-					if (setupType || (hasMove['rest'] && hasMove['sleeptalk']) || hasMove['trickroom'] || hasMove['reflect'] || hasMove['lightscreen']) rejected = true;
+					if (setupType || (hasMove['rest'] && hasMove['sleeptalk']) || hasMove['trickroom'] || hasMove['reflect'] || hasMove['lightscreen'] || hasMove['batonpass']) rejected = true;
+					break;
+				case 'dragontail':
+					if (hasMove['agility'] || hasMove['rockpolish']) rejected = true;
 					break;
 
 				// bit redundant to have both
 
-				case 'flamethrower':
+				case 'flamethrower': case 'fierydance':
 					if (hasMove['lavaplume'] || hasMove['overheat'] || hasMove['fireblast'] || hasMove['blueflare']) rejected = true;
 					break;
 				case 'overheat':
-					if (hasMove['fireblast']) rejected = true;
+					if (setupType === 'Special' || hasMove['fireblast']) rejected = true;
 					break;
 				case 'icebeam':
 					if (hasMove['blizzard']) rejected = true;
@@ -831,11 +856,14 @@ exports.BattleScripts = {
 				case 'bravebird': case 'pluck':
 					if (hasMove['acrobatics']) rejected = true;
 					break;
-				case 'energyball': case 'grassknot': case 'petaldance': case 'solarbeam':
-					if (hasMove['gigadrain'] || hasMove['leafstorm']) rejected = true;
+				case 'solarbeam':
+					if ((!hasMove['sunnyday'] && template.species !== 'Ninetales') || hasMove['gigadrain'] || hasMove['leafstorm']) rejected = true;
 					break;
 				case 'gigadrain':
-					if (hasMove['leafstorm']) rejected = true;
+					if ((!setupType && hasMove['leafstorm']) || hasMove['petaldance']) rejected = true;
+					break;
+				case 'leafstorm':
+					if (setupType && hasMove['gigadrain']) rejected = true;
 					break;
 				case 'weatherball':
 					if (!hasMove['sunnyday']) rejected = true;
@@ -885,6 +913,12 @@ exports.BattleScripts = {
 				case 'psychic':
 					if (hasMove['psyshock']) rejected = true;
 					break;
+				case 'fusionbolt':
+					if (setupType && hasMove['boltstrike']) rejected = true;
+					break;
+				case 'boltstrike':
+					if (!setupType && hasMove['fusionbolt']) rejected = true;
+					break;
 
 				case 'rest':
 					if (hasMove['painsplit'] || hasMove['wish'] || hasMove['recover'] || hasMove['moonlight'] || hasMove['synthesis']) rejected = true;
@@ -900,12 +934,12 @@ exports.BattleScripts = {
 					if (hasMove['whirlwind'] || hasMove['haze']) rejected = true;
 					break;
 				case 'substitute':
-					if (hasMove['uturn'] || hasMove['voltswitch']) rejected = true;
+					if (hasMove['uturn'] || hasMove['voltswitch'] || hasMove['pursuit']) rejected = true;
 					break;
 				case 'fakeout':
 					if (hasMove['trick'] || hasMove['switcheroo']) rejected = true;
 					break;
-				case 'bellydrum': case 'encore': case 'suckerpunch':
+				case 'encore': case 'suckerpunch':
 					if (hasMove['rest'] && hasMove['sleeptalk']) rejected = true;
 					break;
 				case 'cottonguard':
@@ -920,7 +954,8 @@ exports.BattleScripts = {
 					break;
 				case 'thunderwave':
 					if (setupType && (hasMove['rockpolish'] || hasMove['agility'])) rejected = true;
-					if (hasMove['trickroom']) rejected = true;
+					if (hasMove['discharge'] || hasMove['trickroom']) rejected = true;
+					if (hasMove['rest'] && hasMove['sleeptalk']) rejected = true;
 					break;
 				case 'lavaplume':
 					if (hasMove['willowisp']) rejected = true;
@@ -1007,6 +1042,9 @@ exports.BattleScripts = {
 				if (ability === 'Iron Fist' && !counter['ironfist']) {
 					rejectAbility = true;
 				}
+				if (ability === 'Adaptability' && !counter['adaptability']) {
+					rejectAbility = true;
+				}
 				if ((ability === 'Rock Head' || ability === 'Reckless') && !counter['recoil']) {
 					rejectAbility = true;
 				}
@@ -1016,13 +1054,23 @@ exports.BattleScripts = {
 				if ((ability === 'Sheer Force' || ability === 'Serene Grace') && !counter['sheerforce']) {
 					rejectAbility = true;
 				}
-				if (ability === 'Hustle' && !counter['Physical']) {
+				if (ability === 'Hustle' && !counter['hustle']) {
+					rejectAbility = true;
+				}
+				if (ability === 'Simple' && !setupType && !hasMove['flamecharge']) {
 					rejectAbility = true;
 				}
 				if (ability === 'Prankster' && !counter['Status']) {
 					rejectAbility = true;
 				}
 				if (ability === 'Defiant' && !counter['Physical'] && !hasMove['batonpass']) {
+					rejectAbility = true;
+				}
+				// below 2 checks should be modified, when it becomes possible, to check if the team contains rain or sun
+				if (ability === 'Swift Swift' && !hasMove['raindance']) {
+					rejectAbility = true;
+				}
+				if (ability === 'Chlorophyll' && !hasMove['sunnyday']) {
 					rejectAbility = true;
 				}
 				if (ability === 'Moody' && template.id !== 'bidoof') {
@@ -1044,6 +1092,13 @@ exports.BattleScripts = {
 				}
 				if ((abilities[0] === 'Swift Swim' || abilities[1] === 'Swift Swim' || abilities[2] === 'Swift Swim') && hasMove['raindance']) {
 					ability = 'Swift Swim';
+				}
+				if ((abilities[0] === 'Chlorophyll' || abilities[1] === 'Chlorophyll' || abilities[2] === 'Chlorophyll') && ability !== 'Solar Power' && hasMove['sunnyday']) {
+					ability = 'Chlorophyll';
+				}
+				if (template.id === 'combee') {
+					// it always gets Hustle but its only physical move is Endeavor, which loses accuracy
+					ability = 'Honey Gather';
 				}
 			}
 
@@ -1242,10 +1297,10 @@ exports.BattleScripts = {
 			Dusclops: 84, Porygon2: 82, Chansey: 78,
 
 			// Weather or teammate dependent
-			Snover: 95, Vulpix: 95, Excadrill: 78, Ninetales: 78, Tentacruel: 78, Toxicroak: 78, Venusaur: 78,
+			Snover: 95, Vulpix: 95, Excadrill: 78, Ninetales: 78, Tentacruel: 78, Toxicroak: 78, Venusaur: 78, "Tornadus-Therian": 74,
 
 			// Holistic judgment
-			Carvanha: 90, Blaziken: 74, Garchomp: 74, Thundurus: 74
+			Carvanha: 90, Blaziken: 74, "Deoxys-Defense": 74, "Deoxys-Speed": 74, Garchomp: 74, Thundurus: 74
 		};
 		var level = levelScale[template.tier] || 90;
 		if (customScale[template.name]) level = customScale[template.name];

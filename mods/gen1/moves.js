@@ -24,15 +24,6 @@ exports.BattleMovedex = {
 		},
 		target: "normal"
 	},
-	agility: {
-		inherit: true,
-		onHit: function(pokemon) {
-			// If there's a paralyse speed drop, it's negated by agility
-			if (pokemon.volatiles['parspeeddrop']) {
-				pokemon.removeVolatile('parspeeddrop');
-			}
-		}
-	},
 	amnesia: {
 		inherit: true,
 		desc: "Raises the user's Special by 2 stages.",
@@ -57,11 +48,9 @@ exports.BattleMovedex = {
 		accuracy: true,
 		ignoreEvasion: true,
 		effect: {
-			duration: 3,
+			duration: 2,
 			durationCallBack: function (target, source, effect) {
-				var duration =  this.random(3, 4);
-				this.debug('Duration callback. Result: ' +duration);
-				return duration;
+				return this.random(3, 4);
 			},
 			onStart: function(pokemon) {
 				this.effectData.totalDamage = 0;
@@ -78,27 +67,6 @@ exports.BattleMovedex = {
 				}
 			},
 			onDamage: function(damage, target, source, move) {
-				if (!source || source.side === target.side) return;
-				if (!move || move.effectType !== 'Move') return;
-				if (!damage && this.effectData.lastDamage > 0) {
-					damage = this.effectData.totalDamage;
-				}
-				this.effectData.totalDamage += damage;
-				this.effectData.lastDamage = damage;
-				this.effectData.sourcePosition = source.position;
-				this.effectData.sourceSide = source.side;
-			},
-			onAfterSubStatus: function (target, source, move, damage) {
-				if (source && source !== target) {
-					damage = this.effectData.totalDamage;
-					this.effectData.totalDamage += damage;
-					this.effectData.lastDamage = damage;
-					this.effectData.sourcePosition = source.position;
-					this.effectData.sourceSide = source.side;
-				}
-			},
-			onAfterSubDamage: function (target, source, move, damage) {
-				this.debug('onAfterSubDamage on Bide. target: ' + target.name + '. Source: ' + source.name + '. Move: ' + move.name + '. Damage: ' + damage);
 				if (!source || source.side === target.side) return;
 				if (!move || move.effectType !== 'Move') return;
 				if (!damage && this.effectData.lastDamage > 0) {
@@ -195,12 +163,29 @@ exports.BattleMovedex = {
 		},
 		target: "normal"
 	},
+	bodyslam: {
+		inherit: true,
+		secondary: {
+			chance: 30,
+			status: 'par'
+		}
+	},
 	boneclub: {
 		inherit: true,
 		secondary: {
 			chance: 10,
 			volatileStatus: 'flinch'
 		}
+	},
+	bubble: {
+		inherit: true,
+		secondary: {
+			chance: 10,
+			boosts: {
+				spe: -1
+			}
+		},
+		target: "normal"
 	},
 	bubblebeam: {
 		inherit: true,
@@ -500,14 +485,6 @@ exports.BattleMovedex = {
 		inherit: true,
 		accuracy: 75
 	},
-	growl: {
-		inherit: true,
-		onHit: function(target, source) {
-			if (target.status === 'brn' && !target.volatiles['brnattackdrop']) {
-				target.addVolatile('brnattackdrop');
-			}
-		}
-	},
 	growth: {
 		inherit: true,
 		desc: "Raises the user's Special by 1 stage.",
@@ -615,11 +592,12 @@ exports.BattleMovedex = {
 	leechseed: {
 		inherit: true,
 		onHit: function (target, source, move) {
+			if (!source || source.fainted || source.hp <= 0) {
+				// Well this shouldn't happen
+				this.debug('Nothing to leech into');
+				return;
+			}
 			if (target.newlySwitched && target.speed <= source.speed) {
-				if (!source || source.fainted || source.hp <= 0) {
-					this.debug('Nothing to leech into');
-					return;
-				}
 				if (target.status === 'tox') {
 					// Stage plus one since leech seed runs before Toxic
 					var toLeech = clampIntRange(target.maxhp/16, 1) * (target.statusData.stage + 1);
@@ -636,7 +614,7 @@ exports.BattleMovedex = {
 			onStart: function(target) {
 				this.add('-start', target, 'move: Leech Seed');
 			},
-			onAfterMoveSelf: function (pokemon) {
+			onAfterMoveSelf: function(pokemon) {
 				var target = pokemon.side.foe.active[pokemon.volatiles['leechseed'].sourcePosition];
 				if (!target || target.fainted || target.hp <= 0) {
 					this.debug('Nothing to leech into');
@@ -761,6 +739,31 @@ exports.BattleMovedex = {
 			evasion: 1
 		}
 	},
+	mirrormove: {
+		num: 119,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		desc: "The user uses the last move used by a selected adjacent target. The copied move is used against that target, if possible. Fails if the target has not yet used a move, or the last move used was Counter, Haze, Light Screen, Mimic, Reflect, Struggle, Transform, or any move that is self-targeting.",
+		shortDesc: "User uses the target's last used move against it.",
+		id: "mirrormove",
+		name: "Mirror Move",
+		pp: 20,
+		priority: 0,
+		isNotProtectable: true,
+		onTryHit: function(target) {
+			var noMirrorMove = {acupressure:1, afteryou:1, aromatherapy:1, chatter:1, feint:1, finalgambit:1, focuspunch:1, futuresight:1, gravity:1, guardsplit:1, hail:1, haze:1, healbell:1, healpulse:1, helpinghand:1, lightscreen:1, luckychant:1, mefirst:1, mimic:1, mirrorcoat:1, mirrormove:1, mist:1, mudsport:1, naturepower:1, perishsong:1, powersplit:1, psychup:1, quickguard:1, raindance:1, reflect:1, reflecttype:1, roleplay:1, safeguard:1, sandstorm:1, sketch:1, spikes:1, spitup:1, stealthrock:1, sunnyday:1, tailwind:1, taunt:1, teeterdance:1, toxicspikes:1, transform:1, watersport:1, wideguard:1};
+			if (!target.lastMove || noMirrorMove[target.lastMove] || this.getMove(target.lastMove).target === 'self') {
+				return false;
+			}
+		},
+		onHit: function(target, source) {
+			this.useMove(this.lastMove, source);
+		},
+		secondary: false,
+		target: "normal",
+		type: "Flying"
+	},
 	nightshade: {
 		inherit: true,
 		affectedByImmunities: false
@@ -805,12 +808,7 @@ exports.BattleMovedex = {
 		inherit: true,
 		self: {
 			volatileStatus: 'rage'
-		},
-		onMoveFail: function(target, source, move) {
-			mode.onModifyMove = function (move) {
-				move.accuracy = 1 / 256;
-			};
-		},
+		}
 	},
 	razorleaf: {
 		inherit: true,
@@ -982,14 +980,6 @@ exports.BattleMovedex = {
 			volatileStatus: 'flinch'
 		}
 	},
-	stringshot: {
-		inherit: true,
-		onHit: function(target, source) {
-			if (target.status === 'par' && !target.volatiles['parspeeddrop']) {
-				target.addVolatile('parspeeddrop');
-			}
-		}
-	},
 	struggle: {
 		num: 165,
 		accuracy: 100,
@@ -1065,7 +1055,6 @@ exports.BattleMovedex = {
 					if (move.status === 'psn' || move.status === 'tox' || (move.boosts && target !== source) || move.volatileStatus === 'confusion' || SubBlocked[move.id]) {
 						return false;
 					}
-					this.runEvent('AfterSubStatus', target, source, move, damage);
 					return;
 				}
 				if (move.volatileStatus && target === source) return;
@@ -1089,7 +1078,6 @@ exports.BattleMovedex = {
 				if (move.drain && target.volatiles['substitute'] && target.volatiles['substitute'].hp > 0) {
 					this.heal(Math.ceil(damage * move.drain[0] / move.drain[1]), source, target, 'drain');
 				}
-				this.debug('onTryHit sub before asd. target: ' + target.name + '. Source: ' + source.name + '. Move: ' + move.name + '. Damage: ' + damage);
 				this.runEvent('AfterSubDamage', target, source, move, damage);
 				// Add here counter damage
 				if (!target.lastAttackedBy) target.lastAttackedBy = {pokemon: source, thisTurn: true};
@@ -1108,15 +1096,6 @@ exports.BattleMovedex = {
 	swift: {
 		inherit: true,
 		category: "Physical"
-	},
-	swordsdance: {
-		inherit: true,
-		onHit: function(pokemon) {
-			// If there's a burn attack drop, it's negated by swords dance
-			if (pokemon.volatiles['brnattackdrop']) {
-				pokemon.removeVolatile('brnattackdrop');
-			}
-		}
 	},
 	tackle: {
 		inherit: true,
