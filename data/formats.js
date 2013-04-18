@@ -197,9 +197,21 @@ exports.BattleFormats = {
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
+		rated: true,
 		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'Standard', 'Offstat', 'Evasion Abilities Clause', 'Team Preview'],
+		ruleset: ['Pokemon', 'Standard', 'Offstat Pokemon', 'Evasion Abilities Clause', 'Team Preview'],
 		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Stealth Rock', 'Spikes', 'Toxic Spikes', 'Kyurem-Black']
+	},
+	suicidecup: {
+		effectType: 'Format',
+		name: "Suicide Cup",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		rated: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Standard', 'Suicide Pokemon', 'Evasion Abilities Clause', 'Team Preview'],
+		banlist: ['Shedinja', 'Self-Destruct', 'Explosion', 'Memento', 'Final Gambit', 'Healing Wish', 'Heal Pulse', 'Lunar Dance', 'Dream Eater', 'Snore']
 	},
 	haxmons: {
 		effectType: 'Format',
@@ -1202,34 +1214,6 @@ exports.BattleFormats = {
 			set.moves = moves;
 		}
 	},
-	offstat: {
-		effectType: 'Banlist',
-		validateSet: function(set, format) {
-			var problems = [];
-			var template = this.getTemplate(set.species);
-			// Get max attacking stat
-			var attackingStat = '';
-			var badStat = '';
-			if (template.baseStats['atk'] > template.baseStats['spa']) {
-				attackingStat = 'atk';
-				badStat = 'spa';
-			} else {
-				attackingStat = 'spa';
-				badStat = 'atk';
-			}
-			if (template.baseStats[attackingStat] - template.baseStats[badStat] < 50) {
-				problems.push(set.species + ' is not allowed in Offstat since its main stat is not at least 50 points higher.');
-			}
-			if (set.moves) for (var i=0; i<set.moves.length; i++) {
-				var move = this.getMove(set.moves[i]);
-				if ((move.category === 'Special' && badStat !== 'spa') || (move.category === 'Physical' && badStat !== 'atk')) {
-					problems.push(move.name + ' is not allowed since it uses the highest attacking stat of ' + set.species + '.');
-				}
-			}
-		
-			return problems;
-		}
-	},
 	pokemon: {
 		effectType: 'Banlist',
 		validateSet: function(set, format) {
@@ -1340,6 +1324,59 @@ exports.BattleFormats = {
 			// No shinies
 			set.shiny = false;
 			
+			return problems;
+		}
+	},
+	offstatpokemon: {
+		effectType: 'Banlist',
+		validateSet: function(set, format) {
+			var problems = [];
+			var template = this.getTemplate(set.species);
+			// Get max attacking stat
+			var attackingStat = '';
+			var badStat = '';
+			if (template.baseStats['atk'] > template.baseStats['spa']) {
+				attackingStat = 'atk';
+				badStat = 'spa';
+			} else {
+				attackingStat = 'spa';
+				badStat = 'atk';
+			}
+			if (template.baseStats[attackingStat] - template.baseStats[badStat] < 50) {
+				problems.push(set.species + ' is not allowed in Offstat since its main stat is not at least 50 points higher.');
+			}
+			if (set.moves) for (var i=0; i<set.moves.length; i++) {
+				var move = this.getMove(set.moves[i]);
+				if ((move.category === 'Special' && badStat !== 'spa') || (move.category === 'Physical' && badStat !== 'atk')) {
+					problems.push(move.name + ' is not allowed since it uses the highest attacking stat of ' + set.species + '.');
+				}
+			}
+		
+			return problems;
+		}
+	},
+	suicidepokemon: {
+		effectType: 'Banlist',
+		validateTeam: function(team, format) {
+			if (team.length < 6) return ["You need 6 Pokemon on your team."];
+		},
+		validateSet: function(set, format) {
+			var problems = [];
+			var template = this.getTemplate(set.species);
+			// Let's check
+			if (set.level < 100) problems.push(set.species + ' must be level 100.');
+			if (!set.moves || set.moves.length < 4) {
+				problems.push(set.species + ' must have four moves.');
+			} else {
+				var hasOneAttack = false;
+				for (var i=0; i<4; i++) {
+					var move = this.getMove(set.moves[i]);
+					hasOneAttack = (move.category === 'Special' || move.category === 'Physical');
+					if (hasOneAttack) break;
+				}
+				if (!hasOneAttack) problems.push(set.species + ' must have an attacking move.');
+			}
+		
 			return problems;
 		}
 	},
