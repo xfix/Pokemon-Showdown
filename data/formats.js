@@ -191,6 +191,16 @@ exports.BattleFormats = {
 		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
 		banlist: ['Drizzle ++ Swift Swim', 'Elekid ++ Wonder Guard']
 	},
+	offstat: {
+		effectType: 'Format',
+		name: "Offstat",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Standard', 'Offstat', 'Evasion Abilities Clause', 'Team Preview'],
+		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Stealth Rock', 'Spikes', 'Toxic Spikes', 'Kyurem-Black']
+	},
 	haxmons: {
 		effectType: 'Format',
 		name: "Haxmons",
@@ -1190,6 +1200,34 @@ exports.BattleFormats = {
 				}
 			}
 			set.moves = moves;
+		}
+	},
+	offstat: {
+		effectType: 'Banlist',
+		validateSet: function(set, format) {
+			var problems = [];
+			var template = this.getTemplate(set.species);
+			// Get max attacking stat
+			var attackingStat = '';
+			var badStat = '';
+			if (template.baseStats['atk'] > template.baseStats['spa']) {
+				attackingStat = 'atk';
+				badStat = 'spa';
+			} else {
+				attackingStat = 'spa';
+				badStat = 'atk';
+			}
+			if (template.baseStats[attackingStat] - template.baseStats[badStat] < 50) {
+				problems.push(set.species + ' is not allowed in Offstat since its main stat is not at least 50 points higher.');
+			}
+			if (set.moves) for (var i=0; i<set.moves.length; i++) {
+				var move = this.getMove(set.moves[i]);
+				if ((move.category === 'Special' && badStat !== 'spa') || (move.category === 'Physical' && badStat !== 'atk')) {
+					problems.push(move.name + ' is not allowed since it uses the highest attacking stat of ' + set.species + '.');
+				}
+			}
+		
+			return problems;
 		}
 	},
 	pokemon: {
