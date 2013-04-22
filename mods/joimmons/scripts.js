@@ -1,40 +1,4 @@
 exports.BattleScripts = {
-	init: function() {
-		for (var i in this.data.Pokedex) {
-			var tier = '';
-			var adjustment = 0;
-			if (this.data.FormatsData[i]) tier = this.data.FormatsData[i].tier;
-			switch (tier) {
-			case 'BL':
-				adjustment = 2;
-				break;
-			case 'UU':
-				adjustment = 5;
-				break;
-			case 'BL2':
-				adjustment = 7;
-				break;
-			case 'RU':
-				adjustment = 10;
-				break;
-			case 'BL3':
-				adjustment = 12;
-			case 'NU':
-			case 'NFE':
-				adjustment = 15;
-				break;
-			case 'LC':
-				adjustment = 20;
-				break;
-			}
-			this.data.Pokedex[i].baseStats.hp += adjustment;
-			this.data.Pokedex[i].baseStats.atk += adjustment;
-			this.data.Pokedex[i].baseStats.def += adjustment;
-			this.data.Pokedex[i].baseStats.spa += adjustment;
-			this.data.Pokedex[i].baseStats.spd += adjustment;
-			this.data.Pokedex[i].baseStats.spe += adjustment;
-		}
-	},
 	getDamage: function(pokemon, target, move, suppressMessages) {
 		if (typeof move === 'string') move = this.getMove(move);
 

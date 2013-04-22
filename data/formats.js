@@ -211,7 +211,17 @@ exports.BattleFormats = {
 		rated: true,
 		isTeambuilderFormat: true,
 		ruleset: ['Pokemon', 'Standard', 'Suicide Pokemon', 'Evasion Abilities Clause', 'Team Preview'],
-		banlist: ['Shedinja', 'Self-Destruct', 'Explosion', 'Memento', 'Final Gambit', 'Healing Wish', 'Heal Pulse', 'Lunar Dance', 'Dream Eater', 'Snore']
+		banlist: ['Shedinja', 'Self-Destruct', 'Explosion', 'Memento', 'Final Gambit', 'Healing Wish', 'Heal Pulse', 'Lunar Dance', 'Dream Eater', 'Snore', 'Frustration', 'Return']
+	},
+	gscmodern: {
+		effectType: 'Format',
+		name: "GSC Modern",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['GSC Modern Pokemon', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Moves Clause', 'Evasion Abilities Clause', 'Team Preview'],
+		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Venusaur', 'Illegal', 'Moody']
 	},
 	haxmons: {
 		effectType: 'Format',
@@ -1376,6 +1386,15 @@ exports.BattleFormats = {
 				}
 				if (!hasOneAttack) problems.push(set.species + ' must have an attacking move.');
 			}
+		
+			return problems;
+		}
+	},
+	gscmodernpokemon: {
+		validateSet: function(set, format) {
+			var problems = [];
+			var template = this.getTemplate(set.species);
+			if (template.gen > 2) problems.push(set.species + ' must come from Gen 1 or Gen 2.');
 		
 			return problems;
 		}
