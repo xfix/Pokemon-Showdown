@@ -1,8 +1,5 @@
 const MAX_MESSAGE_LENGTH = 300;
 const TIMEOUT_DEALLOCATE = 15*60*1000;
-// Increment this by 1 for each change that breaks compatibility between
-// the previous version of the client and the current version of the server.
-const BATTLE_ROOM_PROTOCOL_VERSION = 2;
 
 var BattleRoom = (function() {
 	function BattleRoom(roomid, format, p1, p2, parentid, rated) {
@@ -474,13 +471,13 @@ var BattleRoom = (function() {
 			token: user.token,
 			room: this.id,
 			roomType: 'battle',
-			version: BATTLE_ROOM_PROTOCOL_VERSION,
 			battlelog: this.getLogForUser(user)
 		};
 		emit(socket, 'init', initdata);
-		if (this.battle.requests[user.userid]) {
-			this.battle.resendRequest(user);
-		}
+		// this handles joining a battle in which a user is a participant,
+		// where the user has already identified before attempting to join
+		// the battle
+		this.battle.resendRequest(user);
 	};
 	BattleRoom.prototype.join = function(user) {
 		if (!user) return false;
@@ -501,23 +498,27 @@ var BattleRoom = (function() {
 			token: user.token,
 			room: this.id,
 			roomType: 'battle',
-			version: BATTLE_ROOM_PROTOCOL_VERSION,
 			battlelog: this.getLogForUser(user)
 		};
 		user.emit('init', initdata);
-
 		return user;
 	};
 	BattleRoom.prototype.rename = function(user, oldid, joining) {
 		if (joining) {
 			this.addCmd('join', user.name);
 		}
+		var resend = joining || !this.battle.playerTable[user.prevNames[user.userid]];
 		if (this.battle.playerTable[user.userid]) {
 			this.battle.rename();
 		}
 		delete this.users[oldid];
 		this.users[user.userid] = user;
 		this.update();
+		if (resend) {
+			// this handles a named user renaming themselves into a user in the
+			// battle (i.e. by using /nick)
+			this.battle.resendRequest(user);
+		}
 		return user;
 	};
 	BattleRoom.prototype.joinBattle = function(user, team) {
@@ -856,18 +857,44 @@ function LobbyRoom(roomid) {
 
 	(function() {
 		const REPORT_USER_STATS_INTERVAL = 1000 * 60 * 10;
+		selfR.maxUsers = selfR.maxUsersDate = 0;
 		var reportUserStats = function() {
-			var users = 0;
-			for (var i in selfR.users) {
-				++users;
+			if (selfR.maxUsersDate) {
+				LoginServer.request('updateuserstats', {
+					date: selfR.maxUsersDate,
+					users: selfR.maxUsers
+				}, function() {});
+				selfR.maxUsersDate = 0;
 			}
 			LoginServer.request('updateuserstats', {
-				date: +new Date(),
-				users: users
+				date: Date.now(),
+				users: Object.size(selfR.users)
 			}, function() {});
 		};
 		setInterval(reportUserStats, REPORT_USER_STATS_INTERVAL);
 	})();
+
+	this.lastRoomReported = null;
+
+	this.reportRecentBattles = function() {
+		var rooms = selfR.getRoomList(false, selfR.lastRoomReported);
+		if (Object.isEmpty(rooms)) return;
+		selfR.lastRoomReported = null;
+		var entries = [];
+		for (var id in rooms) {
+			var room = rooms[id];
+			selfR.lastRoomReported = selfR.lastRoomReported || id;
+			entries.push('|B|' + id + '|' + rooms[id].p1 + '|' + rooms[id].p2);
+		}
+		selfR.send(entries.join('\n'));
+	};
+
+	if (config.reportbattlesperiod) {
+		this.reportBattlesInterval = setInterval(
+			selfR.reportRecentBattles,
+			config.reportbattlesperiod
+		);
+	}
 
 	this.getUpdate = function(since, omitUsers, omitRoomList) {
 		var update = {room: roomid};
@@ -893,13 +920,18 @@ function LobbyRoom(roomid) {
 			}
 			buffer += ','+selfR.users[i].getIdentity();
 		}
+		if (counter > selfR.maxUsers) {
+			selfR.maxUsers = counter;
+			selfR.maxUsersDate = Date.now();
+		}
 		return ''+counter+buffer;
 	};
-	this.getRoomList = function(filter) {
+	this.getRoomList = function(filter, lastRoomReported) {
 		var roomList = {};
 		var total = 0;
-		for (i=selfR.rooms.length-1; i>=0; i--) {
+		for (var i=selfR.rooms.length-1; i>=0; i--) {
 			var room = selfR.rooms[i];
+			if (lastRoomReported && (room.id === lastRoomReported)) break;
 			if (!room || !room.active) continue;
 			if (filter && filter !== room.format && filter !== true) continue;
 			var roomData = {};
@@ -908,7 +940,7 @@ function LobbyRoom(roomid) {
 				if (room.battle.players[1]) roomData.p2 = room.battle.players[1].getIdentity();
 			}
 			if (!roomData.p1 || !roomData.p2) continue;
-			roomList[selfR.rooms[i].id] = roomData;
+			roomList[room.id] = roomData;
 
 			total++;
 			if (total >= 6 && !filter) break;
@@ -1052,7 +1084,12 @@ function LobbyRoom(roomid) {
 		if (user) {
 			user.sendTo(selfR, message);
 		} else {
-			var isPureLobbyChat = (message.indexOf('\n') < 0 && message.match(/^\|c\|[^\|]*\|/) && message.substr(0,5) !== '|c|~|');
+			var isPureLobbyChat = false;
+			if (message.indexOf('\n') < 0) {
+				isPureLobbyChat = (message.substr(0,3) === '|c|' && message.substr(0,5) !== '|c|~|') ||
+					message.substr(0,10) === '|c|~|/data' ||
+					message.substr(0,24) === '|raw|<div class="infobox';
+			}
 			for (var i in selfR.users) {
 				user = selfR.users[i];
 				if (isPureLobbyChat && user.blockLobbyChat) continue;
@@ -1203,6 +1240,7 @@ function LobbyRoom(roomid) {
 		newRoom.joinBattle(p2, p2team);
 		selfR.cancelSearch(p1, true);
 		selfR.cancelSearch(p2, true);
+		if (config.reportbattlesperiod) return;
 		if (config.reportbattles) {
 			selfR.add('|b|'+newRoom.id+'|'+p1.getIdentity()+'|'+p2.getIdentity());
 		} else {

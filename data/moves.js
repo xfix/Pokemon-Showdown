@@ -13084,7 +13084,7 @@ exports.BattleMovedex = {
 		pp: 10,
 		priority: 0,
 		onModifyMove: function(move) {
-			switch (this.weather) {
+			switch (this.effectiveWeather()) {
 			case 'sunnyday':
 				move.type = 'Fire';
 				break;

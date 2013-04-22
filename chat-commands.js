@@ -77,7 +77,12 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 				room: room.id
 			};
 			if (user.can('ip', targetUser)) {
-				userdetails.ips = Object.keys(targetUser.ips);
+				var ips = Object.keys(targetUser.ips);
+				if (ips.length === 1) {
+					userdetails.ip = ips[0];
+				} else {
+					userdetails.ips = ips;
+				}
 			}
 			emit(socket, 'command', userdetails);
 		} else if (cmd === 'roomlist') {
@@ -93,7 +98,14 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 
 	case 'me':
 	case 'mee':
-		if (canTalk(user, room)) return true;
+		if (canTalk(user, room)) {
+			if (config.chatfilter) {
+				var suffix = config.chatfilter(user, room, socket, target);
+				if (suffix === false) return false;
+				return '/' + cmd + ' ' + suffix;
+			}
+			return true;
+		}
 		break;
 
 	case '!birkal':
@@ -1030,8 +1042,8 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		showOrBroadcast(user, cmd, room, socket,
 			'<div class="infobox">' +
 			'+ <b>Voice</b> - They can use ! commands like !groups, and talk during moderated chat<br />' +
-			'% <b>Driver</b> - The above, and they can also mute users and run tournaments<br />' +
-			'@ <b>Moderator</b> - The above, and they can ban users and check for alts<br />' +
+			'% <b>Driver</b> - The above, and they can also mute users and check for alts<br />' +
+			'@ <b>Moderator</b> - The above, and they can ban users<br />' +
 			'&amp; <b>Leader</b> - The above, and they can promote moderators and force ties<br />'+
 			'~ <b>Administrator</b> - They can do anything, like change what this message says'+
 			'</div>');
@@ -1050,7 +1062,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 	case '!avatars':
 		showOrBroadcastStart(user, cmd, room, socket, message);
 		showOrBroadcast(user, cmd, room, socket,
-			'<div class="infobox">Want a custom avatar?<br />- <a href="/sprites/trainers/" target="_blank">How to change your avatar</a></div>');
+			'<div class="infobox">Your avatar can be changed using the Options menu (it looks like a gear) in the upper right of Pokemon Showdown.</div>');
 		return false;
 		break;
 
@@ -2032,15 +2044,15 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		return false;
 	}
 
-	var blacklist = config.blacklist || [/\bnimp\.org\b/];
-	if (blacklist.any(function(r) {
-		return r.test(message);
-	})) {
-		return false;
-	}
+	// hardcoded low quality website
+	if (/\bnimp\.org\b/i.test(message)) return false;
 
 	// remove zalgo
 	message = message.replace(/[\u0300-\u036f]{3,}/g,'');
+
+	if (config.chatfilter) {
+		return config.chatfilter(user, room, socket, message);
+	}
 
 	return message;
 }

@@ -406,9 +406,12 @@ var BattlePokemon = (function() {
 			thisTurn: true
 		};
 	};
-	BattlePokemon.prototype.getMoves = function() {
+	BattlePokemon.prototype.getLockedMove = function() {
 		var lockedMove = this.battle.runEvent('LockMove', this);
 		if (lockedMove === true) lockedMove = false;
+		return lockedMove;
+	};
+	BattlePokemon.prototype.getMoves = function(lockedMove) {
 		if (lockedMove) {
 			lockedMove = toId(lockedMove);
 			this.trapped = true;
@@ -463,10 +466,14 @@ var BattlePokemon = (function() {
 		return moves;
 	};
 	BattlePokemon.prototype.getRequestData = function() {
-		return {
-			moves: this.getMoves(),
-			maybeTrapped: this.maybeTrapped
-		};
+		var lockedMove = this.getLockedMove();
+		var data = {moves: this.getMoves(lockedMove)};
+		if (lockedMove && this.trapped) {
+			data.trapped = true;
+		} else if (this.maybeTrapped) {
+			data.maybeTrapped = true;
+		}
+		return data;
 	};
 	BattlePokemon.prototype.positiveBoosts = function() {
 		var boosts = 0;
@@ -684,7 +691,7 @@ var BattlePokemon = (function() {
 		return true;
 	};
 	BattlePokemon.prototype.getValidMoves = function() {
-		var pMoves = this.getMoves();
+		var pMoves = this.getMoves(this.getLockedMove());
 		var moves = [];
 		for (var i=0; i<pMoves.length; i++) {
 			if (!pMoves[i].disabled) {

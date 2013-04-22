@@ -425,7 +425,7 @@ exports.BattleStatuses = {
 			return 5;
 		},
 		onModifySpD: function(spd, pokemon) {
-			if (pokemon.hasType('Rock')) {
+			if (pokemon.hasType('Rock') && this.isWeather('sandstorm')) {
 				return spd * 3/2;
 			}
 		},
@@ -440,7 +440,7 @@ exports.BattleStatuses = {
 		onResidualOrder: 1,
 		onResidual: function() {
 			this.add('-weather', 'Sandstorm', '[upkeep]');
-			this.eachEvent('Weather');
+			if (this.isWeather('sandstorm')) this.eachEvent('Weather');
 		},
 		onWeather: function(target) {
 			this.damage(target.maxhp/16);
@@ -469,7 +469,7 @@ exports.BattleStatuses = {
 		onResidualOrder: 1,
 		onResidual: function() {
 			this.add('-weather', 'Hail', '[upkeep]');
-			this.eachEvent('Weather');
+			if (this.isWeather('hail')) this.eachEvent('Weather');
 		},
 		onWeather: function(target) {
 			this.damage(target.maxhp/16);
