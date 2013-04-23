@@ -211,7 +211,7 @@ exports.BattleFormats = {
 		rated: true,
 		isTeambuilderFormat: true,
 		ruleset: ['Pokemon', 'Standard', 'Suicide Pokemon', 'Evasion Abilities Clause', 'Team Preview'],
-		banlist: ['Shedinja', 'Self-Destruct', 'Explosion', 'Memento', 'Final Gambit', 'Healing Wish', 'Heal Pulse', 'Lunar Dance', 'Dream Eater', 'Snore', 'Frustration', 'Return']
+		banlist: ['Shedinja', 'Self-Destruct', 'Explosion', 'Memento', 'Final Gambit', 'Healing Wish', 'Heal Pulse', 'Lunar Dance', 'Dream Eater', 'Snore', 'Frustration', 'Return', 'Fake Out', 'Natural Gift', 'Magic Room']
 	},
 	gscmodern: {
 		effectType: 'Format',
