@@ -380,7 +380,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			return false;
 		}
 
-		logModCommand(room,''+targetUser.name+' was kicked to the Rules page by '+user.name+'' + (targets[1] ? " (" + targets[1] + ")" : ""));
+		logModCommand(room,''+targetUser.name+' was warned by '+user.name+'' + (targets[1] ? " (" + targets[1] + ")" : ""));
 		targetUser.sendTo('lobby', '|c|~|/warn '+targets[1]);
 		return false;
 		break;
@@ -1066,10 +1066,12 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		break;
 
 	case 'opensource':
+	case 'git':
 	case '!opensource':
+	case '!git':
 		showOrBroadcastStart(user, cmd, room, socket, message);
 		showOrBroadcast(user, cmd, room, socket,
-			'<div class="infobox">Pokemon Showdown is open source:<br />- Language: JavaScript<br />- <a href="https://github.com/Zarel/Pokemon-Showdown/commits/master" target="_blank">What\'s new?</a><br />- <a href="https://github.com/Zarel/Pokemon-Showdown" target="_blank">Server source code</a><br />- <a href="https://github.com/Zarel/Pokemon-Showdown-Client" target="_blank">Client source code</a></div>');
+			'<div class="infobox">Pokemon Showdown is open source:<br />- Language: JavaScript<br />- <a href="https://github.com/Joimer/Pokemon-Showdown/commits/master" target="_blank">What\'s new?</a><br />- <a href="https://github.com/Joimer/Pokemon-Showdown" target="_blank">Server source code</a><br />- <a href="https://github.com/Joimer/Pokemon-Showdown-Client" target="_blank">Client source code</a></div>');
 		return false;
 		break;
 

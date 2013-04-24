@@ -11,41 +11,16 @@ exports.BattleFormats = {
 		searchShow: true,
 		ruleset: ['PotD', 'Pokemon', 'Sleep Clause']
 	},
-	joimmonsou: {
+	joimmons: {
 		mod: 'joimmons',
 		effectType: 'Format',
-		name: 'Joimmons OU',
+		name: 'Joimmons',
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
 		isTeambuilderFormat: true,
 		debug: true,
 		ruleset: ['CAP Pokemon', 'Standard DW', 'Team Preview', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Moody Clause', 'Evasion Moves Clause'],
-		banlist: ['Uber', 'Soul Dew']
-	},
-	joimmonsubers: {
-		mod: 'joimmons',
-		effectType: 'Format',
-		name: 'Joimmons Ubers',
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		isTeambuilderFormat: true,
-		debug: true,
-		ruleset: ['CAP Pokemon', 'Standard DW', 'Team Preview', 'Species Clause'],
-		banlist: []
-	},
-	joimmonsdoubles: {
-		mod: 'joimmons',
-		effectType: 'Format',
-		name: 'Joimmons Doubles',
-		gameType: 'doubles',
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		isTeambuilderFormat: true,
-		debug: true,
-		ruleset: ['CAP Pokemon', 'Standard DW', 'Team Preview', 'Evasion Abilities Clause'],
 		banlist: ['Uber', 'Soul Dew']
 	},
 	gen1ou: {
@@ -57,7 +32,7 @@ exports.BattleFormats = {
 		searchShow: true,
 		debug: true,
 		isTeambuilderFormat: true,
-		ruleset: ['Gen1 Pokemon', 'All Abilities', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Clause', 'Freeze Clause'],
+		ruleset: ['Pokemon', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Clause', 'Freeze Clause'],
 		banlist: ['Uber', 'Illegal']
 	},
 	gen1ubers: {
@@ -69,7 +44,7 @@ exports.BattleFormats = {
 		searchShow: true,
 		debug: true,
 		isTeambuilderFormat: true,
-		ruleset: ['Gen1 Pokemon', 'All Abilities', 'Sleep Clause', 'Species Clause'],
+		ruleset: ['Pokemon', 'Sleep Clause', 'Species Clause'],
 		banlist: ['Illegal']
 	},
 	gen1uu: {
@@ -81,7 +56,7 @@ exports.BattleFormats = {
 		searchShow: true,
 		debug: true,
 		isTeambuilderFormat: true,
-		ruleset: ['Gen1 Pokemon', 'All Abilities', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Clause', 'Freeze Clause'],
+		ruleset: ['Pokemon', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Clause', 'Freeze Clause'],
 		banlist: ['Uber', 'OU', 'Illegal']
 	},
 	gen1lc: {
@@ -93,9 +68,8 @@ exports.BattleFormats = {
 		challengeShow: true,
 		debug: true,
 		isTeambuilderFormat: true,
-		ruleset: ['Gen1 Pokemon', 'All Abilities', 'Little Cup', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Clause', 'Freeze Clause'],
+		ruleset: ['Pokemon', 'Little Cup', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Clause', 'Freeze Clause'],
 		banlist: ['Uber', 'OU', 'UU', 'Illegal', 'Sonicboom', 'Dragon Rage']
-
 	},
 	/*gen1randombattle: {
 		mod: 'gen1',
@@ -120,17 +94,22 @@ exports.BattleFormats = {
 		searchShow: true,
 		ruleset: ['Pokemon']
 	},
-	gen1customgame: {
-		mod: 'gen1',
+	gen4ou: {
+		name: "[Gen 4] OU",
+		mod: 'gen4',
 		effectType: 'Format',
-		name: "[Gen 1] Custom Game",
+		challengeDefault: true,
+		rated: true,
 		challengeShow: true,
-		debug: true,
-		ruleset: ['Pokemon']
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Standard'],
+		banlist: ['Uber']
 	},
 	ouclearskies: {
 		effectType: 'Format',
 		name: "OU Clear Skies",
+		section: "Other Metas",
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
@@ -141,6 +120,7 @@ exports.BattleFormats = {
 	oulenient: {
 		effectType: 'Format',
 		name: "OU Lenient",
+		section: "Other Metas",
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
@@ -151,6 +131,7 @@ exports.BattleFormats = {
 	allabilities: {
 		effectType: 'Format',
 		name: "All Abilities",
+		section: "Other Metas",
 		challengeDefault: true,
 		rated: true,
 		challengeShow: true,
@@ -162,6 +143,7 @@ exports.BattleFormats = {
 	ousixmoves: {
 		effectType: 'Format',
 		name: "OU Six Moves",
+		section: "Other Metas",
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
@@ -173,6 +155,7 @@ exports.BattleFormats = {
 		mod: 'tierboost',
 		effectType: 'Format',
 		name: "OU Tier Shift",
+		section: "Other Metas",
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
@@ -184,6 +167,7 @@ exports.BattleFormats = {
 		mod: 'wonkymons',
 		effectType: 'Format',
 		name: "Wonkymons",
+		section: "Other Metas",
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
@@ -194,6 +178,7 @@ exports.BattleFormats = {
 	offstat: {
 		effectType: 'Format',
 		name: "Offstat",
+		section: "Other Metas",
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
@@ -205,6 +190,7 @@ exports.BattleFormats = {
 	suicidecup: {
 		effectType: 'Format',
 		name: "Suicide Cup",
+		section: "Other Metas",
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
@@ -216,6 +202,7 @@ exports.BattleFormats = {
 	gscmodern: {
 		effectType: 'Format',
 		name: "GSC Modern",
+		section: "Other Metas",
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
@@ -226,6 +213,7 @@ exports.BattleFormats = {
 	haxmons: {
 		effectType: 'Format',
 		name: "Haxmons",
+		section: "Other Metas",
 		challengeShow: true,
 		canUseRandomTeam: true,
 		searchShow: true,
@@ -236,6 +224,7 @@ exports.BattleFormats = {
     gbusingles: {
         effectType: 'Format',
         name: "GBU Singles",
+		section: "Other Metas",
         rated: true,
         challengeShow: true,
         searchShow: true,
@@ -262,9 +251,64 @@ exports.BattleFormats = {
 	        'Keldeo', 'Keldeo-Resolute',  'Meloetta', 'Genesect'
 	    ]
     },
-	seasonalseasoningsgreetings: {
+	cap: {
 		effectType: 'Format',
-		name: "[Seasonal] Seasoning's Greetings",
+		name: "CAP",
+		section: "Other Metas",
+		rated: true,
+		challengeShow: true,
+	 	searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['CAP Pokemon', 'Standard', 'Team Preview'],
+		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
+	},hackmons: {
+		effectType: 'Format',
+		name: "Hackmons",
+		section: "Other Metas",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon'],
+		banlist: []
+	},
+	balancedhackmons: {
+		effectType: 'Format',
+		name: "Balanced Hackmons",
+		section: "Other Metas",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'OHKO Clause'],
+		banlist: ['Wonder Guard', 'Pure Power', 'Huge Power', 'Shadow Tag', 'Arena Trap']
+	},
+	pu: {
+		effectType: 'Format',
+		name: "PU",
+		section: "Other Metas",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		ruleset: ['NU'],
+		banlist: ["Charizard", "Wartortle", "Kadabra", "Golem", "Haunter", "Exeggutor", "Weezing", "Kangaskhan", "Pinsir", "Lapras", "Ampharos", "Misdreavus", "Piloswine", "Miltank", "Ludicolo", "Swellow", "Gardevoir", "Ninjask", "Torkoal", "Cacturne", "Altaria", "Armaldo", "Gorebyss", "Regirock", "Regice", "Bastiodon", "Floatzel", "Drifblim", "Skuntank", "Lickilicky", "Probopass", "Rotom-Fan", "Samurott", "Musharna", "Gurdurr", "Sawk", "Carracosta", "Garbodor", "Sawsbuck", "Alomomola", "Golurk", "Braviary", "Articuno", "Glaceon", "Rotom-Frost", "Electabuzz", "Electrode", "Marowak", "Liepard", "Tangela", "Jumpluff", "Eelektross", "Ditto", "Seismitoad", "Zangoose", "Roselia", "Stoutland"]
+	},
+	glitchmons: {
+		effectType: 'Format',
+		name: "Glitchmons",
+		section: "Other Metas",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Team Preview'],
+		banlist: ['Illegal', 'Unreleased'],
+		mimicGlitch: true
+	},
+	seasoningsgreetings: {
+		effectType: 'Format',
+		name: "Seasoning's Greetings",
+		section: "Seasonal",
 		team: 'randomSeasonal',
 		canUseRandomTeam: true,
 		rated: true,
@@ -272,9 +316,10 @@ exports.BattleFormats = {
 		searchShow: true,
 		ruleset: ['PotD', 'Pokemon', 'Sleep Clause']
 	},
-	seasonalwinterwonderland: {
+	winterwonderland: {
 		effectType: 'Format',
-		name: "[Seasonal] Winter Wonderland",
+		name: "Winter Wonderland",
+		section: "Seasonal",
 		team: 'randomSeasonalWW',
 		canUseRandomTeam: true,
 		rated: true,
@@ -392,9 +437,10 @@ exports.BattleFormats = {
 		},
 		ruleset: ['PotD', 'Pokemon', 'Sleep Clause']
 	},
-	seasonalvalentineventure: {
+	valentineventure: {
 		effectType: 'Format',
-		name: "[Seasonal] Valentine Venture",
+		name: "Valentine Venture",
+		section: "Seasonal",
 		team: 'randomSeasonalVV',
 		gameType: 'doubles',
 		canUseRandomTeam: true,
@@ -403,9 +449,10 @@ exports.BattleFormats = {
 		searchShow: true,
 		ruleset: ['PotD', 'Pokemon', 'Sleep Clause']
 	},
-	seasonalspringforward: {
+	springforward: {
 		effectType: 'Format',
-		name: "[Seasonal] Spring Forward",
+		name: "Spring Forward",
+		section: "Seasonal",
 		team: 'randomSeasonalSF',
 		canUseRandomTeam: true,
 		rated: true,
@@ -484,90 +531,10 @@ exports.BattleFormats = {
 		},
 		ruleset: ['PotD', 'Pokemon', 'Sleep Clause']
 	},
-	seasonalspringforward: {
+	foolsfestival: {
 		effectType: 'Format',
-		name: "[Seasonal] Spring Forward",
-		team: 'randomSeasonalSF',
-		canUseRandomTeam: true,
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		onBegin: function() {
-			if (this.random(100) < 75) {
-				this.add('-message', "March and April showers bring May flowers...");
-				this.setWeather('Rain Dance');
-				delete this.weatherData.duration;
-			}
-			this.debug('Cutting teams down to three.');
-    		this.p1.pokemon = this.p1.pokemon.slice(0,3);
-	        this.p1.pokemonLeft = this.p1.pokemon.length;
-	        this.p2.pokemon = this.p2.pokemon.slice(0,3);
-	        this.p2.pokemonLeft = this.p2.pokemon.length;
-		},
-		onSwitchIn: function(pokemon) {
-			var greenPokemon = {
-				bulbasaur:1, ivysaur:1, venusaur:1, caterpie:1, metapod:1, bellsprout:1, weepinbell:1, victreebel:1, scyther:1,
-				chikorita:1, bayleef:1, meganium:1, spinarak:1, natu:1, xatu:1, bellossom:1, politoed:1, skiploom:1, lavitar:1, 
-				tyranitar:1, celebi:1, treecko:1, grovyle:1, sceptile:1, dustox:1, lotad:1, lombre:1, ludicolo:1, breloom:1, 
-				electrike:1, roselia:1, gulpin:1, vibrava:1, flygon:1, cacnea:1, cacturne:1, cradily:1, keckleon:1, tropius:1, 
-				rayquaza:1, turtwig:1, grotle:1, torterra:1, budew:1, roserade:1, carnivine:1, yanmega:1, leafeon:1, shaymin:1, 
-				shayminsky:1, snivy:1, servine:1, serperior:1, pansage:1, simisage:1, swadloon:1, cottonee:1, whimsicott:1, 
-				petilil:1, lilligant:1, basculin:1, maractus:1, trubbish:1, garbodor:1, solosis:1, duosion:1, reuniclus:1, 
-				axew:1, fraxure:1, golett:1, golurk:1, virizion:1, tornadus:1, tornadustherian:1, burmy:1, 
-				kakuna:1, beedrill:1, sandshrew:1, nidoqueen:1, zubat:1, golbat:1, oddish:1, gloom:1, mankey:1, poliwrath:1, 
-				machoke:1, machamp:1, doduo:1, dodrio:1, grimer:1, muk:1, kingler:1, cubone:1, marowak:1, hitmonlee:1, tangela:1, 
-				mrmime:1, tauros:1, kabuto:1, dragonite:1, mewtwo:1, marill:1, hoppip:1, espeon:1, teddiursa:1, ursaring:1, 
-				cascoon:1, taillow:1, swellow:1, pelipper:1, masquerain:1, azurill:1, minun:1, carvanha:1, huntail:1, bagon:1, 
-				shelgon:1, salamence:1, latios:1, tangrowth:1, seismitoad:1, jellicent:1, elektross:1, druddigon:1, 
-				bronzor:1, bronzong:1, gallade:1
-			};
-			if (pokemon.template.id in greenPokemon) {
-				this.add('-message', pokemon.name + " drank way too much!");
-				pokemon.addVolatile('confusion');
-				pokemon.statusData.time = 0;
-			}
-		},
-		onModifyMove: function(move) {
-			if (move.id === 'barrage') {
-				move.category = 'Special';
-				move.type = 'Grass';
-				move.basePower = 35;
-				move.critRatio = 2;
-				move.accuracy = 100;
-				move.multihit = [3,5],
-				move.onBeforeMove = function() {
-					this.add('-message', "You found a little chocolate egg!");
-				};
-				move.onHit = function (target, source) {
-					this.heal(Math.ceil(source.maxhp / 40), source);
-				};
-			} else if (move.id === 'eggbomb') {
-				move.category = 'Special';
-				move.type = 'Grass';
-				move.basePower = 100;
-				move.willCrit = true;
-				move.accuracy = 100;
-				move.onHit = function (target, source) {
-					this.add('-message', source.name + " ate a big chocolate egg!");
-					this.heal(source.maxhp / 8, source);
-				};
-				// Too much chocolate, you get fat. Also with STAB it's too OP
-				move.self = {boosts: {spe: -2, spa: -1}};
-			} else if (move.id === 'softboiled') {
-				move.heal = [3,4];
-				move.onHit = function(target) {
-					this.add('-message', target.name + " ate a delicious chocolate egg!");
-				};
-			} else {
-				// As luck is everywhere...
-				move.critRatio = 2;
-			}
-		},
-		ruleset: ['PotD', 'Pokemon', 'Sleep Clause']
-	},
-	seasonalfoolsfestival: {
-		effectType: 'Format',
-		name: "[Seasonal] Fools Festival",
+		name: "Fools Festival",
+		section: "Seasonal",
 		team: 'randomSeasonalFF',
 		canUseRandomTeam: true,
 		rated: true,
@@ -765,9 +732,20 @@ exports.BattleFormats = {
 		},
 		ruleset: ['PotD', 'Pokemon', 'Sleep Clause']
 	},
+	maymayhem: {
+		effectType: 'Format',
+		name: "May Mayhem",
+		section: "Seasonal",
+		team: 'randomSeasonalMM',
+		canUseRandomTeam: true,
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+	}
 	challengecup: {
 		effectType: 'Format',
 		name: "Challenge Cup",
+		section: "Singles",
 		team: 'randomCC',
 		canUseRandomTeam: true,
 		rated: true,
@@ -778,6 +756,7 @@ exports.BattleFormats = {
 	challengecup1vs1: {
 		effectType: 'Format',
 		name: "Challenge Cup 1-vs-1",
+		section: "Singles",
 		team: 'randomCC',
 		canUseRandomTeam: true,
 		rated: true,
@@ -795,6 +774,7 @@ exports.BattleFormats = {
 	ou: {
 		effectType: 'Format',
 		name: "OU",
+		section: "Singles",
 		challengeDefault: true,
 		rated: true,
 		challengeShow: true,
@@ -804,19 +784,10 @@ exports.BattleFormats = {
 		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
 		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
 	},
-	cap: {
-		effectType: 'Format',
-		name: "CAP",
-		rated: true,
-		challengeShow: true,
-	 	searchShow: true,
-		isTeambuilderFormat: true,
-		ruleset: ['CAP Pokemon', 'Standard', 'Team Preview'],
-		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
-	},
 	ubers: {
 		effectType: 'Format',
 		name: "Ubers",
+		section: "Singles",
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
@@ -827,6 +798,7 @@ exports.BattleFormats = {
 	uu: {
 		effectType: 'Format',
 		name: "UU",
+		section: "Singles",
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
@@ -837,6 +809,7 @@ exports.BattleFormats = {
 	ru: {
 		effectType: 'Format',
 		name: "RU",
+		section: "Singles",
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
@@ -847,6 +820,7 @@ exports.BattleFormats = {
 	nu: {
 		effectType: 'Format',
 		name: "NU",
+		section: "Singles",
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
@@ -857,6 +831,7 @@ exports.BattleFormats = {
 	lc: {
 		effectType: 'Format',
 		name: "LC",
+		section: "Singles",
 		maxLevel: 5,
 		rated: true,
 		challengeShow: true,
@@ -868,6 +843,7 @@ exports.BattleFormats = {
 	lcubers: {
 		effectType: 'Format',
 		name: "LC Ubers",
+		section: "Other Metas",
 		maxLevel: 5,
 		rated: true,
 		challengeShow: true,
@@ -877,55 +853,17 @@ exports.BattleFormats = {
 	lcuu: {
 		effectType: 'Format',
 		name: "LC UU",
+		section: "Other Metas",
 		maxLevel: 5,
 		rated: true,
 		challengeShow: true,
 		ruleset: ['LC'],
 		banlist: ['Abra', 'Aipom', 'Archen', 'Aron', 'Axew', 'Bronzor', 'Chinchou', 'Clamperl', 'Cottonee', 'Cranidos', 'Croagunk', 'Diglett', 'Dratini', 'Drifloon', 'Drilbur', 'Dwebble', 'Elekid', 'Ferroseed', 'Foongus', 'Frillish', 'Gastly', 'Hippopotas', 'Houndour', 'Larvesta', 'Lileep', 'Magnemite', 'Meowth', 'Mienfoo', 'Misdreavus', 'Munchlax', 'Murkrow', 'Onix', 'Pawniard', 'Ponyta', 'Porygon', 'Riolu', 'Sandshrew', 'Scraggy', 'Shellder', 'Snover', 'Staryu', 'Taillow', 'Tentacool', 'Timburr', 'Tirtouga']
 	},
-	hackmons: {
-		effectType: 'Format',
-		name: "Hackmons",
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		isTeambuilderFormat: true,
-		ruleset: ['Pokemon'],
-		banlist: []
-	},
-	balancedhackmons: {
-		effectType: 'Format',
-		name: "Balanced Hackmons",
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'OHKO Clause'],
-		banlist: ['Wonder Guard', 'Pure Power', 'Huge Power', 'Shadow Tag', 'Arena Trap']
-	},
-	pu: {
-		effectType: 'Format',
-		name: "PU",
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		ruleset: ['NU'],
-		banlist: ["Charizard", "Wartortle", "Kadabra", "Golem", "Haunter", "Exeggutor", "Weezing", "Kangaskhan", "Pinsir", "Lapras", "Ampharos", "Misdreavus", "Piloswine", "Miltank", "Ludicolo", "Swellow", "Gardevoir", "Ninjask", "Torkoal", "Cacturne", "Altaria", "Armaldo", "Gorebyss", "Regirock", "Regice", "Bastiodon", "Floatzel", "Drifblim", "Skuntank", "Lickilicky", "Probopass", "Rotom-Fan", "Samurott", "Musharna", "Gurdurr", "Sawk", "Carracosta", "Garbodor", "Sawsbuck", "Alomomola", "Golurk", "Braviary", "Articuno", "Glaceon", "Rotom-Frost", "Electabuzz", "Electrode", "Marowak", "Liepard", "Tangela", "Jumpluff", "Eelektross", "Ditto", "Seismitoad", "Zangoose", "Roselia", "Stoutland"]
-	},
-	glitchmons: {
-		effectType: 'Format',
-		name: "Glitchmons",
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'Team Preview'],
-		banlist: ['Illegal', 'Unreleased'],
-		mimicGlitch: true
-	},
 	customgame: {
 		effectType: 'Format',
 		name: "Custom Game",
+		
 		challengeShow: true,
 		canUseRandomTeam: true,
 		debug: true,
