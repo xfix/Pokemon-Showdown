@@ -3,10 +3,7 @@
 /node_modules
 npm-debug.log
 /config/bannedwords.txt
-.buildpath
-.project
-.settings
-.settings/org.eclipse.core.resources.prefs
+/static/avatars/
 
 # boilerplate #
 ###############

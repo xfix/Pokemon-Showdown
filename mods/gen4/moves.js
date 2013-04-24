@@ -257,23 +257,27 @@ exports.BattleMovedex = {
 				return this.random(4,9);
 			},
 			onStart: function(target) {
-				var noEncore = {encore:1,mimic:1,mirrormove:1,sketch:1,transform:1};
+				var noEncore = {encore:1, mimic:1, mirrormove:1, sketch:1, transform:1};
 				var moveIndex = target.moves.indexOf(target.lastMove);
 				if (!target.lastMove || noEncore[target.lastMove] || (target.moveset[moveIndex] && target.moveset[moveIndex].pp <= 0)) {
+					// it failed
 					this.add('-fail',target);
 					delete target.volatiles['encore'];
 					return;
 				}
 				this.effectData.move = target.lastMove;
 				this.add('-start', target, 'Encore');
-				if (this.willMove(target)) {
-					this.changeDecision(target, {move:this.effectData.move});
-				} else {
+				if (!this.willMove(target)) {
 					this.effectData.duration++;
 				}
 			},
+			onOverrideDecision: function(pokemon) {
+				return this.effectData.move;
+			},
+			onResidualOrder: 13,
 			onResidual: function(target) {
 				if (target.moves.indexOf(target.lastMove) >= 0 && target.moveset[target.moves.indexOf(target.lastMove)].pp <= 0) {
+					// early termination if you run out of PP
 					delete target.volatiles.encore;
 					this.add('-end', target, 'Encore');
 				}
@@ -289,16 +293,6 @@ exports.BattleMovedex = {
 					if (pokemon.moveset[i].id !== this.effectData.move) {
 						pokemon.moveset[i].disabled = true;
 					}
-				}
-			},
-			onBeforeTurn: function(pokemon) {
-				if (!this.effectData.move) {
-					// ???
-					return;
-				}
-				var decision = this.willMove(pokemon);
-				if (decision) {
-					this.changeDecision(pokemon, {move:this.effectData.move});
 				}
 			}
 		}
@@ -599,27 +593,6 @@ exports.BattleMovedex = {
 	rockblast: {
 		inherit: true,
 		accuracy: 80
-	},
-	roost: {
-		inherit: true,
-		//desc: "",
-		effect: {
-			duration: 1,
-			onModifyPokemonPriority: 100,
-			onModifyPokemon: function(pokemon) {
-				if (pokemon.hasType('Flying')) {
-					// don't just delete the type; since
-					// the types array may be a pointer to the
-					// types array in the Pokedex.
-					if (pokemon.types[0] === 'Flying') {
-						pokemon.types = [pokemon.types[1]];
-					} else {
-						pokemon.types = [pokemon.types[0]];
-					}
-				}
-				//pokemon.negateImmunity['Ground'] = 1;
-			}
-		}
 	},
 	sandtomb: {
 		inherit: true,

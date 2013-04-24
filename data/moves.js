@@ -3071,11 +3071,12 @@ exports.BattleMovedex = {
 				}
 				this.effectData.move = target.lastMove;
 				this.add('-start', target, 'Encore');
-				if (this.willMove(target)) {
-					this.changeDecision(target, {move:this.effectData.move});
-				} else {
+				if (!this.willMove(target)) {
 					this.effectData.duration++;
 				}
+			},
+			onOverrideDecision: function(pokemon) {
+				return this.effectData.move;
 			},
 			onResidualOrder: 13,
 			onResidual: function(target) {
@@ -3991,7 +3992,6 @@ exports.BattleMovedex = {
 		isContact: true,
 		isPunchAttack: true,
 		beforeTurnCallback: function(pokemon) {
-			this.debug('Starting Focus Punch');
 			pokemon.addVolatile('focuspunch');
 		},
 		beforeMoveCallback: function(pokemon) {
@@ -3999,7 +3999,6 @@ exports.BattleMovedex = {
 				return false;
 			}
 			if (pokemon.lastAttackedBy && pokemon.lastAttackedBy.damage && pokemon.lastAttackedBy.thisTurn) {
-				this.debug('Pokemon attacked, Focus Punch failing');
 				this.add('cant', pokemon, 'flinch', 'Focus Punch');
 				return true;
 			}
@@ -5859,12 +5858,6 @@ exports.BattleMovedex = {
 				if (target.lastMove === 'struggle') {
 					// don't lock
 					delete target.volatiles['iceball'];
-				}
-			},
-			onBeforeTurn: function(pokemon) {
-				if (pokemon.lastMove !== 'struggle') {
-					this.debug('Forcing into Ice Ball');
-					this.changeDecision(pokemon, {move: 'iceball'});
 				}
 			}
 		},
@@ -9206,7 +9199,8 @@ exports.BattleMovedex = {
 		accuracy: 100,
 		basePower: 70,
 		basePowerCallback: function(pokemon) {
-			if (false) {
+			if (pokemon.side.faintedLastTurn) {
+				this.debug('Boosted for a faint last turn');
 				return 140;
 			}
 			return 70;
@@ -9577,12 +9571,6 @@ exports.BattleMovedex = {
 				if (target.lastMove === 'struggle') {
 					// don't lock
 					delete target.volatiles['rollout'];
-				}
-			},
-			onBeforeTurn: function(pokemon) {
-				if (pokemon.lastMove !== 'struggle') {
-					this.debug('Forcing into Rollout');
-					this.changeDecision(pokemon, {move: 'rollout'});
 				}
 			}
 		},
@@ -12716,13 +12704,7 @@ exports.BattleMovedex = {
 			onEnd: function(target) {
 				this.add('-end', target, 'Uproar');
 			},
-			onLockMove: function(pokemon) {
-				return 'uproar';
-			},
-			onBeforeTurn: function(pokemon) {
-				this.debug('Forcing into uproar');
-				this.changeDecision(pokemon, {move: 'uproar'});
-			},
+			onLockMove: 'uproar',
 			onAnySetStatus: function(status, pokemon) {
 				if (status.id === 'slp') {
 					if (pokemon === this.effectData.target) {

@@ -21,12 +21,10 @@ function runNpm(command) {
 try {
 	require('sugar');
 } catch (e) {
-	runNpm('install');
-	return;
+	return runNpm('install');
 }
 if (!Object.select) {
-	runNpm('update');
-	return;
+	return runNpm('update');
 }
 
 fs = require('fs');
@@ -303,10 +301,33 @@ if (config.protocol === 'io') {
 	server = require('engine.io').attach(app);
 } else {
 	app = require('http').createServer();
-	server = require('sockjs').createServer({sockjs_url: "http://cdn.sockjs.org/sockjs-0.3.min.js", log: function(severity, message) {
-		if (severity === 'error') console.log('ERROR: '+message);
-	}});
+	try {
+		var nodestatic = require('node-static');
+		var fileserver = new nodestatic.Server('./static');
+		app.on('request', function(request, response) {
+			request.resume();
+			request.addListener('end', function() {
+				fileserver.serve(request, response, function(e, res) {
+				    if (e && (e.status === 404)) {
+				        fileserver.serveFile('404.html', 404, {}, request, response);
+				    }
+				});
+			});
+		});
+	} catch (e) {
+		console.log('Did not start node-static - try `npm install` if you want to use it');
+	}
+	server = require('sockjs').createServer({
+		sockjs_url: "http://cdn.sockjs.org/sockjs-0.3.min.js",
+		log: function(severity, message) {
+			if (severity === 'error') console.log('ERROR: '+message);
+		},
+		prefix: '/showdown'
+	});
 }
+
+// Make `server` available using the console.
+Server = server;
 
 /**
  * Converts anything to an ID. An ID must have only lowercase alphanumeric
@@ -577,6 +598,15 @@ if (config.protocol === 'io') { // Socket.IO
 			return;
 		}
 		console.log('CONNECT: '+socket.remoteAddress+' ['+socket.id+']');
+		var interval;
+		if (config.herokuhack) {
+			// see https://github.com/sockjs/sockjs-node/issues/57#issuecomment-5242187
+			interval = setInterval(function() {
+				try {
+					socket._session.recv.didClose();
+				} catch (e) {}
+			}, 15000);
+		}
 		socket.on('data', function(message) {
 			var data = null;
 			if (message.substr(0,1) === '{') {
@@ -595,6 +625,9 @@ if (config.protocol === 'io') { // Socket.IO
 			if (events[data.type]) you = events[data.type](data, socket, you) || you;
 		});
 		socket.on('close', function() {
+			if (interval) {
+				clearInterval(interval);
+			}
 			var youUser = resolveUser(you, socket);
 			if (!youUser) return;
 			youUser.disconnect(socket);
