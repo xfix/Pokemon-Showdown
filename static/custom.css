@@ -1,0 +1,10 @@
+.userlist,.userlist li{display:block;list-style-type:none;margin:0;padding:0;text-align:left;}
+.userlist{border-left:1px solid #AAAAAA;min-height:100%;background:#CFC;}
+.userlist li{border-bottom:1px solid #CCCCCC;height:19px;font:10pt Verdana,sans-serif;white-space:nowrap;}
+.userlist li em.group{font-style:normal;font-size:8pt;color:#AAAAAA;display:block;float:left;text-align:center;padding:1px 0 0 1px;width:14px;}
+.userlist li button{box-sizing:border-box;display:block;height:auto;background:transparent;border:0;padding:0;margin:0;height:19px;width:100%;white-space:nowrap;font:10pt Verdana,sans-serif;text-align:left;cursor:pointer;}
+.userlist li button:hover{background:#8F8;}
+.userlist li button:active{background:#CED2D5;}
+.userlist li.cur{background:white;}
+.userlist li.cur button,.userlist li.cur button:hover{background:white;margin:0 0 0 -1px;}
+.lobbychat .battle-log,.huge-layout .lobbychat .battle-log{position:absolute;top:51px;right:0;bottom:40px;left:551px;border-top:0;border-right:0;height:auto;width:auto;background:#EFE url(//www.pokemaestro.com/img/heatran.png) no-repeat scroll right bottom;overflow-x:hidden;}
