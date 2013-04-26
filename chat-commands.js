@@ -299,6 +299,13 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		break;
 
 	case 'whois':
+	case 'ip':
+	case 'getip':
+	case 'rooms':
+	case 'altcheck':
+	case 'alt':
+	case 'alts':
+	case 'getalts':
 		var targetUser = user;
 		if (target) {
 			targetUser = Users.get(target);
@@ -307,6 +314,28 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			emit(socket, 'console', 'User '+target+' not found.');
 		} else {
 			emit(socket, 'console', 'User: '+targetUser.name);
+			if (user.can('alts', targetUser.getHighestRankedAlt())) {
+				var alts = targetUser.getAlts();
+				var output = '';
+				for (var i in targetUser.prevNames) {
+					if (output) output += ", ";
+					output += targetUser.prevNames[i];
+				}
+				if (output) emit(socket, 'console', 'Previous names: '+output);
+
+				for (var j=0; j<alts.length; j++) {
+					var targetAlt = Users.get(alts[j]);
+					if (!targetAlt.named && !targetAlt.connected) continue;
+
+					emit(socket, 'console', 'Alt: '+targetAlt.name);
+					output = '';
+					for (var i in targetAlt.prevNames) {
+						if (output) output += ", ";
+						output += targetAlt.prevNames[i];
+					}
+					if (output) emit(socket, 'console', 'Previous names: '+output);
+				}
+			}
 			if (config.groups[targetUser.group] && config.groups[targetUser.group].name) {
 				emit(socket, 'console', 'Group: ' + config.groups[targetUser.group].name + ' (' + targetUser.group + ')');
 			}

@@ -27,6 +27,7 @@ exports.BattleFormats = {
 		mod: 'gen1',
 		effectType: 'Format',
 		name: "[Gen 1] OU",
+		section: "Old Gens",
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
@@ -39,6 +40,7 @@ exports.BattleFormats = {
 		mod: 'gen1',
 		effectType: 'Format',
 		name: "[Gen 1] Ubers",
+		section: "Old Gens",
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
@@ -51,6 +53,7 @@ exports.BattleFormats = {
 		mod: 'gen1',
 		effectType: 'Format',
 		name: "[Gen 1] UU",
+		section: "Old Gens",
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
@@ -63,6 +66,7 @@ exports.BattleFormats = {
 		mod: 'gen1',
 		effectType: 'Format',
 		name: "[Gen 1] LC",
+		section: "Old Gens",
 		maxLevel: 5,
 		rated: true,
 		challengeShow: true,
@@ -75,6 +79,7 @@ exports.BattleFormats = {
 		mod: 'gen1',
 		effectType: 'Format',
 		name: "[Gen1] Random Battle",
+		section: "Old Gens",
 		team: 'random',
 		canUseRandomTeam: true,
 		searchDefault: true,
@@ -87,6 +92,7 @@ exports.BattleFormats = {
 		mod: 'gen1',
 		effectType: 'Format',
 		name: "[Gen 1] Challenge Cup",
+		section: "Old Gens",
 		team: 'randomCC',
 		canUseRandomTeam: true,
 		rated: true,
@@ -97,6 +103,33 @@ exports.BattleFormats = {
 	gen4ou: {
 		name: "[Gen 4] OU",
 		mod: 'gen4',
+		section: "Old Gens",
+		effectType: 'Format',
+		challengeDefault: true,
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Standard'],
+		banlist: ['Uber']
+	},
+	gen3ou: {
+		name: "[Gen 3] OU",
+		mod: 'gen3',
+		section: "Old Gens",
+		effectType: 'Format',
+		challengeDefault: true,
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Standard'],
+		banlist: ['Uber']
+	},
+	gen2ou: {
+		name: "[Gen 2] OU",
+		mod: 'gen2',
+		section: "Old Gens",
 		effectType: 'Format',
 		challengeDefault: true,
 		rated: true,
@@ -261,7 +294,8 @@ exports.BattleFormats = {
 		isTeambuilderFormat: true,
 		ruleset: ['CAP Pokemon', 'Standard', 'Team Preview'],
 		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
-	},hackmons: {
+	},
+	hackmons: {
 		effectType: 'Format',
 		name: "Hackmons",
 		section: "Other Metas",
@@ -291,7 +325,7 @@ exports.BattleFormats = {
 		challengeShow: true,
 		searchShow: true,
 		ruleset: ['NU'],
-		banlist: ["Charizard", "Wartortle", "Kadabra", "Golem", "Haunter", "Exeggutor", "Weezing", "Kangaskhan", "Pinsir", "Lapras", "Ampharos", "Misdreavus", "Piloswine", "Miltank", "Ludicolo", "Swellow", "Gardevoir", "Ninjask", "Torkoal", "Cacturne", "Altaria", "Armaldo", "Gorebyss", "Regirock", "Regice", "Bastiodon", "Floatzel", "Drifblim", "Skuntank", "Lickilicky", "Probopass", "Rotom-Fan", "Samurott", "Musharna", "Gurdurr", "Sawk", "Carracosta", "Garbodor", "Sawsbuck", "Alomomola", "Golurk", "Braviary", "Articuno", "Glaceon", "Rotom-Frost", "Electabuzz", "Electrode", "Marowak", "Liepard", "Tangela", "Jumpluff", "Eelektross", "Ditto", "Seismitoad", "Zangoose", "Roselia", "Stoutland"]
+		banlist: ["Charizard", "Wartortle", "Kadabra", "Golem", "Haunter", "Exeggutor", "Weezing", "Kangaskhan", "Pinsir", "Lapras", "Ampharos", "Misdreavus", "Piloswine", "Miltank", "Ludicolo", "Swellow", "Gardevoir", "Ninjask", "Torkoal", "Cacturne", "Altaria", "Armaldo", "Gorebyss", "Regirock", "Regice", "Bastiodon", "Floatzel", "Drifblim", "Skuntank", "Lickilicky", "Probopass", "Rotom-Fan", "Samurott", "Musharna", "Gurdurr", "Sawk", "Carracosta", "Garbodor", "Sawsbuck", "Alomomola", "Golurk", "Braviary", "Articuno", "Electabuzz", "Electrode", "Marowak", "Liepard", "Tangela", "Eelektross", "Ditto", "Seismitoad", "Zangoose", "Roselia", "Zebstrika", "Serperior", "Metang", "Tauros", "Torterra", "Cradily"]
 	},
 	glitchmons: {
 		effectType: 'Format',
@@ -741,7 +775,24 @@ exports.BattleFormats = {
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
-	}
+		onBegin: function() {
+			// Shameless plug
+			var date = Date();
+			date = date.split(' ');
+			if (parseInt(date[2]) === 12) {
+				this.add('-message', 'Wish a HAPPY BIRTHDAY to Treecko32!!');
+			}
+			if (parseInt(date[2]) === 16) {
+				this.add('-message', 'Wish a HAPPY BIRTHDAY to Joim!!');
+			}
+		},
+		onSwitchIn: function(pokemon) {
+			var dice = this.random(100);
+			if (dice < 25) {
+				this.add('-message', 'Never gonna give you up, never gonna let you down');
+			}
+		}
+	},
 	challengecup: {
 		effectType: 'Format',
 		name: "Challenge Cup",
@@ -1218,6 +1269,8 @@ exports.BattleFormats = {
 					problems.push(move.name+' is not a real move.');
 				}
 			}
+			if (item && item.isNonstandard) problems.push(item.name+' is not a real item.');
+			
 			if (set.moves && set.moves.length > 4) {
 				problems.push((set.name||set.species) + ' has more than four moves.');
 			}
