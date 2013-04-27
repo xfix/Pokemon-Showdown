@@ -1,5 +1,3 @@
-const LOGIN_SERVER_TIMEOUT = 15000;
-const LOGIN_SERVER_BATCH_TIME = 1000;
 
 function runNpm(command) {
 	console.log('Running `npm ' + command + '`...');
@@ -33,223 +31,7 @@ if (!fs.existsSync) {
 	fs.existsSync = function(loc) { return path.existsSync(loc) };
 }
 
-//request = require('request');
-var http = require("http");
-var url = require('url');
-
-LoginServer = (function() {
-	function LoginServer(uri) {
-		console.log('Creating LoginServer object for ' + uri + '...');
-		this.uri = uri;
-		this.requestQueue = [];
-		LoginServer.loginServers[this.uri] = this;
-	}
-
-	// "static" mapping of URIs to LoginServer objects
-	LoginServer.loginServers = {};
-
-	// "static" flag
-	LoginServer.disabled = false;
-
-	LoginServer.prototype.requestTimer = null;
-	LoginServer.prototype.requestTimeoutTimer = null;
-	LoginServer.prototype.requestLog = '';
-	LoginServer.prototype.lastRequest = 0;
-	LoginServer.prototype.openRequests = 0;
-
-	var getLoginServer = function(action) {
-		var uri;
-		if (config.loginservers) {
-			uri = config.loginservers[action] || config.loginservers[null];
-		} else {
-			uri = config.loginserver;
-		}
-		if (!uri) {
-			console.log('ERROR: No login server specified for action: ' + action);
-			return;
-		}
-		return LoginServer.loginServers[uri] || new LoginServer(uri);
-	};
-	LoginServer.instantRequest = function(action, data, callback) {
-		return getLoginServer(action).instantRequest(action, data, callback);
-	};
-	LoginServer.request = function(action, data, callback) {
-		return getLoginServer(action).request(action, data, callback);
-	};
-
-	var parseJSON = function(json) {
-		if (json[0] === ']') json = json.substr(1);
-		return JSON.parse(json);
-	};
-
-	LoginServer.prototype.instantRequest = function(action, data, callback) {
-		if (typeof data === 'function') {
-			callback = data;
-			data = null;
-		}
-		if (this.openRequests > 5) {
-			callback(null, null, 'overflow');
-			return;
-		}
-		this.openRequests++;
-		var dataString = '';
-		if (data) {
-			for (var i in data) {
-				dataString += '&'+i+'='+encodeURIComponent(''+data[i]);
-			}
-		}
-		var req = http.get(url.parse(this.uri+'action.php?act='+action+'&serverid='+config.serverid+'&servertoken='+config.servertoken+'&nocache='+new Date().getTime()+dataString), function(res) {
-			var buffer = '';
-			res.setEncoding('utf8');
-
-			res.on('data', function(chunk) {
-				buffer += chunk;
-			});
-
-			res.on('end', function() {
-				var data = null;
-				try {
-					var data = parseJSON(buffer);
-				} catch (e) {}
-				callback(data, res.statusCode);
-				this.openRequests--;
-			});
-		});
-
-		req.on('error', function(error) {
-			callback(null, null, error);
-			this.openRequests--;
-		});
-
-		req.end();
-	};
-	LoginServer.prototype.request = function(action, data, callback) {
-		if (typeof data === 'function') {
-			callback = data;
-			data = null;
-		}
-		if (LoginServer.disabled) {
-			callback(null, null, 'disabled');
-			return;
-		}
-		if (!data) data = {};
-		data.act = action;
-		data.callback = callback;
-		this.requestQueue.push(data);
-		this.requestTimerPoke();
-	};
-	LoginServer.prototype.requestTimerPoke = function() {
-		// "poke" the request timer, i.e. make sure it knows it should make
-		// a request soon
-
-		// if we already have it going or the request queue is empty no need to do anything
-		if (this.openRequests || this.requestTimer || !this.requestQueue.length) return;
-
-		this.requestTimer = setTimeout(this.makeRequests.bind(this), LOGIN_SERVER_BATCH_TIME);
-	};
-	LoginServer.prototype.makeRequests = function() {
-		this.requestTimer = null;
-		var self = this;
-		var requests = this.requestQueue;
-		this.requestQueue = [];
-
-		if (!requests.length) return;
-
-		var requestCallbacks = [];
-		for (var i=0,len=requests.length; i<len; i++) {
-			var request = requests[i];
-			requestCallbacks[i] = request.callback;
-			delete request.callback;
-		}
-
-		this.requestStart(requests.length);
-		var postData = 'serverid='+config.serverid+'&servertoken='+config.servertoken+'&nocache='+new Date().getTime()+'&json='+encodeURIComponent(JSON.stringify(requests))+'\n';
-		var requestOptions = url.parse(this.uri+'action.php');
-		requestOptions.method = 'post';
-		requestOptions.headers = {
-			'Content-Type': 'application/x-www-form-urlencoded',
-			'Content-Length': postData.length
-		};
-
-		var req = null;
-		var reqError = function(error) {
-			if (self.requestTimeoutTimer) {
-				clearTimeout(self.requestTimeoutTimer);
-				self.requestTimeoutTimer = null;
-			}
-			req.abort();
-			for (var i=0,len=requestCallbacks.length; i<len; i++) {
-				requestCallbacks[i](null, null, error);
-			}
-			self.requestEnd();
-		};
-
-		self.requestTimeoutTimer = setTimeout(function() {
-			reqError('timeout');
-		}, LOGIN_SERVER_TIMEOUT);
-
-		req = http.request(requestOptions, function(res) {
-			if (self.requestTimeoutTimer) {
-				clearTimeout(self.requestTimeoutTimer);
-				self.requestTimeoutTimer = null;
-			}
-			var buffer = '';
-			res.setEncoding('utf8');
-
-			res.on('data', function(chunk) {
-				buffer += chunk;
-			});
-
-			var endReq = function() {
-				if (self.requestTimeoutTimer) {
-					clearTimeout(self.requestTimeoutTimer);
-					self.requestTimeoutTimer = null;
-				}
-				//console.log('RESPONSE: '+buffer);
-				var data = null;
-				try {
-					var data = parseJSON(buffer);
-				} catch (e) {}
-				for (var i=0,len=requestCallbacks.length; i<len; i++) {
-					if (data) {
-						requestCallbacks[i](data[i], res.statusCode);
-					} else {
-						requestCallbacks[i](null, res.statusCode, 'corruption');
-					}
-				}
-				self.requestEnd();
-			}.once();
-			res.on('end', endReq);
-			res.on('close', endReq);
-
-			self.requestTimeoutTimer = setTimeout(function(){
-				if (res.connection) res.connection.destroy();
-				endReq();
-			}, LOGIN_SERVER_TIMEOUT);
-		});
-
-		req.on('error', reqError);
-
-		req.write(postData);
-		req.end();
-	};
-	LoginServer.prototype.requestStart = function(size) {
-		this.lastRequest = Date.now();
-		this.requestLog += ' | '+size+' requests: ';
-		this.openRequests++;
-	};
-	LoginServer.prototype.requestEnd = function() {
-		this.openRequests = 0;
-		this.requestLog += ''+(Date.now() - this.lastRequest).duration();
-		this.requestLog = this.requestLog.substr(-1000);
-		this.requestTimerPoke();
-	};
-	LoginServer.prototype.getLog = function() {
-		return this.requestLog + (this.lastRequest?' ('+(Date.now() - this.lastRequest).duration()+' since last request)':'');
-	};
-
-	return LoginServer;
-})();
+LoginServer = require('./loginserver.js');
 
 // Synchronously copy config-example.js over to config.js if it doesn't exist
 if (!fs.existsSync('./config/config.js')) {
@@ -289,44 +71,54 @@ if (process.argv[3]) {
 	config.setuid = process.argv[3];
 }
 
-if (config.protocol !== 'io' && config.protocol !== 'eio') config.protocol = 'ws';
-
-var app;
-var server;
-if (config.protocol === 'io') {
-	server = require('socket.io').listen(config.port).set('log level', 1);
-	server.set('transports', ['websocket', 'htmlfile', 'xhr-polling']); // temporary hack until https://github.com/LearnBoost/socket.io/issues/609 is fixed
-} else if (config.protocol === 'eio') {
-	app = require('http').createServer().listen(config.port);
-	server = require('engine.io').attach(app);
-} else {
-	app = require('http').createServer();
-	try {
+var app = require('http').createServer();
+try {
+	(function() {
 		var nodestatic = require('node-static');
-		var fileserver = new nodestatic.Server('./static');
+		var cssserver = new nodestatic.Server('./config');
+		var avatarserver = new nodestatic.Server('./config/avatars');
+		var staticserver = new nodestatic.Server('./static');
 		app.on('request', function(request, response) {
 			request.resume();
 			request.addListener('end', function() {
-				fileserver.serve(request, response, function(e, res) {
-				    if (e && (e.status === 404)) {
-				        fileserver.serveFile('404.html', 404, {}, request, response);
-				    }
+				if (config.customhttpresponse &&
+						config.customhttpresponse(request, response)) {
+					return;
+				}
+				var server;
+				if (request.url === '/custom.css') {
+					server = cssserver;
+				} else if (request.url.substr(0, 9) === '/avatars/') {
+					request.url = request.url.substr(8);
+					server = avatarserver;
+				} else {
+					if (/^\/(teambuilder|ladder|lobby|battle)\/?$/.test(request.url) ||
+							/^\/(lobby|battle)-([A-Za-z0-9-]*)$/.test(request.url)) {
+						request.url = '/';
+					}
+					server = staticserver;
+				}
+				server.serve(request, response, function(e, res) {
+					if (e && (e.status === 404)) {
+						staticserver.serveFile('404.html', 404, {}, request, response);
+					}
 				});
 			});
 		});
-	} catch (e) {
-		console.log('Did not start node-static - try `npm install` if you want to use it');
-	}
-	server = require('sockjs').createServer({
-		sockjs_url: "http://cdn.sockjs.org/sockjs-0.3.min.js",
-		log: function(severity, message) {
-			if (severity === 'error') console.log('ERROR: '+message);
-		},
-		prefix: '/showdown'
-	});
+	})();
+} catch (e) {
+	console.log('Could not start node-static - try `npm install` if you want to use it');
 }
+var server = require('sockjs').createServer({
+	sockjs_url: "http://cdn.sockjs.org/sockjs-0.3.min.js",
+	log: function(severity, message) {
+		if (severity === 'error') console.log('ERROR: '+message);
+	},
+	prefix: '/showdown'
+});
 
-// Make `server` available using the console.
+// Make `app` and `server` available to the console.
+App = app;
 Server = server;
 
 /**
@@ -433,27 +225,13 @@ function resolveUser(you, socket) {
 }
 
 emit = function(socket, type, data) {
-	if (config.protocol === 'io') {
-		socket.emit(type, data);
-	} else if (config.protocol === 'eio') {
-		if (typeof data === 'object') data.type = type;
-		else data = {type: type, message: data};
-		socket.send(JSON.stringify(data));
-	} else {
-		if (typeof data === 'object') data.type = type;
-		else data = {type: type, message: data};
-		socket.write(JSON.stringify(data));
-	}
+	if (typeof data === 'object') data.type = type;
+	else data = {type: type, message: data};
+	socket.write(JSON.stringify(data));
 };
 
 sendData = function(socket, data) {
-	if (config.protocol === 'io') {
-		socket.emit('data', data);
-	} else if (config.protocol === 'eio') {
-		socket.send(data);
-	} else {
-		socket.write(data);
-	}
+	socket.write(data);
 };
 
 function randomString(length) {
@@ -468,13 +246,9 @@ function randomString(length) {
 if (config.crashguard) {
 	// graceful crash - allow current battles to finish before restarting
 	process.on('uncaughtException', function (err) {
-		console.log("\n"+err.stack+"\n");
-		fs.createWriteStream('logs/errors.txt', {'flags': 'a'}).on("open", function(fd) {
-			this.write("\n"+err.stack+"\n");
-			this.end();
-		}).on("error", function (err) {
-			console.log("\n"+err.stack+"\n");
-		});
+		if (require('./crashlogger.js')(err, 'The main process')) {
+			return;
+		}
 		var stack = (""+err.stack).split("\n").slice(0,2).join("<br />");
 		Rooms.lobby.addRaw('<div class="message-server-crash"><b>THE SERVER HAS CRASHED:</b> '+stack+'<br />Please restart the server.</div>');
 		Rooms.lobby.addRaw('<div class="message-server-crash">You will not be able to talk in the lobby or start new battles until the server restarts.</div>');
@@ -513,138 +287,61 @@ var events = {
 	}
 };
 
-
-if (config.protocol === 'io') { // Socket.IO
-	server.sockets.on('connection', function (socket) {
-		var you = null;
-
-		socket.remoteAddress = socket.handshake.address.address; // for compatibility with SockJS semantics
-		if (config.proxyip && (config.proxyip === true || config.proxyip.indexOf(socket.remoteAddress) >= 0)) socket.remoteAddress = (socket.headers["x-forwarded-for"]||"").split(",").shift() || socket.remoteAddress; // for proxies
-
-		if (bannedIps[socket.remoteAddress]) {
-			console.log('CONNECT BLOCKED - IP BANNED: '+socket.remoteAddress);
-			return;
-		}
-
-		console.log('CONNECT: '+socket.remoteAddress+' ['+socket.id+']');
-		var generator = function(type) {
-			return function(data) {
-				console.log(you);
-				events[type](data, socket, you);
-			};
-		};
-		for (var e in events) {
-			socket.on(e, (function(type) {
-				return function(data) {
-					you = events[type](data, socket, you) || you;
-				};
-			})(e));
-		}
-		socket.on('disconnect', function() {
-			var youUser = resolveUser(you, socket);
-			if (!youUser) return;
-			youUser.disconnect(socket);
-		});
-	});
-} else if (config.protocol === 'eio') { // engine.io
-	server.on('connection', function (socket) {
-		var you = null;
-		if (!socket) { // WTF
-			return;
-		}
-		//socket.id = randomString(16); // this sucks
-
-		socket.remoteAddress = socket.id;
-
-		if (bannedIps[socket.remoteAddress]) {
-			console.log('CONNECT BLOCKED - IP BANNED: '+socket.remoteAddress);
-			return;
-		}
-		console.log('CONNECT: '+socket.remoteAddress+' ['+socket.id+']');
-		socket.on('message', function(message) {
-			var data = null;
-			if (message.substr(0,1) === '{') {
-				try {
-					data = JSON.parse(message);
-				} catch (e) {}
-			} else {
-				var pipeIndex = message.indexOf('|');
-				if (pipeIndex > 0) data = {
-					type: 'chat',
-					room: message.substr(0, pipeIndex),
-					message: message.substr(pipeIndex+1)
-				};
-			}
-			if (!data) return;
-			if (events[data.type]) you = events[data.type](data, socket, you) || you;
-		});
-		socket.on('close', function() {
-			var youUser = resolveUser(you, socket);
-			if (!youUser) return;
-			youUser.disconnect(socket);
-		});
-	});
-} else { // SockJS and engine.io
-	server.on('connection', function (socket) {
-		var you = null;
-		if (!socket) { // WTF
-			return;
-		}
-		socket.id = randomString(16); // this sucks
-
-		if (config.proxyip && (config.proxyip === true || config.proxyip.indexOf(socket.remoteAddress) >= 0)) socket.remoteAddress = (socket.headers["x-forwarded-for"]||"").split(",").shift() || socket.remoteAddress; // for proxies
-
-		if (bannedIps[socket.remoteAddress]) {
-			console.log('CONNECT BLOCKED - IP BANNED: '+socket.remoteAddress);
-			return;
-		}
-		console.log('CONNECT: '+socket.remoteAddress+' ['+socket.id+']');
-		var interval;
-		if (config.herokuhack) {
-			// see https://github.com/sockjs/sockjs-node/issues/57#issuecomment-5242187
-			interval = setInterval(function() {
-				try {
-					socket._session.recv.didClose();
-				} catch (e) {}
-			}, 15000);
-		}
-		socket.on('data', function(message) {
-			var data = null;
-			if (message.substr(0,1) === '{') {
-				try {
-					data = JSON.parse(message);
-				} catch (e) {}
-			} else {
-				var pipeIndex = message.indexOf('|');
-				if (pipeIndex >= 0) data = {
-					type: 'chat',
-					room: message.substr(0, pipeIndex),
-					message: message.substr(pipeIndex+1)
-				};
-			}
-			if (!data) return;
-			if (events[data.type]) you = events[data.type](data, socket, you) || you;
-		});
-		socket.on('close', function() {
-			if (interval) {
-				clearInterval(interval);
-			}
-			var youUser = resolveUser(you, socket);
-			if (!youUser) return;
-			youUser.disconnect(socket);
-		});
-	});
-	if (config.protocol === 'ws') {
-		server.installHandlers(app, {});
-		app.listen(config.port);
+server.on('connection', function (socket) {
+	var you = null;
+	if (!socket) { // WTF
+		return;
 	}
-}
+	socket.id = randomString(16); // this sucks
+
+	if (config.proxyip && (config.proxyip === true || config.proxyip.indexOf(socket.remoteAddress) >= 0)) socket.remoteAddress = (socket.headers["x-forwarded-for"]||"").split(",").shift() || socket.remoteAddress; // for proxies
+
+	if (bannedIps[socket.remoteAddress]) {
+		console.log('CONNECT BLOCKED - IP BANNED: '+socket.remoteAddress);
+		return;
+	}
+	console.log('CONNECT: '+socket.remoteAddress+' ['+socket.id+']');
+	var interval;
+	if (config.herokuhack) {
+		// see https://github.com/sockjs/sockjs-node/issues/57#issuecomment-5242187
+		interval = setInterval(function() {
+			try {
+				socket._session.recv.didClose();
+			} catch (e) {}
+		}, 15000);
+	}
+	socket.on('data', function(message) {
+		var data = null;
+		if (message.substr(0,1) === '{') {
+			try {
+				data = JSON.parse(message);
+			} catch (e) {}
+		} else {
+			var pipeIndex = message.indexOf('|');
+			if (pipeIndex >= 0) data = {
+				type: 'chat',
+				room: message.substr(0, pipeIndex),
+				message: message.substr(pipeIndex+1)
+			};
+		}
+		if (!data) return;
+		if (events[data.type]) you = events[data.type](data, socket, you) || you;
+	});
+	socket.on('close', function() {
+		if (interval) {
+			clearInterval(interval);
+		}
+		var youUser = resolveUser(you, socket);
+		if (!youUser) return;
+		youUser.disconnect(socket);
+	});
+});
+server.installHandlers(app, {});
+app.listen(config.port);
 
 console.log('Server started on port ' + config.port);
 
-console.log('Test your server at http://localhost' +
-	((config.port !== 8000) ? ('-' + config.port) : '') +
-	'.psim.us');
+console.log('Test your server at http://localhost:' + config.port);
 
 // This slow operation is done *after* we start listening for connections
 // to the server. Anybody who connects while this require() is running will

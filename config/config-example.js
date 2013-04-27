@@ -17,10 +17,6 @@ exports.port = 8000;
 //          This feature should be used with caution.
 exports.setuid = '';
 
-// protocol - WebSockets ("ws") or Socket.IO ("io").
-//   We recommend using WebSockets unless you have a really compelling reason not to.
-exports.protocol = 'ws';
-
 // The server ID - a unique ID describing this Showdown server
 exports.serverid = 'testserver';
 
@@ -69,6 +65,27 @@ exports.potd = '';
 //   Unfortunately, socket.io bug 409 requires some sort of crash guard
 //   https://github.com/LearnBoost/socket.io/issues/609
 exports.crashguard = true;
+
+// crashguardemail - if the server has been running for more than an hour
+// and crashes, send an email using these settings, rather than locking down
+// the server. Uncomment this definition if you wan to use this feature;
+// otherwise, all crashes will lock down the server.
+/**exports.crashguardemail = {
+	transport: 'SMTP',
+	options: {
+		host: 'mail.example.com',
+		port: 465,
+		secureConnection: true,
+		maxConnections: 1,
+		auth: {
+			user: 'example@domain.com',
+			pass: 'password'
+		}
+	},
+	from: 'crashlogger@example.com',
+	to: 'admin@example.com',
+	subject: 'Pokemon Showdown has crashed!'
+};**/
 
 // report joins and leaves - shows messages like "<USERNAME> joined"
 //   Join and leave messages are small and consolidated, so there will never
@@ -158,12 +175,14 @@ exports.herokuhack = false;
 
 // Custom avatars.
 // This allows you to specify custom avatar images for users on your server.
-// Place custom avatar files under the /static/avatars/ directory.
+// Place custom avatar files under the /config/avatars/ directory.
+// Users must be specified as userids -- that is, you must make the name all
+// lowercase and remove non-alphanumeric characters.
 //
 // Your server *must* be registered in order for your custom avatars to be
 // displayed in the client.
 exports.customavatars = {
-	//'username': 'customavatar.png'
+	//'userid': 'customavatar.png'
 };
 
 // permissions and groups:

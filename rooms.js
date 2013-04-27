@@ -465,10 +465,7 @@ var BattleRoom = (function() {
 	BattleRoom.prototype.initSocket = function(user, socket) {
 		var initdata = {
 			name: user.name,
-			userid: user.userid,
 			named: user.named,
-			renamePending: user.renamePending,
-			token: user.token,
 			room: this.id,
 			roomType: 'battle',
 			battlelog: this.getLogForUser(user)
@@ -492,10 +489,7 @@ var BattleRoom = (function() {
 
 		var initdata = {
 			name: user.name,
-			userid: user.userid,
 			named: user.named,
-			renamePending: user.renamePending,
-			token: user.token,
 			room: this.id,
 			roomType: 'battle',
 			battlelog: this.getLogForUser(user)
@@ -962,7 +956,7 @@ function LobbyRoom(roomid) {
 				selfR.searchers.splice(i,1);
 				i--;
 				if (!success) {
-					searchUser.emit('update', {searching: false, room: selfR.id});
+					searchUser.emit('update', {searching: false});
 					success = true;
 				}
 				continue;
@@ -994,11 +988,9 @@ function LobbyRoom(roomid) {
 
 		// tell the user they've started searching
 		var newSearchData = {
-			userid: user.userid,
-			format: formatid,
-			room: selfR.id
+			format: formatid
 		};
-		user.emit('update', {searching: newSearchData, room: selfR.id});
+		user.emit('update', {searching: newSearchData});
 
 		// get the user's rating before actually starting to search
 		var newSearch = {
@@ -1045,7 +1037,7 @@ function LobbyRoom(roomid) {
 			if (newSearch.formatid === search.formatid && this.matchmakingOK(search, newSearch, searchUser, user)) {
 				selfR.cancelSearch(user, true);
 				selfR.cancelSearch(searchUser, true);
-				user.emit('update', {searching: false, room: selfR.id});
+				user.emit('update', {searching: false});
 				searchUser.team = search.team;
 				user.team = newSearch.team;
 				selfR.startBattle(searchUser, user, search.formatid, true, search.team, newSearch.team);
@@ -1126,10 +1118,7 @@ function LobbyRoom(roomid) {
 	this.initSocket = function(user, socket) {
 		var initdata = {
 			name: user.name,
-			userid: user.userid,
 			named: user.named,
-			renamePending: user.renamePending,
-			token: user.token,
 			room: selfR.id,
 			rooms: selfR.getRoomList(),
 			u: selfR.getUserList(),
@@ -1154,10 +1143,7 @@ function LobbyRoom(roomid) {
 
 		var initdata = {
 			name: user.name,
-			userid: user.userid,
 			named: user.named,
-			renamePending: user.renamePending,
-			token: user.token,
 			room: selfR.id,
 			rooms: selfR.getRoomList(),
 			u: selfR.getUserList(),
