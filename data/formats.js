@@ -15,6 +15,7 @@ exports.BattleFormats = {
 		mod: 'joimmons',
 		effectType: 'Format',
 		name: 'Joimmons',
+		section: "Other Metas",
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
@@ -22,6 +23,218 @@ exports.BattleFormats = {
 		debug: true,
 		ruleset: ['CAP Pokemon', 'Standard DW', 'Team Preview', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Moody Clause', 'Evasion Moves Clause'],
 		banlist: ['Uber', 'Soul Dew']
+	},
+	ouclearskies: {
+		effectType: 'Format',
+		name: "OU Clear Skies",
+		section: "Other Metas",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Standard', 'Team Preview'],
+		banlist: ['Uber', 'Drizzle', 'Soul Dew', 'Drought', 'Sand Stream', 'Snow Warning']
+	},
+	oulenient: {
+		effectType: 'Format',
+		name: "OU Lenient",
+		section: "Other Metas",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Standard', 'Team Preview'],
+		banlist: ['Kyogre', 'Arceus', 'Mewtwo', 'Palkia', 'Rayquaza', 'Dialga', 'Arceus-Steel', 'Arceus-Ghost', 'Arceus-Dark', 'Arceus-Rock', 'Arceus-Psychic', 'Soul Dew', 'Kyurem-White', 'Reshiram', 'Zekrom']
+	},
+	allabilities: {
+		effectType: 'Format',
+		name: "All Abilities",
+		section: "Other Metas",
+		challengeDefault: true,
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Standard All Abilities', 'Evasion Abilities Clause', 'Team Preview'],
+		banlist: ['Illegal', 'Uber', 'Soul Dew', 'Pure Power', 'Huge Power', 'Wonder Guard', 'Moody', 'Imposter', 'Snow Cloak', 'Sand Veil', 'Zen Mode', 'Shedinja ++ Sturdy']
+	},
+	ousixmoves: {
+		effectType: 'Format',
+		name: "OU Six Moves",
+		section: "Other Metas",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Six Moves', 'Standard', 'Team Preview'],
+		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
+	},
+	outiershift: {
+		mod: 'tierboost',
+		effectType: 'Format',
+		name: "OU Tier Shift",
+		section: "Other Metas",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
+		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
+	},
+	wonkymons: {
+		mod: 'wonkymons',
+		effectType: 'Format',
+		name: "Wonkymons",
+		section: "Other Metas",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
+		banlist: ['Drizzle ++ Swift Swim', 'Elekid ++ Wonder Guard']
+	},
+	offstat: {
+		effectType: 'Format',
+		name: "Offstat",
+		section: "Other Metas",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		rated: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Standard', 'Offstat Pokemon', 'Evasion Abilities Clause', 'Team Preview'],
+		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Stealth Rock', 'Spikes', 'Toxic Spikes', 'Kyurem-Black']
+	},
+	suicidecup: {
+		effectType: 'Format',
+		name: "Suicide Cup",
+		section: "Other Metas",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		rated: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Standard', 'Suicide Pokemon', 'Evasion Abilities Clause', 'Team Preview'],
+		banlist: ['Shedinja', 'Self-Destruct', 'Explosion', 'Memento', 'Final Gambit', 'Healing Wish', 'Heal Pulse', 'Lunar Dance', 'Dream Eater', 'Snore', 'Frustration', 'Return', 'Fake Out', 'Natural Gift', 'Magic Room']
+	},
+	gscmodern: {
+		effectType: 'Format',
+		name: "GSC Modern",
+		section: "Other Metas",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['GSC Modern Pokemon', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Moves Clause', 'Evasion Abilities Clause', 'Team Preview'],
+		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Venusaur', 'Illegal', 'Moody']
+	},
+	statexchange: {
+		effectType: 'Format',
+		mod: 'statexchange',
+		name: "Stat Exchange",
+		section: "Other Metas",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
+		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
+	},
+	haxmons: {
+		effectType: 'Format',
+		name: "Haxmons",
+		section: "Other Metas",
+		challengeShow: true,
+		canUseRandomTeam: true,
+		searchShow: true,
+		rated: true,
+		team: 'random',
+		ruleset: ['Hax Clause', 'Team Preview']
+	},
+    gbusingles: {
+        effectType: 'Format',
+        name: "GBU Singles",
+		section: "Other Metas",
+        rated: true,
+        challengeShow: true,
+        searchShow: true,
+        debug: true,
+        onBegin: function() {
+    		this.p1.pokemon = this.p1.pokemon.slice(0,3);
+	        this.p1.pokemonLeft = this.p1.pokemon.length;
+	        this.p2.pokemon = this.p2.pokemon.slice(0,3);
+	        this.p2.pokemonLeft = this.p2.pokemon.length;
+        },
+        validateSet: function(set) {
+        	if (!set.level || set.level >= 50) set.forcedLevel = 50;
+        },
+        ruleset: ['Pokemon', 'Species Clause', 'Item Clause', 'Team Preview GBU'],
+        banlist: ['Unreleased', 'Illegal', 'Sky Drop', 'Dark Void', 'Soul Dew',
+      	    'Mewtwo', 'Mew', 'Lugia', 'Ho-Oh', 'Celebi', 'Kyogre', 'Groudon',
+	        'Rayquaza', 'Jirachi',  'Deoxys', 'Deoxys-Attack', 'Deoxys-Speed', 'Deoxys-Defense',
+	        'Chatot', 'Dialga', 'Palkia', 'Giratina', 'Giratina-Origin', 'Phione',
+	        'Manaphy',  'Darkrai', 'Shaymin', 'Shaymin-Sky',
+	        'Arceus', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fighting', 'Arceus-Fire', 
+	        'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus', 'Arceus-Poison', 
+	        'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water',
+	        'Victini', 'Reshiram', 'Zekrom', 'Kyurem', 'Kyurem-Black', 'Kyurem-White',
+	        'Keldeo', 'Keldeo-Resolute',  'Meloetta', 'Genesect'
+	    ]
+    },
+	cap: {
+		effectType: 'Format',
+		name: "CAP",
+		section: "Other Metas",
+		rated: true,
+		challengeShow: true,
+	 	searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['CAP Pokemon', 'Standard', 'Team Preview'],
+		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
+	},
+	hackmons: {
+		effectType: 'Format',
+		name: "Hackmons",
+		section: "Other Metas",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon'],
+		banlist: []
+	},
+	balancedhackmons: {
+		effectType: 'Format',
+		name: "Balanced Hackmons",
+		section: "Other Metas",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'OHKO Clause'],
+		banlist: ['Wonder Guard', 'Pure Power', 'Huge Power', 'Shadow Tag', 'Arena Trap']
+	},
+	pu: {
+		effectType: 'Format',
+		name: "PU",
+		section: "Other Metas",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		ruleset: ['NU'],
+		banlist: ["Charizard", "Wartortle", "Kadabra", "Golem", "Haunter", "Exeggutor", "Weezing", "Kangaskhan", "Pinsir", "Lapras", "Ampharos", "Misdreavus", "Piloswine", "Miltank", "Ludicolo", "Swellow", "Gardevoir", "Ninjask", "Torkoal", "Cacturne", "Altaria", "Armaldo", "Gorebyss", "Regirock", "Regice", "Bastiodon", "Floatzel", "Drifblim", "Skuntank", "Lickilicky", "Probopass", "Rotom-Fan", "Samurott", "Musharna", "Gurdurr", "Sawk", "Carracosta", "Garbodor", "Sawsbuck", "Alomomola", "Golurk", "Braviary", "Articuno", "Electabuzz", "Electrode", "Marowak", "Liepard", "Tangela", "Eelektross", "Ditto", "Seismitoad", "Zangoose", "Roselia", "Zebstrika", "Serperior", "Metang", "Tauros", "Torterra", "Cradily"]
+	},
+	glitchmons: {
+		effectType: 'Format',
+		name: "Glitchmons",
+		section: "Other Metas",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Team Preview'],
+		banlist: ['Illegal', 'Unreleased'],
+		mimicGlitch: true
 	},
 	gen1ou: {
 		mod: 'gen1',
@@ -138,206 +351,6 @@ exports.BattleFormats = {
 		isTeambuilderFormat: true,
 		ruleset: ['Pokemon', 'Standard'],
 		banlist: ['Uber']
-	},
-	ouclearskies: {
-		effectType: 'Format',
-		name: "OU Clear Skies",
-		section: "Other Metas",
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'Standard', 'Team Preview'],
-		banlist: ['Uber', 'Drizzle', 'Soul Dew', 'Drought', 'Sand Stream', 'Snow Warning']
-	},
-	oulenient: {
-		effectType: 'Format',
-		name: "OU Lenient",
-		section: "Other Metas",
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'Standard', 'Team Preview'],
-		banlist: ['Kyogre', 'Arceus', 'Mewtwo', 'Palkia', 'Rayquaza', 'Dialga', 'Arceus-Steel', 'Arceus-Ghost', 'Arceus-Dark', 'Arceus-Rock', 'Arceus-Psychic', 'Soul Dew', 'Kyurem-White', 'Reshiram', 'Zekrom']
-	},
-	allabilities: {
-		effectType: 'Format',
-		name: "All Abilities",
-		section: "Other Metas",
-		challengeDefault: true,
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'Standard All Abilities', 'Evasion Abilities Clause', 'Team Preview'],
-		banlist: ['Illegal', 'Uber', 'Soul Dew', 'Pure Power', 'Huge Power', 'Wonder Guard', 'Moody', 'Imposter', 'Snow Cloak', 'Sand Veil', 'Zen Mode', 'Shedinja ++ Sturdy']
-	},
-	ousixmoves: {
-		effectType: 'Format',
-		name: "OU Six Moves",
-		section: "Other Metas",
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		isTeambuilderFormat: true,
-		ruleset: ['Six Moves', 'Standard', 'Team Preview'],
-		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
-	},
-	outiershift: {
-		mod: 'tierboost',
-		effectType: 'Format',
-		name: "OU Tier Shift",
-		section: "Other Metas",
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
-		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
-	},
-	wonkymons: {
-		mod: 'wonkymons',
-		effectType: 'Format',
-		name: "Wonkymons",
-		section: "Other Metas",
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
-		banlist: ['Drizzle ++ Swift Swim', 'Elekid ++ Wonder Guard']
-	},
-	offstat: {
-		effectType: 'Format',
-		name: "Offstat",
-		section: "Other Metas",
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		rated: true,
-		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'Standard', 'Offstat Pokemon', 'Evasion Abilities Clause', 'Team Preview'],
-		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Stealth Rock', 'Spikes', 'Toxic Spikes', 'Kyurem-Black']
-	},
-	suicidecup: {
-		effectType: 'Format',
-		name: "Suicide Cup",
-		section: "Other Metas",
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		rated: true,
-		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'Standard', 'Suicide Pokemon', 'Evasion Abilities Clause', 'Team Preview'],
-		banlist: ['Shedinja', 'Self-Destruct', 'Explosion', 'Memento', 'Final Gambit', 'Healing Wish', 'Heal Pulse', 'Lunar Dance', 'Dream Eater', 'Snore', 'Frustration', 'Return', 'Fake Out', 'Natural Gift', 'Magic Room']
-	},
-	gscmodern: {
-		effectType: 'Format',
-		name: "GSC Modern",
-		section: "Other Metas",
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		isTeambuilderFormat: true,
-		ruleset: ['GSC Modern Pokemon', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Moves Clause', 'Evasion Abilities Clause', 'Team Preview'],
-		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Venusaur', 'Illegal', 'Moody']
-	},
-	haxmons: {
-		effectType: 'Format',
-		name: "Haxmons",
-		section: "Other Metas",
-		challengeShow: true,
-		canUseRandomTeam: true,
-		searchShow: true,
-		rated: true,
-		team: 'random',
-		ruleset: ['Hax Clause', 'Team Preview']
-	},
-    gbusingles: {
-        effectType: 'Format',
-        name: "GBU Singles",
-		section: "Other Metas",
-        rated: true,
-        challengeShow: true,
-        searchShow: true,
-        debug: true,
-        onBegin: function() {
-    		this.p1.pokemon = this.p1.pokemon.slice(0,3);
-	        this.p1.pokemonLeft = this.p1.pokemon.length;
-	        this.p2.pokemon = this.p2.pokemon.slice(0,3);
-	        this.p2.pokemonLeft = this.p2.pokemon.length;
-        },
-        validateSet: function(set) {
-        	if (!set.level || set.level >= 50) set.forcedLevel = 50;
-        },
-        ruleset: ['Pokemon', 'Species Clause', 'Item Clause', 'Team Preview GBU'],
-        banlist: ['Unreleased', 'Illegal', 'Sky Drop', 'Dark Void', 'Soul Dew',
-      	    'Mewtwo', 'Mew', 'Lugia', 'Ho-Oh', 'Celebi', 'Kyogre', 'Groudon',
-	        'Rayquaza', 'Jirachi',  'Deoxys', 'Deoxys-Attack', 'Deoxys-Speed', 'Deoxys-Defense',
-	        'Chatot', 'Dialga', 'Palkia', 'Giratina', 'Giratina-Origin', 'Phione',
-	        'Manaphy',  'Darkrai', 'Shaymin', 'Shaymin-Sky',
-	        'Arceus', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fighting', 'Arceus-Fire', 
-	        'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus', 'Arceus-Poison', 
-	        'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water',
-	        'Victini', 'Reshiram', 'Zekrom', 'Kyurem', 'Kyurem-Black', 'Kyurem-White',
-	        'Keldeo', 'Keldeo-Resolute',  'Meloetta', 'Genesect'
-	    ]
-    },
-	cap: {
-		effectType: 'Format',
-		name: "CAP",
-		section: "Other Metas",
-		rated: true,
-		challengeShow: true,
-	 	searchShow: true,
-		isTeambuilderFormat: true,
-		ruleset: ['CAP Pokemon', 'Standard', 'Team Preview'],
-		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
-	},
-	hackmons: {
-		effectType: 'Format',
-		name: "Hackmons",
-		section: "Other Metas",
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		isTeambuilderFormat: true,
-		ruleset: ['Pokemon'],
-		banlist: []
-	},
-	balancedhackmons: {
-		effectType: 'Format',
-		name: "Balanced Hackmons",
-		section: "Other Metas",
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'OHKO Clause'],
-		banlist: ['Wonder Guard', 'Pure Power', 'Huge Power', 'Shadow Tag', 'Arena Trap']
-	},
-	pu: {
-		effectType: 'Format',
-		name: "PU",
-		section: "Other Metas",
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		ruleset: ['NU'],
-		banlist: ["Charizard", "Wartortle", "Kadabra", "Golem", "Haunter", "Exeggutor", "Weezing", "Kangaskhan", "Pinsir", "Lapras", "Ampharos", "Misdreavus", "Piloswine", "Miltank", "Ludicolo", "Swellow", "Gardevoir", "Ninjask", "Torkoal", "Cacturne", "Altaria", "Armaldo", "Gorebyss", "Regirock", "Regice", "Bastiodon", "Floatzel", "Drifblim", "Skuntank", "Lickilicky", "Probopass", "Rotom-Fan", "Samurott", "Musharna", "Gurdurr", "Sawk", "Carracosta", "Garbodor", "Sawsbuck", "Alomomola", "Golurk", "Braviary", "Articuno", "Electabuzz", "Electrode", "Marowak", "Liepard", "Tangela", "Eelektross", "Ditto", "Seismitoad", "Zangoose", "Roselia", "Zebstrika", "Serperior", "Metang", "Tauros", "Torterra", "Cradily"]
-	},
-	glitchmons: {
-		effectType: 'Format',
-		name: "Glitchmons",
-		section: "Other Metas",
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'Team Preview'],
-		banlist: ['Illegal', 'Unreleased'],
-		mimicGlitch: true
 	},
 	seasoningsgreetings: {
 		effectType: 'Format',
