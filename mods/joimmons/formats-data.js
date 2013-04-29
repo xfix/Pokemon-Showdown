@@ -10,8 +10,11 @@ exports.BattleFormatsData = {
 		},
 		arcanine: {
 			viableMoves: {"flareblitz":1,"wildcharge":1,"hiddenpowergrass":1,"extremespeed":1,"closecombat":1,"morningsun":1,"willowisp":1},
-			viableDoublesMoves: {"flareblitz":1,"closecombat":1,"wildcharge":1,"extremespeed":1,"protect":1,"morningsun":1,"willowisp":1},
+			eventPokemon: [
+				{"generation":5,"level":50,"isDW":true,"moves":["flareblitz","extremespeed","closecombat","wildcharge"],"ability":"Drought"}
+			],
 			dreamWorldRelease: true,
+			dreamWorldOnlyMale: true,
 			tier: "OU"
 		},
 		spiritomb: {
