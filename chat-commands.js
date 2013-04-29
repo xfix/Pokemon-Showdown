@@ -39,10 +39,48 @@ var crypto = require('crypto');
 
 var modlog = modlog || fs.createWriteStream('logs/modlog.txt', {flags:'a+'});
 var updateServerLock = false;
+var cooldown = {
+	lastCommands: {},
+	pruneUsedCmds: function () {
+		var now = Date.now();
+		for (var i in cooldown.lastCommands) {
+			if (now - cooldown.lastCommands[i] > 5000) {
+				delete cooldown.lastCommands[i];
+			}
+		}
+	}
+};
+
+function logCommand(command, target) {
+	if (target.indexOf(',') > -1) {
+		var targets = splitTarget(target);
+		target = targets[0];
+	}
+	cooldown.lastCommands[command + '-' + target] = Date.now();
+}
+
+function usedRecently(command, target) {
+	var applyTo = {'mute':1, 'ban':1, 'warn':1};
+	if (command in applyTo || command.substr(0, 1) === '!') {
+		if (target.indexOf(',') > -1) {
+			var targets = splitTarget(target);
+			target = targets[0];
+		}
+		cooldown.pruneUsedCmds();
+		return (command + '-' + target in cooldown.lastCommands);
+	} else {
+		return false;
+	}
+}
 
 function parseCommandLocal(user, cmd, target, room, socket, message) {
 	if (!room) return;
 	cmd = cmd.toLowerCase();
+	if (usedRecently(cmd, target)) {
+		emit(socket, 'console', 'The command "' + cmd + '" has just been used with target ' + target + '.');
+		return false;
+	}
+	logCommand(cmd, target);
 	switch (cmd) {
 	case 'cmd':
 		var spaceIndex = target.indexOf(' ');
@@ -1155,18 +1193,53 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 	case 'othermetas':
 	case '!om':
 	case '!othermetas':
+		target = target.toLowerCase();
+		target = target.replace(' ', '');
+		var buffer = '<div class="infobox">';
+		var matched = false;
+		if (!target || target === 'all') {
+			matched = true;
+			buffer += '- <a href="http://www.smogon.com/forums/forumdisplay.php?f=206" target="_blank">Information on the Other Metagames</a><br />';
+		}
+		if (target === 'all' || target === 'hackmons') {
+			matched = true;
+			buffer += '- <a href="http://www.smogon.com/forums/showthread.php?t=3475624" target="_blank">Hackmons</a><br />';
+		}
+		if (target === 'all' || target === 'balancedhackmons' || target === 'bh') {
+			matched = true;
+			buffer += '- <a href="http://www.smogon.com/forums/showthread.php?t=3463764" target="_blank">Balanced Hackmons</a><br />';
+		}
+		if (target === 'all' || target === 'glitchmons') {
+			matched = true;
+			buffer += '- <a href="http://www.smogon.com/forums/showthread.php?t=3467120" target="_blank">Glitchmons</a><br />';
+		}
+		if (target === 'all' || target === 'tiershift' || target === 'ts') {
+			matched = true;
+			buffer += '- <a href="http://www.smogon.com/forums/showthread.php?t=3479358" target="_blank">Tier Shift</a><br />';
+		}
+		if (target === 'all' || target === 'seasonalladder' || target === 'seasonal') {
+			matched = true;
+			buffer += '- <a href="http://www.smogon.com/sim/seasonal" target="_blank">Seasonal Ladder</a><br />';
+		}
+		if (target === 'all' || target === 'smogondoubles' || target === 'doubles') {
+			matched = true;
+			buffer += '- <a href="http://www.smogon.com/forums/showthread.php?t=3476469" target="_blank">Smogon Doubles</a><br />';
+		}
+		if (target === 'all' || target === 'vgc2013' || target === 'vgc') {
+			matched = true;
+			buffer += '- <a href="http://www.smogon.com/forums/showthread.php?t=3471161" target="_blank">VGC 2013</a><br />';
+		}
+		if (target === 'all' || target === 'omotm' || target === 'omofthemonth' || target === 'month') {
+			matched = true;
+			buffer += '- <a href="http://www.smogon.com/forums/showthread.php?t=3481155" target="_blank">OM of the Month</a>';
+		}
+		if (!matched) {
+			emit(socket, 'console', 'The Other Metas entry "'+target+'" was not found. Try /othermetas or /om for general help.');
+			return false;
+		}
+		buffer += '</div>';
 		showOrBroadcastStart(user, cmd, room, socket, message);
-		showOrBroadcast(user, cmd, room, socket,
-			'<div class="infobox">Information on the Other Metagames:<br />' +
-			'- <a href="http://www.smogon.com/forums/showthread.php?t=3475624" target="_blank">Hackmons</a><br />' +
-			'- <a href="http://www.smogon.com/forums/showthread.php?t=3463764" target="_blank">Balanced Hackmons</a><br />' +
-			'- <a href="http://www.smogon.com/forums/showthread.php?t=3467120" target="_blank">Glitchmons</a><br />' +
-			'- <a href="http://www.smogon.com/forums/showthread.php?t=3479358" target="_blank">Tier Shift</a><br />' +
-			'- <a href="http://www.smogon.com/sim/seasonal" target="_blank">Seasonal Ladder</a><br />' +
-			'- <a href="http://www.smogon.com/forums/showthread.php?t=3476469" target="_blank">Smogon Doubles</a><br />' +
-			'- <a href="http://www.smogon.com/forums/showthread.php?t=3471161" target="_blank">VGC 2013</a><br />' +
-			'- <a href="http://www.smogon.com/forums/showthread.php?t=3481155" target="_blank">OM of the Month</a>' +
-			'</div>');
+		showOrBroadcast(user, cmd, room, socket, buffer);
 		return false;
 		break;
 
@@ -1225,17 +1298,45 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 	case 'tiers':
 	case '!banlists':
 	case '!tiers':
+		target = target.toLowerCase();
+		var buffer = '<div class="infobox">';
+		var matched = false;
+		if (!target || target === 'all') {
+			matched = true;
+			buffer += '- <a href="http://www.smogon.com/tiers/" target="_blank">Smogon Tiers</a><br />';
+			buffer += '- <a href="http://www.smogon.com/bw/banlist/" target="_blank">The banlists for each tier</a><br />';
+		}
+		if (target === 'all' || target === 'ubers' || target === 'uber') {
+			matched = true;
+			buffer += '- <a href="http://www.smogon.com/bw/tiers/uber" target="_blank">Uber Pokemon</a><br />';
+		}
+		if (target === 'all' || target === 'overused' || target === 'ou') {
+			matched = true;
+			buffer += '- <a href="http://www.smogon.com/bw/tiers/ou" target="_blank">Overused Pokemon</a><br />';
+		}
+		if (target === 'all' || target === 'underused' || target === 'uu') {
+			matched = true;
+			buffer += '- <a href="http://www.smogon.com/bw/tiers/uu" target="_blank">Underused Pokemon</a><br />';
+		}
+		if (target === 'all' || target === 'rarelyused' || target === 'ru') {
+			matched = true;
+			buffer += '- <a href="http://www.smogon.com/bw/tiers/ru" target="_blank">Rarelyused Pokemon</a><br />';
+		}
+		if (target === 'all' || target === 'neverused' || target === 'nu') {
+			matched = true;
+			buffer += '- <a href="http://www.smogon.com/bw/tiers/nu" target="_blank">Neverused Pokemon</a><br />';
+		}
+		if (target === 'all' || target === 'littlecup' || target === 'lc') {
+			matched = true;
+			buffer += '- <a href="http://www.smogon.com/bw/tiers/lc" target="_blank">Little Cup Pokemon</a><br />';
+		}
+		if (!matched) {
+			emit(socket, 'console', 'The Tiers entry "'+target+'" was not found. Try /tiers for general help.');
+			return false;
+		}
+		buffer += '</div>';
 		showOrBroadcastStart(user, cmd, room, socket, message);
-		showOrBroadcast(user, cmd, room, socket,
-			'<div class="infobox">Smogon tiers:<br />' +
-			'- <a href="http://www.smogon.com/bw/banlist/" target="_blank">The banlists for each tier</a><br />' +
-			'- <a href="http://www.smogon.com/bw/tiers/uber" target="_blank">Uber Pokemon</a><br />' +
-			'- <a href="http://www.smogon.com/bw/tiers/ou" target="_blank">Overused Pokemon</a><br />' +
-			'- <a href="http://www.smogon.com/bw/tiers/uu" target="_blank">Underused Pokemon</a><br />' +
-			'- <a href="http://www.smogon.com/bw/tiers/ru" target="_blank">Rarelyused Pokemon</a><br />' +
-			'- <a href="http://www.smogon.com/bw/tiers/nu" target="_blank">Neverused Pokemon</a><br />' +
-			'- <a href="http://www.smogon.com/bw/tiers/lc" target="_blank">Little Cup Pokemon</a><br />' +
-			'</div>');
+		showOrBroadcast(user, cmd, room, socket, buffer);
 		return false;
 		break;
 
@@ -1774,36 +1875,72 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			emit(socket, 'console', '/modlog - Access denied.');
 			return false;
 		}
+		if (!fs) fs = require(fs);
 		var lines = parseInt(target || 15, 10);
 		if (lines > 100) lines = 100;
 		var filename = 'logs/modlog.txt';
-		var command = 'tail -'+lines+' '+filename;
-		var grepLimit = 100;
-		if (!lines || lines < 0) { // searching for a word instead
-			if (target.match(/^["'].+["']$/)) target = target.substring(1,target.length-1);
-			command = "awk '{print NR,$0}' "+filename+" | sort -nr | cut -d' ' -f2- | grep -m"+grepLimit+" -i '"+target.replace(/\\/g,'\\\\\\\\').replace(/["'`]/g,'\'\\$&\'').replace(/[\{\}\[\]\(\)\$\^\.\?\+\-\*]/g,'[$&]')+"'";
+		if (!lines || lines < 0) {
+			if (target.match(/^["'].+["']$/)) target = target.substring(1, target.length-1);
 		}
+		target = target.replace(/\\/g,'\\\\\\\\').replace(/["'`]/g,'\'\\$&\'').replace(/[\{\}\[\]\(\)\$\^\.\?\+\-\*]/g,'[$&]');
+		// Modlog implementation for windows
+		var os = require('os');
+		if (os.type().toLowerCase().indexOf('windows') > -1) {
+			fs.readFile(filename, function (err, data) {
+				if (err) return false;
+				data = (''+data).split("\n");
+				data = data.reverse();
+				var newArray = [];
+				for (var i=0; i<data.length; i++) {
+					if (data[i].indexOf(target) > -1) {
+						newArray.push(data[i]);
+					}
+					if ((lines && newArray.length >= lines) || newArray.length >= 100) break;
+				}
+				stdout = newArray.join("\n");
+				if (lines) {
+					if (!stdout) {
+						emit(socket, 'console', 'The modlog is empty. (Weird.)');
+					} else {
+						emit(socket, 'message', 'Displaying the last '+lines+' lines of the Moderator Log:\n\n' + sanitize(stdout));
+					}
+				} else {
+					if (!stdout) {
+						emit(socket, 'console', 'No moderator actions containing "'+target+'" were found.');
+					} else {
+						emit(socket, 'message', 'Displaying the last 100 logged actions containing "'+target+'":\n\n' + sanitize(stdout));
+					}
+				}
+			});
+		} else {
+			var command = 'tail -'+lines+' '+filename;
+			var grepLimit = 100;
+			if (!lines || lines < 0) { // searching for a word instead
+				if (target.match(/^["'].+["']$/)) target = target.substring(1,target.length-1);
+				command = "awk '{print NR,$0}' "+filename+" | sort -nr | cut -d' ' -f2- | grep -m"+grepLimit+" -i '"+target.replace(/\\/g,'\\\\\\\\').replace(/["'`]/g,'\'\\$&\'').replace(/[\{\}\[\]\(\)\$\^\.\?\+\-\*]/g,'[$&]')+"'";
+			}
 
-		require('child_process').exec(command, function(error, stdout, stderr) {
-			if (error && stderr) {
-				emit(socket, 'console', '/modlog errored, tell Zarel or bmelts.');
-				console.log('/modlog error: '+error);
-				return false;
-			}
-			if (lines) {
-				if (!stdout) {
-					emit(socket, 'console', 'The modlog is empty. (Weird.)');
-				} else {
-					emit(socket, 'message', 'Displaying the last '+lines+' lines of the Moderator Log:\n\n'+sanitize(stdout));
+			require('child_process').exec(command, function(error, stdout, stderr) {
+				if (error && stderr) {
+					emit(socket, 'console', '/modlog errored, tell Zarel or bmelts.');
+					console.log('/modlog error: '+error);
+					return false;
 				}
-			} else {
-				if (!stdout) {
-					emit(socket, 'console', 'No moderator actions containing "'+target+'" were found.');
+				if (lines) {
+					if (!stdout) {
+						emit(socket, 'console', 'The modlog is empty. (Weird.)');
+					} else {
+						emit(socket, 'message', 'Displaying the last '+lines+' lines of the Moderator Log:\n\n'+sanitize(stdout));
+					}
 				} else {
-					emit(socket, 'message', 'Displaying the last '+grepLimit+' logged actions containing "'+target+'":\n\n'+sanitize(stdout));
+					if (!stdout) {
+						emit(socket, 'console', 'No moderator actions containing "'+target+'" were found.');
+					} else {
+						emit(socket, 'message', 'Displaying the last '+grepLimit+' logged actions containing "'+target+'":\n\n'+sanitize(stdout));
+					}
 				}
-			}
-		});
+			});
+		}
 		return false;
 		break;
 	case 'banword':
