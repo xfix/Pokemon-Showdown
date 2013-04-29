@@ -1649,7 +1649,7 @@ exports.BattleScripts = {
 			'politoed', 'gastrodon', 'magcargo', 'nidoking', 'espeon', 'muk', 'weezing', 'grimer', 'muk', 'swalot', 'crobat', 'hydreigon', 'arbok', 
 			'genesect', 'gliscor', 'aerodactyl', 'ambipom', 'drapion', 'drifblim', 'venomoth', 'spiritomb', 'rattata', 'grumpig', 'blaziken', 'mewtwo',
 			'beautifly', 'skitty', 'venusaur', 'munchlax', 'wartortle', 'glaceon', 'manaphy', 'hitmonchan', 'liepard', 'sableye', 'zapdos', 'heatran',
-			'treecko'
+			'treecko', 'piloswine', 'duskull', 'dusclops', 'dusknoir', 'spiritomb'
 		];
 		seasonalPokemonList = seasonalPokemonList.randomize();
 		var team = [];
