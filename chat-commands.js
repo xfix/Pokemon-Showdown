@@ -61,7 +61,7 @@ function logCommand(command, target) {
 
 function usedRecently(command, target) {
 	var applyTo = {'mute':1, 'ban':1, 'warn':1};
-	if (command in applyTo || command.substr(0, 1) === '!') {
+	if (command in applyTo || (command.substr(0, 1) === '!' && command.substr(1, 2) !== '!')) {
 		if (target.indexOf(',') > -1) {
 			var targets = splitTarget(target);
 			target = targets[0];
@@ -1193,8 +1193,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 	case 'othermetas':
 	case '!om':
 	case '!othermetas':
-		target = target.toLowerCase();
-		target = target.replace(' ', '');
+		target = toId(target);
 		var buffer = '<div class="infobox">';
 		var matched = false;
 		if (!target || target === 'all') {
@@ -1408,7 +1407,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		}
 		
 		// Item
-		if (item.exists && genNumber > 1) {
+		if (item.exists && genNumber > 1 && item.gen <= genNumber) {
 			atLeastOne = true;
 			var itemName = item.name.toLowerCase().replace(' ', '_');
 			showOrBroadcast(user, cmd, room, socket,
@@ -1416,7 +1415,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		}
 		
 		// Ability
-		if (ability.exists && genNumber > 2) {
+		if (ability.exists && genNumber > 2 && ability.gen <= genNumber) {
 			atLeastOne = true;
 			var abilityName = ability.name.toLowerCase().replace(' ', '_');
 			showOrBroadcast(user, cmd, room, socket,
@@ -1424,7 +1423,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		}
 		
 		// Move
-		if (move.exists) {
+		if (move.exists && move.gen <= genNumber) {
 			atLeastOne = true;
 			var moveName = move.name.toLowerCase().replace(' ', '_');
 			showOrBroadcast(user, cmd, room, socket,
@@ -1892,7 +1891,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 				data = data.reverse();
 				var newArray = [];
 				for (var i=0; i<data.length; i++) {
-					if (data[i].indexOf(target) > -1) {
+					if (data[i].toLowerCase().indexOf(target.toLowerCase()) > -1) {
 						newArray.push(data[i]);
 					}
 					if ((lines && newArray.length >= lines) || newArray.length >= 100) break;
