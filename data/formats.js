@@ -246,8 +246,8 @@ exports.BattleFormats = {
 		searchShow: true,
 		debug: true,
 		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Clause', 'Freeze Clause'],
-		banlist: ['Uber', 'Illegal']
+		ruleset: ['Pokemon', 'Standard'],
+		banlist: ['Uber', 'Wrap', 'Fire Spin', 'Clamp', 'Bind']
 	},
 	gen1ubers: {
 		mod: 'gen1',
