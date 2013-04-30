@@ -1,28 +1,8 @@
 /**
- * Gen 1 2 scripts.
+ * Gen 2 scripts.
  */
 exports.BattleScripts = {
-	gen: 1,
-	init: function() {
-		// We check for everything that didn't exist back in gen 2 and make it Illegal
-		for (var i in this.data.Pokedex) {
-			var template = this.getTemplate(i);
-			if (template.gen > 2) template.isNonstandard = true;
-			delete template.abilities['DW'];
-		}
-		for (var i in this.data.Movedex) {
-			var move = this.getMove(i);
-			if (move.gen > 2) move.isNonstandard = true;
-		}
-		for (var i in this.data.Abilities) {
-			var ability = this.getAbility(i);
-			if (ability.gen > 2) ability.isNonstandard = true;
-		}
-		for (var i in this.data.Items) {
-			var item = this.getItem(i);
-			if (item.gen > 2) item.isNonstandard = true;
-		}
-	},
+	gen: 2,
 	getDamage: function(pokemon, target, move, suppressMessages) {
 		// We get the move
 		if (typeof move === 'string') move = this.getMove(move);
