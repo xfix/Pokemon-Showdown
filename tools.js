@@ -654,7 +654,8 @@ module.exports = (function () {
 	Tools.prototype.validateTeam = function(team, format, forceThisMod) {
 		format = this.getFormat(format);
 		if (!forceThisMod && this.isBase && format.mod !== this.currentMod) {
-			return this.mod(format).validateTeam(team, format, true);
+			if (this.mod(format)) return this.mod(format).validateTeam(team, format, true);
+			else return false;
 		}
 		var problems = [];
 		this.getBanlistTable(format);
