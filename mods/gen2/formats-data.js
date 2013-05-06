@@ -609,5 +609,507 @@ exports.BattleFormatsData = {
 	mew: {
 		//viableMoves: {"taunt":1,"willowisp":1,"roost":1,"psychic":1,"nastyplot":1,"aurasphere":1,"fireblast":1,"swordsdance":1,"superpower":1,"zenheadbutt":1,"batonpass":1,"rockpolish":1,"substitute":1,"toxic":1,"icebeam":1,"thunderbolt":1,"earthquake":1,"uturn":1,"stealthrock":1},
 		tier: "Uber"
+	},
+		chikorita: {
+		viableMoves: {"reflect":1,"lightscreen":1,"safeguard":1,"aromatherapy":1,"grasswhistle":1,"leechseed":1,"toxic":1,"gigadrain":1,"synthesis":1},
+		tier: "LC"
+	},
+	bayleef: {
+		viableMoves: {"reflect":1,"lightscreen":1,"safeguard":1,"aromatherapy":1,"grasswhistle":1,"leechseed":1,"toxic":1,"gigadrain":1,"synthesis":1},
+		tier: "NFE"
+	},
+	meganium: {
+		viableMoves: {"reflect":1,"lightscreen":1,"safeguard":1,"aromatherapy":1,"grasswhistle":1,"leechseed":1,"toxic":1,"gigadrain":1,"synthesis":1,"dragontail":1},
+		tier: "NU"
+	},
+	cyndaquil: {
+		viableMoves: {"eruption":1,"fireblast":1,"flamethrower":1,"hiddenpowergrass":1,"naturepower":1},
+		tier: "LC"
+	},
+	quilava: {
+		viableMoves: {"eruption":1,"fireblast":1,"flamethrower":1,"hiddenpowergrass":1,"naturepower":1},
+		tier: "NFE"
+	},
+	typhlosion: {
+		viableMoves: {"eruption":1,"fireblast":1,"flamethrower":1,"hiddenpowergrass":1,"naturepower":1,"focusblast":1},
+		tier: "RU"
+	},
+	totodile: {
+		viableMoves: {"aquajet":1,"waterfall":1,"crunch":1,"icepunch":1,"superpower":1,"dragondance":1,"swordsdance":1},
+		tier: "LC"
+	},
+	croconaw: {
+		viableMoves: {"aquajet":1,"waterfall":1,"crunch":1,"icepunch":1,"superpower":1,"dragondance":1,"swordsdance":1},
+		tier: "NFE"
+	},
+	feraligatr: {
+		viableMoves: {"aquajet":1,"waterfall":1,"crunch":1,"icepunch":1,"dragondance":1,"swordsdance":1,"earthquake":1,"superpower":1},
+		tier: "RU"
+	},
+	sentret: {
+		viableMoves: {"superfang":1,"trick":1,"toxic":1,"uturn":1,"knockoff":1},
+		dreamWorldRelease: true,
+		tier: "LC"
+	},
+	furret: {
+		viableMoves: {"return":1,"uturn":1,"suckerpunch":1,"trick":1,"icepunch":1,"firepunch":1,"thunderpunch":1},
+		dreamWorldRelease: true,
+		tier: "NU"
+	},
+	hoothoot: {
+		viableMoves: {"reflect":1,"toxic":1,"roost":1,"whirlwind":1,"nightshade":1,"magiccoat":1},
+		tier: "LC"
+	},
+	noctowl: {
+		viableMoves: {"roost":1,"whirlwind":1,"airslash":1,"nightshade":1,"toxic":1,"reflect":1,"magiccoat":1},
+		tier: "NU"
+	},
+	ledyba: {
+		viableMoves: {"roost":1,"agility":1,"lightscreen":1,"encore":1,"reflect":1,"knockoff":1,"swordsdance":1,"batonpass":1,"toxic":1},
+		tier: "LC"
+	},
+	ledian: {
+		viableMoves: {"roost":1,"bugbuzz":1,"lightscreen":1,"encore":1,"reflect":1,"knockoff":1,"toxic":1},
+		tier: "NU"
+	},
+	spinarak: {
+		viableMoves: {"agility":1,"toxic":1,"xscissor":1,"toxicspikes":1,"poisonjab":1,"batonpass":1},
+		tier: "LC"
+	},
+	ariados: {
+		viableMoves: {"agility":1,"toxic":1,"xscissor":1,"toxicspikes":1,"poisonjab":1,"batonpass":1},
+		tier: "NU"
+	},
+	chinchou: {
+		viableMoves: {"voltswitch":1,"thunderbolt":1,"hiddenpowergrass":1,"hydropump":1,"icebeam":1,"surf":1,"thunderwave":1,"scald":1,"discharge":1},
+		tier: "LC"
+	},
+	lanturn: {
+		viableMoves: {"voltswitch":1,"thunderbolt":1,"hiddenpowergrass":1,"hydropump":1,"icebeam":1,"surf":1,"thunderwave":1,"scald":1,"discharge":1},
+		tier: "RU"
+	},
+	togepi: {
+		viableMoves: {"protect":1,"fireblast":1,"toxic":1,"thunderwave":1,"softboiled":1},
+		tier: "LC"
+	},
+	togetic: {
+		viableMoves: {"nastyplot":1,"hypervoice":1,"fireblast":1,"batonpass":1,"roost":1},
+		tier: "NU"
+	},
+	togekiss: {
+		viableMoves: {"wish":1,"roost":1,"thunderwave":1,"nastyplot":1,"airslash":1,"aurasphere":1,"batonpass":1},
+		tier: "UU"
+	},
+	natu: {
+		viableMoves: {"thunderwave":1,"roost":1,"toxic":1,"reflect":1,"lightscreen":1,"uturn":1,"wish":1,"psychic":1,"nightshade":1,"uturn":1},
+		tier: "NU"
+	},
+	xatu: {
+		viableMoves: {"thunderwave":1,"toxic":1,"roost":1,"psychic":1,"nightshade":1,"uturn":1,"reflect":1,"lightscreen":1,"wish":1,"calmmind":1},
+		tier: "UU"
+	},
+	mareep: {
+		viableMoves: {"reflect":1,"lightscreen":1,"thunderbolt":1,"discharge":1,"thunderwave":1,"toxic":1,"hiddenpowerice":1,"cottonguard":1},
+		tier: "LC"
+	},
+	flaaffy: {
+		viableMoves: {"reflect":1,"lightscreen":1,"thunderbolt":1,"discharge":1,"thunderwave":1,"toxic":1,"hiddenpowerice":1,"cottonguard":1},
+		tier: "NFE"
+	},
+	ampharos: {
+		viableMoves: {"voltswitch":1,"focusblast":1,"hiddenpowerice":1,"hiddenpowergrass":1,"thunderbolt":1,"healbell":1},
+		tier: "NU"
+	},
+	azurill: {
+		viableMoves: {"scald":1,"return":1,"doubleedge":1,"encore":1,"toxic":1,"protect":1},
+		tier: "LC"
+	},
+	marill: {
+		viableMoves: {"waterfall":1,"return":1,"doubleedge":1,"encore":1,"toxic":1,"aquajet":1,"superpower":1,"icepunch":1,"protect":1},
+		tier: "NFE"
+	},
+	azumarill: {
+		viableMoves: {"waterfall":1,"aquajet":1,"return":1,"doubleedge":1,"icepunch":1,"superpower":1},
+		tier: "UU"
+	},
+	bonsly: {
+		viableMoves: {"rockslide":1,"brickbreak":1,"doubleedge":1,"toxic":1,"stealthrock":1,"suckerpunch":1},
+		tier: "LC"
+	},
+	sudowoodo: {
+		viableMoves: {"hammerarm":1,"stoneedge":1,"earthquake":1,"suckerpunch":1,"woodhammer":1,"explosion":1,"stealthrock":1},
+		tier: "NU"
+	},
+	hoppip: {
+		viableMoves: {"encore":1,"sleeppowder":1,"uturn":1,"toxic":1,"leechseed":1,"substitute":1,"protect":1},
+		tier: "LC"
+	},
+	skiploom: {
+		viableMoves: {"encore":1,"sleeppowder":1,"uturn":1,"toxic":1,"leechseed":1,"substitute":1,"protect":1},
+		tier: "NFE"
+	},
+	jumpluff: {
+		viableMoves: {"encore":1,"sleeppowder":1,"uturn":1,"toxic":1,"leechseed":1,"substitute":1,"gigadrain":1,"acrobatics":1,"synthesis":1},
+		tier: "NU"
+	},
+	aipom: {
+		viableMoves: {"fakeout":1,"return":1,"brickbreak":1,"seedbomb":1,"shadowclaw":1,"uturn":1},
+		tier: "LC"
+	},
+	ambipom: {
+		viableMoves: {"fakeout":1,"return":1,"payback":1,"uturn":1,"lowsweep":1,"switcheroo":1,"seedbomb":1},
+		tier: "UU"
+	},
+	sunkern: {
+		viableMoves: {"sunnyday":1,"gigadrain":1,"solarbeam":1,"hiddenpowerfire":1,"toxic":1,"earthpower":1},
+		tier: "LC"
+	},
+	sunflora: {
+		viableMoves: {"sunnyday":1,"leafstorm":1,"gigadrain":1,"solarbeam":1,"hiddenpowerfire":1,"earthpower":1},
+		tier: "NU"
+	},
+	yanma: {
+		viableMoves: {"bugbuzz":1,"airslash":1,"hiddenpowerground":1,"uturn":1,"protect":1,"gigadrain":1},
+		tier: "NFE"
+	},
+	yanmega: {
+		viableMoves: {"bugbuzz":1,"airslash":1,"hiddenpowerground":1,"uturn":1,"protect":1,"gigadrain":1},
+		tier: "UU"
+	},
+	wooper: {
+		viableMoves: {"recover":1,"earthquake":1,"scald":1,"toxic":1,"stockpile":1,"yawn":1,"protect":1},
+		tier: "LC"
+	},
+	quagsire: {
+		viableMoves: {"recover":1,"earthquake":1,"waterfall":1,"scald":1,"toxic":1,"curse":1,"stoneedge":1,"stockpile":1,"yawn":1},
+		tier: "RU"
+	},
+	murkrow: {
+		viableMoves: {"substitute":1,"suckerpunch":1,"bravebird":1,"heatwave":1,"hiddenpowergrass":1,"roost":1,"darkpulse":1,"thunderwave":1},
+		tier: "NU"
+	},
+	honchkrow: {
+		viableMoves: {"substitute":1,"superpower":1,"suckerpunch":1,"bravebird":1,"roost":1,"hiddenpowergrass":1,"heatwave":1,"pursuit":1},
+		dreamWorldRelease: true,
+		tier: "UU"
+	},
+	misdreavus: {
+		viableMoves: {"nastyplot":1,"substitute":1,"calmmind":1,"willowisp":1,"shadowball":1,"thunderbolt":1,"hiddenpowerfighting":1},
+		eventPokemon: [
+			{"generation":3,"level":10,"gender":"M","moves":["growl","psywave","spite"]}
+		],
+		tier: "NU"
+	},
+	mismagius: {
+		viableMoves: {"nastyplot":1,"substitute":1,"calmmind":1,"willowisp":1,"shadowball":1,"thunderbolt":1,"hiddenpowerfighting":1},
+		dreamWorldRelease: true,
+		tier: "UU"
+	},
+	unown: {
+		viableMoves: {"hiddenpowerpsychic":1},
+		tier: "NU"
+	},
+	wynaut: {
+		viableMoves: {"destinybond":1,"counter":1,"mirrorcoat":1,"encore":1},
+		eventPokemon: [
+			{"generation":3,"level":5,"moves":["splash","charm","encore","tickle"]}
+		],
+		dreamWorldRelease: true,
+		tier: "LC"
+	},
+	wobbuffet: {
+		viableMoves: {"destinybond":1,"counter":1,"mirrorcoat":1,"encore":1},
+		eventPokemon: [
+			{"generation":3,"level":5,"moves":["counter","mirrorcoat","safeguard","destinybond"]},
+			{"generation":3,"level":10,"gender":"M","moves":["counter","mirrorcoat","safeguard","destinybond"]}
+		],
+		dreamWorldRelease: true,
+		tier: "BL"
+	},
+	girafarig: {
+		viableMoves: {"psychic":1,"thunderbolt":1,"calmmind":1,"batonpass":1,"agility":1,"hypervoice":1,"thunderwave":1},
+		dreamWorldRelease: true,
+		tier: "NU"
+	},
+	pineco: {
+		viableMoves: {"rapidspin":1,"toxicspikes":1,"spikes":1,"bugbite":1,"stealthrock":1},
+		eventPokemon: [
+			{"generation":3,"level":10,"gender":"M","moves":["tackle","protect","selfdestruct"]},
+			{"generation":3,"level":22,"moves":["refresh","pinmissile","spikes","counter"]}
+		],
+		dreamWorldRelease: true,
+		tier: "LC"
+	},
+	forretress: {
+		viableMoves: {"rapidspin":1,"toxicspikes":1,"spikes":1,"bugbite":1,"earthquake":1,"voltswitch":1,"stealthrock":1},
+		dreamWorldRelease: true,
+		tier: "OU"
+	},
+	dunsparce: {
+		viableMoves: {"coil":1,"rockslide":1,"bite":1,"headbutt":1,"glare":1,"thunderwave":1,"bodyslam":1,"roost":1},
+		dreamWorldRelease: true,
+		tier: "NU"
+	},
+	gligar: {
+		viableMoves: {"stealthrock":1,"toxic":1,"roost":1,"taunt":1,"swordsdance":1,"earthquake":1,"uturn":1,"stoneedge":1,"acrobatics":1},
+		eventPokemon: [
+			{"generation":3,"level":10,"gender":"M","moves":["poisonsting","sandattack"]}
+		],
+		dreamWorldRelease: true,
+		tier: "UU"
+	},
+	gliscor: {
+		viableMoves: {"swordsdance":1,"acrobatics":1,"earthquake":1,"roost":1,"substitute":1,"taunt":1,"icefang":1,"protect":1,"toxic":1,"stealthrock":1},
+		dreamWorldRelease: true,
+		tier: "OU"
+	},
+	snubbull: {
+		viableMoves: {"thunderwave":1,"return":1,"crunch":1,"closecombat":1},
+		eventPokemon: [
+			{"generation":3,"level":10,"gender":"M","moves":["tackle","scaryface","tailwhip","charm"]}
+		],
+		dreamWorldRelease: true,
+		tier: "LC"
+	},
+	granbull: {
+		viableMoves: {"thunderwave":1,"return":1,"crunch":1,"closecombat":1,"healbell":1,"icepunch":1},
+		dreamWorldRelease: true,
+		tier: "NU"
+	},
+	qwilfish: {
+		viableMoves: {"toxicspikes":1,"waterfall":1,"spikes":1,"swordsdance":1,"poisonjab":1,"painsplit":1,"thunderwave":1,"taunt":1,"destinybond":1},
+		eventPokemon: [
+			{"generation":3,"level":10,"gender":"M","moves":["tackle","poisonsting","harden","minimize"]}
+		],
+		dreamWorldRelease: true,
+		tier: "RU"
+	},
+	shuckle: {
+		viableMoves: {"rollout":1,"acupressure":1,"powersplit":1,"rest":1},
+		eventPokemon: [
+			{"generation":3,"level":10,"gender":"M","moves":["constrict","withdraw","wrap"]},
+			{"generation":3,"level":20,"moves":["substitute","toxic","sludgebomb","encore"]}
+		],
+		dreamWorldRelease: true,
+		tier: "NU"
+	},
+	heracross: {
+		viableMoves: {"closecombat":1,"megahorn":1,"stoneedge":1,"swordsdance":1,"facade":1},
+		dreamWorldRelease: true,
+		tier: "UU"
+	},
+	sneasel: {
+		viableMoves: {"iceshard":1,"icepunch":1,"lowkick":1,"pursuit":1,"swordsdance":1},
+		eventPokemon: [
+			{"generation":3,"level":10,"gender":"M","moves":["scratch","leer","taunt","quickattack"]}
+		],
+		dreamWorldRelease: true,
+		tier: "NU"
+	},
+	weavile: {
+		viableMoves: {"iceshard":1,"icepunch":1,"nightslash":1,"lowkick":1,"pursuit":1,"swordsdance":1},
+		eventPokemon: [
+			{"generation":4,"level":30,"gender":"M","nature":"Jolly","moves":["fakeout","iceshard","nightslash","brickbreak"],"pokeball":"cherishball"}
+		],
+		dreamWorldRelease: true,
+		tier: "UU"
+	},
+	teddiursa: {
+		viableMoves: {"swordsdance":1,"protect":1,"facade":1,"closecombat":1,"firepunch":1,"crunch":1},
+		eventPokemon: [
+			{"generation":3,"level":10,"gender":"M","moves":["scratch","leer","lick"]},
+			{"generation":3,"level":11,"moves":["refresh","metalclaw","leer","return"]}
+		],
+		dreamWorldRelease: true,
+		tier: "LC"
+	},
+	ursaring: {
+		viableMoves: {"swordsdance":1,"protect":1,"facade":1,"closecombat":1,"firepunch":1,"crunch":1},
+		dreamWorldRelease: true,
+		tier: "NU"
+	},
+	slugma: {
+		viableMoves: {"stockpile":1,"recover":1,"lavaplume":1,"willowisp":1,"toxic":1,"hiddenpowergrass":1},
+		dreamWorldRelease: true,
+		tier: "LC"
+	},
+	magcargo: {
+		viableMoves: {"stockpile":1,"recover":1,"lavaplume":1,"willowisp":1,"toxic":1,"hiddenpowergrass":1,"hiddenpowerrock":1,"stealthrock":1,"shellsmash":1,"fireblast":1,"earthpower":1},
+		eventPokemon: [
+			{"generation":3,"level":38,"moves":["refresh","heatwave","earthquake","flamethrower"]}
+		],
+		dreamWorldRelease: true,
+		tier: "NU"
+	},
+	swinub: {
+		viableMoves: {"earthquake":1,"iciclecrash":1,"iceshard":1,"superpower":1,"endeavor":1,"stealthrock":1},
+		eventPokemon: [
+			{"generation":3,"level":22,"moves":["charm","ancientpower","mist","mudshot"]}
+		],
+		dreamWorldRelease: true,
+		tier: "LC"
+	},
+	piloswine: {
+		viableMoves: {"earthquake":1,"iciclecrash":1,"iceshard":1,"superpower":1,"endeavor":1,"stealthrock":1},
+		dreamWorldRelease: true,
+		tier: "NU"
+	},
+	mamoswine: {
+		viableMoves: {"iceshard":1,"earthquake":1,"endeavor":1,"iciclecrash":1,"stoneedge":1,"superpower":1,"stealthrock":1},
+		eventPokemon: [
+			{"generation":5,"level":34,"gender":"M","isDW":true,"moves":["hail","icefang","takedown","doublehit"]}
+		],
+		dreamWorldRelease: true,
+		tier: "OU"
+	},
+	corsola: {
+		viableMoves: {"recover":1,"toxic":1,"powergem":1,"scald":1,"stealthrock":1},
+		eventPokemon: [
+			{"generation":3,"level":5,"moves":["tackle","mudsport"]}
+		],
+		dreamWorldRelease: true,
+		tier: "NU"
+	},
+	remoraid: {
+		viableMoves: {"waterspout":1,"hydropump":1,"fireblast":1,"hiddenpowerground":1,"icebeam":1,"seedbomb":1,"rockblast":1},
+		dreamWorldRelease: true,
+		tier: "LC"
+	},
+	octillery: {
+		viableMoves: {"hydropump":1,"fireblast":1,"icebeam":1,"energyball":1,"rockblast":1,"thunderwave":1},
+		eventPokemon: [
+			{"generation":4,"level":50,"gender":"F","nature":"Serious","abilities":["suctioncups"],"moves":["octazooka","icebeam","signalbeam","hyperbeam"],"pokeball":"cherishball"}
+		],
+		dreamWorldRelease: true,
+		tier: "NU"
+	},
+	delibird: {
+		viableMoves: {"rapidspin":1,"iceshard":1,"icepunch":1,"aerialace":1},
+		eventPokemon: [
+			{"generation":3,"level":10,"gender":"M","moves":["present"]}
+		],
+		dreamWorldRelease: true,
+		tier: "NU"
+	},
+	mantyke: {
+		viableMoves: {"raindance":1,"hydropump":1,"surf":1,"airslash":1,"icebeam":1,"rest":1,"sleeptalk":1,"toxic":1},
+		dreamWorldRelease: true,
+		tier: "LC"
+	},
+	mantine: {
+		viableMoves: {"raindance":1,"hydropump":1,"surf":1,"airslash":1,"icebeam":1,"rest":1,"sleeptalk":1,"toxic":1},
+		eventPokemon: [
+			{"generation":3,"level":10,"gender":"M","moves":["tackle","bubble","supersonic"]}
+		],
+		dreamWorldRelease: true,
+		tier: "NU"
+	},
+	skarmory: {
+		viableMoves: {"whirlwind":1,"bravebird":1,"roost":1,"spikes":1,"stealthrock":1},
+		dreamWorldRelease: true,
+		tier: "OU"
+	},
+	houndour: {
+		viableMoves: {"pursuit":1,"suckerpunch":1,"fireblast":1,"darkpulse":1,"hiddenpowerfighting":1,"nastyplot":1},
+		eventPokemon: [
+			{"generation":3,"level":10,"gender":"M","moves":["leer","ember","howl"]},
+			{"generation":3,"level":17,"moves":["charm","faintattack","ember","roar"]}
+		],
+		dreamWorldRelease: true,
+		tier: "LC"
+	},
+	houndoom: {
+		viableMoves: {"nastyplot":1,"pursuit":1,"darkpulse":1,"suckerpunch":1,"fireblast":1,"hiddenpowerfighting":1},
+		dreamWorldRelease: true,
+		tier: "UU"
+	},
+	phanpy: {
+		viableMoves: {"stealthrock":1,"earthquake":1,"iceshard":1,"headsmash":1,"knockoff":1,"seedbomb":1,"superpower":1},
+		dreamWorldRelease: true,
+		tier: "LC"
+	},
+	donphan: {
+		viableMoves: {"stealthrock":1,"rapidspin":1,"iceshard":1,"earthquake":1,"headsmash":1,"seedbomb":1,"superpower":1},
+		dreamWorldRelease: true,
+		tier: "OU"
+	},
+	stantler: {
+		viableMoves: {"return":1,"megahorn":1,"jumpkick":1,"earthquake":1,"thunderwave":1,"suckerpunch":1},
+		eventPokemon: [
+			{"generation":3,"level":10,"gender":"M","moves":["tackle","leer"]}
+		],
+		dreamWorldRelease: true,
+		tier: "NU"
+	},
+	smeargle: {
+		viableMoves: {"spore":1,"spikes":1,"stealthrock":1,"uturn":1,"destinybond":1,"whirlwind":1},
+		eventPokemon: [
+			{"generation":3,"level":10,"gender":"M","moves":["sketch"]}
+		],
+		dreamWorldRelease: true,
+		tier: "RU"
+	},
+	miltank: {
+		viableMoves: {"milkdrink":1,"stealthrock":1,"bodyslam":1,"healbell":1,"curse":1,"earthquake":1},
+		dreamWorldRelease: true,
+		tier: "NU"
+	},
+	raikou: {
+		viableMoves: {"thunderbolt":1,"hiddenpowerice":1,"aurasphere":1,"calmmind":1,"substitute":1},
+		eventPokemon: [
+			{"generation":3,"level":70,"moves":["quickattack","spark","reflect","crunch"]},
+			{"generation":4,"level":30,"shiny":true,"nature":"Rash","moves":["zapcannon","aurasphere","extremespeed","weatherball"],"pokeball":"cherishball"}
+		],
+		tier: "UU"
+	},
+	entei: {
+		viableMoves: {"extremespeed":1,"flareblitz":1,"ironhead":1,"flamecharge":1,"stoneedge":1},
+		eventPokemon: [
+			{"generation":3,"level":70,"moves":["firespin","stomp","flamethrower","swagger"]},
+			{"generation":4,"level":30,"shiny":true,"nature":"Adamant","moves":["flareblitz","howl","extremespeed","crushclaw"],"pokeball":"cherishball"}
+		],
+		tier: "RU"
+	},
+	suicune: {
+		viableMoves: {"hydropump":1,"icebeam":1,"scald":1,"hiddenpowergrass":1,"hiddenpowerelectric":1,"rest":1,"sleeptalk":1,"roar":1,"calmmind":1},
+		eventPokemon: [
+			{"generation":3,"level":70,"moves":["gust","aurorabeam","mist","mirrorcoat"]},
+			{"generation":4,"level":30,"shiny":true,"nature":"Relaxed","moves":["sheercold","airslash","extremespeed","aquaring"],"pokeball":"cherishball"}
+		],
+		tier: "UU"
+	},
+	larvitar: {
+		viableMoves: {"earthquake":1,"stoneedge":1,"rockpolish":1,"dragondance":1,"superpower":1},
+		eventPokemon: [
+			{"generation":3,"level":20,"moves":["sandstorm","dragondance","bite","outrage"]},
+			{"generation":5,"level":5,"shiny":true,"gender":"M","isDW":false,"moves":["bite","leer","sandstorm","superpower"],"pokeball":"cherishball"}
+		],
+		dreamWorldRelease: true,
+		tier: "LC"
+	},
+	pupitar: {
+		viableMoves: {"earthquake":1,"stoneedge":1,"rockpolish":1,"dragondance":1,"superpower":1},
+		tier: "NFE"
+	},
+	tyranitar: {
+		viableMoves: {"crunch":1,"stoneedge":1,"pursuit":1,"superpower":1,"fireblast":1,"icebeam":1,"stealthrock":1,"aquatail":1},
+		dreamWorldRelease: true,
+		tier: "OU"
+	},
+	lugia: {
+		viableMoves: {"toxic":1,"dragontail":1,"roost":1,"substitute":1,"whirlwind":1,"icebeam":1},
+		dreamWorldRelease: true,
+		dreamWorldPokeball: 'dreamball',
+		tier: "Uber"
+	},
+	hooh: {
+		viableMoves: {"substitute":1,"sacredfire":1,"bravebird":1,"earthquake":1,"roost":1},
+		dreamWorldRelease: true,
+		dreamWorldPokeball: 'dreamball',
+		tier: "Uber"
+	},
+	celebi: {
+		viableMoves: {"nastyplot":1,"psychic":1,"gigadrain":1,"recover":1,"healbell":1,"batonpass":1,"stealthrock":1,"earthpower":1,"hiddenpowerfire":1,"hiddenpowerice":1,"calmmind":1,"leafstorm":1},
+		tier: "Uber"
 	}
 };
