@@ -1,12 +1,449 @@
 const MAX_MESSAGE_LENGTH = 300;
 const TIMEOUT_DEALLOCATE = 15*60*1000;
 
-var BattleRoom = (function() {
-	function BattleRoom(roomid, format, p1, p2, parentid, rated) {
-		format = ''+(format||'');
-
+var GlobalRoom = (function() {
+	function GlobalRoom(roomid) {
 		this.id = roomid;
 		this.i = {};
+
+		// init rooms
+		this.rooms = [];
+		this.numRooms = 0;
+		this.searchers = [];
+
+		// Never do any other file IO synchronously
+		// but this is okay to prevent race conditions as we start up PS
+		this.numRooms = 0;
+		try {
+			this.numRooms = parseInt(fs.readFileSync('logs/lastbattle.txt')) || 0;
+		} catch (e) {} // file doesn't exist [yet]
+
+		// this function is complex in order to avoid several race conditions
+		var self = this;
+		this.writeNumRooms = (function() {
+			var writing = false;
+			var numRooms;	// last numRooms to be written to file
+			var finishWriting = function() {
+				writing = false;
+				if (numRooms !== self.numRooms) {
+					self.writeNumRooms();
+				}
+			};
+			return function() {
+				if (writing) return;
+				numRooms = self.numRooms;
+				writing = true;
+				fs.writeFile('logs/lastbattle.txt.0', '' + numRooms, function() {
+					// rename is atomic on POSIX, but will throw an error on Windows
+					fs.rename('logs/lastbattle.txt.0', 'logs/lastbattle.txt', function(err) {
+						if (err) {
+							// This should only happen on Windows.
+							fs.writeFile('logs/lastbattle.txt', '' + numRooms, finishWriting);
+							return;
+						}
+						finishWriting();
+					});
+				});
+			};
+		})();
+
+		// init users
+		this.users = {};
+
+		(function() {
+			const REPORT_USER_STATS_INTERVAL = 1000 * 60 * 10;
+			self.maxUsers = self.maxUsersDate = 0;
+			var reportUserStats = function() {
+				if (self.maxUsersDate) {
+					LoginServer.request('updateuserstats', {
+						date: self.maxUsersDate,
+						users: self.maxUsers
+					}, function() {});
+					self.maxUsersDate = 0;
+				}
+				LoginServer.request('updateuserstats', {
+					date: Date.now(),
+					users: Object.size(self.users)
+				}, function() {});
+			};
+			setInterval(reportUserStats, REPORT_USER_STATS_INTERVAL);
+		})();
+
+		if (config.reportbattlesperiod) {
+			this.reportBattlesInterval = setInterval(
+				this.reportRecentBattles.bind(this),
+				config.reportbattlesperiod
+			);
+		}
+
+		if (!config.herokuhack) {
+			this.sweepClosedSocketsInterval = setInterval(
+				this.sweepClosedSockets.bind(this),
+				1000 * 60 * 10
+			);
+		}
+	}
+	GlobalRoom.prototype.type = 'global';
+
+	GlobalRoom.prototype.formatListText = '|formats';
+
+	// Deal with phantom xhr-streaming connections.
+	GlobalRoom.prototype.sweepClosedSockets = function() {
+		for (var i in this.users) {
+			var user = this.users[i];
+			user.connections.forEach(function(connection) {
+				if (connection.socket &&
+						connection.socket._session &&
+						connection.socket._session.recv &&
+						(connection.socket._session.recv.protocol === 'xhr-streaming')) {
+					connection.socket._session.recv.didClose();
+				}
+			});
+		}
+	};
+
+	GlobalRoom.prototype.getFormatListText = function() {
+		var formatListText = '|formats';
+		var curSection = '';
+		for (var i in Tools.data.Formats) {
+			var format = Tools.data.Formats[i];
+			if (!format.challengeShow && !format.searchShow) continue;
+
+			var section = format.section;
+			if (section === undefined) section = format.mod;
+			if (!section) section = '';
+			if (section !== curSection) {
+				curSection = section;
+				formatListText += '||'+section;
+			}
+			formatListText += '|'+format.name;
+			if (!format.challengeShow) formatListText += ',,';
+			else if (!format.searchShow) formatListText += ',';
+			if (format.team) formatListText += ',#';
+		}
+		return formatListText;
+	};
+
+	GlobalRoom.prototype.lastRoomReported = null;
+
+	GlobalRoom.prototype.reportRecentBattles = function() {
+		var rooms = this.getRoomList(false, this.lastRoomReported);
+		if (Object.isEmpty(rooms)) return;
+		this.lastRoomReported = null;
+		var entries = [];
+		for (var id in rooms) {
+			var room = rooms[id];
+			this.lastRoomReported = this.lastRoomReported || id;
+			entries.push('|B|' + id + '|' + rooms[id].p1 + '|' + rooms[id].p2);
+		}
+		this.send(entries.join('\n'));
+	};
+
+	GlobalRoom.prototype.getUserList = function() {
+		var buffer = '';
+		var counter = 0;
+		for (var i in this.users) {
+			counter++;
+			if (!this.users[i].named) {
+				continue;
+			}
+			buffer += ','+this.users[i].getIdentity();
+		}
+		if (counter > this.maxUsers) {
+			this.maxUsers = counter;
+			this.maxUsersDate = Date.now();
+		}
+		return ''+counter+buffer;
+	};
+	GlobalRoom.prototype.getRoomList = function(filter, lastRoomReported) {
+		var roomList = {};
+		var total = 0;
+		for (var i=this.rooms.length-1; i>=0; i--) {
+			var room = this.rooms[i];
+			if (lastRoomReported && (room.id === lastRoomReported)) break;
+			if (!room || !room.active) continue;
+			if (filter && filter !== room.format && filter !== true) continue;
+			var roomData = {};
+			if (room.active && room.battle) {
+				if (room.battle.players[0]) roomData.p1 = room.battle.players[0].getIdentity();
+				if (room.battle.players[1]) roomData.p2 = room.battle.players[1].getIdentity();
+			}
+			if (!roomData.p1 || !roomData.p2) continue;
+			roomList[room.id] = roomData;
+
+			total++;
+			if (total >= 6 && !filter) break;
+		}
+		return roomList;
+	};
+	GlobalRoom.prototype.cancelSearch = function(user) {
+		var success = false;
+		user.cancelChallengeTo();
+		for (var i=0; i<this.searchers.length; i++) {
+			var search = this.searchers[i];
+			var searchUser = Users.get(search.userid);
+			if (!searchUser.connected) {
+				this.searchers.splice(i,1);
+				i--;
+				continue;
+			}
+			if (searchUser === user) {
+				this.searchers.splice(i,1);
+				i--;
+				if (!success) {
+					searchUser.emit('update', {searching: false});
+					success = true;
+				}
+				continue;
+			}
+		}
+		return success;
+	};
+	GlobalRoom.prototype.searchBattle = function(user, formatid) {
+		if (!user.connected) return;
+		if (lockdown) {
+			user.emit('message', 'The server is shutting down. Battles cannot be started at this time.');
+			return;
+		}
+
+		formatid = toId(formatid);
+
+		var format = Tools.getFormat(formatid);
+		if (!format.searchShow) {
+			user.emit('message', 'That format is not available for searching.');
+			return;
+		}
+
+		var team = user.team;
+		var problems = Tools.validateTeam(team, formatid);
+		if (problems) {
+			user.emit('message', "Your team was rejected for the following reasons:\n\n- "+problems.join("\n- "));
+			return;
+		}
+
+		// tell the user they've started searching
+		var newSearchData = {
+			format: formatid
+		};
+		user.emit('update', {searching: newSearchData});
+
+		// get the user's rating before actually starting to search
+		var newSearch = {
+			userid: user.userid,
+			formatid: formatid,
+			team: team,
+			rating: 1500,
+			time: new Date().getTime()
+		};
+		var self = this;
+		user.doWithMMR(formatid, function(mmr) {
+			newSearch.rating = mmr;
+			self.addSearch(newSearch, user);
+		});
+	};
+	GlobalRoom.prototype.matchmakingOK = function(search1, search2, user1, user2) {
+		// users must be different
+		if (user1 === user2) return false;
+
+		// users must not have been matched immediately previously
+		if (user1.lastMatch === user2.userid || user2.lastMatch === user1.userid) return false;
+
+		// search must be within range
+		var searchRange = 400, formatid = search1.formatid, elapsed = Math.abs(search1.time-search2.time);
+		if (formatid === 'ou' || formatid === 'randombattle') searchRange = 200;
+		searchRange += elapsed/300; // +1 every .3 seconds
+		if (searchRange > 1200) searchRange = 1200;
+		if (Math.abs(search1.rating - search2.rating) > searchRange) return false;
+
+		user1.lastMatch = user2.userid;
+		user2.lastMatch = user1.userid;
+		return true;
+	};
+	GlobalRoom.prototype.addSearch = function(newSearch, user) {
+		if (!user.connected) return;
+		for (var i=0; i<this.searchers.length; i++) {
+			var search = this.searchers[i];
+			var searchUser = Users.get(search.userid);
+			if (!searchUser || !searchUser.connected) {
+				this.searchers.splice(i,1);
+				i--;
+				continue;
+			}
+			if (newSearch.formatid === search.formatid && searchUser === user) return; // only one search per format
+			if (newSearch.formatid === search.formatid && this.matchmakingOK(search, newSearch, searchUser, user)) {
+				this.cancelSearch(user, true);
+				this.cancelSearch(searchUser, true);
+				user.emit('update', {searching: false});
+				searchUser.team = search.team;
+				user.team = newSearch.team;
+				this.startBattle(searchUser, user, search.formatid, true, search.team, newSearch.team);
+				return;
+			}
+		}
+		this.searchers.push(newSearch);
+	};
+	GlobalRoom.prototype.emit = function(type, message, user) {
+		if (type === 'console' || type === 'update') {
+			if (typeof message === 'string') {
+				message = {message: message};
+			}
+			message.room = this.id;
+		}
+		if (user && user.emit) {
+			user.emit(type, message);
+		} else {
+			for (var i in this.users) {
+				this.users[i].emit(type, message);
+			}
+		}
+	};
+	GlobalRoom.prototype.send = function(message, user) {
+		if (user) {
+			user.sendTo(this, message);
+		} else {
+			for (var i in this.users) {
+				user = this.users[i];
+				user.sendTo(this, message);
+			}
+		}
+	};
+	GlobalRoom.prototype.sendIdentity = function(user) {
+		if (user && user.connected) {
+			this.send('|N|' + user.getIdentity() + '|' + user.userid);
+		}
+	};
+	GlobalRoom.prototype.sendAuth = function(message) {
+		for (var i in this.users) {
+			var user = this.users[i];
+			if (user.connected && user.can('receiveauthmessages')) {
+				user.sendTo(this, message);
+			}
+		}
+	};
+	GlobalRoom.prototype.updateRooms = function(excludeUser) {
+		// do nothing
+	};
+	GlobalRoom.prototype.add = function(message, noUpdate) {
+		rooms.lobby.add(message, noUpdate);
+	};
+	GlobalRoom.prototype.addRaw = function(message) {
+		rooms.lobby.addRaw(message);
+	};
+	GlobalRoom.prototype.initSocket = function(user, socket) {
+		var initdata = {
+			name: user.name,
+			named: user.named,
+			rooms: this.getRoomList()
+		};
+		emit(socket, 'init', initdata);
+		emitData(socket, this.formatListText);
+	};
+	GlobalRoom.prototype.join = function(user, merging) {
+		if (!user) return false; // ???
+		if (this.users[user.userid]) return user;
+
+		this.users[user.userid] = user;
+
+		if (!merging) {
+			var initdata = {
+				name: user.name,
+				named: user.named,
+				rooms: this.getRoomList()
+			};
+			user.emit('init', initdata);
+			this.send(this.formatListText, user);
+		}
+
+		return user;
+	};
+	GlobalRoom.prototype.rename = function(user, oldid, joining) {
+		delete this.users[oldid];
+		this.users[user.userid] = user;
+		return user;
+	};
+	GlobalRoom.prototype.leave = function(user) {
+		if (!user) return; // ...
+		delete this.users[user.userid];
+		this.cancelSearch(user, true);
+	};
+	GlobalRoom.prototype.startBattle = function(p1, p2, format, rated, p1team, p2team) {
+		var newRoom;
+		p1 = Users.get(p1);
+		p2 = Users.get(p2);
+
+		if (!p1 || !p2) {
+			// most likely, a user was banned during the battle start procedure
+			this.cancelSearch(p1, true);
+			this.cancelSearch(p2, true);
+			return;
+		}
+		if (p1 === p2) {
+			this.cancelSearch(p1, true);
+			this.cancelSearch(p2, true);
+			p1.emit('message', 'You can\'t battle your own account. Please use something like Private Browsing to battle yourself.');
+			return;
+		}
+
+		if (lockdown) {
+			this.cancelSearch(p1, true);
+			this.cancelSearch(p2, true);
+			p1.emit('message', 'The server is shutting down. Battles cannot be started at this time.');
+			p2.emit('message', 'The server is shutting down. Battles cannot be started at this time.');
+			return;
+		}
+
+		//console.log('BATTLE START BETWEEN: '+p1.userid+' '+p2.userid);
+		var i = this.numRooms+1;
+		var formaturlid = format.toLowerCase().replace(/[^a-z0-9]+/g,'');
+		while(rooms['battle-'+formaturlid+i]) {
+			i++;
+		}
+		this.numRooms = i;
+		newRoom = this.addRoom('battle-'+formaturlid+'-'+i, format, p1, p2, this.id, rated);
+		p1.joinRoom(newRoom);
+		p2.joinRoom(newRoom);
+		newRoom.joinBattle(p1, p1team);
+		newRoom.joinBattle(p2, p2team);
+		this.cancelSearch(p1, true);
+		this.cancelSearch(p2, true);
+		if (config.reportbattlesperiod) return;
+		if (config.reportbattles) {
+			rooms.lobby.add('|b|'+newRoom.id+'|'+p1.getIdentity()+'|'+p2.getIdentity());
+		} else {
+			this.send('|B|'+newRoom.id+'|'+p1.getIdentity()+'|'+p2.getIdentity());
+		}
+	};
+	GlobalRoom.prototype.addRoom = function(room, format, p1, p2, parent, rated) {
+		room = newRoom(room, format, p1, p2, parent, rated);
+		if (typeof room.i[this.id] !== 'undefined') return;
+		room.i[this.id] = this.rooms.length;
+		this.rooms.push(room);
+		return room;
+	};
+	GlobalRoom.prototype.removeRoom = function(room) {
+		room = getRoom(room);
+		if (!room) return;
+		if (typeof room.i[this.id] !== 'undefined') {
+			this.rooms.splice(room.i[this.id],1);
+			delete room.i[this.id];
+			for (var i=0; i<this.rooms.length; i++) {
+				this.rooms[i].i[this.id] = i;
+			}
+		}
+	};
+	GlobalRoom.prototype.chat = function(user, message, socket) {
+		rooms.lobby.chat(user, message, socket);
+	};
+	return GlobalRoom;
+})();
+
+var BattleRoom = (function() {
+	function BattleRoom(roomid, format, p1, p2, parentid, rated) {
+		this.id = roomid;
+		this.i = {};
+
+		format = ''+(format||'');
+
 		this.users = {};
 		this.format = format;
 		//console.log("NEW BATTLE");
@@ -32,16 +469,15 @@ var BattleRoom = (function() {
 
 		this.sideTicksLeft = [21, 21];
 		if (!rated) this.sideTicksLeft = [28,28];
-		this.sideFreeTicks = [0, 0];
+		this.sideTurnTicks = [0, 0];
 
 		this.log = [];
 	}
+	BattleRoom.prototype.type = 'battle';
 
-	BattleRoom.prototype.type = 'room';
 	BattleRoom.prototype.resetTimer = null;
 	BattleRoom.prototype.resetUser = '';
 	BattleRoom.prototype.destroyTimer = null;
-	BattleRoom.prototype.maxTicksLeft = 0;
 	BattleRoom.prototype.active = false;
 	BattleRoom.prototype.lastUpdate = 0;
 
@@ -177,12 +613,13 @@ var BattleRoom = (function() {
 			}
 		}
 		var roomid = this.id;
+		var self = this;
 		var updates = logs.map(function(log) {
 			return {
 				room: roomid,
-				since: this.lastUpdate,
+				since: self.lastUpdate,
 				updates: log,
-				active: this.active
+				active: self.active
 			};
 		});
 		this.lastUpdate = this.log.length;
@@ -230,7 +667,7 @@ var BattleRoom = (function() {
 			});
 		}); // asychronicity
 		//console.log(JSON.stringify(logData));
-		rooms.lobby.writeNumRooms();
+		rooms.global.writeNumRooms();
 	};
 	BattleRoom.prototype.emit = function(type, message, user) {
 		if (type === 'console' || type === 'update') {
@@ -329,48 +766,38 @@ var BattleRoom = (function() {
 
 		var inactiveSide = this.getInactiveSide();
 
-		// now to see how much time we have left
-		if (this.maxTicksLeft) {
-			this.maxTicksLeft--;
-		}
-
+		var ticksLeft = [0, 0];
 		if (inactiveSide != 1) {
 			// side 0 is inactive
-			if (this.sideFreeTicks[0]) {
-				this.sideFreeTicks[0]--;
-			} else {
-				this.sideTicksLeft[0]--;
-			}
+			this.sideTurnTicks[0]--;
+			this.sideTicksLeft[0]--;
 		}
 		if (inactiveSide != 0) {
 			// side 1 is inactive
-			if (this.sideFreeTicks[1]) {
-				this.sideFreeTicks[1]--;
-			} else {
-				this.sideTicksLeft[1]--;
-			}
+			this.sideTurnTicks[1]--;
+			this.sideTicksLeft[1]--;
 		}
+		ticksLeft[0] = Math.min(this.sideTurnTicks[0], this.sideTicksLeft[0]);
+		ticksLeft[1] = Math.min(this.sideTurnTicks[1], this.sideTicksLeft[1]);
 
-		if (this.maxTicksLeft && this.sideTicksLeft[0] && this.sideTicksLeft[1]) {
+		if (ticksLeft[0] && ticksLeft[1]) {
 			if (inactiveSide == 0 || inactiveSide == 1) {
 				// one side is inactive
-				var ticksLeft = Math.min(this.sideTicksLeft[inactiveSide], this.maxTicksLeft);
+				var inactiveTicksLeft = ticksLeft[inactiveSide];
 				var inactiveUser = this.battle.getPlayer(inactiveSide);
-				if (ticksLeft % 3 == 0 || ticksLeft <= 4) {
-					this.send('|inactive|'+(inactiveUser?inactiveUser.name:'Player '+(inactiveSide+1))+' has '+(ticksLeft*10)+' seconds left.');
+				if (inactiveTicksLeft % 3 == 0 || inactiveTicksLeft <= 4) {
+					this.send('|inactive|'+(inactiveUser?inactiveUser.name:'Player '+(inactiveSide+1))+' has '+(inactiveTicksLeft*10)+' seconds left.');
 				}
 			} else {
 				// both sides are inactive
-				var ticksLeft0 = Math.min(this.sideTicksLeft[0], this.maxTicksLeft);
 				var inactiveUser0 = this.battle.getPlayer(0);
-				if (ticksLeft0 % 3 == 0 || ticksLeft0 <= 4) {
-					this.send('|inactive|'+(inactiveUser0?inactiveUser0.name:'Player 1')+' has '+(ticksLeft0*10)+' seconds left.', inactiveUser0);
+				if (ticksLeft[0] % 3 == 0 || ticksLeft[0] <= 4) {
+					this.send('|inactive|'+(inactiveUser0?inactiveUser0.name:'Player 1')+' has '+(ticksLeft[0]*10)+' seconds left.', inactiveUser0);
 				}
 
-				var ticksLeft1 = Math.min(this.sideTicksLeft[1], this.maxTicksLeft);
 				var inactiveUser1 = this.battle.getPlayer(1);
-				if (ticksLeft1 % 3 == 0 || ticksLeft0 <= 4) {
-					this.send('|inactive|'+(inactiveUser1?inactiveUser1.name:'Player 2')+' has '+(ticksLeft1*10)+' seconds left.', inactiveUser1);
+				if (ticksLeft[1] % 3 == 0 || ticksLeft[1] <= 4) {
+					this.send('|inactive|'+(inactiveUser1?inactiveUser1.name:'Player 2')+' has '+(ticksLeft[1]*10)+' seconds left.', inactiveUser1);
 				}
 			}
 			this.resetTimer = setTimeout(this.kickInactive.bind(this), 10*1000);
@@ -378,8 +805,8 @@ var BattleRoom = (function() {
 		}
 
 		if (inactiveSide < 0) {
-			if (this.sideTicksLeft[0]) inactiveSide = 1;
-			else if (this.sideTicksLeft[1]) inactiveSide = 0;
+			if (ticksLeft[0]) inactiveSide = 1;
+			else if (ticksLeft[1]) inactiveSide = 0;
 		}
 
 		this.forfeit(this.battle.getPlayer(inactiveSide),' lost because of their inactivity.', inactiveSide);
@@ -408,9 +835,8 @@ var BattleRoom = (function() {
 			maxTicksLeft = 6;
 		}
 		if (!this.rated) maxTicksLeft = 30;
-		this.sideFreeTicks = [1,1];
 
-		this.maxTicksLeft = maxTicksLeft;
+		this.sideTurnTicks = [maxTicksLeft, maxTicksLeft];
 
 		var inactiveSide = this.getInactiveSide();
 		if (inactiveSide < 0) {
@@ -418,14 +844,16 @@ var BattleRoom = (function() {
 			if (this.sideTicksLeft[0] < 16) this.sideTicksLeft[0]++;
 			if (this.sideTicksLeft[1] < 16) this.sideTicksLeft[1]++;
 		}
+		this.sideTicksLeft[0]++;
+		this.sideTicksLeft[1]++;
 		if (inactiveSide != 1) {
 			// side 0 is inactive
-			var ticksLeft0 = Math.min(this.sideTicksLeft[0] + 1, this.maxTicksLeft);
+			var ticksLeft0 = Math.min(this.sideTicksLeft[0] + 1, maxTicksLeft);
 			this.send('|inactive|You have '+(ticksLeft0*10)+' seconds to make your decision.', this.battle.getPlayer(0));
 		}
 		if (inactiveSide != 0) {
 			// side 1 is inactive
-			var ticksLeft1 = Math.min(this.sideTicksLeft[1] + 1, this.maxTicksLeft);
+			var ticksLeft1 = Math.min(this.sideTicksLeft[1] + 1, maxTicksLeft);
 			this.send('|inactive|You have '+(ticksLeft1*10)+' seconds to make your decision.', this.battle.getPlayer(1));
 		}
 
@@ -536,9 +964,11 @@ var BattleRoom = (function() {
 		}
 	};
 	BattleRoom.prototype.leaveBattle = function(user) {
-		if (!user) return; // ...
+		if (!user) return false; // ...
 		if (user.battles[this.id]) {
 			this.battle.leave(user);
+		} else {
+			return false;
 		}
 		this.active = this.battle.active;
 		this.update();
@@ -546,6 +976,7 @@ var BattleRoom = (function() {
 		if (this.parentid) {
 			getRoom(this.parentid).updateRooms();
 		}
+		return true;
 	};
 	BattleRoom.prototype.leave = function(user) {
 		if (!user) return; // ...
@@ -567,15 +998,6 @@ var BattleRoom = (function() {
 		}
 
 		this.update();
-	};
-	BattleRoom.prototype.isEmpty = function() {
-		if (this.battle.p1) return false;
-		if (this.battle.p2) return false;
-		return true;
-	};
-	BattleRoom.prototype.isFull = function() {
-		if (this.battle.p1 && this.battle.p2) return true;
-		return false;
 	};
 	BattleRoom.prototype.addCmd = function() {
 		this.log.push('|'+Array.prototype.slice.call(arguments).join('|'));
@@ -616,6 +1038,12 @@ var BattleRoom = (function() {
 				cmd = message;
 				target = '';
 			}
+		}
+		cmd = cmd.toLowerCase();
+
+		if ((cmd === 'me') && !(user.userid in this.users)) {
+			emit(socket, 'message', 'You can\'t send a message to this room without being in it.');
+			return;
 		}
 
 		// Battle actions are actually just text commands that are handled in
@@ -658,6 +1086,10 @@ var BattleRoom = (function() {
 				this.addCmd('chat', user.name, '<<< Access denied.');
 			}
 		} else {
+			if (!(user.userid in this.users)) {
+				emit(socket, 'message', 'You can\'t send a message to this room without being in it.');
+				return;
+			}
 			this.battle.chat(user, message);
 		}
 		this.update();
@@ -672,7 +1104,7 @@ var BattleRoom = (function() {
 		}
 		this.users = null;
 
-		rooms.lobby.removeRoom(this.id);
+		rooms.global.removeRoom(this.id);
 
 		// deallocate children and get rid of references to them
 		if (this.battle) {
@@ -691,81 +1123,50 @@ var BattleRoom = (function() {
 	return BattleRoom;
 })();
 
-function LobbyRoom(roomid) {
-	var selfR = this; // a lobby is like a room, selfR makes things simpler
-	this.type = 'lobby';
-	this.id = roomid;
-	this.i = {};
-	this.log = [];
-	this.lastUpdate = 0;
-	this.users = {};
-	this.rooms = [];
-	this.numRooms = 0;
-	this.searchers = [];
-	this.logFile = null;
-	this.logFilename = '';
-	this.destroyingLog = false;
+var ChatRoom = (function() {
+	function ChatRoom(roomid) {
+		this.id = roomid;
+		this.i = {};
 
-	// Never do any other file IO synchronously
-	// but this is okay to prevent race conditions as we start up PS
-	this.numRooms = 0;
-	try {
-		this.numRooms = parseInt(fs.readFileSync('logs/lastbattle.txt')) || 0;
-	} catch (e) {} // file doesn't exist [yet]
+		this.log = [];
+		this.lastUpdate = 0;
+		this.users = {};
+		this.searchers = [];
+		this.logFile = null;
+		this.logFilename = '';
+		this.destroyingLog = false;
 
-	// this function is complex in order to avoid several race conditions
-	this.writeNumRooms = (function() {
-		var writing = false;
-		var numRooms;	// last numRooms to be written to file
-		var finishWriting = function() {
-			writing = false;
-			if (numRooms !== selfR.numRooms) {
-				selfR.writeNumRooms();
+		if (config.loglobby) {
+			this.rollLogFile(true);
+			this.logEntry = function(entry, date) {
+				var timestamp = (new Date()).format('{HH}:{mm}:{ss} ');
+				this.logFile.write(timestamp + entry + '\n');
+			};
+			this.logEntry('Lobby created');
+			if (config.loguserstats) {
+				setInterval(this.logUserStats.bind(this), config.loguserstats);
 			}
-		};
-		return function() {
-			if (writing) return;
-			numRooms = selfR.numRooms;
-			writing = true;
-			fs.writeFile('logs/lastbattle.txt.0', '' + numRooms, function() {
-				// rename is atomic on POSIX, but will throw an error on Windows
-				fs.rename('logs/lastbattle.txt.0', 'logs/lastbattle.txt', function(err) {
-					if (err) {
-						// This should only happen on Windows.
-						fs.writeFile('logs/lastbattle.txt', '' + numRooms, finishWriting);
-						return;
-					}
-					finishWriting();
-				});
-			});
-		};
-	})();
-
-	this.formatListText = '|formats';
-
-	this.getFormatListText = function() {
-		var formatListText = '|formats';
-		var curSection = '';
-		for (var i in Tools.data.Formats) {
-			var format = Tools.data.Formats[i];
-			if (!format.challengeShow && !format.searchShow) continue;
-
-			var section = format.section;
-			if (section === undefined) section = format.mod;
-			if (!section) section = '';
-			if (section !== curSection) {
-				curSection = section;
-				formatListText += '||'+section;
-			}
-			formatListText += '|'+format.name;
-			if (!format.challengeShow) formatListText += ',,';
-			else if (!format.searchShow) formatListText += ',';
-			if (format.team) formatListText += ',#';
+		} else {
+			this.logEntry = function() { };
 		}
-		return formatListText;
+
+		if (config.reportjoinsperiod) {
+			this.userList = this.getUserList();
+			this.reportJoinsQueue = [];
+			this.reportJoinsInterval = setInterval(
+				this.reportRecentJoins.bind(this), config.reportjoinsperiod
+			);
+		}
+	}
+	ChatRoom.prototype.type = 'chat';
+
+	ChatRoom.prototype.reportRecentJoins = function() {
+		this.userList = this.getUserList();
+		this.send(this.reportJoinsQueue.join('\n'));
+		this.reportJoinsQueue.length = 0;
 	};
 
-	this.rollLogFile = function(sync) {
+	ChatRoom.prototype.rollLogFile = function(sync) {
 		var mkdir = sync ? (function(path, mode, callback) {
 			try {
 				fs.mkdirSync(path, mode);
@@ -774,15 +1175,16 @@ function LobbyRoom(roomid) {
 		}) : fs.mkdir;
 		var date = new Date();
 		var basepath = 'logs/lobby/';
+		var self = this;
 		mkdir(basepath, '0755', function() {
 			var path = date.format('{yyyy}-{MM}');
 			mkdir(basepath + path, '0755', function() {
-				if (selfR.destroyingLog) return;
+				if (self.destroyingLog) return;
 				path += '/' + date.format('{yyyy}-{MM}-{dd}') + '.txt';
-				if (path !== selfR.logFilename) {
-					selfR.logFilename = path;
-					if (selfR.logFile) selfR.logFile.destroySoon();
-					selfR.logFile = fs.createWriteStream(basepath + path, {flags: 'a'});
+				if (path !== self.logFilename) {
+					self.logFilename = path;
+					if (self.logFile) self.logFile.destroySoon();
+					self.logFile = fs.createWriteStream(basepath + path, {flags: 'a'});
 					// Create a symlink to today's lobby log.
 					// These operations need to be synchronous, but it's okay
 					// because this code is only executed once every 24 hours.
@@ -799,30 +1201,30 @@ function LobbyRoom(roomid) {
 				}
 				var timestamp = +date;
 				date.advance('1 hour').reset('minutes').advance('1 second');
-				setTimeout(selfR.rollLogFile, +date - timestamp);
+				setTimeout(self.rollLogFile.bind(self), +date - timestamp);
 			});
 		});
 	};
-	this.destroyLog = function(initialCallback, finalCallback) {
-		selfR.destroyingLog = true;
+	ChatRoom.prototype.destroyLog = function(initialCallback, finalCallback) {
+		this.destroyingLog = true;
 		initialCallback();
-		if (selfR.logFile) {
-			selfR.logEntry = function() { };
-			selfR.logFile.on('close', finalCallback);
-			selfR.logFile.destroySoon();
+		if (this.logFile) {
+			this.logEntry = function() { };
+			this.logFile.on('close', finalCallback);
+			this.logFile.destroySoon();
 		} else {
 			finalCallback();
 		}
 	};
-	this.logUserStats = function() {
+	ChatRoom.prototype.logUserStats = function() {
 		var total = 0;
 		var guests = 0;
 		var groups = {};
 		config.groupsranking.forEach(function(group) {
 			groups[group] = 0;
 		});
-		for (var i in selfR.users) {
-			var user = selfR.users[i];
+		for (var i in this.users) {
+			var user = this.users[i];
 			++total;
 			if (!user.named) {
 				++guests;
@@ -833,248 +1235,54 @@ function LobbyRoom(roomid) {
 		for (var i in groups) {
 			entry += '|' + i + ':' + groups[i];
 		}
-		selfR.logEntry(entry);
-	};
-	if (config.loglobby) {
-		this.rollLogFile(true);
-		this.logEntry = function(entry, date) {
-			var timestamp = (new Date()).format('{HH}:{mm}:{ss} ');
-			selfR.logFile.write(timestamp + entry + '\n');
-		};
-		this.logEntry('Lobby created');
-		if (config.loguserstats) {
-			setInterval(this.logUserStats, config.loguserstats);
-		}
-	} else {
-		this.logEntry = function() { };
-	}
-
-	(function() {
-		const REPORT_USER_STATS_INTERVAL = 1000 * 60 * 10;
-		selfR.maxUsers = selfR.maxUsersDate = 0;
-		var reportUserStats = function() {
-			if (selfR.maxUsersDate) {
-				LoginServer.request('updateuserstats', {
-					date: selfR.maxUsersDate,
-					users: selfR.maxUsers
-				}, function() {});
-				selfR.maxUsersDate = 0;
-			}
-			LoginServer.request('updateuserstats', {
-				date: Date.now(),
-				users: Object.size(selfR.users)
-			}, function() {});
-		};
-		setInterval(reportUserStats, REPORT_USER_STATS_INTERVAL);
-	})();
-
-	this.lastRoomReported = null;
-
-	this.reportRecentBattles = function() {
-		var rooms = selfR.getRoomList(false, selfR.lastRoomReported);
-		if (Object.isEmpty(rooms)) return;
-		selfR.lastRoomReported = null;
-		var entries = [];
-		for (var id in rooms) {
-			var room = rooms[id];
-			selfR.lastRoomReported = selfR.lastRoomReported || id;
-			entries.push('|B|' + id + '|' + rooms[id].p1 + '|' + rooms[id].p2);
-		}
-		selfR.send(entries.join('\n'));
+		this.logEntry(entry);
 	};
 
-	if (config.reportbattlesperiod) {
-		this.reportBattlesInterval = setInterval(
-			selfR.reportRecentBattles,
-			config.reportbattlesperiod
-		);
-	}
-
-	this.getUpdate = function(since, omitUsers, omitRoomList) {
-		var update = {room: roomid};
-		var i = since;
-		if (!i) i = selfR.log.length - 100;
-		if (i<0) i = 0;
-		update.logStart = i;
-		update.logUpdate = [];
-		for (;i<selfR.log.length;i++) {
-			update.logUpdate.push(selfR.log[i]);
-		}
-		if (!omitRoomList) update.rooms = selfR.getRoomList();
-		if (!omitUsers) update.u = selfR.getUserList();
-		return update;
-	};
-	this.getUserList = function() {
+	ChatRoom.prototype.getUserList = function() {
 		var buffer = '';
 		var counter = 0;
-		for (var i in selfR.users) {
+		for (var i in this.users) {
 			counter++;
-			if (!selfR.users[i].named) {
+			if (!this.users[i].named) {
 				continue;
 			}
-			buffer += ','+selfR.users[i].getIdentity();
+			buffer += ','+this.users[i].getIdentity();
 		}
-		if (counter > selfR.maxUsers) {
-			selfR.maxUsers = counter;
-			selfR.maxUsersDate = Date.now();
+		if (counter > this.maxUsers) {
+			this.maxUsers = counter;
+			this.maxUsersDate = Date.now();
 		}
 		return ''+counter+buffer;
 	};
-	this.getRoomList = function(filter, lastRoomReported) {
-		var roomList = {};
-		var total = 0;
-		for (var i=selfR.rooms.length-1; i>=0; i--) {
-			var room = selfR.rooms[i];
-			if (lastRoomReported && (room.id === lastRoomReported)) break;
-			if (!room || !room.active) continue;
-			if (filter && filter !== room.format && filter !== true) continue;
-			var roomData = {};
-			if (room.active && room.battle) {
-				if (room.battle.players[0]) roomData.p1 = room.battle.players[0].getIdentity();
-				if (room.battle.players[1]) roomData.p2 = room.battle.players[1].getIdentity();
-			}
-			if (!roomData.p1 || !roomData.p2) continue;
-			roomList[room.id] = roomData;
-
-			total++;
-			if (total >= 6 && !filter) break;
-		}
-		return roomList;
-	};
-	this.cancelSearch = function(user) {
-		var success = false;
-		user.cancelChallengeTo();
-		for (var i=0; i<selfR.searchers.length; i++) {
-			var search = selfR.searchers[i];
-			var searchUser = Users.get(search.userid);
-			if (!searchUser.connected) {
-				selfR.searchers.splice(i,1);
-				i--;
-				continue;
-			}
-			if (searchUser === user) {
-				selfR.searchers.splice(i,1);
-				i--;
-				if (!success) {
-					searchUser.emit('update', {searching: false});
-					success = true;
-				}
-				continue;
-			}
-		}
-		return success;
-	};
-	this.searchBattle = function(user, formatid) {
-		if (!user.connected) return;
-		if (lockdown) {
-			user.emit('message', 'The server is shutting down. Battles cannot be started at this time.');
-			return;
-		}
-
-		formatid = toId(formatid);
-
-		var format = Tools.getFormat(formatid);
-		if (!format.searchShow) {
-			user.emit('message', 'That format is not available for searching.');
-			return;
-		}
-
-		var team = user.team;
-		var problems = Tools.validateTeam(team, formatid);
-		if (problems) {
-			user.emit('message', "Your team was rejected for the following reasons:\n\n- "+problems.join("\n- "));
-			return;
-		}
-
-		// tell the user they've started searching
-		var newSearchData = {
-			format: formatid
-		};
-		user.emit('update', {searching: newSearchData});
-
-		// get the user's rating before actually starting to search
-		var newSearch = {
-			userid: user.userid,
-			formatid: formatid,
-			team: team,
-			rating: 1500,
-			time: new Date().getTime()
-		};
-		user.doWithMMR(formatid, function(mmr) {
-			newSearch.rating = mmr;
-			selfR.addSearch(newSearch, user);
-		});
-	};
-	this.matchmakingOK = function(search1, search2, user1, user2) {
-		// users must be different
-		if (user1 === user2) return false;
-
-		// users must not have been matched immediately previously
-		if (user1.lastMatch === user2.userid || user2.lastMatch === user1.userid) return false;
-
-		// search must be within range
-		var searchRange = 400, formatid = search1.formatid, elapsed = Math.abs(search1.time-search2.time);
-		if (formatid === 'ou' || formatid === 'randombattle') searchRange = 200;
-		searchRange += elapsed/300; // +1 every .3 seconds
-		if (searchRange > 1200) searchRange = 1200;
-		if (Math.abs(search1.rating - search2.rating) > searchRange) return false;
-
-		user1.lastMatch = user2.userid;
-		user2.lastMatch = user1.userid;
-		return true;
-	};
-	this.addSearch = function(newSearch, user) {
-		if (!user.connected) return;
-		for (var i=0; i<selfR.searchers.length; i++) {
-			var search = selfR.searchers[i];
-			var searchUser = Users.get(search.userid);
-			if (!searchUser || !searchUser.connected) {
-				selfR.searchers.splice(i,1);
-				i--;
-				continue;
-			}
-			if (newSearch.formatid === search.formatid && searchUser === user) return; // only one search per format
-			if (newSearch.formatid === search.formatid && this.matchmakingOK(search, newSearch, searchUser, user)) {
-				selfR.cancelSearch(user, true);
-				selfR.cancelSearch(searchUser, true);
-				user.emit('update', {searching: false});
-				searchUser.team = search.team;
-				user.team = newSearch.team;
-				selfR.startBattle(searchUser, user, search.formatid, true, search.team, newSearch.team);
-				return;
-			}
-		}
-		selfR.searchers.push(newSearch);
-	};
-	this.update = function() {
-		if (selfR.log.length <= selfR.lastUpdate) return;
-		var entries = selfR.log.slice(selfR.lastUpdate);
+	ChatRoom.prototype.update = function() {
+		if (this.log.length <= this.lastUpdate) return;
+		var entries = this.log.slice(this.lastUpdate);
 		var update = entries.join('\n');
-		if (selfR.log.length > 100) {
-			selfR.log.splice(0, selfR.log.length - 100);
+		if (this.log.length > 100) {
+			this.log.splice(0, this.log.length - 100);
 		}
-		selfR.lastUpdate = selfR.log.length;
+		this.lastUpdate = this.log.length;
 
-		selfR.send(update);
+		this.send(update);
 	};
-	this.emit = function(type, message, user) {
+	ChatRoom.prototype.emit = function(type, message, user) {
 		if (type === 'console' || type === 'update') {
 			if (typeof message === 'string') {
 				message = {message: message};
 			}
-			message.room = selfR.id;
+			message.room = this.id;
 		}
 		if (user && user.emit) {
 			user.emit(type, message);
 		} else {
-			for (var i in selfR.users) {
-				selfR.users[i].emit(type, message);
+			for (var i in this.users) {
+				this.users[i].emit(type, message);
 			}
 		}
 	};
-	this.send = function(message, user) {
+	ChatRoom.prototype.send = function(message, user) {
 		if (user) {
-			user.sendTo(selfR, message);
+			user.sendTo(this, message);
 		} else {
 			var isPureLobbyChat = false;
 			if (message.indexOf('\n') < 0) {
@@ -1082,178 +1290,127 @@ function LobbyRoom(roomid) {
 					message.substr(0,10) === '|c|~|/data' ||
 					message.substr(0,24) === '|raw|<div class="infobox';
 			}
-			for (var i in selfR.users) {
-				user = selfR.users[i];
+			for (var i in this.users) {
+				user = this.users[i];
 				if (isPureLobbyChat && user.blockLobbyChat) continue;
-				user.sendTo(selfR, message);
+				user.sendTo(this, message);
 			}
 		}
 	};
-	this.sendIdentity = function(user) {
+	ChatRoom.prototype.sendIdentity = function(user) {
 		if (user && user.connected) {
-			selfR.send('|N|' + user.getIdentity() + '|' + user.userid);
-		}
-	};
-	this.sendAuth = function(message) {
-		for (var i in selfR.users) {
-			var user = selfR.users[i];
-			if (user.connected && user.can('receiveauthmessages')) {
-				user.sendTo(selfR, message);
+			var entry = '|N|' + user.getIdentity() + '|' + user.userid;
+			if (config.reportjoinsperiod) {
+				this.reportJoinsQueue.push(entry);
+			} else {
+				this.send(entry);
 			}
 		}
 	};
-	this.updateRooms = function(excludeUser) {
-		// do nothing
+	ChatRoom.prototype.sendAuth = function(message) {
+		for (var i in this.users) {
+			var user = this.users[i];
+			if (user.connected && user.can('receiveauthmessages')) {
+				user.sendTo(this, message);
+			}
+		}
 	};
-	this.add = function(message, noUpdate) {
-		selfR.log.push(message);
+	ChatRoom.prototype.add = function(message, noUpdate) {
+		this.log.push(message);
 		this.logEntry(message);
 		if (!noUpdate) {
-			selfR.update();
+			this.update();
 		}
 	};
-	this.addRaw = function(message) {
-		selfR.add('|raw|'+message);
+	ChatRoom.prototype.addRaw = function(message) {
+		this.add('|raw|'+message);
 	};
-	this.initSocket = function(user, socket) {
+	ChatRoom.prototype.initSocket = function(user, socket) {
 		var initdata = {
 			name: user.name,
 			named: user.named,
-			room: selfR.id,
-			rooms: selfR.getRoomList(),
-			u: selfR.getUserList(),
-			roomType: 'lobby',
-			log: selfR.log.slice(-25)
+			room: this.id,
+			roomType: 'lobby'
 		};
 		emit(socket, 'init', initdata);
+		var userList = this.userList ? this.userList : this.getUserList();
+		sendData(socket, '>'+this.id+'\n|init|chat\n|users|'+userList+'\n'+this.log.slice(-25).join('\n'));
 	};
-	this.join = function(user) {
+	ChatRoom.prototype.join = function(user, merging) {
 		if (!user) return false; // ???
-		if (selfR.users[user.userid]) return user;
+		if (this.users[user.userid]) return user;
 
-		selfR.users[user.userid] = user;
+		this.users[user.userid] = user;
 		if (user.named && config.reportjoins) {
-			selfR.add('|j|'+user.getIdentity(), true);
-			selfR.update(user);
+			this.add('|j|'+user.getIdentity(), true);
+			this.update(user);
 		} else if (user.named) {
 			var entry = '|J|'+user.getIdentity();
-			selfR.send(entry);
-			selfR.logEntry(entry);
-		}
-
-		var initdata = {
-			name: user.name,
-			named: user.named,
-			room: selfR.id,
-			rooms: selfR.getRoomList(),
-			u: selfR.getUserList(),
-			roomType: 'lobby',
-			log: selfR.log.slice(-100).include(this.formatListText)
-		};
-		user.emit('init', initdata);
-
-		return user;
-	};
-	this.rename = function(user, oldid, joining) {
-		delete selfR.users[oldid];
-		selfR.users[user.userid] = user;
-		if (joining && config.reportjoins) {
-			selfR.add('|j|'+user.getIdentity());
-		} else {
-			var entry;
-			if (joining) {
-				entry = '|J|' + user.getIdentity();
-			} else if (!user.named) {
-				entry = '|L| ' + oldid;
+			if (config.reportjoinsperiod) {
+				this.reportJoinsQueue.push(entry);
 			} else {
-				entry = '|N|' + user.getIdentity() + '|' + oldid;
+				this.send(entry);
 			}
-			selfR.send(entry);
-			selfR.logEntry(entry);
+			this.logEntry(entry);
+		}
+
+		if (!merging) {
+			var initdata = {
+				name: user.name,
+				named: user.named,
+				room: this.id,
+				roomType: 'lobby'
+			};
+			user.emit('init', initdata);
+			var userList = this.userList ? this.userList : this.getUserList();
+			this.send('|init|chat\n|users|'+userList+'\n'+this.log.slice(-100).join('\n'), user);
+		}
+
+		return user;
+	};
+	ChatRoom.prototype.rename = function(user, oldid, joining) {
+		delete this.users[oldid];
+		this.users[user.userid] = user;
+		var entry;
+		if (joining) {
+			if (config.reportjoins) {
+				entry = '|j|' + user.getIdentity();
+			} else {
+				entry = '|J|' + user.getIdentity();
+			}
+		} else if (!user.named) {
+			entry = '|L| ' + oldid;
+		} else {
+			entry = '|N|' + user.getIdentity() + '|' + oldid;
+		}
+		if (config.reportjoins) {
+			this.add(entry);
+		} else {
+			if (config.reportjoinsperiod) {
+				this.reportJoinsQueue.push(entry);
+			} else {
+				this.send(entry);
+			}
+			this.logEntry(entry);
 		}
 		return user;
 	};
-	this.leave = function(user) {
+	ChatRoom.prototype.leave = function(user) {
 		if (!user) return; // ...
-		delete selfR.users[user.userid];
-		selfR.cancelSearch(user, true);
+		delete this.users[user.userid];
 		if (config.reportjoins) {
-			selfR.add('|l|'+user.getIdentity());
+			this.add('|l|'+user.getIdentity());
 		} else if (user.named) {
 			var entry = '|L|' + user.getIdentity();
-			selfR.send(entry);
-			selfR.logEntry(entry);
-		}
-	};
-	this.startBattle = function(p1, p2, format, rated, p1team, p2team) {
-		var newRoom;
-		p1 = Users.get(p1);
-		p2 = Users.get(p2);
-
-		if (!p1 || !p2) {
-			// most likely, a user was banned during the battle start procedure
-			selfR.cancelSearch(p1, true);
-			selfR.cancelSearch(p2, true);
-			return;
-		}
-		if (p1 === p2) {
-			selfR.cancelSearch(p1, true);
-			selfR.cancelSearch(p2, true);
-			p1.emit('message', 'You can\'t battle your own account. Please use something like Private Browsing to battle yourself.');
-			return;
-		}
-
-		if (lockdown) {
-			selfR.cancelSearch(p1, true);
-			selfR.cancelSearch(p2, true);
-			p1.emit('message', 'The server is shutting down. Battles cannot be started at this time.');
-			p2.emit('message', 'The server is shutting down. Battles cannot be started at this time.');
-			selfR.update();
-			return;
-		}
-
-		//console.log('BATTLE START BETWEEN: '+p1.userid+' '+p2.userid);
-		var i = selfR.numRooms+1;
-		var formaturlid = format.toLowerCase().replace(/[^a-z0-9]+/g,'');
-		while(rooms['battle-'+formaturlid+i]) {
-			i++;
-		}
-		selfR.numRooms = i;
-		newRoom = selfR.addRoom('battle-'+formaturlid+'-'+i, format, p1, p2, selfR.id, rated);
-		p1.joinRoom(newRoom);
-		p2.joinRoom(newRoom);
-		newRoom.joinBattle(p1, p1team);
-		newRoom.joinBattle(p2, p2team);
-		selfR.cancelSearch(p1, true);
-		selfR.cancelSearch(p2, true);
-		if (config.reportbattlesperiod) return;
-		if (config.reportbattles) {
-			selfR.add('|b|'+newRoom.id+'|'+p1.getIdentity()+'|'+p2.getIdentity());
-		} else {
-			selfR.send('|B|'+newRoom.id+'|'+p1.getIdentity()+'|'+p2.getIdentity());
-		}
-	};
-	this.addRoom = function(room, format, p1, p2, parent, rated) {
-		room = newRoom(room, format, p1, p2, parent, rated);
-		if (typeof room.i[selfR.id] !== 'undefined') return;
-		room.i[selfR.id] = selfR.rooms.length;
-		selfR.rooms.push(room);
-		return room;
-	};
-	this.removeRoom = function(room) {
-		room = getRoom(room);
-		if (!room) return;
-		if (typeof room.i[selfR.id] !== 'undefined') {
-			selfR.rooms.splice(room.i[selfR.id],1);
-			delete room.i[selfR.id];
-			for (var i=0; i<selfR.rooms.length; i++) {
-				selfR.rooms[i].i[selfR.id] = i;
+			if (config.reportjoinsperiod) {
+				this.reportJoinsQueue.push(entry);
+			} else {
+				this.send(entry);
 			}
+			this.logEntry(entry);
 		}
 	};
-	this.isEmpty = function() { return false; };
-	this.isFull = function() { return false; };
-	this.chat = function(user, message, socket) {
+	ChatRoom.prototype.chat = function(user, message, socket) {
 		if (!message || !message.trim || !message.trim().length) return;
 		if (message.substr(0,5) !== '/utm ' && message.substr(0,5) !== '/trn ' && message.length > MAX_MESSAGE_LENGTH && !user.can('ignorelimits')) {
 			emit(socket, 'message', "Your message is too long:\n\n"+message);
@@ -1279,39 +1436,50 @@ function LobbyRoom(roomid) {
 				target = '';
 			}
 		}
+		cmd = cmd.toLowerCase();
 
-		var parsedMessage = parseCommand(user, cmd, target, selfR, socket, message);
+		if ((cmd === 'me') && !(user.userid in this.users)) {
+			emit(socket, 'message', 'You can\'t send a message to this room without being in it.');
+			return;
+		}
+
+		var parsedMessage = parseCommand(user, cmd, target, this, socket, message);
 		if (typeof parsedMessage === 'string') message = parsedMessage;
 		if (parsedMessage === false) {
 			// do nothing
 		} else if (message.substr(0,3) === '>> ') {
 			var cmd = message.substr(3);
 
-			var room = selfR;
+			var room = this;
 			var me = user;
-			selfR.add('|c|'+user.getIdentity()+'|>> '+cmd, true);
+			this.add('|c|'+user.getIdentity()+'|>> '+cmd, true);
 			if (user.checkConsolePermission(socket)) {
 				try {
-					selfR.add('|c|'+user.getIdentity()+'|<< '+eval(cmd), true);
+					this.add('|c|'+user.getIdentity()+'|<< '+eval(cmd), true);
 				} catch (e) {
-					selfR.add('|c|'+user.getIdentity()+'|<< error: '+e.message, true);
+					this.add('|c|'+user.getIdentity()+'|<< error: '+e.message, true);
 					var stack = (""+e.stack).split("\n");
 					for (var i=0; i<stack.length; i++) {
-						user.sendTo(selfR.id, '<< '+stack[i]);
+						user.sendTo(this.id, '<< '+stack[i]);
 					}
 				}
 			} else {
-				selfR.add('|c|'+user.getIdentity()+'|<< Access denied.', true);
+				this.add('|c|'+user.getIdentity()+'|<< Access denied.', true);
 			}
 		} else if (!user.muted) {
-			selfR.add('|c|'+user.getIdentity()+'|'+message, true);
+			if (!(user.userid in this.users)) {
+				emit(socket, 'message', 'You can\'t send a message to this room without being in it.');
+				return;
+			}
+			this.add('|c|'+user.getIdentity()+'|'+message, true);
 		}
-		selfR.update();
+		this.update();
 	};
-}
+	return ChatRoom;
+})();
 
 // to make sure you don't get null returned, pass the second argument
-getRoom = function(roomid, fallback) {
+var getRoom = function(roomid, fallback) {
 	if (roomid && roomid.id) return roomid;
 	if (!roomid) roomid = 'default';
 	if (!rooms[roomid] && fallback) {
@@ -1319,7 +1487,7 @@ getRoom = function(roomid, fallback) {
 	}
 	return rooms[roomid];
 };
-newRoom = function(roomid, format, p1, p2, parent, rated) {
+var newRoom = function(roomid, format, p1, p2, parent, rated) {
 	if (roomid && roomid.id) return roomid;
 	if (!p1 || !p2) return false;
 	if (!roomid) roomid = 'default';
@@ -1330,14 +1498,18 @@ newRoom = function(roomid, format, p1, p2, parent, rated) {
 	return rooms[roomid];
 };
 
-rooms = {};
-console.log("NEW LOBBY: lobby");
-rooms.lobby = new LobbyRoom('lobby');
+var rooms = {};
+console.log("NEW GLOBAL: global");
+rooms.global = new GlobalRoom('global');
+console.log("NEW CHATROOM: lobby");
+rooms.lobby = new ChatRoom('lobby');
 
+exports.GlobalRoom = GlobalRoom;
 exports.BattleRoom = BattleRoom;
-exports.LobbyRoom = LobbyRoom;
+exports.ChatRoom = ChatRoom;
 
 exports.get = getRoom;
 exports.create = newRoom;
 exports.rooms = rooms;
+exports.global = rooms.global;
 exports.lobby = rooms.lobby;

@@ -4,26 +4,6 @@
  */
 exports.BattleScripts = {
 	gen: 1,
-	init: function() {
-		// We check for everything that didn't exist back in gen 1 and make it Illegal
-		for (var i in this.data.Pokedex) {
-			var template = this.getTemplate(i);
-			if (template.gen > 1) template.isNonstandard = true;
-			delete template.abilities['DW'];
-		}
-		for (var i in this.data.Movedex) {
-			var move = this.getMove(i);
-			if (move.gen > 1) move.isNonstandard = true;
-		}
-		for (var i in this.data.Abilities) {
-			var ability = this.getAbility(i);
-			if (ability.gen > 1) ability.isNonstandard = true;
-		}
-		for (var i in this.data.Items) {
-			var item = this.getItem(i);
-			if (item.gen > 1) item.isNonstandard = true;
-		}
-	},
 	debug: function(activity) {
 		if (this.getFormat().debug) {
 			this.add('debug', activity);

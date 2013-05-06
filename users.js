@@ -72,6 +72,7 @@ function connectUser(socket, room) {
 			connection.sendTo(null, '|challstr|' + keyid + '|' + connection.challenge);
 		}
 	});
+	user.joinRoom('global', connection);
 	if (room) {
 		user.joinRoom(room, connection);
 	}
@@ -183,8 +184,7 @@ var User = (function () {
 	};
 	User.prototype.sendTo = function(roomid, data) {
 		if (roomid && roomid.id) roomid = roomid.id;
-		if (!roomid) roomid = 'lobby';
-		if (roomid !== 'lobby') data = '>'+roomid+'\n'+data;
+		if (roomid && roomid !== 'global' && roomid !== 'lobby') data = '>'+roomid+'\n'+data;
 		for (var i=0; i<this.connections.length; i++) {
 			if (roomid && !this.connections[i].rooms[roomid]) continue;
 			sendData(this.connections[i].socket, data);
@@ -591,7 +591,7 @@ var User = (function () {
 		for (var i in connection.rooms) {
 			var room = connection.rooms[i];
 			if (!this.roomCount[i]) {
-				room.join(this);
+				room.join(this, true);
 				this.roomCount[i] = 0;
 			}
 			this.roomCount[i]++;
@@ -642,7 +642,7 @@ var User = (function () {
 				}
 				connection = this.connections[i];
 				for (var j in connection.rooms) {
-					this.leaveRoom(connection.rooms[j], socket);
+					this.leaveRoom(connection.rooms[j], socket, true);
 				}
 				connection.user = null;
 				--this.ips[connection.ip];
@@ -781,7 +781,7 @@ var User = (function () {
 			connection = this.connections[i];
 			connection.user = null;
 			for (var j in connection.rooms) {
-				this.leaveRoom(connection.rooms[j], connection);
+				this.leaveRoom(connection.rooms[j], connection, true);
 			}
 			connection.socket.end();
 			--this.ips[connection.ip];
@@ -797,8 +797,7 @@ var User = (function () {
 		}
 	};
 	User.prototype.joinRoom = function(room, socket) {
-		roomid = room?(room.id||room):'';
-		room = Rooms.get(room,'lobby');
+		room = Rooms.get(room);
 		if (!room) return false;
 		var connection = null;
 		//console.log('JOIN ROOM: '+this.userid+' '+room.id);
@@ -806,7 +805,7 @@ var User = (function () {
 			for (var i=0; i<this.connections.length;i++) {
 				// only join full clients, not pop-out single-room
 				// clients
-				if (this.connections[i].rooms['lobby']) {
+				if (this.connections[i].rooms['global']) {
 					this.joinRoom(room, this.connections[i]);
 				}
 			}
@@ -815,8 +814,7 @@ var User = (function () {
 			connection = socket;
 			socket = connection.socket;
 		}
-		if (!socket) return false;
-		else if (!connection) {
+		if (!connection) {
 			connection = this.getConnectionFromSocket(socket);
 			if (!connection) return false;
 		}
@@ -830,12 +828,16 @@ var User = (function () {
 				room.initSocket(this, socket);
 			}
 		} else if (room.id === 'lobby') {
-			emit(connection.socket, 'init', {room: roomid, notFound: true});
+			emit(connection.socket, 'init', {room: room.id, notFound: true});
 		}
 		return true;
 	};
-	User.prototype.leaveRoom = function(room, socket) {
+	User.prototype.leaveRoom = function(room, socket, force) {
 		room = Rooms.get(room);
+		if (room.id === 'global' && !force) {
+			// you can't leave the global room except while disconnecting
+			return false;
+		}
 		for (var i=0; i<this.connections.length; i++) {
 			if (this.connections[i] === socket || this.connections[i].socket === socket || !socket) {
 				if (this.connections[i].rooms[room.id]) {
@@ -931,7 +933,7 @@ var User = (function () {
 			}
 			return false;
 		}
-		Rooms.get('lobby').startBattle(this, user, user.challengeTo.format, false, this.team, user.team);
+		Rooms.global.startBattle(this, user, user.challengeTo.format, false, this.team, user.team);
 		delete this.challengesFrom[user.userid];
 		user.challengeTo = null;
 		this.updateChallenges();
