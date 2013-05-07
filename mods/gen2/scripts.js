@@ -3,6 +3,12 @@
  */
 exports.BattleScripts = {
 	gen: 2,
+	getCategory: function(move) {
+		move = this.getMove(move);
+		var specialTypes = {Fire:1, Water:1, Grass:1, Ice:1, Electric:1, Dark:1, Psychic:1, Dragon:1};
+		if (move.category === 'Status') return 'Status';
+		return specialTypes[move.type]?'Special':'Physical';
+	},
 	getDamage: function(pokemon, target, move, suppressMessages) {
 		// We get the move
 		if (typeof move === 'string') move = this.getMove(move);
@@ -21,7 +27,7 @@ exports.BattleScripts = {
 
 		// Is it ok?
 		if (move.ohko) {
-			if (target.speed > pokemon.speed) {
+			if (target.level > pokemon.level) {
 				this.add('-failed', target);
 				return false;
 			}
@@ -42,16 +48,6 @@ exports.BattleScripts = {
 		if (move.damage) {
 			return move.damage;
 		}
-		
-		// If it's the first hit on a Normal-type partially trap move, it hits Ghosts but damage is 0
-		if (move.volatileStatus === 'partiallytrapped' && move.type === 'Normal' && target.hasType('Ghost')) {
-			return 0;
-		}
-		
-		// Let's check if we are in middle of a partial trap sequence
-		if (pokemon.volatiles['partialtrappinglock'] && (target !== pokemon) && (target === pokemon.volatiles['partialtrappinglock'].locked)) {
-			return pokemon.volatiles['partialtrappinglock'].damage;
-		}
 
 		// There's no move for some reason, create it
 		if (!move) {
@@ -59,15 +55,11 @@ exports.BattleScripts = {
 		}
 		
 		// We check the category and typing to calculate later on the damage
-		if (!move.category) move.category = 'Physical';
+		move.category = this.getCategory(move);
 		if (!move.defensiveCategory) move.defensiveCategory = move.category;
 		// '???' is typeless damage: used for Struggle and Confusion etc
 		if (!move.type) move.type = '???';
 		var type = move.type;
-
-		// In Gen 1 category deppends on attacking type
-		var specialTypes = {Fire:1, Water:1, Grass:1, Ice:1, Electric:1, Dark:1, Psychic:1, Dragon:1};
-		var category = (type in specialTypes)? 'Special' : 'Physical';
 		
 		// We get the base power and apply basePowerCallback if necessary
 		var basePower = move.basePower;
@@ -85,15 +77,14 @@ exports.BattleScripts = {
 		// Checking for the move's Critical Hit ratio
 		move.critRatio = clampIntRange(move.critRatio, 0, 5);
 		var critMult = [0, 16, 8, 4, 3, 2];
-
 		move.crit = move.willCrit || false;
 		if (typeof move.willCrit === 'undefined') {
 			if (move.critRatio) {
-				move.crit = (selfB.random(critMult[move.critRatio]) === 0);
+				move.crit = (this.random(critMult[move.critRatio]) === 0);
 			}
 		}
 		if (move.crit) {
-			move.crit = selfB.runEvent('CriticalHit', target, null, move);
+			move.crit = this.runEvent('CriticalHit', target, null, move);
 		}
 
 		// Happens after crit calculation
@@ -113,30 +104,24 @@ exports.BattleScripts = {
 		if (move.useTargetOffensive) attacker = target;
 		if (move.useSourceDefensive) defender = pokemon;
 		var atkType = (move.category === 'Physical')? 'atk' : 'spa';
-		var defType = (move.defensiveCategory === 'Physical')? 'atk' : 'spa';
+		var defType = (move.defensiveCategory === 'Physical')? 'def' : 'spd';
 		var attack = attacker.getStat(atkType);
 		var defense = defender.getStat(defType);
 
 		if (move.crit) {
-			move.ignoreNegativeOffensive = true;
-			move.ignorePositiveDefensive = true;
-		}
-		if (move.ignoreNegativeOffensive && attack < attacker.getStat(atkType, true)) {
 			move.ignoreOffensive = true;
+			move.ignoreDefensive = true;
 		}
 		if (move.ignoreOffensive) {
 			this.debug('Negating (sp)atk boost/penalty.');
 			attack = attacker.getStat(atkType, true);
-		}
-		if (move.ignorePositiveDefensive && defense > target.getStat(defType, true)) {
-			move.ignoreDefensive = true;
 		}
 		if (move.ignoreDefensive) {
 			this.debug('Negating (sp)def boost/penalty.');
 			defense = target.getStat(defType, true);
 		}
 
-		// Gen 2 formula
+		// Gen 2 damage formula
 		var baseDamage = Math.min(Math.floor(Math.floor(Math.floor(2 * level / 5 + 2) * attack * basePower / defense) / 50), 997) + 2;
 
 		// Crit damage addition (usually doubling)
@@ -160,6 +145,7 @@ exports.BattleScripts = {
 				baseDamage *= 2;
 			}
 		}
+		
 		// Resisted attack
 		if (totalTypeMod < 0) {
 			if (!suppressMessages) this.add('-resisted', target);
@@ -169,7 +155,7 @@ exports.BattleScripts = {
 			}
 		}
 
-		// Gem 2 randomizer, it's a number between 217 and 255
+		// Randomizer, it's a number between 217 and 255
 		var randFactor = Math.floor(Math.random()*39)+217;
 		baseDamage *= Math.floor(randFactor * 100 / 255) / 100;
 		
