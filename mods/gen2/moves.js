@@ -57,6 +57,38 @@ exports.BattleMovedex = {
 			}
 		}
 	},
+	rest: {
+		inherit: true,
+		onHit: function(target) {
+			if (target.hp >= target.maxhp) return false;
+			if (!target.setStatus('slp') && target.status !== 'slp') return false;
+			target.statusData.time = 3;
+			target.statusData.startTime = 3;
+			this.heal(target.maxhp);
+			this.add('-status', target, 'slp', '[from] move: Rest');
+		},
+		secondary: false
+	},
+	sleeptalk: {
+		inherit: true,
+			onHit: function(pokemon) {
+				var moves = [];
+				for (var i=0; i<pokemon.moveset.length; i++) {
+					var move = pokemon.moveset[i].id;
+					var NoSleepTalk = {
+						bide:1, dig:1, fly:1, metronome:1, mirrormove:1, 
+						skullbash:1, skyattack:1, sleeptalk:1, solarbeam:1, razorwind:1
+					};
+					if (move && !NoSleepTalk[move]) {
+						moves.push(move);
+					}
+				}
+				var move = '';
+				if (moves.length) move = moves[this.random(moves.length)];
+				if (!move) return false;
+				this.useMove(move, pokemon);
+			}
+	},
 	spikes: {
 		effect: {
 			// this is a side condition
