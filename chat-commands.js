@@ -1507,13 +1507,11 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 
 	case 'search':
 	case 'cancelsearch':
-		if (!room.searchBattle) { emit(socket, 'console', 'You can only do this in lobby rooms.'); return false; }
-
-		if (target) {
-			room.searchBattle(user, target);
-		} else {
-			room.cancelSearch(user);
-		}
+			if (target) {
+				Rooms.global.searchBattle(user, target);
+			} else {
+				Rooms.global.cancelSearch(user);
+			}
 		return false;
 		break;
 
