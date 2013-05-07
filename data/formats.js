@@ -236,6 +236,19 @@ exports.BattleFormats = {
 		banlist: ['Illegal', 'Unreleased'],
 		mimicGlitch: true
 	},
+	gen2ou: {
+		mod: 'gen2',
+		effectType: 'Format',
+		name: "[Gen 2] OU",
+		section: "Old Gens",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		debug: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Standard'],
+		banlist: ['Uber']
+	},
 	gen1ou: {
 		mod: 'gen1',
 		effectType: 'Format',
