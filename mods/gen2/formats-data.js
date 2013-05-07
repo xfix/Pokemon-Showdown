@@ -575,7 +575,9 @@ exports.BattleFormatsData = {
 		tier: "UU"
 	},
 	snorlax: {
-		//viableMoves: {"rest":1,"curse":1,"sleeptalk":1,"bodyslam":1,"earthquake":1,"return":1,"firepunch":1,"icepunch":1,"crunch":1,"selfdestruct":1,"pursuit":1,"whirlwind":1},
+		eventPokemon: [
+			{"generation":2,"level":5,"moves":["tackle","lovelykiss"]},
+		],
 		tier: "OU"
 	},
 	articuno: {
