@@ -90,6 +90,7 @@ exports.BattleMovedex = {
 			}
 	},
 	spikes: {
+		inherit: true,
 		effect: {
 			// this is a side condition
 			onStart: function(side) {
