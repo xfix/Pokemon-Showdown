@@ -99,7 +99,7 @@ exports.BattleStatuses = {
 		onStallMove: function() {
 			// Gen 2 starts counting at x=255, x/256 and then halves x on every turn
 			var counter = this.effectData.counter || 255;
-			this.debug("Success chance: " + Math.round(counter / 256) + "% (" + counter + "/256")");
+			this.debug("Success chance: " + Math.round(counter / 256) + "% (" + counter + "/256)");
 			return (this.random(counter) === 0);
 		},
 		onRestart: function() {
