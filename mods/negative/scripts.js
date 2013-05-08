@@ -12,7 +12,7 @@ exports.BattleScripts = {
 			this.data.Pokedex[i].baseStats.def = (def > 5)? def : 5;
 			this.data.Pokedex[i].baseStats.spa = (spa > 5)? spa : 5;
 			this.data.Pokedex[i].baseStats.spd = (spd > 5)? spd : 5;
-			this.data.Pokedex[i].baseStats.spd = (spe > 5)? spe : 5;
+			this.data.Pokedex[i].baseStats.spe = (spe > 5)? spe : 5;
 		}
 	}
 };
