@@ -112,19 +112,19 @@ exports.BattleScripts = {
 			move.ignoreNegativeOffensive = true;
 			move.ignorePositiveDefensive = true;
 		}
-		if (move.ignoreNegativeOffensive && attack < attacker.getStat(category==='Physical'?'atk':'spa', true)) {
+		if (move.ignoreNegativeOffensive && attack < attacker.getStat(move.category==='Physical'?'atk':'spa', true)) {
 			move.ignoreOffensive = true;
 		}
 		if (move.ignoreOffensive) {
 			this.debug('Negating (sp)atk boost/penalty.');
 			attack = attacker.getStat(category==='Physical'?'atk':'spa', true);
 		}
-		if (move.ignorePositiveDefensive && defense > target.getStat(defensiveCategory==='Physical'?'def':'spd', true)) {
+		if (move.ignorePositiveDefensive && defense > target.getStat(move.defensiveCategory==='Physical'?'def':'spd', true)) {
 			move.ignoreDefensive = true;
 		}
 		if (move.ignoreDefensive) {
 			this.debug('Negating (sp)def boost/penalty.');
-			defense = target.getStat(defensiveCategory==='Physical'?'def':'spd', true);
+			defense = target.getStat(move.defensiveCategory==='Physical'?'def':'spd', true);
 		}
 
 		// Gen 2 damage formula
