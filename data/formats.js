@@ -140,6 +140,18 @@ exports.BattleFormats = {
 		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
 		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
 	},
+	typechartswap: {
+		effectType: 'Format',
+		mod: 'typechartswap',
+		name: "Type Chart Swap",
+		section: "Other Metas",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
+		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
+	},
 	haxmons: {
 		effectType: 'Format',
 		name: "Haxmons",
@@ -235,6 +247,26 @@ exports.BattleFormats = {
 		ruleset: ['Pokemon', 'Team Preview'],
 		banlist: ['Illegal', 'Unreleased'],
 		mimicGlitch: true
+	},
+	lcubers: {
+		effectType: 'Format',
+		name: "LC Ubers",
+		section: "Other Metas",
+		maxLevel: 5,
+		rated: true,
+		challengeShow: true,
+		ruleset: ['Pokemon', 'Standard', 'Team Preview', 'Little Cup'],
+		banlist: ['Sonicboom', 'Dragon Rage', 'Berry Juice', 'Soul Dew']
+	},
+	lcuu: {
+		effectType: 'Format',
+		name: "LC UU",
+		section: "Other Metas",
+		maxLevel: 5,
+		rated: true,
+		challengeShow: true,
+		ruleset: ['LC'],
+		banlist: ['Abra', 'Aipom', 'Archen', 'Aron', 'Axew', 'Bronzor', 'Chinchou', 'Clamperl', 'Cottonee', 'Cranidos', 'Croagunk', 'Diglett', 'Dratini', 'Drifloon', 'Drilbur', 'Dwebble', 'Elekid', 'Ferroseed', 'Foongus', 'Frillish', 'Gastly', 'Hippopotas', 'Houndour', 'Larvesta', 'Lileep', 'Magnemite', 'Meowth', 'Mienfoo', 'Misdreavus', 'Munchlax', 'Murkrow', 'Onix', 'Pawniard', 'Ponyta', 'Porygon', 'Riolu', 'Sandshrew', 'Scraggy', 'Shellder', 'Snover', 'Staryu', 'Taillow', 'Tentacool', 'Timburr', 'Tirtouga']
 	},
 	gen2ou: {
 		mod: 'gen2',
@@ -339,6 +371,23 @@ exports.BattleFormats = {
 		ruleset: ['Pokemon', 'Standard'],
 		banlist: ['Uber']
 	},
+	gen4hackmons: {
+		mod: 'gen4',
+		effectType: 'Format',
+		name: "[Gen 4] Hackmons",
+		challengeShow: true,
+		ruleset: ['Pokemon'],
+		banlist: []
+	},
+	gen4customgame: {
+		mod: 'gen4',
+		effectType: 'Format',
+		name: "[Gen 4] Custom Game",
+		challengeShow: true,
+		canUseRandomTeam: true,
+		debug: true,
+		ruleset: []
+	},
 	gen3ou: {
 		name: "[Gen 3] OU",
 		mod: 'gen3',
@@ -351,6 +400,21 @@ exports.BattleFormats = {
 		isTeambuilderFormat: true,
 		ruleset: ['Pokemon', 'Standard'],
 		banlist: ['Uber']
+	},
+	gen3hackmons: {
+		mod: 'gen3',
+		effectType: 'Format',
+		name: "[Gen 3] Hackmons",
+		challengeShow: true,
+		ruleset: ['Pokemon'],
+		banlist: []
+	},
+	gen3customgame: {
+		mod: 'gen3',
+		effectType: 'Format',
+		name: "[Gen 3] Custom Game",
+		challengeShow: true,
+		ruleset: []
 	},
 	gen2ou: {
 		name: "[Gen 2] OU",
@@ -917,26 +981,6 @@ exports.BattleFormats = {
 		ruleset: ['Pokemon', 'Standard', 'Team Preview', 'Little Cup'],
 		banlist: ['Sonicboom', 'Dragon Rage', 'Berry Juice', 'Carvanha', 'Meditite', 'Gligar', 'Scyther', 'Sneasel', 'Tangela', 'Vulpix', 'Yanma', 'Soul Dew']
 	},
-	lcubers: {
-		effectType: 'Format',
-		name: "LC Ubers",
-		section: "Other Metas",
-		maxLevel: 5,
-		rated: true,
-		challengeShow: true,
-		ruleset: ['Pokemon', 'Standard', 'Team Preview', 'Little Cup'],
-		banlist: ['Sonicboom', 'Dragon Rage', 'Berry Juice', 'Soul Dew']
-	},
-	lcuu: {
-		effectType: 'Format',
-		name: "LC UU",
-		section: "Other Metas",
-		maxLevel: 5,
-		rated: true,
-		challengeShow: true,
-		ruleset: ['LC'],
-		banlist: ['Abra', 'Aipom', 'Archen', 'Aron', 'Axew', 'Bronzor', 'Chinchou', 'Clamperl', 'Cottonee', 'Cranidos', 'Croagunk', 'Diglett', 'Dratini', 'Drifloon', 'Drilbur', 'Dwebble', 'Elekid', 'Ferroseed', 'Foongus', 'Frillish', 'Gastly', 'Hippopotas', 'Houndour', 'Larvesta', 'Lileep', 'Magnemite', 'Meowth', 'Mienfoo', 'Misdreavus', 'Munchlax', 'Murkrow', 'Onix', 'Pawniard', 'Ponyta', 'Porygon', 'Riolu', 'Sandshrew', 'Scraggy', 'Shellder', 'Snover', 'Staryu', 'Taillow', 'Tentacool', 'Timburr', 'Tirtouga']
-	},
 	customgame: {
 		effectType: 'Format',
 		name: "Custom Game",
@@ -956,39 +1000,6 @@ exports.BattleFormats = {
 		debug: true,
 		maxLevel: 1000,
 		// no restrictions, for serious
-		ruleset: []
-	},
-	// Previous gens
-	gen4hackmons: {
-		mod: 'gen4',
-		effectType: 'Format',
-		name: "[Gen 4] Hackmons",
-		challengeShow: true,
-		ruleset: ['Pokemon'],
-		banlist: []
-	},
-	gen4customgame: {
-		mod: 'gen4',
-		effectType: 'Format',
-		name: "[Gen 4] Custom Game",
-		challengeShow: true,
-		canUseRandomTeam: true,
-		debug: true,
-		ruleset: []
-	},
-	gen3hackmons: {
-		mod: 'gen3',
-		effectType: 'Format',
-		name: "[Gen 3] Hackmons",
-		challengeShow: true,
-		ruleset: ['Pokemon'],
-		banlist: []
-	},
-	gen3customgame: {
-		mod: 'gen3',
-		effectType: 'Format',
-		name: "[Gen 3] Custom Game",
-		challengeShow: true,
 		ruleset: []
 	},
 	gennextnextou: {
