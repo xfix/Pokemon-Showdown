@@ -33,8 +33,8 @@ exports.BattleStatuses = {
 		effectType: 'Status',
 		onStart: function(target) {
 			this.add('-status', target.id, 'slp');
-			// 1-7 turns
-			this.effectData.time = this.random(2,8);
+			// 1-5 turns
+			this.effectData.time = this.random(2,6);
 		},
 		onBeforeMovePriority: 2,
 		onBeforeMove: function(pokemon, target, move) {
@@ -74,13 +74,13 @@ exports.BattleStatuses = {
 			if (this.effectData.stage < 15) {
 				this.effectData.stage++;
 			}
-			this.damage(clampIntRange(pokemon.maxhp/8, 1) * this.effectData.stage);
+			this.damage(clampIntRange(pokemon.maxhp/16, 1)*this.effectData.stage);
 		},
 		onSwitchIn: function (pokemon) {
 			this.effectData.stage = 0;
 			pokemon.setStatus('psn');
 			if (pokemon.side.foe.active[0] && pokemon.speed <= pokemon.side.foe.active[0].speed) {
-				this.damage(pokemon.maxhp / 8);
+				this.damage(pokemon.maxhp/8);
 			}
 		}
 	},
