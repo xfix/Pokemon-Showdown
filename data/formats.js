@@ -70,7 +70,7 @@ exports.BattleFormats = {
 		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
 	},
 	outiershift: {
-		mod: 'tierboost',
+		mod: 'tiershift',
 		effectType: 'Format',
 		name: "OU Tier Shift",
 		section: "Other Metas",
@@ -151,6 +151,18 @@ exports.BattleFormats = {
 		isTeambuilderFormat: true,
 		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
 		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
+	},
+	negativemetagame: {
+		effectType: 'Format',
+		mod: 'negative',
+		name: "Negative Metagame",
+		section: "Other Metas",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
+		banlist: ['Smeargle']
 	},
 	haxmons: {
 		effectType: 'Format',
