@@ -61,7 +61,7 @@ exports.BattleTypeChart = {
       "Psychic": 0,
       "Rock": 0,
       "Steel": 0,
-      "Water": 2
+      "Water": 1
     },
     "HPivs": {"atk":30}
   },
@@ -128,7 +128,7 @@ exports.BattleTypeChart = {
       "Psychic": 0,
       "Rock": 2,
       "Steel": 1,
-      "Water": 1
+      "Water": 2
     },
     "HPivs": {"atk":30,"spa":30,"spe":30}
   },
@@ -194,7 +194,7 @@ exports.BattleTypeChart = {
       "Psychic": 0,
       "Rock": 0,
       "Steel": 0,
-      "Water": 2
+      "Water": 1
     },
     "HPivs": {"atk":30,"spa":30}
   },
@@ -217,7 +217,7 @@ exports.BattleTypeChart = {
       "Psychic": 0,
       "Rock": 1,
       "Steel": 0,
-      "Water": 1
+      "Water": 2
     },
     "HPivs": {"spa":30,"spd":30}
   },
@@ -331,7 +331,7 @@ exports.BattleTypeChart = {
       "Psychic": 0,
       "Rock": 0,
       "Steel": 2,
-      "Water": 1
+      "Water": 2
     },
     "HPivs": {"def":30,"spd":30,"spe":30}
   },
@@ -378,7 +378,7 @@ exports.BattleTypeChart = {
       "Psychic": 0,
       "Rock": 0,
       "Steel": 1,
-      "Water": 2
+      "Water": 1
     },
     "HPivs": {"atk":30,"def":30,"spa":30}
   }
