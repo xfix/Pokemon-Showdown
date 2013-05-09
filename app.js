@@ -208,12 +208,6 @@ Simulator = require('./simulator.js');
 
 lockdown = false;
 
-mutedIps = {};
-//'86.6.84.250':'chacknorris7',
-bannedIps = {'208.88.175.76':'dinosaurrar',  '174.101.165.118':'thewonderfulkyurem', '24.94.253.170':'p0wer0fy0l0', 
-'92.25.157.207':'niggilosays', '112.119.237.196':'bronzeamethyst'};
-nameLockedIps = {};
-
 function resolveUser(you, socket) {
 	if (!you) {
 		emit(socket, 'connectionError', 'There has been a connection error. Please refresh the page.');
@@ -307,7 +301,7 @@ server.on('connection', function (socket) {
 		}
 	}
 
-	if (bannedIps[socket.remoteAddress]) {
+	if (Users.checkBanned(socket.remoteAddress)) {
 		console.log('CONNECT BLOCKED - IP BANNED: '+socket.remoteAddress);
 		return;
 	}

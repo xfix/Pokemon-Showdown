@@ -165,78 +165,6 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		}
 		break;
 
-	case 'namelock':
-	case 'nl':
-		if(!target) {
-			return false;
-		}
-		var targets = splitTarget(target);
-		var targetUser = targets[0];
-		var targetName = targets[1] || (targetUser && targetUser.name);
-		if (!user.can('namelock', targetUser)) {
-			emit(socket, 'console', '/namelock - access denied.');
-			return false;
-		} else if (targetUser && targetName) {
-			var oldname = targetUser.name;
-			var targetId = toUserid(targetName);
-			var userOfName = Users.users[targetId];
-			var isAlt = false;
-			if (userOfName) {
-				for(var altName in userOfName.getAlts()) {
-					var altUser = Users.users[toUserid(altName)];
-					if (!altUser) continue;
-					if (targetId === altUser.userid) {
-						isAlt = true;
-						break;
-					}
-					for (var prevName in altUser.prevNames) {
-						if (targetId === toUserid(prevName)) {
-							isAlt = true;
-							break;
-						}
-					}
-					if (isAlt) break;
-				}
-			}
-			if (!userOfName || oldname === targetName || isAlt) {
-				targetUser.nameLock(targetName, true);
-			}
-			if (targetUser.nameLocked()) {
-				logModCommand(room,user.name+" name-locked "+oldname+" to "+targetName+".");
-				return false;
-			}
-			emit(socket, 'console', oldname+" can't be name-locked to "+targetName+".");
-		} else {
-			emit(socket, 'console', "User "+targets[2]+" not found.");
-		}
-		return false;
-		break;
-	case 'nameunlock':
-	case 'unnamelock':
-	case 'nul':
-	case 'unl':
-		if(!user.can('namelock') || !target) {
-			return false;
-		}
-		var removed = false;
-		for (var i in nameLockedIps) {
-			if (nameLockedIps[i] === target) {
-				delete nameLockedIps[i];
-				removed = true;
-			}
-		}
-		if (removed) {
-			var targetUser = Users.get(target);
-			if (targetUser) {
-				Rooms.lobby.sendIdentity(targetUser);
-			}
-			logModCommand(room,user.name+" unlocked the name of "+target+".");
-		} else {
-			emit(socket, 'console', target+" not found.");
-		}
-		return false;
-		break;
-
 	case 'forfeit':
 	case 'concede':
 	case 'surrender':
@@ -392,6 +320,55 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		return false;
 		break;
 
+	case 'lock':
+		if (!target) return parseCommand(user, '?', cmd, room, socket);
+		var targets = splitTarget(target);
+		var targetUser = targets[0];
+		if (!targetUser) {
+			emit(socket, 'console', 'User '+targets[2]+' not found.');
+			return false;
+		}
+		if (!user.can('lock', targetUser)) {
+			emit(socket, 'console', '/lock - Access denied.');
+			return false;
+		}
+
+		logModCommand(room,""+targetUser.name+" was locked from talking by "+user.name+"." + (targets[1] ? " (" + targets[1] + ")" : ""));
+		targetUser.emit('message', user.name+' has locked you from talking in chats, battles, and PMs.\n\n'+targets[1]+'\n\nIf you feel that your lock was unjustified you can appeal it at:\nhttp://www.smogon.com/forums/announcement.php?f=126&a=204');
+		var alts = targetUser.getAlts();
+		if (alts.length) logModCommand(room,""+targetUser.name+"'s alts were also locked: "+alts.join(", "));
+
+		targetUser.lock();
+
+		Rooms.lobby.sendIdentity(targetUser);
+		for (var i=0; i<alts.length; i++) {
+			var targetAlt = Users.get(alts[i]);
+			if (targetAlt) {
+				Rooms.lobby.sendIdentity(targetAlt);
+			}
+		}
+		return false;
+		break;
+
+	case 'unlock':
+		if (!target) return parseCommand(user, '?', cmd, room, socket);
+		if (!user.can('lock')) {
+			emit(socket, 'console', '/unlock - Access denied.');
+			return false;
+		}
+
+		var name = Users.unlock(target);
+
+		if (name) {
+			logModCommand(room,''+name+' was unlocked by '+user.name+'.');
+		} else {
+			emit(socket, 'console', 'User '+target+' is not locked.');
+		}
+		var targetUser = Users.get(target);
+		if (targetUser) Rooms.lobby.sendIdentity(targetUser);
+		return false;
+		break;
+
 	case 'unban':
 		if (!target) return parseCommand(user, '?', cmd, room, socket);
 		if (!user.can('ban')) {
@@ -399,17 +376,10 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			return false;
 		}
 
-		var targetid = toUserid(target);
-		var success = false;
+		var name = Users.unban(target);
 
-		for (var ip in bannedIps) {
-			if (bannedIps[ip] === targetid) {
-				delete bannedIps[ip];
-				success = true;
-			}
-		}
-		if (success) {
-			logModCommand(room,''+target+' was unbanned by '+user.name+'.');
+		if (name) {
+			logModCommand(room,''+name+' was unbanned by '+user.name+'.');
 		} else {
 			emit(socket, 'console', 'User '+target+' is not banned.');
 		}
@@ -421,9 +391,14 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			emit(socket, 'console', '/unbanall - Access denied.');
 			return false;
 		}
-		logModCommand(room,'All bans and ip mutes have been lifted by '+user.name+'.');
-		bannedIps = {};
-		mutedIps = {};
+		// we have to do this the hard way since it's no longer a global
+		for (var i in Users.bannedIps) {
+			delete Users.bannedIps[i];
+		}
+		for (var i in Users.lockedIps) {
+			delete Users.lockedIps[i];
+		}
+		logModCommand(room,'All bans and locks have been lifted by '+user.name+'.');
 		return false;
 		break;
 
@@ -461,6 +436,11 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			emit(socket, 'console', 'You can only private message members of the Moderation Team (users marked by %, @, &, or ~) when muted.');
 			return false;
 		} */
+
+		if (user.locked) {
+			emit(socket, 'console', 'You are locked from sending private messages.');
+			return false;
+		}
 
 		if (!user.named) {
 			emit(socket, 'console', 'You must choose a name before you can send private messages.');
@@ -511,38 +491,6 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		return false;
 		break;
 
-	case 'ipmute':
-		if (!target) return parseCommand(user, '?', cmd, room, socket);
-		var targetUser = Users.get(target);
-		if (!targetUser) {
-			emit(socket, 'console', 'User '+target+' not found.');
-			return false;
-		}
-		if (!user.can('mute', targetUser)) {
-			emit(socket, 'console', '/ipmute - Access denied.');
-			return false;
-		}
-
-		logModCommand(room,''+targetUser.name+"'s IP was muted by "+user.name+'.');
-		var alts = targetUser.getAlts();
-		if (alts.length) logModCommand(room,""+targetUser.name+"'s alts were also muted: "+alts.join(", "));
-
-		targetUser.muted = true;
-		Rooms.lobby.sendIdentity(targetUser);
-		for (var ip in targetUser.ips) {
-			mutedIps[ip] = targetUser.userid;
-		}
-		for (var i=0; i<alts.length; i++) {
-			var targetAlt = Users.get(alts[i]);
-			if (targetAlt) {
-				targetAlt.muted = true;
-				Rooms.lobby.sendIdentity(targetAlt);
-			}
-		}
-
-		return false;
-		break;
-
 	case 'unmute':
 	case 'um':
 		if (!target) return parseCommand(user, '?', cmd, room, socket);
@@ -555,19 +503,6 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		if (!user.can('mute', targetUser)) {
 			emit(socket, 'console', '/unmute - Access denied.');
 			return false;
-		}
-
-		var success = false;
-
-		for (var ip in mutedIps) {
-			if (mutedIps[ip] === targetid) {
-				delete mutedIps[ip];
-				success = true;
-			}
-		}
-
-		if (success) {
-			logModCommand(room,''+(targetUser?targetUser.name:target)+"'s IP was unmuted by "+user.name+'.');
 		}
 
 		targetUser.muted = false;
@@ -2080,14 +2015,6 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			matched = true;
 			emit(socket, 'console', '/demote [username], [group] - Demotes the user to the specified group or previous ranked group. Requires: & ~');
 		}
-		if (target === '&' || target === 'namelock' || target === 'nl') {
-			matched = true;
-			emit(socket, 'console', '/namelock OR /nl [username] - Prevents the user from changing their name. Requires: & ~');
-		}
-		if (target === '&' || target === 'unnamelock') {
-			matched = true;
-			emit(socket, 'console', '/unnamelock - Removes namelock from user. Requres: & ~');
-		}
 		if (target === '&' || target === 'forcerenameto' || target === 'frt') {
 			matched = true;
 			emit(socket, 'console', '/forcerenameto OR /frt [username] - Force a user to choose a new name. Requires: & ~');
@@ -2140,7 +2067,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			if (user.group !== config.groupsranking[0]) {
 				emit(socket, 'console', 'DRIVER COMMANDS: /mute, /unmute, /announce, /forcerename, /alts')
 				emit(socket, 'console', 'MODERATOR COMMANDS: /ban, /unban, /unbanall, /ip, /modlog, /redirect, /kick');
-				emit(socket, 'console', 'LEADER COMMANDS: /promote, /demote, /forcerenameto, /namelock, /nameunlock, /forcewin, /forcetie, /declare');
+				emit(socket, 'console', 'LEADER COMMANDS: /promote, /demote, /forcerenameto, /forcewin, /forcetie, /declare');
 				emit(socket, 'console', 'For details on all moderator commands, use /help @');
 			}
 			emit(socket, 'console', 'For details of a specific command, use something like: /help data');
@@ -2193,6 +2120,10 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
  */
 function canTalk(user, room, socket) {
 	if (!user.named) return false;
+	if (user.locked) {
+		if (socket) emit(socket, 'console', 'You are locked from talking in chat.');
+		return false;
+	}
 	if (user.muted) {
 		if (socket) emit(socket, 'console', 'You are muted.');
 		return false;
