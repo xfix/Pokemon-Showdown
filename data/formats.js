@@ -164,6 +164,38 @@ exports.BattleFormats = {
 		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
 		banlist: ['Smeargle']
 	},
+	slowmons: {
+		effectType: 'Format',
+		name: 'Slowmons',
+		section: "Other Metas",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview', 'Slowmons Pokemon'],
+		banlist: [],
+		onModifySpe: function(spe) {
+			return -spe;
+		},
+		onModifyMove: function(move) {
+			if (move.id === 'trickroom') {
+				move.effect = {
+					duration: 5,
+					onStart: function(target, source) {
+						this.add('-fieldstart', 'move: Trick Room', '[of] '+source);
+					},
+					onModifySpePriority: -100,
+					onModifySpe: function(spe) {
+						return spe;
+					},
+					onResidualOrder: 23,
+					onEnd: function() {
+						this.add('-fieldend', 'move: Trick Room');
+					}
+				};
+			}
+		}
+	},
 	haxmons: {
 		effectType: 'Format',
 		name: "Haxmons",
@@ -204,6 +236,26 @@ exports.BattleFormats = {
 	        'Victini', 'Reshiram', 'Zekrom', 'Kyurem', 'Kyurem-Black', 'Kyurem-White',
 	        'Keldeo', 'Keldeo-Resolute',  'Meloetta', 'Genesect'
 	    ]
+    },
+	gbuspringfriendly: {
+        effectType: 'Format',
+        name: "GBU Spring Friendly",
+		section: "Other Metas",
+        rated: true,
+        challengeShow: true,
+        searchShow: true,
+        debug: true,
+        onBegin: function() {
+    		this.p1.pokemon = this.p1.pokemon.slice(0,3);
+	        this.p1.pokemonLeft = this.p1.pokemon.length;
+	        this.p2.pokemon = this.p2.pokemon.slice(0,3);
+	        this.p2.pokemonLeft = this.p2.pokemon.length;
+        },
+        validateSet: function(set) {
+        	if (!set.level || set.level >= 50) set.forcedLevel = 50;
+        },
+        ruleset: ['Pokemon', 'Spring Friendly', 'Species Clause', 'Item Clause', 'Team Preview GBU'],
+        banlist: ['Unreleased', 'Illegal', 'Dark Void', 'Soul Dew']
     },
 	cap: {
 		effectType: 'Format',
@@ -1436,6 +1488,25 @@ exports.BattleFormats = {
 			var template = this.getTemplate(set.species);
 			if (template.gen > 2) problems.push(set.species + ' must come from Gen 1 or Gen 2.');
 		
+			return problems;
+		}
+	},
+	slowmonspokemon: {
+		effectType: 'Banlist',
+		validateSet: function(set, format) {
+			var problems = [];
+			if (set.level < 100) problems.push(set.species + ' must be level 100.');
+			
+			return problems;
+		}
+	},
+	springfriendly: {
+		effectType: 'Banlist',
+		validateSet: function(set, format) {
+			var problems = [];
+			var template = this.getTemplate(set.species);
+			if (template.gen < 5) problems.push(set.species + ' must come from gen 5.');
+			
 			return problems;
 		}
 	},
