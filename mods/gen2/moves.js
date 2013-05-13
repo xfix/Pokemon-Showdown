@@ -76,6 +76,47 @@ exports.BattleMovedex = {
 		inherit: true,
 		basePower: 500
 	},
+	growth: {
+		inherit: true,
+		onModifyMove: null,
+		boosts: {
+			spa: 1
+		}
+	},
+	leechseed: {
+		inherit: true,
+		onHit: function (target, source, move) {
+			if (!source || source.fainted || source.hp <= 0) {
+				// Well this shouldn't happen
+				this.debug('Nothing to leech into');
+				return;
+			}
+			if (target.newlySwitched && target.speed <= source.speed) {
+				var toLeech = clampIntRange(target.maxhp/8, 1);
+				var damage = this.damage(toLeech, target, source, 'move: Leech Seed');
+				if (damage) {
+					this.heal(damage, source, target);
+				}
+			}
+		},
+		effect: {
+			onStart: function(target) {
+				this.add('-start', target, 'move: Leech Seed');
+			},
+			onAfterMoveSelf: function(pokemon) {
+				var target = pokemon.side.foe.active[pokemon.volatiles['leechseed'].sourcePosition];
+				if (!target || target.fainted || target.hp <= 0) {
+					this.debug('Nothing to leech into');
+					return;
+				}
+				var toLeech = clampIntRange(pokemon.maxhp/8, 1);
+				var damage = this.damage(toLeech, pokemon, target);
+				if (damage) {
+					this.heal(damage, target, pokemon);
+				}
+			}
+		}
+	},
 	rest: {
 		inherit: true,
 		onHit: function(target) {
@@ -109,6 +150,7 @@ exports.BattleMovedex = {
 				var move = '';
 				if (moves.length) move = moves[this.random(moves.length)];
 				if (!move) return false;
+				move.isSleepTalk = true;
 				this.useMove(move, pokemon);
 			}
 	},
@@ -131,6 +173,17 @@ exports.BattleMovedex = {
 				var damage = this.damage(damageAmounts[this.effectData.layers]*pokemon.maxhp/24);
 			}
 		}
+	},
+	spite: {
+		inherit: true,
+		onHit: function(target) {
+			var reduction = this.random(1, 5);
+			if (target.deductPP(target.lastMove, reduction)) {
+				this.add("-activate", target, 'move: Spite', target.lastMove, reduction);
+				return;
+			}
+			return false;
+		},
 	},
 	substitute: {
 		inherit: true,
