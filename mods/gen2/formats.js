@@ -39,14 +39,19 @@ exports.BattleFormats = {
 				set.shiny = false;
 			} else {
 				// IVs still maxed at 30 on Gen 2
-				for (var iv in set.ivs) {
-					// Since Gen 2 has 0-15 DVs that increase 2 points, we only want pair numbers
-					if (set.ivs[iv] % 2 !== 0) set.ivs[iv]--;
-					// This shouldn't even be possible
-					if (set.ivs[iv] > 30) set.ivs[iv] = 30;
+				if (!set.ivs) {
+					set.ivs = {hp: 30, atk: 30, def: 30, spa: 30, spd: 30, spe: 30};
+				} else {
+					for (var iv in set.ivs) {
+						// Since Gen 2 has 0-15 DVs that increase 2 points, we only want pair numbers
+						if (set.ivs[iv] % 2 !== 0) set.ivs[iv]--;
+						// This shouldn't even be possible
+						if (set.ivs[iv] > 30) set.ivs[iv] = 30;
+					}
+					// Special is one IV, we use spa for spa and spd.
+					set.ivs.spd = set.ivs.spa;
 				}
-				// Also calculate all the IV oddness on gen 2. First, special is one IV, we use spa for spa and spd.
-				set.ivs.spd = set.ivs.spa;
+				// Calculate all the IV oddness on gen 2.
 				// Don't run shinies, they fuck your IVs
 				if (set.shiny) {
 					set.ivs.def = 20;
@@ -87,6 +92,26 @@ exports.BattleFormats = {
 			set.nature = 'Serious';
 			
 			return problems;
+		}
+	},
+	standard: {
+		effectType: 'Banlist',
+		ruleset: ['Sleep Clause', 'Species Clause', 'OHKO Clause', 'Evasion Moves Clause'],
+		banlist: ['Unreleased', 'Illegal', 'Ignore Illegal Abilities'],
+		validateSet: function(set) {
+			// limit one of each move in Standard
+			var moves = [];
+			if (set.moves) {
+				var hasMove = {};
+				for (var i=0; i<set.moves.length; i++) {
+					var move = this.getMove(set.moves[i]);
+					var moveid = move.id;
+					if (hasMove[moveid]) continue;
+					hasMove[moveid] = true;
+					moves.push(set.moves[i]);
+				}
+			}
+			set.moves = moves;
 		}
 	}
 };
