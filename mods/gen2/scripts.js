@@ -9,6 +9,22 @@ exports.BattleScripts = {
 		if (move.category === 'Status') return 'Status';
 		return specialTypes[move.type]?'Special':'Physical';
 	},
+	getStatCallback: function (stat, statName, pokemon) {
+		// Gen 2 caps stats at 999 and min is 1. Stats over 1023 with items roll over (Marowak, Pikachu)
+		if (pokemon.species === 'Marowak' && pokemon.item === 'thickclub' && statName === 'atk' && stat > 1023) {
+			stat = stat - 1024;
+		} else if (pokemon.species === 'Pikachu' && pokemon.item === 'lightball' && statName in {atk:1, spa:1} && stat > 1023) {
+			stat = stat - 1024;
+		} else if (pokemon.species === 'Ditto' && pokemon.item === 'metalpowder' && statName in {def:1, spd:1} && stat > 1023) {
+			// what. the. fuck. stop playing pokémon
+			stat = stat - 1024;
+		} else {
+			if (stat > 999) stat = 999;
+		}
+		if (stat < 1) stat = 1;
+
+		return stat;
+	},
 	getDamage: function(pokemon, target, move, suppressMessages) {
 		// We get the move
 		if (typeof move === 'string') move = this.getMove(move);
@@ -176,5 +192,176 @@ exports.BattleScripts = {
 	faint: function(pokemon, source, effect) {
 		pokemon.faint(source, effect);
 		this.queue = [];
+	},
+runMove: function(move, pokemon, target, sourceEffect) {
+		if (!sourceEffect && toId(move) !== 'struggle') {
+			var changedMove = this.runEvent('OverrideDecision', pokemon);
+			if (changedMove && changedMove !== true) {
+				move = changedMove;
+				target = null;
+			}
+		}
+		move = this.getMove(move);
+		if (!target) target = this.resolveTarget(pokemon, move);
+
+		this.setActiveMove(move, pokemon, target);
+
+		if (pokemon.moveThisTurn) {
+			// THIS IS PURELY A SANITY CHECK
+			// DO NOT TAKE ADVANTAGE OF THIS TO PREVENT A POKEMON FROM MOVING;
+			// USE this.cancelMove INSTEAD
+			this.debug(''+pokemon.id+' INCONSISTENT STATE, ALREADY MOVED: '+pokemon.moveThisTurn);
+			this.clearActiveMove(true);
+			return;
+		}
+		if (!this.runEvent('BeforeMove', pokemon, target, move)) {
+			this.clearActiveMove(true);
+			return;
+		}
+		if (move.beforeMoveCallback) {
+			if (move.beforeMoveCallback.call(this, pokemon, target, move)) {
+				this.clearActiveMove(true);
+				return;
+			}
+		}
+		pokemon.lastDamage = 0;
+		var lockedMove = this.runEvent('LockMove', pokemon);
+		if (lockedMove === true) lockedMove = false;
+		if (!lockedMove) {
+			pokemon.deductPP(move, null, target);
+		}
+		pokemon.moveUsed(move);
+		this.useMove(move, pokemon, target, sourceEffect);
+		this.singleEvent('AfterMove', move, null, pokemon, target, move);
+		this.runEvent('AfterMove', target, pokemon, move);
+		this.runEvent('AfterMoveSelf', pokemon, target, move);
+	},
+	runMove: function(move, pokemon, target, sourceEffect) {
+		if (!sourceEffect && toId(move) !== 'struggle') {
+			var changedMove = this.runEvent('OverrideDecision', pokemon);
+			if (changedMove && changedMove !== true) {
+				move = changedMove;
+				target = null;
+			}
+		}
+		move = this.getMove(move);
+		if (!target) target = this.resolveTarget(pokemon, move);
+
+		this.setActiveMove(move, pokemon, target);
+
+		if (pokemon.moveThisTurn) {
+			// THIS IS PURELY A SANITY CHECK
+			// DO NOT TAKE ADVANTAGE OF THIS TO PREVENT A POKEMON FROM MOVING;
+			// USE this.cancelMove INSTEAD
+			this.debug(''+pokemon.id+' INCONSISTENT STATE, ALREADY MOVED: '+pokemon.moveThisTurn);
+			this.clearActiveMove(true);
+			return;
+		}
+		if (!this.runEvent('BeforeMove', pokemon, target, move)) {
+			this.clearActiveMove(true);
+			return;
+		}
+		if (move.beforeMoveCallback) {
+			if (move.beforeMoveCallback.call(this, pokemon, target, move)) {
+				this.clearActiveMove(true);
+				return;
+			}
+		}
+		pokemon.lastDamage = 0;
+		var lockedMove = this.runEvent('LockMove', pokemon);
+		if (lockedMove === true) lockedMove = false;
+		if (!lockedMove) {
+			pokemon.deductPP(move, null, target);
+		}
+		pokemon.moveUsed(move);
+		this.useMove(move, pokemon, target, sourceEffect);
+		this.singleEvent('AfterMove', move, null, pokemon, target, move);
+		this.runEvent('AfterMove', target, pokemon, move);
+		this.runEvent('AfterMoveSelf', pokemon, target, move);
+	},runMove: function(move, pokemon, target, sourceEffect) {
+		if (!sourceEffect && toId(move) !== 'struggle') {
+			var changedMove = this.runEvent('OverrideDecision', pokemon);
+			if (changedMove && changedMove !== true) {
+				move = changedMove;
+				target = null;
+			}
+		}
+		move = this.getMove(move);
+		if (!target) target = this.resolveTarget(pokemon, move);
+
+		this.setActiveMove(move, pokemon, target);
+
+		if (pokemon.moveThisTurn) {
+			// THIS IS PURELY A SANITY CHECK
+			// DO NOT TAKE ADVANTAGE OF THIS TO PREVENT A POKEMON FROM MOVING;
+			// USE this.cancelMove INSTEAD
+			this.debug(''+pokemon.id+' INCONSISTENT STATE, ALREADY MOVED: '+pokemon.moveThisTurn);
+			this.clearActiveMove(true);
+			return;
+		}
+		if (!this.runEvent('BeforeMove', pokemon, target, move)) {
+			this.clearActiveMove(true);
+			return;
+		}
+		if (move.beforeMoveCallback) {
+			if (move.beforeMoveCallback.call(this, pokemon, target, move)) {
+				this.clearActiveMove(true);
+				return;
+			}
+		}
+		pokemon.lastDamage = 0;
+		var lockedMove = this.runEvent('LockMove', pokemon);
+		if (lockedMove === true) lockedMove = false;
+		if (!lockedMove) {
+			pokemon.deductPP(move, null, target);
+		}
+		pokemon.moveUsed(move);
+		this.useMove(move, pokemon, target, sourceEffect);
+		this.singleEvent('AfterMove', move, null, pokemon, target, move);
+		this.runEvent('AfterMove', target, pokemon, move);
+		this.runEvent('AfterMoveSelf', pokemon, target, move);
+	},
+	runMove: function(move, pokemon, target, sourceEffect) {
+		if (!sourceEffect && toId(move) !== 'struggle') {
+			var changedMove = this.runEvent('OverrideDecision', pokemon);
+			if (changedMove && changedMove !== true) {
+				move = changedMove;
+				target = null;
+			}
+		}
+		move = this.getMove(move);
+		if (!target) target = this.resolveTarget(pokemon, move);
+
+		this.setActiveMove(move, pokemon, target);
+
+		if (pokemon.moveThisTurn) {
+			// THIS IS PURELY A SANITY CHECK
+			// DO NOT TAKE ADVANTAGE OF THIS TO PREVENT A POKEMON FROM MOVING;
+			// USE this.cancelMove INSTEAD
+			this.debug(''+pokemon.id+' INCONSISTENT STATE, ALREADY MOVED: '+pokemon.moveThisTurn);
+			this.clearActiveMove(true);
+			return;
+		}
+		if (!this.runEvent('BeforeMove', pokemon, target, move)) {
+			this.clearActiveMove(true);
+			return;
+		}
+		if (move.beforeMoveCallback) {
+			if (move.beforeMoveCallback.call(this, pokemon, target, move)) {
+				this.clearActiveMove(true);
+				return;
+			}
+		}
+		pokemon.lastDamage = 0;
+		var lockedMove = this.runEvent('LockMove', pokemon);
+		if (lockedMove === true) lockedMove = false;
+		if (!lockedMove && !move.isSleepTalk) {
+			pokemon.deductPP(move, null, target);
+		}
+		pokemon.moveUsed(move);
+		this.useMove(move, pokemon, target, sourceEffect);
+		this.singleEvent('AfterMove', move, null, pokemon, target, move);
+		this.runEvent('AfterMove', target, pokemon, move);
+		this.runEvent('AfterMoveSelf', pokemon, target, move);
 	}
 };
