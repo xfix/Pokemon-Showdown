@@ -222,7 +222,11 @@ exports.BattleFormats = {
 	        this.p2.pokemonLeft = this.p2.pokemon.length;
         },
         validateSet: function(set) {
+			var problems = [];
         	if (!set.level || set.level >= 50) set.forcedLevel = 50;
+			if (template.gen < 5) problems.push(set.species + ' must come from gen 5.');
+			
+			return problems;
         },
         ruleset: ['Pokemon', 'Species Clause', 'Item Clause', 'Team Preview GBU'],
         banlist: ['Unreleased', 'Illegal', 'Sky Drop', 'Dark Void', 'Soul Dew',
@@ -254,7 +258,7 @@ exports.BattleFormats = {
         validateSet: function(set) {
         	if (!set.level || set.level >= 50) set.forcedLevel = 50;
         },
-        ruleset: ['Pokemon', 'Spring Friendly', 'Species Clause', 'Item Clause', 'Team Preview GBU'],
+        ruleset: ['Pokemon', 'Species Clause', 'Item Clause', 'Team Preview GBU'],
         banlist: ['Unreleased', 'Illegal', 'Dark Void', 'Soul Dew']
     },
 	cap: {
@@ -1496,16 +1500,6 @@ exports.BattleFormats = {
 		validateSet: function(set, format) {
 			var problems = [];
 			if (set.level < 100) problems.push(set.species + ' must be level 100.');
-			
-			return problems;
-		}
-	},
-	springfriendly: {
-		effectType: 'Banlist',
-		validateSet: function(set, format) {
-			var problems = [];
-			var template = this.getTemplate(set.species);
-			if (template.gen < 5) problems.push(set.species + ' must come from gen 5.');
 			
 			return problems;
 		}
