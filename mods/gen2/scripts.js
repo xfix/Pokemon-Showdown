@@ -13,7 +13,7 @@ exports.BattleScripts = {
 		// Gen 2 caps stats at 999 and min is 1. Stats over 1023 with items roll over (Marowak, Pikachu)
 		if (pokemon.species === 'Marowak' && pokemon.item === 'thickclub' && statName === 'atk' && stat > 1023) {
 			stat = stat - 1024;
-		} else if (pokemon.species === 'Pikachu' && pokemon.item === 'lightball' && statName in {atk:1, spa:1} && stat > 1023) {
+		} else if (pokemon.species === 'Pikachu' && pokemon.item === 'lightball' && statName === 'spa' && stat > 1023) {
 			stat = stat - 1024;
 		} else if (pokemon.species === 'Ditto' && pokemon.item === 'metalpowder' && statName in {def:1, spd:1} && stat > 1023) {
 			// what. the. fuck. stop playing pokémon
