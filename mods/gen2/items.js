@@ -20,6 +20,10 @@ exports.BattleItems = {
 		gen: 2,
 		desc: "Evolves Seadra into Kingdra. Raises power of Dragon-type moves by 10%."
 	},
+	lightball: {
+		inherit: true,
+		onModifyAtk: null
+	},
 	metalpowder: {
 		inherit: true,
 		onModifyDef: function(def, pokemon) {
