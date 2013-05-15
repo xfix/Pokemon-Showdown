@@ -177,7 +177,7 @@ exports.BattleMovedex = {
 	spite: {
 		inherit: true,
 		onHit: function(target) {
-			var reduction = this.random(1, 5);
+			var reduction = this.random(2, 6);
 			if (target.deductPP(target.lastMove, reduction)) {
 				this.add("-activate", target, 'move: Spite', target.lastMove, reduction);
 				return;
