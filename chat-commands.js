@@ -80,6 +80,13 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		return false;
 	}
 	logCommand(cmd, target);
+	if (cmd.substr(0, 4) === 'mute') {
+		var space = cmd.indexOf(' ');
+		var muteTime = cmd.substr(4, cmd.length - space);
+		muteTime = parseInt(muteTime);
+		delete space;
+		cmd = 'mute';
+	}
 	switch (cmd) {
 	case 'cmd':
 		var spaceIndex = target.indexOf(' ');
@@ -470,13 +477,21 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			logModCommand(room,''+targetUser.name+' was already muted; '+user.name+' was too late.' + (targets[1] ? " (" + targets[1] + ")" : ""));
 			return false;
 		}
+		console.log('in command: ' + muteTime);
+		if (!muteTime) {
+			muteTime = 7*60000;
+		} else {
+			muteTime *= 60000;
+		}
+		if (muteTime > 90*60000) muteTime = 90*60000;
+		var minutes = muteTime / 60000;
 
-		logModCommand(room,''+targetUser.name+' was muted by '+user.name+' for 7 minutes.' + (targets[1] ? " (" + targets[1] + ")" : ""));
+		logModCommand(room,''+targetUser.name+' was muted by '+user.name+' for ' + minutes + ' minutes.' + (targets[1] ? " (" + targets[1] + ")" : ""));
 		targetUser.emit('message', user.name+' has muted you for 7 minutes. '+targets[1]);
 		var alts = targetUser.getAlts();
 		if (alts.length) logModCommand(room,""+targetUser.name+"'s alts were also muted: "+alts.join(", "));
 
-		targetUser.mute(7*60*1000);
+		targetUser.mute(muteTime);
 
 		return false;
 		break;
