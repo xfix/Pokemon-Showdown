@@ -52,6 +52,12 @@ if (config.watchconfig) {
 	});
 }
 
+config.package = {};
+fs.readFile('package.json', function(err, data) {
+	if (err) return;
+	config.package = JSON.parse(data);
+});
+
 if (process.argv[2] && parseInt(process.argv[2])) {
 	config.port = parseInt(process.argv[2]);
 }
@@ -249,14 +255,16 @@ if (config.crashguard) {
 var events = {
 	join: function(data, socket, you) {
 		if (!data || typeof data.room !== 'string') return;
-		if (!you) {
-			you = Users.connectUser(socket, data.room);
-			return you;
-		} else {
-			var youUser = resolveUser(you, socket);
-			if (!youUser) return;
-			youUser.joinRoom(data.room, socket);
+		if (!you) return; // should be impossible
+
+		var youUser = resolveUser(you, socket);
+		if (!youUser) return;
+		if (data.nojoin) {
+			// this event is being emitted for legacy servers, but the client
+			// doesn't actually want to join the room specified
+			return;
 		}
+		youUser.joinRoom(data.room, socket);
 	},
 	chat: function(message, socket, you) {
 		if (!message || typeof message.room !== 'string' || typeof message.message !== 'string') return;
@@ -276,33 +284,34 @@ var events = {
 };
 
 var socketCounter = 0;
-server.on('connection', function (socket) {
-	if (!socket) { // WTF
+server.on('connection', function(socket) {
+	if (!socket) {
+		throw {stack: '`socket` is empty in `connection` event!'};
+	}
+	if (!socket.remoteAddress) {
+		// This condition occurs several times per day. It may be a SockJS bug.
+		try {
+			socket.end();
+		} catch (e) {}
 		return;
 	}
 	socket.id = (++socketCounter);
 
-	if (config.proxyip) {
-		if (config.proxyip.indexOf(socket.remoteAddress) >= 0) {
-			var ips = (socket.headers['x-forwarded-for'] || '').split(',');
-			var ip;
-			while (ip = ips.pop()) {
-				ip = ip.trim();
-				if (config.proxyip.indexOf(ip) < 0) {
-					socket.remoteAddress = ip;
-					break;
-				}
-			}
-		} else if (config.proxyip === true) {
-			var ip = (socket.headers['x-forwarded-for'] || '').split(',').shift();
-			if (ip) {
-				socket.remoteAddress = ip.trim();
+	if (config.proxyip && (config.proxyip.indexOf(socket.remoteAddress) >= 0)) {
+		var ips = (socket.headers['x-forwarded-for'] || '').split(',');
+		var ip;
+		while (ip = ips.pop()) {
+			ip = ip.trim();
+			if (config.proxyip.indexOf(ip) < 0) {
+				socket.remoteAddress = ip;
+				break;
 			}
 		}
 	}
 
 	if (Users.checkBanned(socket.remoteAddress)) {
 		console.log('CONNECT BLOCKED - IP BANNED: '+socket.remoteAddress);
+		socket.end();
 		return;
 	}
 	console.log('CONNECT: '+socket.remoteAddress+' ['+socket.id+']');

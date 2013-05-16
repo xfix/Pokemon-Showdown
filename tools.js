@@ -171,7 +171,6 @@ module.exports = (function () {
 				else if (template.num >= 1) template.gen = 1;
 				else template.gen = 0;
 			}
-			if (!template.minLevel) template.minLevel = 1;
 		}
 		return template;
 	};
@@ -344,7 +343,7 @@ module.exports = (function () {
 			ability.toString = this.effectToString;
 			if (!ability.category) ability.category = 'Effect';
 			if (!ability.effectType) ability.effectType = 'Ability';
-			if (!ability.gen) {	
+			if (!ability.gen) {
 				if (ability.num >= 124) ability.gen = 5;
 				else if (ability.num >= 77) ability.gen = 4;
 				else if (ability.num >= 1) ability.gen = 3;
@@ -677,8 +676,7 @@ module.exports = (function () {
 	Tools.prototype.validateTeam = function(team, format, forceThisMod) {
 		format = this.getFormat(format);
 		if (!forceThisMod && this.isBase && format.mod !== this.currentMod) {
-			if (this.mod(format)) return this.mod(format).validateTeam(team, format, true);
-			else return false;
+			return this.mod(format).validateTeam(team, format, true);
 		}
 		var problems = [];
 		this.getBanlistTable(format);
@@ -765,15 +763,15 @@ module.exports = (function () {
 
 		var maxLevel = format.maxLevel || 100;
 		var maxForcedLevel = format.maxForcedLevel || maxLevel;
+		if (!set.level) {
+			set.level = (format.defaultLevel || maxLevel);
+		}
 		if (format.forcedLevel) {
 			set.forcedLevel = format.forcedLevel;
-		} else if ((set.level || maxLevel) >= maxForcedLevel) {
+		} else if (set.level >= maxForcedLevel) {
 			set.forcedLevel = maxForcedLevel;
 		}
-		if (!set.level) {
-			set.level = 100;
-		}
-		if (set.level > maxLevel || set.level == set.forcedLevel) {
+		if (set.level > maxLevel || set.level == set.forcedLevel || set.level == set.maxForcedLevel) {
 			set.level = maxLevel;
 		}
 
@@ -831,9 +829,10 @@ module.exports = (function () {
 			// Don't check abilities for metagames with All Abilities 
 			if (this.gen <= 2) {
 				set.ability = '';
-			}
-			if (!banlistTable['ignoreillegalabilities'] && this.gen > 2) {
-				if (ability.name !== template.abilities['0'] &&
+			} else if (!banlistTable['ignoreillegalabilities']) {
+				if (!ability.name) {
+					problems.push(name+" needs to have an ability.");
+				} else if (ability.name !== template.abilities['0'] &&
 					ability.name !== template.abilities['1'] &&
 					ability.name !== template.abilities['DW']) {
 					problems.push(name+" can't have "+set.ability+".");
@@ -851,10 +850,6 @@ module.exports = (function () {
 						lsetData.sources = ['5D'];
 					}
 				}
-			}
-			// Check for max level
-			if (set.level < template.minLevel) {
-				problems.push(name+" must be at least level " + template.minLevel + ".");
 			}
 		}
 		if (set.moves && Array.isArray(set.moves)) {

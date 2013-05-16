@@ -142,21 +142,6 @@ var GlobalRoom = (function() {
 		}
 		this.send(entries.join('\n'));
 	};
-
-	// This function is unused.
-	GlobalRoom.prototype.getUserList = function() {
-		var buffer = '';
-		var counter = 0;
-		for (var i in this.users) {
-			counter++;
-			if (!this.users[i].named) {
-				continue;
-			}
-			buffer += ','+this.users[i].getIdentity();
-		}
-		return ''+counter+buffer;
-	};
-
 	GlobalRoom.prototype.getRoomList = function(filter, lastRoomReported) {
 		var roomList = {};
 		var total = 0;
@@ -309,11 +294,6 @@ var GlobalRoom = (function() {
 			}
 		}
 	};
-	GlobalRoom.prototype.sendIdentity = function(user) {
-		if (user && user.connected) {
-			this.send('|N|' + user.getIdentity() + '|' + user.userid);
-		}
-	};
 	GlobalRoom.prototype.sendAuth = function(message) {
 		for (var i in this.users) {
 			var user = this.users[i];
@@ -331,7 +311,7 @@ var GlobalRoom = (function() {
 	GlobalRoom.prototype.addRaw = function(message) {
 		rooms.lobby.addRaw(message);
 	};
-	GlobalRoom.prototype.initSocket = function(user, socket) {
+	GlobalRoom.prototype.onJoinSocket = function(user, socket) {
 		var initdata = {
 			name: user.name,
 			named: user.named,
@@ -340,7 +320,7 @@ var GlobalRoom = (function() {
 		emit(socket, 'init', initdata);
 		emitData(socket, this.formatListText);
 	};
-	GlobalRoom.prototype.join = function(user, merging) {
+	GlobalRoom.prototype.onJoin = function(user, merging) {
 		if (!user) return false; // ???
 		if (this.users[user.userid]) return user;
 
@@ -362,12 +342,13 @@ var GlobalRoom = (function() {
 
 		return user;
 	};
-	GlobalRoom.prototype.rename = function(user, oldid, joining) {
+	GlobalRoom.prototype.onRename = function(user, oldid, joining) {
 		delete this.users[oldid];
 		this.users[user.userid] = user;
 		return user;
 	};
-	GlobalRoom.prototype.leave = function(user) {
+	GlobalRoom.prototype.onUpdateIdentity = function() {};
+	GlobalRoom.prototype.onLeave = function(user) {
 		if (!user) return; // ...
 		delete this.users[user.userid];
 		--this.userCount;
@@ -897,7 +878,7 @@ var BattleRoom = (function() {
 	};
 	// This function is only called when the room is not empty.
 	// Joining an empty room calls this.join() below instead.
-	BattleRoom.prototype.initSocket = function(user, socket) {
+	BattleRoom.prototype.onJoinSocket = function(user, socket) {
 		var initdata = {
 			name: user.name,
 			named: user.named,
@@ -911,7 +892,7 @@ var BattleRoom = (function() {
 		// the battle
 		this.battle.resendRequest(user);
 	};
-	BattleRoom.prototype.join = function(user) {
+	BattleRoom.prototype.onJoin = function(user) {
 		if (!user) return false;
 		if (this.users[user.userid]) return user;
 
@@ -932,13 +913,20 @@ var BattleRoom = (function() {
 		user.emit('init', initdata);
 		return user;
 	};
-	BattleRoom.prototype.rename = function(user, oldid, joining) {
+	BattleRoom.prototype.onRename = function(user, oldid, joining) {
 		if (joining) {
 			this.addCmd('join', user.name);
 		}
-		var resend = joining || !this.battle.playerTable[user.prevNames[user.userid]];
-		if (this.battle.playerTable[user.userid]) {
-			this.battle.rename();
+		var resend = joining || !this.battle.playerTable[oldid];
+		if (this.battle.playerTable[oldid]) {
+			if (this.rated) {
+				this.add('|message|'+user+' forfeited by changing their name.');
+				this.battle.lose(oldid);
+				this.battle.leave(oldid);
+				resend = false;
+			} else {
+				this.battle.rename();
+			}
 		}
 		delete this.users[oldid];
 		this.users[user.userid] = user;
@@ -949,6 +937,28 @@ var BattleRoom = (function() {
 			this.battle.resendRequest(user);
 		}
 		return user;
+	};
+	GlobalRoom.prototype.onUpdateIdentity = function() {};
+	BattleRoom.prototype.onLeave = function(user) {
+		if (!user) return; // ...
+		if (user.battles[this.id]) {
+			this.battle.leave(user);
+			this.active = this.battle.active;
+			if (this.parentid) {
+				getRoom(this.parentid).updateRooms();
+			}
+		} else if (!user.named) {
+			delete this.users[user.userid];
+			return;
+		}
+		delete this.users[user.userid];
+		this.addCmd('leave', user.name);
+
+		if (Object.isEmpty(this.users)) {
+			this.active = false;
+		}
+
+		this.update();
 	};
 	BattleRoom.prototype.joinBattle = function(user, team) {
 		var slot = undefined;
@@ -984,27 +994,6 @@ var BattleRoom = (function() {
 			getRoom(this.parentid).updateRooms();
 		}
 		return true;
-	};
-	BattleRoom.prototype.leave = function(user) {
-		if (!user) return; // ...
-		if (user.battles[this.id]) {
-			this.battle.leave(user);
-			this.active = this.battle.active;
-			if (this.parentid) {
-				getRoom(this.parentid).updateRooms();
-			}
-		} else if (!user.named) {
-			delete this.users[user.userid];
-			return;
-		}
-		delete this.users[user.userid];
-		this.addCmd('leave', user.name);
-
-		if (Object.isEmpty(this.users)) {
-			this.active = false;
-		}
-
-		this.update();
 	};
 	BattleRoom.prototype.addCmd = function() {
 		this.log.push('|'+Array.prototype.slice.call(arguments).join('|'));
@@ -1287,26 +1276,8 @@ var ChatRoom = (function() {
 		if (user) {
 			user.sendTo(this, message);
 		} else {
-			var isPureLobbyChat = false;
-			if (message.indexOf('\n') < 0) {
-				isPureLobbyChat = (message.substr(0,3) === '|c|' && message.substr(0,5) !== '|c|~|') ||
-					message.substr(0,10) === '|c|~|/data' ||
-					message.substr(0,24) === '|raw|<div class="infobox';
-			}
 			for (var i in this.users) {
-				user = this.users[i];
-				if (isPureLobbyChat && user.blockLobbyChat) continue;
-				user.sendTo(this, message);
-			}
-		}
-	};
-	ChatRoom.prototype.sendIdentity = function(user) {
-		if (user && user.connected) {
-			var entry = '|N|' + user.getIdentity() + '|' + user.userid;
-			if (config.reportjoinsperiod) {
-				this.reportJoinsQueue.push(entry);
-			} else {
-				this.send(entry);
+				this.users[i].sendTo(this, message);
 			}
 		}
 	};
@@ -1328,7 +1299,7 @@ var ChatRoom = (function() {
 	ChatRoom.prototype.addRaw = function(message) {
 		this.add('|raw|'+message);
 	};
-	ChatRoom.prototype.initSocket = function(user, socket) {
+	ChatRoom.prototype.onJoinSocket = function(user, socket) {
 		var initdata = {
 			name: user.name,
 			named: user.named,
@@ -1339,7 +1310,7 @@ var ChatRoom = (function() {
 		var userList = this.userList ? this.userList : this.getUserList();
 		sendData(socket, '>'+this.id+'\n|init|chat\n|users|'+userList+'\n'+this.log.slice(-25).join('\n'));
 	};
-	ChatRoom.prototype.join = function(user, merging) {
+	ChatRoom.prototype.onJoin = function(user, merging) {
 		if (!user) return false; // ???
 		if (this.users[user.userid]) return user;
 
@@ -1371,7 +1342,7 @@ var ChatRoom = (function() {
 
 		return user;
 	};
-	ChatRoom.prototype.rename = function(user, oldid, joining) {
+	ChatRoom.prototype.onRename = function(user, oldid, joining) {
 		delete this.users[oldid];
 		this.users[user.userid] = user;
 		var entry;
@@ -1398,7 +1369,20 @@ var ChatRoom = (function() {
 		}
 		return user;
 	};
-	ChatRoom.prototype.leave = function(user) {
+	/**
+	 * onRename, but without a userid change
+	 */
+	ChatRoom.prototype.onUpdateIdentity = function(user) {
+		if (user && user.connected && user.named) {
+			var entry = '|N|' + user.getIdentity() + '|' + user.userid;
+			if (config.reportjoinsperiod) {
+				this.reportJoinsQueue.push(entry);
+			} else {
+				this.send(entry);
+			}
+		}
+	};
+	ChatRoom.prototype.onLeave = function(user) {
 		if (!user) return; // ...
 		delete this.users[user.userid];
 		if (config.reportjoins) {

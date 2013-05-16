@@ -321,6 +321,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		break;
 
 	case 'lock':
+	case 'ipmute':
 		if (!target) return parseCommand(user, '?', cmd, room, socket);
 		var targets = splitTarget(target);
 		var targetUser = targets[0];
@@ -334,19 +335,11 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		}
 
 		logModCommand(room,""+targetUser.name+" was locked from talking by "+user.name+"." + (targets[1] ? " (" + targets[1] + ")" : ""));
-		targetUser.emit('message', user.name+' has locked you from talking in chats, battles, and PMs.\n\n'+targets[1]+'\n\nIf you feel that your lock was unjustified you can appeal it at:\nhttp://www.smogon.com/forums/announcement.php?f=126&a=204');
+		targetUser.emit('message', user.name+' has locked you from talking in chats, battles, and PMing regular users.\n\n'+targets[1]+'\n\nIf you feel that your lock was unjustified, you can still PM staff members (@, &, and ~) to discuss it.');
 		var alts = targetUser.getAlts();
 		if (alts.length) logModCommand(room,""+targetUser.name+"'s alts were also locked: "+alts.join(", "));
 
 		targetUser.lock();
-
-		Rooms.lobby.sendIdentity(targetUser);
-		for (var i=0; i<alts.length; i++) {
-			var targetAlt = Users.get(alts[i]);
-			if (targetAlt) {
-				Rooms.lobby.sendIdentity(targetAlt);
-			}
-		}
 		return false;
 		break;
 
@@ -357,15 +350,16 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			return false;
 		}
 
-		var name = Users.unlock(target);
+		var unlocked = Users.unlock(target);
 
-		if (name) {
-			logModCommand(room,''+name+' was unlocked by '+user.name+'.');
+		if (unlocked) {
+			var names = Object.keys(unlocked);
+			logModCommand(room, '' + names.join(', ') + ' ' +
+					((names.length > 1) ? 'were' : 'was') +
+					' unlocked by ' + user.name + '.');
 		} else {
 			emit(socket, 'console', 'User '+target+' is not locked.');
 		}
-		var targetUser = Users.get(target);
-		if (targetUser) Rooms.lobby.sendIdentity(targetUser);
 		return false;
 		break;
 
@@ -431,14 +425,9 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			}
 			return parseCommand(user, '?', cmd, room, socket);
 		}
-		// temporarily disable this because blarajan
-		/* if (user.muted && !targetUser.can('mute', user)) {
-			emit(socket, 'console', 'You can only private message members of the Moderation Team (users marked by %, @, &, or ~) when muted.');
-			return false;
-		} */
 
-		if (user.locked) {
-			emit(socket, 'console', 'You are locked from sending private messages.');
+		if (user.locked && !targetUser.can('lock', user)) {
+			emit(socket, 'console', 'You can only private message members of the moderation team (users marked by %, @, &, or ~) when locked.');
 			return false;
 		}
 
@@ -472,21 +461,54 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			emit(socket, 'console', '/mute - Access denied.');
 			return false;
 		}
+		if (room.id !== 'lobby') {
+			emit(socket, 'console', 'Muting only applies to lobby - you probably wanted to /lock.');
+			return false;
+		}
 
-		logModCommand(room,''+targetUser.name+' was muted by '+user.name+'.' + (targets[1] ? " (" + targets[1] + ")" : ""));
-		targetUser.emit('message', user.name+' has muted you. '+targets[1]);
+		if (targetUser.muted) {
+			logModCommand(room,''+targetUser.name+' was already muted; '+user.name+' was too late.' + (targets[1] ? " (" + targets[1] + ")" : ""));
+			return false;
+		}
+
+		logModCommand(room,''+targetUser.name+' was muted by '+user.name+' for 7 minutes.' + (targets[1] ? " (" + targets[1] + ")" : ""));
+		targetUser.emit('message', user.name+' has muted you for 7 minutes. '+targets[1]);
 		var alts = targetUser.getAlts();
 		if (alts.length) logModCommand(room,""+targetUser.name+"'s alts were also muted: "+alts.join(", "));
 
-		targetUser.muted = true;
-		Rooms.lobby.sendIdentity(targetUser);
-		for (var i=0; i<alts.length; i++) {
-			var targetAlt = Users.get(alts[i]);
-			if (targetAlt) {
-				targetAlt.muted = true;
-				Rooms.lobby.sendIdentity(targetAlt);
-			}
+		targetUser.mute(7*60*1000);
+
+		return false;
+		break;
+
+	case 'hourmute':
+		if (!target) return parseCommand(user, '?', cmd, room, socket);
+		var targets = splitTarget(target);
+		var targetUser = targets[0];
+		if (!targetUser) {
+			emit(socket, 'console', 'User '+targets[2]+' not found.');
+			return false;
 		}
+		if (!user.can('mute', targetUser)) {
+			emit(socket, 'console', '/mute - Access denied.');
+			return false;
+		}
+		if (room.id !== 'lobby') {
+			emit(socket, 'console', 'Muting only applies to lobby - you probably wanted to /lock.');
+			return false;
+		}
+
+		if (targetUser.muted) {
+			logModCommand(room,''+targetUser.name+' was already muted; '+user.name+' was too late.' + (targets[1] ? " (" + targets[1] + ")" : ""));
+			return false;
+		}
+
+		logModCommand(room,''+targetUser.name+' was muted by '+user.name+' for 60 minutes.' + (targets[1] ? " (" + targets[1] + ")" : ""));
+		targetUser.emit('message', user.name+' has muted you for 60 minutes. '+targets[1]);
+		var alts = targetUser.getAlts();
+		if (alts.length) logModCommand(room,""+targetUser.name+"'s alts were also muted: "+alts.join(", "));
+
+		targetUser.mute(60*60*1000);
 
 		return false;
 		break;
@@ -505,8 +527,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			return false;
 		}
 
-		targetUser.muted = false;
-		Rooms.lobby.sendIdentity(targetUser);
+		targetUser.unmute();
 		logModCommand(room,''+targetUser.name+' was unmuted by '+user.name+'.');
 		return false;
 		break;
@@ -552,7 +573,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 				targetUser.emit('console', 'You were demoted to ' + groupName + ' by ' + user.name + '.');
 			}
 		}
-		Rooms.lobby.sendIdentity(targetUser);
+		targetUser.updateIdentity();
 		return false;
 		break;
 
@@ -594,6 +615,11 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		case 'on':
 		case 'true':
 		case 'yes':
+			emit(socket, 'console', "If you're dealing with a spammer, make sure to run /loadbanlist first.");
+			emit(socket, 'console', "That said, the command you've been looking for has been renamed to: /modchat registered");
+			return false;
+			break;
+		case 'registered':
 			config.modchat = true;
 			break;
 		case 'off':
@@ -603,8 +629,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			break;
 		default:
 			if (!config.groups[target]) {
-				emit(socket, 'console', 'That moderated chat setting is unrecognized.');
-				return false;
+				return parseCommand(user, 'help', 'modchat', room, socket);
 			}
 			if (config.groupsranking.indexOf(target) > 1 && !user.can('modchatall')) {
 				emit(socket, 'console', '/modchat - Access denied for setting higher than ' + config.groupsranking[1] + '.');
@@ -689,20 +714,6 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		}
 		fs.writeFile('data/learnsets.js', 'exports.BattleLearnsets = '+JSON.stringify(BattleLearnsets)+";\n");
 		emit(socket, 'console', 'learnsets.js saved.');
-		return false;
-		break;
-
-	case 'rating':
-	case 'ranking':
-	case 'rank':
-	case 'ladder':
-		emit(socket, 'console', 'The version of Pokemon Showdown that you are using does not support /' + cmd + '.');
-		return false;
-		break;
-
-	case 'nick':
-		if (!target) return parseCommand(user, '?', cmd, room, socket);
-		user.rename(target);
 		return false;
 		break;
 
@@ -967,7 +978,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		showOrBroadcastStart(user, cmd, room, socket, message);
 		showOrBroadcast(user, cmd, room, socket,
 			'<div class="infobox">' +
-			'Version: <b><a href="http://pokemonshowdown.com/versions#' + parseCommandLocal.serverVersion + '" target="_blank">' + parseCommandLocal.serverVersion + '</a></b>' +
+			'Server version: <b>'+config.package.version+'</b> <small>(<a href="http://pokemonshowdown.com/versions#' + parseCommandLocal.serverVersion + '" target="_blank">' + parseCommandLocal.serverVersion.substr(0,10) + '</a>)</small>' +
 			'</div>');
 		return false;
 		break;
@@ -1445,13 +1456,13 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		break;
 
 	case 'joinbattle':
-	case 'partbattle':
 		if (!room.joinBattle) { emit(socket, 'console', 'You can only do this in battle rooms.'); return false; }
 
 		room.joinBattle(user);
 		return false;
 		break;
 
+	case 'partbattle':
 	case 'leavebattle':
 		if (!room.leaveBattle) { emit(socket, 'console', 'You can only do this in battle rooms.'); return false; }
 
@@ -1638,7 +1649,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		break;
 
 	case 'loadbanlist':
-		if (!user.can('declare')) {
+		if (!user.can('modchat')) {
 			emit(socket, 'console', '/loadbanlist - Access denied.');
 			return false;
 		}
@@ -1648,7 +1659,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 			if (err) return;
 			data = (''+data).split("\n");
 			for (var i=0; i<data.length; i++) {
-				if (data[i]) bannedIps[data[i]] = '#ipban';
+				if (data[i]) Users.bannedIps[data[i]] = '#ipban';
 			}
 			emit(socket, 'console', 'banned '+i+' ips');
 		});
@@ -2001,8 +2012,12 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		}
 		if (target === '%' || target === 'mute' || target === 'm') {
 			matched = true;
-			emit(socket, 'console', '/mute OR /m [username], [reason] - Mute user with reason. Requires: % @ & ~');
+			emit(socket, 'console', '/mute OR /m [username], [reason] - Mute user with reason for 7 minutes. Requires: % @ & ~');
 		}
+		if (target === '%' || target === 'hourmute') {
+			matched = true;
+			emit(socket, 'console', '/hourmute , [reason] - Mute user with reason for an hour. Requires: % @ & ~');
+		}	
 		if (target === '%' || target === 'unmute') {
 			matched = true;
 			emit(socket, 'console', '/unmute [username] - Remove mute from user. Requires: % @ & ~');
@@ -2038,7 +2053,7 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		}
 		if (target === '@' || target === 'modchat') {
 			matched = true;
-			emit(socket, 'console', '/modchat [on/off/+/%/@/&/~] - Set the level of moderated chat. Requires: @ & ~');
+			emit(socket, 'console', '/modchat [off/registered/+/%/@/&/~] - Set the level of moderated chat. Requires: @ & ~');
 		}
 		if (target === '~' || target === 'hotpatch') {
 			matched = true;
@@ -2124,12 +2139,8 @@ function canTalk(user, room, socket) {
 		if (socket) emit(socket, 'console', 'You are locked from talking in chat.');
 		return false;
 	}
-	if (user.muted) {
-		if (socket) emit(socket, 'console', 'You are muted.');
-		return false;
-	}
-	if (room.id === 'lobby' && user.blockLobbyChat) {
-		if (socket) emit(socket, 'console', "You can't send messages while blocking lobby chat.");
+	if (user.muted && room.id === 'lobby') {
+		if (socket) emit(socket, 'console', 'You are muted and cannot talk in the lobby.');
 		return false;
 	}
 	if (config.modchat && room.id === 'lobby') {
