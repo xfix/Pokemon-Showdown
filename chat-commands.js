@@ -80,9 +80,10 @@ function parseCommandLocal(user, cmd, target, room, socket, message) {
 		return false;
 	}
 	logCommand(cmd, target);
-	if (cmd.substr(0, 4) === 'mute') {
+	if (cmd.substr(0, 4) === 'mute' || (cmd === 'm' || (cmd.substr(0, 1) === 'm' && cmd.substr(0, 2).match('[0-9]')))) {
 		var space = cmd.indexOf(' ');
-		var muteTime = cmd.substr(4, cmd.length - space);
+		var from = (cmd.substr(0, 4) === 'mute')? 4 : 1;
+		var muteTime = cmd.substr(from, cmd.length - space);
 		muteTime = parseInt(muteTime);
 		delete space;
 		cmd = 'mute';
