@@ -196,6 +196,23 @@ exports.BattleFormats = {
 			}
 		}
 	},
+	colorchangemeta: {
+		effectType: 'Format',
+		name: 'Color Change Meta',
+		section: "Other Metas",
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		validateSet: function(set) {
+			set.ability = 'Color Change';
+        },
+		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
+		banlist: ['Regigigas', 'Slaking', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electri', 'Arceus-Fighting', 'Arceus-Fire', 'Arceus-Flying', 
+		'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus-Normal', 'Arceus-Poison', 'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 
+		'Arceus-Water', 'Darkrai', 'Deoxys', 'Deoxys-A', 'Deoxys-D', 'Deoxys-S', 'Dialga', 'Genesect ', 'Giratina', 'Giratina-O', 'Groudon', 'Ho-Oh', 'Kyogre', 
+		'Kyurem-W', 'Lugia', 'Manaphy', 'Mewtwo', 'Palkia', 'Rayquaza', 'Reshiram', 'Shaymin-S', 'Thundurus', 'Tornadus-T', 'Zekrom']
+	},
 	haxmons: {
 		effectType: 'Format',
 		name: "Haxmons",
@@ -280,7 +297,7 @@ exports.BattleFormats = {
 		challengeShow: true,
 		searchShow: true,
 		isTeambuilderFormat: true,
-		ruleset: ['Pokemon'],
+		ruleset: ['Hackmon'],
 		banlist: []
 	},
 	balancedhackmons: {
@@ -340,7 +357,7 @@ exports.BattleFormats = {
 		mod: 'gen2',
 		effectType: 'Format',
 		name: "[Gen 2] OU",
-		section: "Old Gens",
+		section: "Past Generations",
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
@@ -353,7 +370,7 @@ exports.BattleFormats = {
 		mod: 'gen1',
 		effectType: 'Format',
 		name: "[Gen 1] OU",
-		section: "Old Gens",
+		section: "Past Generations",
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
@@ -366,7 +383,7 @@ exports.BattleFormats = {
 		mod: 'gen1',
 		effectType: 'Format',
 		name: "[Gen 1] Ubers",
-		section: "Old Gens",
+		section: "Past Generations",
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
@@ -379,7 +396,7 @@ exports.BattleFormats = {
 		mod: 'gen1',
 		effectType: 'Format',
 		name: "[Gen 1] UU",
-		section: "Old Gens",
+		section: "Past Generations",
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
@@ -392,7 +409,7 @@ exports.BattleFormats = {
 		mod: 'gen1',
 		effectType: 'Format',
 		name: "[Gen 1] LC",
-		section: "Old Gens",
+		section: "Past Generations",
 		maxLevel: 5,
 		rated: true,
 		challengeShow: true,
@@ -405,7 +422,7 @@ exports.BattleFormats = {
 		mod: 'gen1',
 		effectType: 'Format',
 		name: "[Gen1] Random Battle",
-		section: "Old Gens",
+		section: "Past Generations",
 		team: 'random',
 		canUseRandomTeam: true,
 		searchDefault: true,
@@ -418,7 +435,7 @@ exports.BattleFormats = {
 		mod: 'gen1',
 		effectType: 'Format',
 		name: "[Gen 1] Challenge Cup",
-		section: "Old Gens",
+		section: "Past Generations",
 		team: 'randomCC',
 		canUseRandomTeam: true,
 		rated: true,
@@ -429,7 +446,7 @@ exports.BattleFormats = {
 	gen4ou: {
 		name: "[Gen 4] OU",
 		mod: 'gen4',
-		section: "Old Gens",
+		section: "Past Generations",
 		effectType: 'Format',
 		challengeDefault: true,
 		rated: true,
@@ -459,7 +476,7 @@ exports.BattleFormats = {
 	gen3ou: {
 		name: "[Gen 3] OU",
 		mod: 'gen3',
-		section: "Old Gens",
+		section: "Past Generations",
 		effectType: 'Format',
 		challengeDefault: true,
 		rated: true,
@@ -487,7 +504,7 @@ exports.BattleFormats = {
 	gen2ou: {
 		name: "[Gen 2] OU",
 		mod: 'gen2',
-		section: "Old Gens",
+		section: "Past Generations",
 		effectType: 'Format',
 		challengeDefault: true,
 		rated: true,
@@ -634,7 +651,7 @@ exports.BattleFormats = {
 		name: "Valentine Venture",
 		section: "Seasonal",
 		team: 'randomSeasonalVV',
-		gameType: 'doubles',
+		gameType: 'Doubles',
 		canUseRandomTeam: true,
 		rated: true,
 		challengeShow: true,
@@ -1102,8 +1119,8 @@ exports.BattleFormats = {
 	},
 	doublesvgc2013dev: {
 		effectType: 'Format',
-		section: 'doubles',
-		gameType: 'doubles',
+		section: 'Doubles',
+		gameType: 'Doubles',
 		name: "Doubles VGC 2013 (dev)",
 		rated: true,
 		challengeShow: true,
@@ -1154,8 +1171,8 @@ exports.BattleFormats = {
 	},
 	smogondoubles: {
 		effectType: 'Format',
-		section: 'doubles',
-		gameType: 'doubles',
+		section: 'Doubles',
+		gameType: 'Doubles',
 		name: "Smogon Doubles",
 		challengeShow: true,
 		searchShow: true,
@@ -1181,8 +1198,8 @@ exports.BattleFormats = {
 	},
 	doublesrandombattledev: {
 		effectType: 'Format',
-		section: 'doubles',
-		gameType: 'doubles',
+		section: 'Doubles',
+		gameType: 'Doubles',
 		name: "Doubles Random Battle (dev)",
 		team: 'random',
 		canUseRandomTeam: true,
@@ -1194,8 +1211,8 @@ exports.BattleFormats = {
 	},
 	nudoubles: {
 		effectType: 'Format',
-		section: 'doubles',
-		gameType: 'doubles',
+		section: 'Doubles',
+		gameType: 'Doubles',
 		name: "NU Doubles",
 		rated: true,
 		challengeShow: true,
@@ -1206,8 +1223,8 @@ exports.BattleFormats = {
 	},
 	lcdoubles: {
 		effectType: 'Format',
-		section: 'doubles',
-		gameType: 'doubles',
+		section: 'Doubles',
+		gameType: 'Doubles',
 		name: "LC Doubles",
 		maxLevel: 5,
 		rated: true,
@@ -1358,6 +1375,65 @@ exports.BattleFormats = {
 				if (set.species === 'Keldeo-Resolution' && set.moves.indexOf('Secret Sword') < 0) {
 					set.species = 'Keldeo';
 				}
+			}
+			if (template.isNonstandard) {
+				problems.push(set.species+' is not a real Pokemon.');
+			}
+			if (set.ability) {
+				var ability = this.getAbility(set.ability);
+				if (ability.isNonstandard) {
+					problems.push(ability.name+' is not a real ability.');
+				}
+			}
+			if (set.moves) for (var i=0; i<set.moves.length; i++) {
+				var move = this.getMove(set.moves[i]);
+				if (move.isNonstandard) {
+					problems.push(move.name+' is not a real move.');
+				}
+			}
+			if (item && item.isNonstandard) problems.push(item.name+' is not a real item.');
+			
+			if (set.moves && set.moves.length > 4) {
+				problems.push((set.name||set.species) + ' has more than four moves.');
+			}
+			if (set.level && set.level > 100) {
+				problems.push((set.name||set.species) + ' is higher than level 100.');
+			}
+			return problems;
+		}
+	},
+	hackmon: {
+		effectType: 'Banlist',
+		validateSet: function(set, format) {
+			var item = this.getItem(set.item);
+			var template = this.getTemplate(set.species);
+			var problems = [];
+
+			if (set.species === set.name) delete set.name;
+			if (template.num == 493) { // Arceus
+				if (set.ability === 'Multitype' && item.onPlate) {
+					set.species = 'Arceus-'+item.onPlate;
+				} else {
+					set.species = 'Arceus';
+				}
+			}
+			if (template.num == 487) { // Giratina
+				if (item.id === 'griseousorb') {
+					set.species = 'Giratina-Origin';
+					if (format.banlistTable && format.banlistTable['illegal']) set.ability = 'Levitate';
+				} else {
+					set.species = 'Giratina';
+					if (format.banlistTable && format.banlistTable['illegal']) set.ability = 'Pressure';
+				}
+			}
+			if (template.num == 555) { // Darmanitan
+				set.species = 'Darmanitan';
+			}
+			if (template.num == 351) { // Castform
+				set.species = 'Castform';
+			}
+			if (template.num == 421) { // Cherrim
+				set.species = 'Cherrim';
 			}
 			if (template.isNonstandard) {
 				problems.push(set.species+' is not a real Pokemon.');
