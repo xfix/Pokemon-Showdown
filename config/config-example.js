@@ -26,11 +26,6 @@ exports.serverid = 'testserver';
 // with inaccurate clocks, the default is 25 hours.
 exports.tokenexpiry = 25*60*60;
 
-// The server token - to access the login database and ladder on pokemonshowdown.com
-//   This token must be registered for accessing the ladder, but you will
-//   still be able to login with an unregistered token.
-exports.servertoken = 'exampletoken-382hgraw4jr2tioq';
-
 // Proxy IP - a list of proxy IPs with trusted X-Forwarded-For headers
 //   The list can be an array, or a string with whatever delimiter you wish.
 //   Leave at false to never trust any proxy.
@@ -126,20 +121,14 @@ exports.consoleips = ['127.0.0.1'];
 // Whether to watch the config file for changes. If this is enabled,
 // then the config.js file will be reloaded when it is changed.
 // This can be used to change some settings using a text editor on
-// the server. The main intended application of this is for people
-// who have SSH access to the server to be able to add themselves
-// to `consoleips` above and have it take effect without restarting
-// the server. It is set to false by default because it probably
-// will not be useful to most users. Note that there will be
-// a brief delay between you saving the new config file and it
-// being reloaded by the server. This feature might not work on Windows.
-exports.watchconfig = false;
+// the server.
+exports.watchconfig = true;
 
-// loglobby - whether to log the lobby.
-exports.loglobby = false;
+// logchat - whether to log chat rooms.
+exports.logchat = false;
 
 // loguserstats - how often (in milliseconds) to write user stats to the
-// lobby log. This has no effect if `loglobby` is disabled.
+// lobby log. This has no effect if `logchat` is disabled.
 exports.loguserstats = 1000*60*10; // 10 minutes
 
 // simulatorprocesses - the number of processes to use for handling battles
@@ -201,6 +190,7 @@ exports.customavatars = {
 //                       and 'u' is another special group where it means all groups
 //                       lower in rank than the current group.
 //   All the possible permissions are as follows:
+//     - console: Developer console (>>).
 //     - lockdown: /lockdown and /endlockdown commands.
 //     - hotpatch: /hotpatch, /crashfixed and /savelearnsets commands.
 //     - ignorelimits: Ignore limits such as chat message length.
@@ -215,6 +205,7 @@ exports.customavatars = {
 //     - ip: IP checking.
 //     - alts: Alt checking.
 //     - broadcast: Broadcast informational commands.
+//     - declare: /declare command.
 //     - announce: /announce command.
 //     - modchat: Set modchat.
 //     - potd: Set PotD.
@@ -237,8 +228,8 @@ exports.groups = {
 		forcewin: true,
 		declare: true,
 		modchatall: true,
+		rangeban: true,
 		potd: true,
-		forcerenameto: true,
 		disableladder: true,
 		rank: 4
 	},
@@ -249,9 +240,7 @@ exports.groups = {
 		jurisdiction: 'u',
 		ban: true,
 		modchat: true,
-		redirect: true,
 		forcerename: true,
-		modlog: true,
 		ip: true,
 		alts: '@u',
 		rank: 3
@@ -263,10 +252,12 @@ exports.groups = {
 		jurisdiction: 'u',
 		announce: true,
 		warn: true,
+		kick: true,
 		mute: true,
 		lock: true,
 		forcerename: true,
 		timer: true,
+		modlog: true,
 		alts: '%u',
 		bypassblocks: 'u%@&~',
 		receiveauthmessages: true,

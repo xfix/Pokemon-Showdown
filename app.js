@@ -52,12 +52,6 @@ if (config.watchconfig) {
 	});
 }
 
-config.package = {};
-fs.readFile('package.json', function(err, data) {
-	if (err) return;
-	config.package = JSON.parse(data);
-});
-
 if (process.argv[2] && parseInt(process.argv[2])) {
 	config.port = parseInt(process.argv[2]);
 }
@@ -151,6 +145,9 @@ toName = function(name) {
 		name = name.substr(1);
 	}
 	if (name.length > 18) name = name.substr(0,18);
+	if (config.namefilter) {
+		name = config.namefilter(name);
+	}
 	return name;
 };
 
@@ -208,25 +205,11 @@ Rooms = require('./rooms.js');
 delete process.send; // in case we're a child process
 Verifier = require('./verifier.js');
 
-parseCommand = require('./chat-commands.js').parseCommand;
+CommandParser = require('./command-parser.js');
 
 Simulator = require('./simulator.js');
 
 lockdown = false;
-
-function resolveUser(you, socket) {
-	if (!you) {
-		emit(socket, 'connectionError', 'There has been a connection error. Please refresh the page.');
-		return false;
-	}
-	return you.user;
-}
-
-emit = function(socket, type, data) {
-	if (typeof data === 'object') data.type = type;
-	else data = {type: type, message: data};
-	socket.write(JSON.stringify(data));
-};
 
 sendData = function(socket, data) {
 	socket.write(data);
@@ -243,51 +226,16 @@ if (config.crashguard) {
 			lastCrash = Date.now();
 			if (quietCrash) return;
 			var stack = (""+err.stack).split("\n").slice(0,2).join("<br />");
-			Rooms.lobby.addRaw('<div class="message-server-crash"><b>THE SERVER HAS CRASHED:</b> '+stack+'<br />Please restart the server.</div>');
-			Rooms.lobby.addRaw('<div class="message-server-crash">You will not be able to talk in the lobby or start new battles until the server restarts.</div>');
+			Rooms.lobby.addRaw('<div class="broadcast-red"><b>THE SERVER HAS CRASHED:</b> '+stack+'<br />Please restart the server.</div>');
+			Rooms.lobby.addRaw('<div class="broadcast-red">You will not be able to talk in the lobby or start new battles until the server restarts.</div>');
 			config.modchat = 'crash';
 			lockdown = true;
 		};
 	})());
 }
 
-// event functions
-var events = {
-	join: function(data, socket, you) {
-		if (!data || typeof data.room !== 'string') return;
-		if (!you) return; // should be impossible
-
-		var youUser = resolveUser(you, socket);
-		if (!youUser) return;
-		if (data.nojoin) {
-			// this event is being emitted for legacy servers, but the client
-			// doesn't actually want to join the room specified
-			return;
-		}
-		youUser.joinRoom(data.room, socket);
-	},
-	chat: function(message, socket, you) {
-		if (!message || typeof message.room !== 'string' || typeof message.message !== 'string') return;
-		var youUser = resolveUser(you, socket);
-		if (!youUser) return;
-		var room = Rooms.get(message.room, 'lobby');
-		message.message.split('\n').forEach(function(text){
-			youUser.chat(text, room, socket);
-		});
-	},
-	leave: function(data, socket, you) {
-		if (!data || typeof data.room !== 'string') return;
-		var youUser = resolveUser(you, socket);
-		if (!youUser) return;
-		youUser.leaveRoom(Rooms.get(data.room, 'lobby'), socket);
-	}
-};
-
 var socketCounter = 0;
 server.on('connection', function(socket) {
-	if (!socket) {
-		throw {stack: '`socket` is empty in `connection` event!'};
-	}
 	if (!socket.remoteAddress) {
 		// This condition occurs several times per day. It may be a SockJS bug.
 		try {
@@ -328,30 +276,34 @@ server.on('connection', function(socket) {
 	var you;
 
 	socket.on('data', function(message) {
-		var data = null;
-		if (message.substr(0,1) === '{') {
-			try {
-				data = JSON.parse(message);
-			} catch (e) {}
-		} else {
-			var pipeIndex = message.indexOf('|');
-			if (pipeIndex >= 0) data = {
-				type: 'chat',
-				room: message.substr(0, pipeIndex),
-				message: message.substr(pipeIndex+1)
-			};
+		if (message.substr(0,1) === '{') return; // drop legacy JSON messages
+
+		var youUser = you.user;
+		if (!youUser) {
+			// User has already disconnected from server.
+			// It is not clear how this could happen and it may be impossible.
+			console.log('WARNING: youUser is empty in `data` event!');
+			return;
 		}
-		if (!data) return;
-		if (events[data.type]) you = events[data.type](data, socket, you) || you;
+
+		var pipeIndex = message.indexOf('|');
+		if (pipeIndex < 0) return; // invalid message format
+
+		var roomid = message.substr(0, pipeIndex);
+		var lines = message.substr(pipeIndex + 1);
+		var room = Rooms.get(roomid, 'lobby');
+		lines.split('\n').forEach(function(text){
+			youUser.chat(text, room, you);
+		});
 	});
 
 	socket.on('close', function() {
 		if (interval) {
 			clearInterval(interval);
 		}
-		var youUser = resolveUser(you, socket);
+		var youUser = you.user;
 		if (!youUser) return;
-		youUser.disconnect(socket);
+		youUser.onDisconnect(socket);
 	});
 
 	you = Users.connectUser(socket);

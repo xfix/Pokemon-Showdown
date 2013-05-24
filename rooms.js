@@ -1,6 +1,7 @@
-const MAX_MESSAGE_LENGTH = 300;
 const TIMEOUT_DEALLOCATE = 15*60*1000;
 const REPORT_USER_STATS_INTERVAL = 1000*60*10;
+
+var modlog = modlog || fs.createWriteStream('logs/modlog.txt', {flags:'a+'});
 
 var GlobalRoom = (function() {
 	function GlobalRoom(roomid) {
@@ -178,7 +179,7 @@ var GlobalRoom = (function() {
 				this.searchers.splice(i,1);
 				i--;
 				if (!success) {
-					searchUser.emit('update', {searching: false});
+					searchUser.send('|updatesearch|'+JSON.stringify({searching: false}));
 					success = true;
 				}
 				continue;
@@ -189,7 +190,7 @@ var GlobalRoom = (function() {
 	GlobalRoom.prototype.searchBattle = function(user, formatid) {
 		if (!user.connected) return;
 		if (lockdown) {
-			user.emit('message', 'The server is shutting down. Battles cannot be started at this time.');
+			user.popup("The server is shutting down. Battles cannot be started at this time.");
 			return;
 		}
 
@@ -197,14 +198,14 @@ var GlobalRoom = (function() {
 
 		var format = Tools.getFormat(formatid);
 		if (!format.searchShow) {
-			user.emit('message', 'That format is not available for searching.');
+			user.popup("That format is not available for searching.");
 			return;
 		}
 
 		var team = user.team;
 		var problems = Tools.validateTeam(team, formatid);
 		if (problems) {
-			user.emit('message', "Your team was rejected for the following reasons:\n\n- "+problems.join("\n- "));
+			user.popup("Your team was rejected for the following reasons:\n\n- "+problems.join("\n- "));
 			return;
 		}
 
@@ -212,7 +213,7 @@ var GlobalRoom = (function() {
 		var newSearchData = {
 			format: formatid
 		};
-		user.emit('update', {searching: newSearchData});
+		user.send('|updatesearch|'+JSON.stringify({searching: newSearchData}));
 
 		// get the user's rating before actually starting to search
 		var newSearch = {
@@ -260,7 +261,7 @@ var GlobalRoom = (function() {
 			if (newSearch.formatid === search.formatid && this.matchmakingOK(search, newSearch, searchUser, user)) {
 				this.cancelSearch(user, true);
 				this.cancelSearch(searchUser, true);
-				user.emit('update', {searching: false});
+				user.send('|updatesearch|'+JSON.stringify({searching: false}));
 				searchUser.team = search.team;
 				user.team = newSearch.team;
 				this.startBattle(searchUser, user, search.formatid, true, search.team, newSearch.team);
@@ -268,21 +269,6 @@ var GlobalRoom = (function() {
 			}
 		}
 		this.searchers.push(newSearch);
-	};
-	GlobalRoom.prototype.emit = function(type, message, user) {
-		if (type === 'console' || type === 'update') {
-			if (typeof message === 'string') {
-				message = {message: message};
-			}
-			message.room = this.id;
-		}
-		if (user && user.emit) {
-			user.emit(type, message);
-		} else {
-			for (var i in this.users) {
-				this.users[i].emit(type, message);
-			}
-		}
 	};
 	GlobalRoom.prototype.send = function(message, user) {
 		if (user) {
@@ -312,13 +298,8 @@ var GlobalRoom = (function() {
 		rooms.lobby.addRaw(message);
 	};
 	GlobalRoom.prototype.onJoinSocket = function(user, socket) {
-		var initdata = {
-			name: user.name,
-			named: user.named,
-			rooms: this.getRoomList()
-		};
-		emit(socket, 'init', initdata);
-		emitData(socket, this.formatListText);
+		var initdata = '|updateuser|'+user.name+'|'+(user.named?'1':'0')+'|'+user.avatar+'\n';
+		sendData(socket, initdata+this.formatListText);
 	};
 	GlobalRoom.prototype.onJoin = function(user, merging) {
 		if (!user) return false; // ???
@@ -331,13 +312,8 @@ var GlobalRoom = (function() {
 		}
 
 		if (!merging) {
-			var initdata = {
-				name: user.name,
-				named: user.named,
-				rooms: this.getRoomList()
-			};
-			user.emit('init', initdata);
-			this.send(this.formatListText, user);
+			var initdata = '|updateuser|'+user.name+'|'+(user.named?'1':'0')+'|'+user.avatar+'\n';
+			this.send(initdata+this.formatListText, user);
 		}
 
 		return user;
@@ -368,15 +344,15 @@ var GlobalRoom = (function() {
 		if (p1 === p2) {
 			this.cancelSearch(p1, true);
 			this.cancelSearch(p2, true);
-			p1.emit('message', 'You can\'t battle your own account. Please use something like Private Browsing to battle yourself.');
+			p1.popup("You can't battle your own account. Please use something like Private Browsing to battle yourself.");
 			return;
 		}
 
 		if (lockdown) {
 			this.cancelSearch(p1, true);
 			this.cancelSearch(p2, true);
-			p1.emit('message', 'The server is shutting down. Battles cannot be started at this time.');
-			p2.emit('message', 'The server is shutting down. Battles cannot be started at this time.');
+			p1.popup("The server is shutting down. Battles cannot be started at this time.");
+			p2.popup("The server is shutting down. Battles cannot be started at this time.");
 			return;
 		}
 
@@ -602,13 +578,8 @@ var BattleRoom = (function() {
 		}
 		var roomid = this.id;
 		var self = this;
-		var updates = logs.map(function(log) {
-			return {
-				room: roomid,
-				since: self.lastUpdate,
-				updates: log,
-				active: self.active
-			};
+		logs = logs.map(function(log) {
+			return log.join('\n');
 		});
 		this.lastUpdate = this.log.length;
 
@@ -619,7 +590,7 @@ var BattleRoom = (function() {
 			if (user === excludeUser) continue;
 			var slot = this.battle.getSlot(user);
 			if (slot < 0) slot = 2;
-			user.emit('update', updates[slot]);
+			this.send(logs[slot], user);
 		}
 
 		// empty rooms time out after ten minutes
@@ -657,21 +628,6 @@ var BattleRoom = (function() {
 		//console.log(JSON.stringify(logData));
 		rooms.global.writeNumRooms();
 	};
-	BattleRoom.prototype.emit = function(type, message, user) {
-		if (type === 'console' || type === 'update') {
-			if (typeof message === 'string') {
-				message = {message: message};
-			}
-			message.room = this.id;
-		}
-		if (user && user.emit) {
-			user.emit(type, message);
-		} else {
-			for (var i in this.users) {
-				this.users[i].emit(type, message);
-			}
-		}
-	};
 	BattleRoom.prototype.send = function(message, user) {
 		if (user) {
 			user.sendTo(this, message);
@@ -689,11 +645,6 @@ var BattleRoom = (function() {
 			return;
 		}
 		this.destroy();
-	};
-	BattleRoom.prototype.broadcastError = function(message) {
-		for (var i in this.users) {
-			this.users.emit('connectionError', message);
-		}
 	};
 	BattleRoom.prototype.reset = function(reload) {
 		clearTimeout(this.resetTimer);
@@ -879,14 +830,7 @@ var BattleRoom = (function() {
 	// This function is only called when the room is not empty.
 	// Joining an empty room calls this.join() below instead.
 	BattleRoom.prototype.onJoinSocket = function(user, socket) {
-		var initdata = {
-			name: user.name,
-			named: user.named,
-			room: this.id,
-			roomType: 'battle',
-			battlelog: this.getLogForUser(user)
-		};
-		emit(socket, 'init', initdata);
+		sendData(socket, '>'+this.id+'\n|init|battle\n'+this.getLogForUser(user).join('\n'));
 		// this handles joining a battle in which a user is a participant,
 		// where the user has already identified before attempting to join
 		// the battle
@@ -903,14 +847,7 @@ var BattleRoom = (function() {
 			this.update(user);
 		}
 
-		var initdata = {
-			name: user.name,
-			named: user.named,
-			room: this.id,
-			roomType: 'battle',
-			battlelog: this.getLogForUser(user)
-		};
-		user.emit('init', initdata);
+		this.send('|init|battle\n'+this.getLogForUser(user).join('\n'), user);
 		return user;
 	};
 	BattleRoom.prototype.onRename = function(user, oldid, joining) {
@@ -920,7 +857,7 @@ var BattleRoom = (function() {
 		var resend = joining || !this.battle.playerTable[oldid];
 		if (this.battle.playerTable[oldid]) {
 			if (this.rated) {
-				this.add('|message|'+user+' forfeited by changing their name.');
+				this.add('|message|'+user.name+' forfeited by changing their name.');
 				this.battle.lose(oldid);
 				this.battle.leave(oldid);
 				resend = false;
@@ -938,7 +875,7 @@ var BattleRoom = (function() {
 		}
 		return user;
 	};
-	GlobalRoom.prototype.onUpdateIdentity = function() {};
+	BattleRoom.prototype.onUpdateIdentity = function() {};
 	BattleRoom.prototype.onLeave = function(user) {
 		if (!user) return; // ...
 		if (user.battles[this.id]) {
@@ -1010,47 +947,15 @@ var BattleRoom = (function() {
 	BattleRoom.prototype.addRaw = function(message) {
 		this.addCmd('raw', message);
 	};
-	BattleRoom.prototype.chat = function(user, message, socket) {
-		var cmd = '', target = '';
-		if (message.length > MAX_MESSAGE_LENGTH && !user.can('ignorelimits')) {
-			emit(socket, 'message', "Your message is too long:\n\n"+message);
-			return;
-		}
-		if (message.substr(0,2) !== '//' && message.substr(0,1) === '/') {
-			var spaceIndex = message.indexOf(' ');
-			if (spaceIndex > 0) {
-				cmd = message.substr(1, spaceIndex-1);
-				target = message.substr(spaceIndex+1);
-			} else {
-				cmd = message.substr(1);
-				target = '';
-			}
-		} else if (message.substr(0,1) === '!') {
-			var spaceIndex = message.indexOf(' ');
-			if (spaceIndex > 0) {
-				cmd = message.substr(0, spaceIndex);
-				target = message.substr(spaceIndex+1);
-			} else {
-				cmd = message;
-				target = '';
-			}
-		}
-		cmd = cmd.toLowerCase();
-
-		if ((cmd === 'me') && !(user.userid in this.users)) {
-			emit(socket, 'message', 'You can\'t send a message to this room without being in it.');
-			return;
-		}
-
+	BattleRoom.prototype.chat = function(user, message, connection) {
 		// Battle actions are actually just text commands that are handled in
 		// parseCommand(), which in turn often calls Simulator.prototype.sendFor().
 		// Sometimes the call to sendFor is done indirectly, by calling
 		// room.decision(), where room.constructor === BattleRoom.
-		var parsedMessage = parseCommand(user, cmd, target, this, socket, message);
-		if (typeof parsedMessage === 'string') {
-			message = parsedMessage;
-		}
-		if (parsedMessage === false) {
+
+		message = CommandParser.parse(message, this, user, connection);
+
+		if (!message) {
 			// do nothing
 		} else if (message.substr(0,3) === '>> ') {
 			var cmd = message.substr(3);
@@ -1059,14 +964,14 @@ var BattleRoom = (function() {
 			var battle = this.battle;
 			var me = user;
 			this.addCmd('chat', user.name, '>> '+cmd);
-			if (user.checkConsolePermission(socket)) {
+			if (user.checkConsolePermission(connection.socket)) {
 				try {
 					this.addCmd('chat', user.name, '<< '+eval(cmd));
 				} catch (e) {
 					this.addCmd('chat', user.name, '<< error: '+e.message);
 					var stack = (""+e.stack).split("\n");
 					for (var i=0; i<stack.length; i++) {
-						user.emit('console', '<< '+stack[i]);
+						this.send('<< '+stack[i], user);
 					}
 				}
 			} else {
@@ -1076,19 +981,22 @@ var BattleRoom = (function() {
 			var cmd = message.substr(4);
 
 			this.addCmd('chat', user.name, '>>> '+cmd);
-			if (user.checkConsolePermission(socket)) {
+			if (user.checkConsolePermission(connection.socket)) {
 				this.battle.send('eval', cmd);
 			} else {
 				this.addCmd('chat', user.name, '<<< Access denied.');
 			}
 		} else {
-			if (!(user.userid in this.users)) {
-				emit(socket, 'message', 'You can\'t send a message to this room without being in it.');
-				return;
-			}
 			this.battle.chat(user, message);
 		}
 		this.update();
+	};
+	BattleRoom.prototype.addModCommand = function(result) {
+		this.add(result);
+		this.logModCommand(result);
+	};
+	BattleRoom.prototype.logModCommand = function(result) {
+		modlog.write('['+(new Date().toJSON())+'] ('+room.id+') '+result+'\n');
 	};
 	BattleRoom.prototype.destroy = function() {
 		// deallocate ourself
@@ -1132,13 +1040,14 @@ var ChatRoom = (function() {
 		this.logFilename = '';
 		this.destroyingLog = false;
 
-		if (config.loglobby) {
+		// `config.loglobby` is a legacy name
+		if (config.logchat || config.loglobby) {
 			this.rollLogFile(true);
 			this.logEntry = function(entry, date) {
 				var timestamp = (new Date()).format('{HH}:{mm}:{ss} ');
 				this.logFile.write(timestamp + entry + '\n');
 			};
-			this.logEntry('Lobby created');
+			this.logEntry('NEW CHATROOM: ' + this.id);
 			if (config.loguserstats) {
 				setInterval(this.logUserStats.bind(this), config.loguserstats);
 			}
@@ -1148,15 +1057,24 @@ var ChatRoom = (function() {
 
 		if (config.reportjoinsperiod) {
 			this.userList = this.getUserList();
-			this.reportJoinsQueue = [];
-			this.reportJoinsInterval = setInterval(
-				this.reportRecentJoins.bind(this), config.reportjoinsperiod
-			);
 		}
+		this.reportJoinsQueue = [];
+		this.lastGlobalCount = -1;
+		this.reportJoinsInterval = setInterval(
+			this.reportRecentJoins.bind(this), config.reportjoinsperiod
+		);
 	}
 	ChatRoom.prototype.type = 'chat';
 
 	ChatRoom.prototype.reportRecentJoins = function() {
+		// special case for the lobby
+		if ((this.id === 'lobby') && (this.lastGlobalCount !== rooms.global.userCount)) {
+			this.reportJoinsQueue.push('|usercount|' + rooms.global.userCount);
+			this.lastGlobalCount = rooms.global.userCount;
+		} else if (this.reportJoinsQueue.length === 0) {
+			// nothing to report
+			return;
+		}
 		this.userList = this.getUserList();
 		this.send(this.reportJoinsQueue.join('\n'));
 		this.reportJoinsQueue.length = 0;
@@ -1170,7 +1088,7 @@ var ChatRoom = (function() {
 			callback();
 		}) : fs.mkdir;
 		var date = new Date();
-		var basepath = 'logs/lobby/';
+		var basepath = 'logs/chat/' + this.id + '/';
 		var self = this;
 		mkdir(basepath, '0755', function() {
 			var path = date.format('{yyyy}-{MM}');
@@ -1238,13 +1156,13 @@ var ChatRoom = (function() {
 		var buffer = '';
 		var counter = 0;
 		for (var i in this.users) {
-			counter++;
 			if (!this.users[i].named) {
 				continue;
 			}
+			counter++;
 			buffer += ','+this.users[i].getIdentity();
 		}
-		return ''+counter+buffer;
+		return '|users|'+counter+buffer+'\n|usercount|'+rooms.global.userCount;
 	};
 	ChatRoom.prototype.update = function() {
 		if (this.log.length <= this.lastUpdate) return;
@@ -1256,21 +1174,6 @@ var ChatRoom = (function() {
 		this.lastUpdate = this.log.length;
 
 		this.send(update);
-	};
-	ChatRoom.prototype.emit = function(type, message, user) {
-		if (type === 'console' || type === 'update') {
-			if (typeof message === 'string') {
-				message = {message: message};
-			}
-			message.room = this.id;
-		}
-		if (user && user.emit) {
-			user.emit(type, message);
-		} else {
-			for (var i in this.users) {
-				this.users[i].emit(type, message);
-			}
-		}
 	};
 	ChatRoom.prototype.send = function(message, user) {
 		if (user) {
@@ -1300,15 +1203,8 @@ var ChatRoom = (function() {
 		this.add('|raw|'+message);
 	};
 	ChatRoom.prototype.onJoinSocket = function(user, socket) {
-		var initdata = {
-			name: user.name,
-			named: user.named,
-			room: this.id,
-			roomType: 'lobby'
-		};
-		emit(socket, 'init', initdata);
 		var userList = this.userList ? this.userList : this.getUserList();
-		sendData(socket, '>'+this.id+'\n|init|chat\n|users|'+userList+'\n'+this.log.slice(-25).join('\n'));
+		sendData(socket, '>'+this.id+'\n|init|chat\n'+userList+'\n'+this.log.slice(-25).join('\n'));
 	};
 	ChatRoom.prototype.onJoin = function(user, merging) {
 		if (!user) return false; // ???
@@ -1329,15 +1225,8 @@ var ChatRoom = (function() {
 		}
 
 		if (!merging) {
-			var initdata = {
-				name: user.name,
-				named: user.named,
-				room: this.id,
-				roomType: 'lobby'
-			};
-			user.emit('init', initdata);
 			var userList = this.userList ? this.userList : this.getUserList();
-			this.send('|init|chat\n|users|'+userList+'\n'+this.log.slice(-100).join('\n'), user);
+			this.send('|init|chat\n'+userList+'\n'+this.log.slice(-100).join('\n'), user);
 		}
 
 		return user;
@@ -1397,42 +1286,10 @@ var ChatRoom = (function() {
 			this.logEntry(entry);
 		}
 	};
-	ChatRoom.prototype.chat = function(user, message, socket) {
-		if (!message || !message.trim || !message.trim().length) return;
-		if (message.substr(0,5) !== '/utm ' && message.substr(0,5) !== '/trn ' && message.length > MAX_MESSAGE_LENGTH && !user.can('ignorelimits')) {
-			emit(socket, 'message', "Your message is too long:\n\n"+message);
-			return;
-		}
-		var cmd = '', target = '';
-		if (message.substr(0,2) !== '//' && message.substr(0,1) === '/') {
-			var spaceIndex = message.indexOf(' ');
-			if (spaceIndex > 0) {
-				cmd = message.substr(1, spaceIndex-1);
-				target = message.substr(spaceIndex+1);
-			} else {
-				cmd = message.substr(1);
-				target = '';
-			}
-		} else if (message.substr(0,1) === '!') {
-			var spaceIndex = message.indexOf(' ');
-			if (spaceIndex > 0) {
-				cmd = message.substr(0, spaceIndex);
-				target = message.substr(spaceIndex+1);
-			} else {
-				cmd = message;
-				target = '';
-			}
-		}
-		cmd = cmd.toLowerCase();
+	ChatRoom.prototype.chat = function(user, message, connection) {
+		message = CommandParser.parse(message, this, user, connection);
 
-		if ((cmd === 'me') && !(user.userid in this.users)) {
-			emit(socket, 'message', 'You can\'t send a message to this room without being in it.');
-			return;
-		}
-
-		var parsedMessage = parseCommand(user, cmd, target, this, socket, message);
-		if (typeof parsedMessage === 'string') message = parsedMessage;
-		if (parsedMessage === false) {
+		if (!message) {
 			// do nothing
 		} else if (message.substr(0,3) === '>> ') {
 			var cmd = message.substr(3);
@@ -1453,14 +1310,17 @@ var ChatRoom = (function() {
 			} else {
 				this.add('|c|'+user.getIdentity()+'|<< Access denied.', true);
 			}
-		} else if (!user.muted) {
-			if (!(user.userid in this.users)) {
-				emit(socket, 'message', 'You can\'t send a message to this room without being in it.');
-				return;
-			}
+		} else {
 			this.add('|c|'+user.getIdentity()+'|'+message, true);
 		}
 		this.update();
+	};
+	ChatRoom.prototype.addModCommand = function(result) {
+		this.add(result);
+		this.logModCommand(result);
+	};
+	ChatRoom.prototype.logModCommand = function(result) {
+		modlog.write('['+(new Date().toJSON())+'] ('+room.id+') '+result+'\n');
 	};
 	return ChatRoom;
 })();

@@ -29,7 +29,7 @@ function searchUser(name) {
 	return users[userid];
 }
 
-function connectUser(socket, room) {
+function connectUser(socket) {
 	var connection = new Connection(socket, true);
 	var user = new User(connection);
 	// Generate 1024-bit challenge string.
@@ -49,9 +49,6 @@ function connectUser(socket, room) {
 		}
 	});
 	user.joinRoom('global', connection);
-	if (room) {
-		user.joinRoom(room, connection);
-	}
 	return connection;
 }
 
@@ -145,16 +142,6 @@ var User = (function () {
 	User.prototype.blockChallenges = false;
 	User.prototype.lastConnected = 0;
 
-	User.prototype.emit = function(message, data) {
-		var roomid = false;
-		if (data && data.room) {
-			roomid = data.room;
-		}
-		for (var i=0; i<this.connections.length; i++) {
-			if (roomid && !this.connections[i].rooms[roomid]) continue;
-			emit(this.connections[i].socket, message, data);
-		}
-	};
 	User.prototype.sendTo = function(roomid, data) {
 		if (roomid && roomid.id) roomid = roomid.id;
 		if (roomid && roomid !== 'global' && roomid !== 'lobby') data = '>'+roomid+'\n'+data;
@@ -162,6 +149,14 @@ var User = (function () {
 			if (roomid && !this.connections[i].rooms[roomid]) continue;
 			sendData(this.connections[i].socket, data);
 		}
+	};
+	User.prototype.send = function(data) {
+		for (var i=0; i<this.connections.length; i++) {
+			sendData(this.connections[i].socket, data);
+		}
+	};
+	User.prototype.popup = function(message) {
+		this.send('|popup|'+message.replace(/\n/g,'||'));
 	};
 	User.prototype.getIdentity = function() {
 		if (this.locked) {
@@ -291,11 +286,8 @@ var User = (function () {
 
 		for (var i=0; i<this.connections.length; i++) {
 			//console.log(''+name+' renaming: socket '+i+' of '+this.connections.length);
-			emit(this.connections[i].socket, 'update', {
-				name: name,
-				userid: this.userid,
-				named: true
-			});
+			var initdata = '|updateuser|'+this.name+'|'+(true?'1':'0')+'|'+this.avatar;
+			sendData(this.connections[i].socket, initdata);
 		}
 		var joining = !this.named;
 		this.named = (this.userid.substr(0,5) !== 'guest');
@@ -331,11 +323,8 @@ var User = (function () {
 
 		for (var i=0; i<this.connections.length; i++) {
 			console.log(''+name+' renaming: socket '+i+' of '+this.connections.length);
-			emit(this.connections[i].socket, 'update', {
-				name: name,
-				userid: this.userid,
-				named: false
-			});
+			var initdata = '|updateuser|'+this.name+'|'+(false?'1':'0')+'|'+this.avatar;
+			sendData(this.connections[i].socket, initdata);
 		}
 		this.named = false;
 		for (var i in this.roomCount) {
@@ -363,7 +352,7 @@ var User = (function () {
 		for (var i in this.roomCount) {
 			var room = Rooms.get(i);
 			if (room && room.rated && (this.userid === room.rated.p1 || this.userid === room.rated.p2)) {
-				this.emit('message', "You can't change your name right now because you're in the middle of a rated battle.");
+				this.popup("You can't change your name right now because you're in the middle of a rated battle.");
 				return false;
 			}
 		}
@@ -384,12 +373,12 @@ var User = (function () {
 			// technically it's not "taken", but if your client doesn't warn you
 			// before it gets to this stage it's your own fault for getting a
 			// bad error message
-			this.emit('nameTaken', {userid: '', reason: "You did not specify a name."});
+			this.send('|nametaken|'+"|You did not specify a name.");
 			return false;
 		} else {
 			for (var w in bannedWords) {
 				if (userid.indexOf(w) >= 0) {
-					this.emit('nameTaken', {userid: '', reason: "That name contains a banned word or phrase."});
+					this.send('|nametaken|'+"|That name contains a banned word or phrase.");
 					return false;
 				}
 			}
@@ -398,7 +387,7 @@ var User = (function () {
 			}
 		}
 		if (users[userid] && !users[userid].authenticated && users[userid].connected && !auth) {
-			this.emit('nameTaken', {userid:this.userid, reason: "Someone is already using the name \""+users[userid].name+"\"."});
+			this.send('|nametaken|'+name+"|Someone is already using the name \""+users[userid].name+"\".");
 			return false;
 		}
 
@@ -413,7 +402,7 @@ var User = (function () {
 				self.finishRename(success, tokenData, token, auth, challenge);
 			});
 		} else {
-			this.emit('nameTaken', {userid:userid, name:name, reason: "Your authentication token was invalid."});
+			this.send('|nametaken|'+name+"|Your authentication token was invalid.");
 		}
 
 		return false;
@@ -459,11 +448,11 @@ var User = (function () {
 		if (invalidHost) {
 			console.log('invalid hostname in token: ' + tokenData);
 			body = '';
-			this.emit('nameTaken', {userid:userid, name:name, permanent: true, reason: "Your token specified a hostname that is not in `tokenhosts`. If this is your server, please read the documentation in config/config.js for help. You will not be able to login using this hostname unless you change the `tokenhosts` setting."});
+			this.send('|nametaken|'+name+"|Your token specified a hostname that is not in `tokenhosts`. If this is your server, please read the documentation in config/config.js for help. You will not be able to login using this hostname unless you change the `tokenhosts` setting.");
 		} else if (expired) {
 			console.log('verify failed: '+tokenData);
 			body = '';
-			this.emit('nameTaken', {userid:userid, name:name, reason: "Your session expired. Please log in again."});
+			this.send('|nametaken|'+name+"|Your session expired. Please log in again.");
 		} else if (body) {
 			//console.log('BODY: "'+body+'"');
 
@@ -471,7 +460,7 @@ var User = (function () {
 				if (auth) {
 					if (users[userid] !== this) users[userid].resetName();
 				} else {
-					this.emit('nameTaken', {userid:this.userid, reason: "Someone is already using the name \""+users[userid].name+"\"."});
+					this.send('|nametaken|'+name+"|Someone is already using the name \""+users[userid].name+"\".");
 					return this;
 				}
 			}
@@ -552,11 +541,11 @@ var User = (function () {
 		} else if (tokenData) {
 			console.log('BODY: "" authInvalid');
 			// rename failed, but shouldn't
-			this.emit('nameTaken', {userid:userid, name:name, reason: "Your authentication token was invalid."});
+			this.send('|nametaken|'+name+"|Your authentication token was invalid.");
 		} else {
-			console.log('BODY: "" nameTaken');
+			console.log('BODY: "" nameRegistered');
 			// rename failed
-			this.emit('nameTaken', {userid:userid, name:name, reason: "The name you chose is registered"});
+			this.send('|nametaken|'+name+"|The name you chose is registered");
 		}
 		this.renamePending = false;
 	};
@@ -564,11 +553,8 @@ var User = (function () {
 		this.connected = true;
 		this.connections.push(connection);
 		//console.log(''+this.name+' merging: socket '+connection.socket.id+' of ');
-		emit(connection.socket, 'update', {
-			name: this.name,
-			userid: this.userid,
-			named: true
-		});
+		var initdata = '|updateuser|'+this.name+'|'+(true?'1':'0')+'|'+this.avatar;
+		connection.send(initdata);
 		connection.user = this;
 		for (var i in connection.rooms) {
 			var room = connection.rooms[i];
@@ -611,7 +597,7 @@ var User = (function () {
 		this.connected = false;
 		this.lastConnected = Date.now();
 	};
-	User.prototype.disconnect = function(socket) {
+	User.prototype.onDisconnect = function(socket) {
 		var connection = null;
 		for (var i=0; i<this.connections.length; i++) {
 			if (this.connections[i].socket === socket) {
@@ -650,7 +636,7 @@ var User = (function () {
 			clearTimeout(this.muteTimeout);
 			this.muteTimeout = null;
 		}
-		this.destroyChatQueue();
+		this.clearChatQueue();
 		var connection = null;
 		this.markInactive();
 		for (var i=0; i<this.connections.length; i++) {
@@ -745,7 +731,7 @@ var User = (function () {
 			clearTimeout(this.muteTimeout);
 			this.muteTimeout = null;
 		}
-		if (expired) this.emit('message', 'Your mute has expired.');
+		if (expired) this.popup("Your mute has expired.");
 		this.muted = false;
 		this.updateIdentity();
 	};
@@ -815,8 +801,6 @@ var User = (function () {
 				this.roomCount[room.id]++;
 				room.onJoinSocket(this, socket);
 			}
-		} else if (room.id === 'lobby') {
-			emit(connection.socket, 'init', {room: room.id, notFound: true});
 		}
 		return true;
 	};
@@ -857,10 +841,10 @@ var User = (function () {
 		}
 	};
 	User.prototype.updateChallenges = function() {
-		this.emit('update', {
+		this.send('|updatechallenges|'+JSON.stringify({
 			challengesFrom: this.challengesFrom,
 			challengeTo: this.challengeTo
-		});
+		}));
 	};
 	User.prototype.makeChallenge = function(user, format, isPrivate) {
 		user = getUser(user);
@@ -933,29 +917,34 @@ var User = (function () {
 	User.prototype.chatQueue = null;
 	User.prototype.chatQueueTimeout = null;
 	User.prototype.lastChatMessage = 0;
-	User.prototype.chat = function(message, room, socket) {
+	User.prototype.chat = function(message, room, connection) {
 		var now = new Date().getTime();
+
+		if (message.substr(0,5) === '/cmd ') {
+			// commands are exempt from the queue
+			room.chat(this, message, connection);
+			return;
+		}
+
 		if (this.chatQueueTimeout) {
 			if (!this.chatQueue) this.chatQueue = []; // this should never happen
 			if (this.chatQueue.length > 6) {
-				emit(socket, 'console', {
-					room: room.id,
-					rawMessage: "<strong class=\"message-throttle-notice\">Your message was not sent because you've been typing too quickly.</strong>"
-				});
+				connection.sendTo(room, '|raw|' +
+					"<strong class=\"message-throttle-notice\">Your message was not sent because you've been typing too quickly.</strong>"
+				);
 			} else {
-				this.chatQueue.push([message, room, socket]);
+				this.chatQueue.push([message, room, connection]);
 			}
 		} else if (now < this.lastChatMessage + THROTTLE_DELAY) {
-			this.chatQueue = [[message, room, socket]];
+			this.chatQueue = [[message, room, connection]];
 			this.chatQueueTimeout = setTimeout(
 				this.processChatQueue.bind(this), THROTTLE_DELAY);
 		} else {
 			this.lastChatMessage = now;
-			room.chat(this, message, socket);
+			room.chat(this, message, connection);
 		}
 	};
-	User.prototype.destroyChatQueue = function() {
-		// don't call this function unless the user's getting deallocated
+	User.prototype.clearChatQueue = function() {
 		this.chatQueue = null;
 		if (this.chatQueueTimeout) {
 			clearTimeout(this.chatQueueTimeout);
@@ -968,7 +957,7 @@ var User = (function () {
 
 		toChat[1].chat(this, toChat[0], toChat[2]);
 
-		if (this.chatQueue.length) {
+		if (this.chatQueue && this.chatQueue.length) {
 			this.chatQueueTimeout = setTimeout(
 				this.processChatQueue.bind(this), THROTTLE_DELAY);
 		} else {
@@ -982,7 +971,7 @@ var User = (function () {
 			clearTimeout(this.muteTimeout);
 			this.muteTimeout = null;
 		}
-		this.destroyChatQueue();
+		this.clearChatQueue();
 		delete users[this.userid];
 	};
 	// "static" function
@@ -1017,6 +1006,15 @@ var Connection = (function () {
 		if (roomid && roomid !== 'lobby') data = '>'+roomid+'\n'+data;
 		sendData(this.socket, data);
 	};
+
+	Connection.prototype.send = function(data) {
+		sendData(this.socket, data);
+	};
+
+	Connection.prototype.popup = function(message) {
+		this.send('|popup|'+message.replace(/\n/g,'||'));
+	};
+
 	return Connection;
 })();
 
@@ -1042,10 +1040,11 @@ exports.checkBanned = checkBanned;
 exports.checkLocked = checkLocked;
 
 function unban(name) {
+	var success;
 	var userid = toId(name);
 	for (var ip in bannedIps) {
-		if (Users.bannedIps[ip] === userid) {
-			delete Users.bannedIps[ip];
+		if (bannedIps[ip] === userid) {
+			delete bannedIps[ip];
 			success = true;
 		}
 	}

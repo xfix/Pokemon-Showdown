@@ -46,6 +46,9 @@ toName = function(name) {
 		name = name.substr(1);
 	}
 	if (name.length > 18) name = name.substr(0,18);
+	if (config.namefilter) {
+		name = config.namefilter(name);
+	}
 	return name;
 };
 
@@ -1078,6 +1081,7 @@ var BattleSide = (function() {
 	BattleSide.prototype.getData = function() {
 		var data = {
 			name: this.name,
+			id: this.id,
 			pokemon: []
 		};
 		for (var i=0; i<this.pokemon.length; i++) {
@@ -1149,8 +1153,7 @@ var BattleSide = (function() {
 		this.battle.send('callback', this.id + "\n" +
 			Array.prototype.slice.call(arguments).join('|'));
 	};
-	BattleSide.prototype.emitUpdate = function(update) {
-		update.room = this.battle.id;
+	BattleSide.prototype.emitRequest = function(update) {
 		this.battle.send('request', this.id+"\n"+this.battle.rqid+"\n"+JSON.stringify(update));
 	};
 	BattleSide.prototype.destroy = function() {
@@ -1844,7 +1847,7 @@ var Battle = (function() {
 			statuses.push({status: status, callback: status[callbackType], statusData: thing.itemData, end: thing.clearItem, thing: thing});
 			this.resolveLastPriority(statuses,callbackType);
 		}
-		status = this.getEffect(thing.species);
+		status = this.getEffect(thing.template.baseSpecies);
 		if (typeof status[callbackType] !== 'undefined') {
 			statuses.push({status: status, callback: status[callbackType], statusData: thing.speciesData, end: function(){}, thing: thing});
 			this.resolveLastPriority(statuses,callbackType);
@@ -1984,23 +1987,17 @@ var Battle = (function() {
 		}
 
 		if (p1request) {
-			this.p1.emitUpdate({
-				side: 'p1',
-				request: p1request
-			});
+			this.p1.emitRequest(p1request);
 		} else {
 			this.p1.decision = true;
-			this.p1.emitUpdate({request: {wait: true, side: this.p1.getData()}});
+			this.p1.emitRequest({wait: true, side: this.p1.getData()});
 		}
 
 		if (p2request) {
-			this.p2.emitUpdate({
-				side: 'p2',
-				request: p2request
-			});
+			this.p2.emitRequest(p2request);
 		} else {
 			this.p2.decision = true;
-			this.p2.emitUpdate({request: {wait: true, side: this.p2.getData()}});
+			this.p2.emitRequest({wait: true, side: this.p2.getData()});
 		}
 
 		if (this.p2.decision && this.p1.decision) {
@@ -2021,7 +2018,6 @@ var Battle = (function() {
 		this.win();
 	};
 	Battle.prototype.win = function(side) {
-		var winSide = false;
 		if (this.ended) {
 			return false;
 		}
@@ -2165,8 +2161,8 @@ var Battle = (function() {
 			return;
 		}
 
-		this.p2.emitUpdate({midBattle: this.started, side: 'p2', sideData: this.p2.getData()});
-		this.p1.emitUpdate({midBattle: this.started, side: 'p1', sideData: this.p1.getData()});
+		this.p2.emitRequest({side: this.p2.getData()});
+		this.p1.emitRequest({side: this.p1.getData()});
 
 		if (this.started) {
 			this.makeRequest();
@@ -3311,7 +3307,13 @@ var Battle = (function() {
 	Battle.prototype.leave = function(slot) {
 		if (slot === 'p1' || slot === 'p2') {
 			var side = this[slot];
-			side.emitUpdate({side:'none'});
+			if (!side) {
+				console.log('**** '+slot+' tried to leave before it was possible in '+this.id);
+				require('./crashlogger.js')({stack: '**** '+slot+' tried to leave before it was possible in '+this.id}, 'A simulator process');
+				return;
+			}
+
+			side.emitRequest(null);
 			side.isActive = false;
 			this.add('player', slot);
 			this.active = false;

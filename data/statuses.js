@@ -470,5 +470,25 @@ exports.BattleStatuses = {
 		onEnd: function() {
 			this.add('-weather', 'none');
 		}
+	},
+
+	arceus: {
+		// Arceus's actual typing is implemented here
+		// Arceus's true typing for all its formes is Normal, and it's only
+		// Multitype that changes its type, but its formes are specified to
+		// be their corresponding type in the Pokedex, so that needs to be
+		// overridden. This is mainly relevant for Hackmons and Balanced
+		// Hackmons.
+		onModifyPokemon: function(pokemon) {
+			if (pokemon.transformed) return;
+			var type = 'Normal';
+			if (pokemon.ability === 'multitype') {
+				var type = this.runEvent('Plate', pokemon);
+				if (!type || type === true) {
+					type = 'Normal';
+				}
+			}
+			pokemon.types = [type];
+		}
 	}
 };

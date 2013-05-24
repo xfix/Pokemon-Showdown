@@ -124,13 +124,13 @@ Senior Staff
 Staff
 
 - Bill Meltsner [bmelts] - Development
-- Mathieu Dias-Martins [Marty-D] - Research, Development
+- Mathieu Dias-Martins [Marty-D] - Research (game mechanics), Development
 
 Contributors
 
+- Andrew Goodsell [Zracknel] - Art (battle weather backdrops)
 - Cody Thompson [Rising_Dusk] - Development
 - Juanma Serrano [Joim] - Development
 - Kyle Dove [Kyle_Dove] - Art (battle backdrops)
 - Samuel Teo [Yilx] - Art (main background)
 - [The Immortal] - Development
-- [Zracknel] - Art (battle weather backdrops)
