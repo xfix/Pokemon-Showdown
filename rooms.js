@@ -560,7 +560,7 @@ var BattleRoom = (function() {
 		return this.getLog(slot);
 	};
 	BattleRoom.prototype.update = function(excludeUser) {
-		if (this.log.length < this.lastUpdate) return;
+		if (this.log.length <= this.lastUpdate) return;
 		var logs = [[], [], []];
 		var updateLines = this.log.slice(this.lastUpdate);
 		for (var i = 0; i < updateLines.length;) {
@@ -1297,7 +1297,7 @@ var ChatRoom = (function() {
 			var room = this;
 			var me = user;
 			this.add('|c|'+user.getIdentity()+'|>> '+cmd, true);
-			if (user.checkConsolePermission(socket)) {
+			if (user.checkConsolePermission(connection.socket)) {
 				try {
 					this.add('|c|'+user.getIdentity()+'|<< '+eval(cmd), true);
 				} catch (e) {

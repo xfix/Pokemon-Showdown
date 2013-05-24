@@ -8,8 +8,6 @@ var commands = exports.commands = {
 	alts: 'whois',
 	getalts: 'whois',
 	whois: function(target, room, user) {
-		if (!this.broadcastable()) return;
-
 		var targetUser = this.targetUserOrSelf(target);
 		if (!targetUser) {
 			return this.sendReply('User '+this.targetUsername+' not found.');
@@ -68,7 +66,7 @@ var commands = exports.commands = {
 	dex: 'data',
 	pokedex: 'data',
 	data: function(target, room, user) {
-		if (!this.broadcastable()) return;
+		if (!this.canBroadcast()) return;
 
 		var pokemon = Tools.getTemplate(target);
 		var item = Tools.getItem(target);
@@ -101,7 +99,7 @@ var commands = exports.commands = {
 	learn: function(target, room, user, connection, cmd) {
 		if (!target) return this.parse('/help learn');
 
-		if (!this.broadcastable()) return;
+		if (!this.canBroadcast()) return;
 
 		var lsetData = {set:{}};
 		var targets = target.split(',');
@@ -158,7 +156,7 @@ var commands = exports.commands = {
 	},
 
 	uptime: function(target, room, user) {
-		if (!this.broadcastable()) return;
+		if (!this.canBroadcast()) return;
 		var uptime = process.uptime();
 		var uptimeText;
 		if (uptime > 24*60*60) {
@@ -173,7 +171,7 @@ var commands = exports.commands = {
 	},
 
 	groups: function(target, room, user) {
-		if (!this.broadcastable()) return;
+		if (!this.canBroadcast()) return;
 		this.sendReplyBox('+ <b>Voice</b> - They can use ! commands like !groups, and talk during moderated chat<br />' +
 			'% <b>Driver</b> - The above, and they can also mute users and check for alts<br />' +
 			'@ <b>Moderator</b> - The above, and they can ban users<br />' +
@@ -182,18 +180,18 @@ var commands = exports.commands = {
 	},
 
 	opensource: function(target, room, user) {
-		if (!this.broadcastable()) return;
+		if (!this.canBroadcast()) return;
 		this.sendReplyBox('Pokemon Showdown is open source:<br />- Language: JavaScript<br />- <a href="https://github.com/Zarel/Pokemon-Showdown/commits/master" target="_blank">What\'s new?</a><br />- <a href="https://github.com/Zarel/Pokemon-Showdown" target="_blank">Server source code</a><br />- <a href="https://github.com/Zarel/Pokemon-Showdown-Client" target="_blank">Client source code</a>');
 	},
 
 	avatars: function(target, room, user) {
-		if (!this.broadcastable()) return;
+		if (!this.canBroadcast()) return;
 		this.sendReplyBox('Your avatar can be changed using the Options menu (it looks like a gear) in the upper right of Pokemon Showdown.');
 	},
 
 	introduction: 'intro',
 	intro: function(target, room, user) {
-		if (!this.broadcastable()) return;
+		if (!this.canBroadcast()) return;
 		this.sendReplyBox('New to competitive pokemon?<br />' +
 			'- <a href="http://www.smogon.com/dp/articles/intro_comp_pokemon" target="_blank">An introduction to competitive pokemon</a><br />' +
 			'- <a href="http://www.smogon.com/bw/articles/bw_tiers" target="_blank">What do "OU", "UU", etc mean?</a><br />' +
@@ -202,13 +200,13 @@ var commands = exports.commands = {
 
 	calculator: 'calc',
 	calc: function(target, room, user) {
-		if (!this.broadcastable()) return;
+		if (!this.canBroadcast()) return;
 		this.sendReplyBox('Pokemon Showdown! damage calculator. (Courtesy of Honko)<br />' +
 			'- <a href="http://pokemonshowdown.com/damagecalc/" target="_blank">Damage Calculator</a>');
 	},
 
 	cap: function(target, room, user) {
-		if (!this.broadcastable()) return;
+		if (!this.canBroadcast()) return;
 		this.sendReplyBox('An introduction to the Create-A-Pokemon project:<br />' +
 			'- <a href="http://www.smogon.com/cap/" target="_blank">CAP project website and description</a><br />' +
 			'- <a href="http://www.smogon.com/forums/showthread.php?t=48782" target="_blank">What Pokemon have been made?</a><br />' +
@@ -218,7 +216,7 @@ var commands = exports.commands = {
 
 	om: 'othermetas',
 	othermetas: function(target, room, user) {
-		if (!this.broadcastable()) return;
+		if (!this.canBroadcast()) return;
 		target = toId(target);
 		var buffer = '';
 		var matched = false;
@@ -266,14 +264,14 @@ var commands = exports.commands = {
 
 	rule: 'rules',
 	rules: function(target, room, user) {
-		if (!this.broadcastable()) return;
+		if (!this.canBroadcast()) return;
 		this.sendReplyBox('Please follow the rules:<br />' +
 			'- <a href="http://pokemonshowdown.com/rules" target="_blank">Rules</a><br />' +
 			'</div>');
 	},
 
 	faq: function(target, room, user) {
-		if (!this.broadcastable()) return;
+		if (!this.canBroadcast()) return;
 		target = target.toLowerCase();
 		var buffer = '';
 		var matched = false;
@@ -309,7 +307,7 @@ var commands = exports.commands = {
 
 	banlists: 'tiers',
 	tiers: function(target, room, user) {
-		if (!this.broadcastable()) return;
+		if (!this.canBroadcast()) return;
 		target = toId(target);
 		var buffer = '';
 		var matched = false;
@@ -351,15 +349,15 @@ var commands = exports.commands = {
 	analysis: 'smogdex',
 	strategy: 'smogdex',
 	smogdex: function(target, room, user) {
-		if (!this.broadcastable()) return;
+		if (!this.canBroadcast()) return;
 
 		var targets = target.split(',');
-		var pokemon = Tools.getTemplate(this.targetUser);
-		var item = Tools.getItem(this.targetUser);
-		var move = Tools.getMove(this.targetUser);
-		var ability = Tools.getAbility(this.targetUser);
+		var pokemon = Tools.getTemplate(targets[0]);
+		var item = Tools.getItem(targets[0]);
+		var move = Tools.getMove(targets[0]);
+		var ability = Tools.getAbility(targets[0]);
 		var atLeastOne = false;
-		var generation = (target || "bw").trim().toLowerCase();
+		var generation = (targets[1] || "bw").trim().toLowerCase();
 		var genNumber = 5;
 
 		if (generation === "bw" || generation === "bw2" || generation === "5" || generation === "five") {
@@ -445,9 +443,7 @@ var commands = exports.commands = {
 	},
 
 	potd: function(target, room, user) {
-		if (!this.can('potd')) {
-			return this.sendReply('/potd - Access denied.');
-		}
+		if (!this.can('potd')) return false;
 
 		config.potd = target;
 		Simulator.SimulatorProcess.eval('config.potd = \''+toId(target)+'\'');
@@ -475,23 +471,22 @@ var commands = exports.commands = {
 		this.sendReply('/redirect - This command is obsolete and has been removed.');
 	},
 
-	lobbychat: function(target, room, user) {
+	lobbychat: function(target, room, user, connection) {
 		target = toId(target);
 		if (target === 'off') {
-			user.leaveRoom(Rooms.lobby, socket);
-			sendData(socket, '|users|');
+			user.leaveRoom(Rooms.lobby, connection.socket);
+			sendData(connection.socket, '|users|');
 			this.sendReply('You are now blocking lobby chat.');
 		} else {
-			user.joinRoom(Rooms.lobby, socket);
+			user.joinRoom(Rooms.lobby, connection.socket);
 			this.sendReply('You are now receiving lobby chat.');
 		}
 	},
 
 	a: function(target, room, user) {
-		if (this.can('battlemessage')) {
-			// secret sysop command
-			room.add(target);
-		}
+		if (!this.can('battlemessage')) return false;
+		// secret sysop command
+		room.add(target);
 	},
 
 	/*********************************************************
