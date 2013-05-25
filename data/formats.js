@@ -443,6 +443,19 @@ exports.BattleFormats = {
 		searchShow: true,
 		ruleset: ['Pokemon']
 	},
+	gen4uber: {
+		name: "[Gen 4] Uber",
+		mod: 'gen4',
+		section: "Past Generations",
+		effectType: 'Format',
+		challengeDefault: true,
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Standard'],
+		banlist: []
+	},
 	gen4ou: {
 		name: "[Gen 4] OU",
 		mod: 'gen4',
