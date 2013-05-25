@@ -1,9 +1,21 @@
+/**
+ * Simulator abstraction layer
+ * Pokemon Showdown - http://pokemonshowdown.com/
+ *
+ * This file abstracts away Pokemon Showdown's multi-process simulator
+ * model. You can basically include this file, use its API, and pretend
+ * Pokemon Showdown is just one big happy process.
+ *
+ * For the actual simulation, see battle-engine.js
+ * 
+ * @license MIT license
+ */
 
 var simulators = {};
 
 var SimulatorProcess = (function() {
 	function SimulatorProcess() {
-		this.process = require('child_process').fork('battles.js');
+		this.process = require('child_process').fork('battle-engine.js');
 		this.process.on('message', function(message) {
 			var lines = message.split('\n');
 			var sim = simulators[lines[0]];

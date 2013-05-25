@@ -1,3 +1,16 @@
+/**
+ * System commands
+ * Pokemon Showdown - http://pokemonshowdown.com/
+ *
+ * These are system commands - commands required for Pokemon Showdown
+ * to run. A lot of these are sent by the client.
+ *
+ * If you'd like to modify commands, please go to config/commands.js,
+ * which also teaches you how to use commands.
+ *
+ * @license MIT license
+ */
+
 var crypto = require('crypto');
 
 var commands = exports.commands = {
@@ -97,6 +110,7 @@ var commands = exports.commands = {
 	},
 
 	privateroom: function(target, room, user) {
+		if (!this.can('makeroom')) return;
 		if (target === 'off') {
 			room.isPrivate = false;
 			this.addModCommand(user.name+' made the room public.');
@@ -514,8 +528,11 @@ var commands = exports.commands = {
 
 	modlog: function(target, room, user, connection) {
 		if (!this.can('modlog')) return false;
-		var lines = parseInt(target || 15, 10);
-		if (lines > 100) lines = 100;
+		var lines = 0;
+		if (!target.match('[^0-9]')) { 
+			lines = parseInt(target || 15, 10);
+			if (lines > 100) lines = 100;
+		}
 		var filename = 'logs/modlog.txt';
 		var command = 'tail -'+lines+' '+filename;
 		var grepLimit = 100;
@@ -682,17 +699,17 @@ var commands = exports.commands = {
 		}, 10000);
 	},
 
-	loadbanlist: function(target, room, user) {
+	loadbanlist: function(target, room, user, connection) {
 		if (!this.can('modchat')) return false;
 
-		this.sendReply('loading');
+		connection.sendTo(room, 'loading');
 		fs.readFile('config/ipbans.txt', function (err, data) {
 			if (err) return;
 			data = (''+data).split("\n");
 			for (var i=0; i<data.length; i++) {
 				if (data[i]) Users.bannedIps[data[i]] = '#ipban';
 			}
-			this.sendReply('banned '+i+' ips');
+			connection.sendTo(room, 'banned '+i+' ips');
 		});
 	},
 
