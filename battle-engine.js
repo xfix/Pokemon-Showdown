@@ -234,11 +234,8 @@ var BattlePokemon = (function() {
 		}
 		for (var i in this.set.evs) {
 			this.set.evs[i] = clampIntRange(this.set.evs[i], 0, 255);
-		}
-		for (var i in this.set.ivs) {
-			this.set.ivs[i] = clampIntRange(this.set.ivs[i], 0, 31);
-		}
-
+		
+		
 		// Hidden Power type and power
 		var hpTypes = ['Fighting','Flying','Poison','Ground','Rock','Bug','Ghost','Steel','Fire','Water','Grass','Electric','Psychic','Ice','Dragon','Dark'];
 		var i = 1;
@@ -256,6 +253,9 @@ var BattlePokemon = (function() {
 			var spcVal = ((this.set.ivs.spa / 2) < 8)? 0 : 1;
 			this.hpPower = (5 * (atkVal + 2 * defVal + 4 * speVal + 8 * spcVal) + spcN) / 2 + 31;
 		} else {
+			for (var i in this.set.ivs) {
+				this.set.ivs[i] = clampIntRange(this.set.ivs[i], 0, 31);
+			}
 			for (var s in stats) {
 				hpTypeX += i * (this.set.ivs[s] % 2);
 				hpPowerX += i * (Math.floor(this.set.ivs[s] / 2) % 2);
@@ -2837,7 +2837,7 @@ var Battle = (function() {
 		case 'beforeTurnMove':
 			if (!decision.pokemon.isActive) return false;
 			if (decision.pokemon.fainted) return false;
-			this.debug('before turn callback: ' + decision.move.id);
+			this.debug('before turn callback: '+decision.move.id);
 			decision.move.beforeTurnCallback.call(this, decision.pokemon, this.getTarget(decision));
 			break;
 		case 'event':
