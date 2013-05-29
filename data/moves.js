@@ -532,6 +532,7 @@ exports.BattleMovedex = {
 		isBounceable: true,
 		volatileStatus: 'attract',
 		effect: {
+			noCopy: true, // doesn't get copied by Baton Pass
 			onStart: function(pokemon, source, effect) {
 				if (!(pokemon.gender === 'M' && source.gender === 'F') && !(pokemon.gender === 'F' && source.gender === 'M')) {
 					this.debug('incompatible gender');
@@ -3866,7 +3867,7 @@ exports.BattleMovedex = {
 			onModifyMove: function(move) {
 				var item = this.getItem(this.effectData.item);
 				move.basePower = item.fling.basePower;
-				if (item.isBerry) {
+				if (item.isBerry && item.id !== 'enigmaberry') {
 					move.onHit = function(foe) {
 						this.singleEvent('Eat', item, null, foe, null, null);
 					};

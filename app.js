@@ -90,8 +90,16 @@ if (!fs.existsSync('./config/config.js')) {
 
 config = require('./config/config.js');
 
+var watchFile = function() {
+	try {
+		return fs.watchFile.apply(fs, arguments);
+	} catch (e) {
+		console.log('Your version of node does not support `fs.watchFile`');
+	}
+};
+
 if (config.watchconfig) {
-	fs.watchFile('./config/config.js', function(curr, prev) {
+	watchFile('./config/config.js', function(curr, prev) {
 		if (curr.mtime <= prev.mtime) return;
 		try {
 			delete require.cache[require.resolve('./config/config.js')];
@@ -268,6 +276,11 @@ catch (err) {
 
 LoginServer = require('./loginserver.js');
 
+watchFile('./config/custom.css', function(curr, prev) {
+	LoginServer.request('invalidatecss', {}, function() {});
+});
+LoginServer.request('invalidatecss', {}, function() {});
+
 Data = {};
 
 Users = require('./users.js');
@@ -349,40 +362,57 @@ server.on('connection', function(socket) {
 		}, 15000);
 	}
 
-	var you;
+	var connection;
 
 	socket.on('data', function(message) {
-		if (message.substr(0,1) === '{') return; // drop legacy JSON messages
+		// Due to a bug in SockJS or Faye, if an exception propagates out of
+		// the `data` event handler, the user will be disconnected on the next
+		// `data` event. To prevent this, we log exceptions and prevent them
+		// from propagating out of this function.
+		try {
+			// drop legacy JSON messages
+			if (message.substr(0,1) === '{') return;
 
-		var youUser = you.user;
-		if (!youUser) {
-			// User has already disconnected from server.
-			// It is not clear how this could happen and it may be impossible.
-			console.log('WARNING: youUser is empty in `data` event!');
-			return;
+			// drop invalid messages without a pipe character
+			var pipeIndex = message.indexOf('|');
+			if (pipeIndex < 0) return;
+
+			var roomid = message.substr(0, pipeIndex);
+			var lines = message.substr(pipeIndex + 1);
+			var room = Rooms.get(roomid, 'lobby');
+			var user = connection.user;
+			lines.split('\n').forEach(function(text) {
+				user.chat(text, room, connection);
+			});
+		} catch (e) {
+			var stack = e.stack + '\n\n';
+			stack += 'Additional information:\n';
+			stack += 'user = ' + user + '\n';
+			stack += 'ip = ' + socket.remoteAddress + '\n';
+			stack += 'roomid = ' + roomid + '\n';
+			stack += 'message = ' + message;
+			var err = {stack: stack};
+			if (config.crashguard) {
+				try {
+					connection.sendTo(roomid||'lobby', '|html|<div class="broadcast-red"><b>Something crashed!</b><br />Don\'t worry, we\'re working on fixing it.</div>');
+				} catch (e) {} // don't crash again...
+				process.emit('uncaughtException', err);
+			} else {
+				throw err;
+			}
 		}
-
-		var pipeIndex = message.indexOf('|');
-		if (pipeIndex < 0) return; // invalid message format
-
-		var roomid = message.substr(0, pipeIndex);
-		var lines = message.substr(pipeIndex + 1);
-		var room = Rooms.get(roomid, 'lobby');
-		lines.split('\n').forEach(function(text){
-			youUser.chat(text, room, you);
-		});
 	});
 
 	socket.on('close', function() {
 		if (interval) {
 			clearInterval(interval);
 		}
-		var youUser = you.user;
-		if (!youUser) return;
-		youUser.onDisconnect(socket);
+		var user = connection.user;
+		if (!user) return;
+		user.onDisconnect(socket);
 	});
 
-	you = Users.connectUser(socket);
+	connection = Users.connectUser(socket);
 });
 server.installHandlers(app, {});
 app.listen(config.port);

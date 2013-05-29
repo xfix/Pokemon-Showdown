@@ -6,15 +6,15 @@ exports.BattleScripts = {
 	gen: 1,
 	init: function () {
 		for (var i in this.data.Learnsets) {
-				this.modData('Learnsets', i);
-				var learnset = this.data.Learnsets[i].learnset;
-				for (var moveid in learnset) {
-						if (typeof learnset[moveid] === 'string') learnset[moveid] = [learnset[moveid]];
-						learnset[moveid] = learnset[moveid].filter(function(source) {
-								return source[0] === '1';
-						});
-						if (!learnset[moveid].length) delete learnset[moveid];
-				}
+			this.modData('Learnsets', i);
+			var learnset = this.data.Learnsets[i].learnset;
+			for (var moveid in learnset) {
+				if (typeof learnset[moveid] === 'string') learnset[moveid] = [learnset[moveid]];
+				learnset[moveid] = learnset[moveid].filter(function(source) {
+					return source[0] === '1';
+				});
+				if (!learnset[moveid].length) delete learnset[moveid];
+			}
 		}
 	},
 	debug: function(activity) {
@@ -68,18 +68,7 @@ exports.BattleScripts = {
 		pokemon.lastDamage = 0;
 		var lockedMove = this.runEvent('LockMove', pokemon);
 		if (lockedMove === true) lockedMove = false;
-		var moveIndex = -1;
-		for (var i=0; i<4; i++) {
-			if (pokemon.moveset[i].id === move.id) {
-				moveIndex = i;
-				break;
-			}
-		}
-		//pokemon.moveset[moveIndex].pp
 		if (!lockedMove && !pokemon.volatiles['partialtrappinglock']) {
-			if (move.secondary !== 'partiallytrapped') {
-				
-			}
 			pokemon.deductPP(move, null, target);
 		}
 		this.useMove(move, pokemon, target, sourceEffect);
@@ -113,21 +102,7 @@ exports.BattleScripts = {
 						// Duration reset thus partially trapped at 2 always
 						target.volatiles['partiallytrapped'].duration = 2;
 						// We deduct an additional PP that was not deducted earlier
-						var moveIndex = -1;
-						for (var i=0; i<4; i++) {
-							if (pokemon.moveset[i].id === move.id) {
-								moveIndex = i;
-								break;
-							}
-						}
-						if (pokemon.moveset[moveIndex].pp > 0) {
-							pokemon.deductPP(move, null, target);
-						} else {
-							this.debug('Partial Trapping PP bug, rolling over to max PP');
-							// Partial trapping moves roll over to max PP if reused on 0 PP while in lock and in switch
-							this.debug('Setting ' + pokemon.moveset[moveIndex].id + ' to ' + move.maxpp + 'pp.');
-							pokemon.moveset[moveIndex].pp = move.maxpp;
-						}
+						pokemon.deductPP(move, null, target);
 					}
 				}
 			} // If we move to here, the move failed and there's no partial trapping lock
@@ -159,6 +134,7 @@ exports.BattleScripts = {
 		if (!move) return false;
 
 		var attrs = '';
+		var missed = false;
 		if (pokemon.fainted) {
 			// Removing screens upon faint
 			pokemon.side.removeSideCondition('reflect');
@@ -217,7 +193,6 @@ exports.BattleScripts = {
 		// Calculate true accuracy
 		var accuracy = move.accuracy;
 		if (accuracy !== true) {
-			this.debug('Accuracy check');
 			accuracy = Math.floor(accuracy*255/100);
 		}
 		

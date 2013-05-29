@@ -116,14 +116,53 @@ process.on('message', function(message) {
 	var data = message.split('|');
 	if (data[1] === 'init') {
 		if (!Battles[data[0]]) {
-			Battles[data[0]] = Battle.construct(data[0], data[2], data[3]);
+			try {
+				Battles[data[0]] = Battle.construct(data[0], data[2], data[3]);
+			} catch (err) {
+				var stack = err.stack + '\n\n' +
+						'Additional information:\n' +
+						'message = ' + message;
+				var fakeErr = {stack: stack};
+
+				if (!require('./crashlogger.js')(fakeErr, 'A battle')) {
+					var ministack = (""+err.stack).split("\n").slice(0,2).join("<br />");
+					process.send(data[0]+'\nupdate\n|html|<div class="broadcast-red"><b>A BATTLE PROCESS HAS CRASHED:</b> '+ministack+'</div>');
+				} else {
+					process.send(data[0]+'\nupdate\n|html|<div class="broadcast-red"><b>The battle crashed!</b><br />Don\'t worry, we\'re working on fixing it.</div>');
+				}
+			}
 		}
 	} else if (data[1] === 'dealloc') {
 		if (Battles[data[0]]) Battles[data[0]].destroy();
 		delete Battles[data[0]];
 	} else {
-		if (Battles[data[0]]) {
-			Battles[data[0]].receive(data, more);
+		var battle = Battles[data[0]];
+		if (battle) {
+			var prevRequest = battle.currentRequest;
+			try {
+				battle.receive(data, more);
+			} catch (err) {
+				var stack = err.stack + '\n\n' +
+						'Additional information:\n' +
+						'message = ' + message + '\n' +
+						'currentRequest = ' + prevRequest + '\n\n' +
+						'Log:\n' + battle.log.join('\n');
+				var fakeErr = {stack: stack};
+				require('./crashlogger.js')(fakeErr, 'A battle');
+
+				var logPos = battle.log.length;
+				battle.add('html', '<div class="broadcast-red"><b>The battle crashed</b><br />You can keep playing but it might crash again.</div>');
+				var nestedError;
+				try {
+					battle.makeRequest(prevRequest);
+				} catch (e) {
+					nestedError = e;
+				}
+				battle.sendUpdates(logPos);
+				if (nestedError) {
+					throw nestedError;
+				}
+			}
 		} else if (data[1] === 'eval') {
 			try {
 				eval(data[2]);
@@ -1502,10 +1541,10 @@ var Battle = (function() {
 	Battle.prototype.singleEvent = function(eventid, effect, effectData, target, source, sourceEffect, relayVar) {
 		if (this.eventDepth >= 5) {
 			// oh fuck
-			this.add('message STACK LIMIT EXCEEDED');
-			this.add('message PLEASE TELL AESOFT');
-			this.add('message Event: '+eventid);
-			this.add('message Parent event: '+this.event.id);
+			this.add('message', 'STACK LIMIT EXCEEDED');
+			this.add('message', 'PLEASE REPORT IN BUG THREAD');
+			this.add('message', 'Event: '+eventid);
+			this.add('message', 'Parent event: '+this.event.id);
 			return false;
 		}
 		//this.add('Event: '+eventid+' (depth '+this.eventDepth+')');
@@ -1657,10 +1696,10 @@ var Battle = (function() {
 	Battle.prototype.runEvent = function(eventid, target, source, effect, relayVar) {
 		if (this.eventDepth >= 5) {
 			// oh fuck
-			this.add('message STACK LIMIT EXCEEDED');
-			this.add('message PLEASE REPORT IN BUG THREAD');
-			this.add('message Event: '+eventid);
-			this.add('message Parent event: '+this.event.id);
+			this.add('message', 'STACK LIMIT EXCEEDED');
+			this.add('message', 'PLEASE REPORT IN BUG THREAD');
+			this.add('message', 'Event: '+eventid);
+			this.add('message', 'Parent event: '+this.event.id);
 			return false;
 		}
 		if (!target) target = this;
@@ -2013,12 +2052,7 @@ var Battle = (function() {
 		}
 
 		if (this.p2.decision && this.p1.decision) {
-			if (type !== 'move') {
-				this.add('message Attempting to recover from crash.');
-				this.makeRequest('move');
-				return;
-			}
-			this.add('message BATTLE CRASHED.');
+			battle.add('html', '<div class="broadcast-red"><b>The battle crashed</b></div>');
 
 			this.win();
 			return;
@@ -2204,7 +2238,7 @@ var Battle = (function() {
 		}
 
 		if (!this.p1.pokemon[0] || !this.p2.pokemon[0]) {
-			this.add('message Battle not started: One of you has an empty team.');
+			this.add('message', 'Battle not started: One of you has an empty team.');
 			return;
 		}
 
@@ -3397,6 +3431,9 @@ var Battle = (function() {
 			break;
 		}
 
+		this.sendUpdates(logPos, alreadyEnded);
+	};
+	Battle.prototype.sendUpdates = function(logPos, alreadyEnded) {
 		if (this.p1 && this.p2) {
 			var inactiveSide = -1;
 			if (!this.p1.isActive && this.p2.isActive) {
@@ -3415,7 +3452,7 @@ var Battle = (function() {
 		}
 
 		if (this.log.length > logPos) {
-			if (this.ended && !alreadyEnded) {
+			if (alreadyEnded !== undefined && this.ended && !alreadyEnded) {
 				if (this.rated) {
 					var log = {
 						turns: this.turn,
