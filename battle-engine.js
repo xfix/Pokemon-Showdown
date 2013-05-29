@@ -273,36 +273,21 @@ var BattlePokemon = (function() {
 		}
 		for (var i in this.set.evs) {
 			this.set.evs[i] = clampIntRange(this.set.evs[i], 0, 255);
-		
-		
-		// Hidden Power type and power
-		var hpTypes = ['Fighting','Flying','Poison','Ground','Rock','Bug','Ghost','Steel','Fire','Water','Grass','Electric','Psychic','Ice','Dragon','Dark'];
-		var i = 1;
-		var hpTypeX = 0, hpPowerX = 0;
-		if (this.battle.gen && this.battle.gen === 2) {
-			// Hidden Power calculation in Generation 2
-			for (var s in stats) {
-				if (this.set.ivs[s] % 2 !== 0) this.set.ivs[s]--;
-			}
-			this.hpType = hpTypes[Math.floor(4 * ((this.set.ivs.atk / 2) % 4) + ((this.set.ivs.def / 2) % 4))];
-			var spcN = (this.set.ivs.spa > 3)? 3 : this.set.ivs.spa;
-			var atkVal = ((this.set.ivs.atk / 2) < 8)? 0 : 1;
-			var defVal = ((this.set.ivs.def / 2) < 8)? 0 : 1;
-			var speVal = ((this.set.ivs.spe / 2) < 8)? 0 : 1;
-			var spcVal = ((this.set.ivs.spa / 2) < 8)? 0 : 1;
-			this.hpPower = (5 * (atkVal + 2 * defVal + 4 * speVal + 8 * spcVal) + spcN) / 2 + 31;
-		} else {
-			for (var i in this.set.ivs) {
-				this.set.ivs[i] = clampIntRange(this.set.ivs[i], 0, 31);
-			}
-			for (var s in stats) {
-				hpTypeX += i * (this.set.ivs[s] % 2);
-				hpPowerX += i * (Math.floor(this.set.ivs[s] / 2) % 2);
-				i *= 2;
-			}
-			this.hpType = hpTypes[Math.floor(hpTypeX * 15 / 63)];
-			this.hpPower = Math.floor(hpPowerX * 40 / 63) + 30;
 		}
+		for (var i in this.set.ivs) {
+			this.set.ivs[i] = clampIntRange(this.set.ivs[i], 0, 31);
+		}
+
+		var hpTypeX = 0, hpPowerX = 0;
+		var i = 1;
+		for (var s in stats) {
+			hpTypeX += i * (this.set.ivs[s] % 2);
+			hpPowerX += i * (Math.floor(this.set.ivs[s] / 2) % 2);
+			i *= 2;
+		}
+		var hpTypes = ['Fighting','Flying','Poison','Ground','Rock','Bug','Ghost','Steel','Fire','Water','Grass','Electric','Psychic','Ice','Dragon','Dark'];
+		this.hpType = hpTypes[Math.floor(hpTypeX * 15 / 63)];
+		this.hpPower = Math.floor(hpPowerX * 40 / 63) + 30;
 
 		this.boosts = {
 			atk: 0, def: 0, spa: 0, spd: 0, spe: 0,
