@@ -152,8 +152,7 @@ try {
 					request.url = request.url.substr(8);
 					server = avatarserver;
 				} else {
-					if (/^\/(teambuilder|ladder|lobby|battle)\/?$/.test(request.url) ||
-							/^\/(lobby|battle)-([A-Za-z0-9-]*)$/.test(request.url)) {
+					if (/^\/([A-Za-z0-9][A-Za-z0-9-]*)\/?$/.test(request.url)) {
 						request.url = '/';
 					}
 					server = staticserver;
@@ -381,6 +380,10 @@ server.on('connection', function(socket) {
 			var lines = message.substr(pipeIndex + 1);
 			var room = Rooms.get(roomid, 'lobby');
 			var user = connection.user;
+			if (lines.substr(0,3) === '>> ' || lines.substr(0,4) === '>>> ') {
+				user.chat(lines, room, connection);
+				return;
+			}
 			lines.split('\n').forEach(function(text) {
 				user.chat(text, room, connection);
 			});

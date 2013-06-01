@@ -86,11 +86,14 @@ var commands = exports.commands = {
 		}
 
 		if (user.locked && !targetUser.can('lock', user)) {
-			return this.sendReply('You can only private message members of the moderation team (users marked by %, @, &, or ~) when locked.');
+			return this.popupReply('You can only private message members of the moderation team (users marked by %, @, &, or ~) when locked.');
+		}
+		if (targetUser.locked && !user.can('lock', targetUser)) {
+			return this.popupReply('This user is locked and cannot PM.');
 		}
 
 		if (!user.named) {
-			return this.sendReply('You must choose a name before you can send private messages.');
+			return this.popupReply('You must choose a name before you can send private messages.');
 		}
 
 		var message = '|pm|'+user.getIdentity()+'|'+targetUser.getIdentity()+'|'+target;
@@ -123,13 +126,14 @@ var commands = exports.commands = {
 	join: function(target, room, user, connection) {
 		var targetRoom = Rooms.get(target);
 		if (target && !targetRoom) {
-			return this.sendReply("|roomerror|" + target + "|The room '"+target+"' does not exist.");
+			return connection.sendTo(target, "|noinit|nonexistent|The room '"+target+"' does not exist.");
 		}
 		if (targetRoom && !targetRoom.battle && targetRoom !== Rooms.lobby && !user.named) {
-			return this.sendReply("|roomerror|" + target + "|You must have a name in order to join the room '"+target+"'.");
+			return connection.sendTo(target, "|noinit|namerequired|You must have a name in order to join the room '"+target+"'.");
 		}
 		if (!user.joinRoom(targetRoom || room, connection)) {
-			return this.sendReply("|roomerror|" + target + "|The room '"+target+"' could not be joined (most likely, you're already in it).");
+			// This condition appears to be impossible for now.
+			return connection.sendTo(target, "|noinit|joinfailed|The room '"+target+"' could not be joined.");
 		}
 	},
 
@@ -176,8 +180,12 @@ var commands = exports.commands = {
 		if (room.id !== 'lobby') {
 			return this.sendReply('Muting only applies to lobby - you probably wanted to /lock.');
 		}
-		if (targetUser.muted) {
-			return this.addModCommand(''+targetUser.name+' was already muted; '+user.name+' was too late.' + (target ? " (" + target + ")" : ""));
+		if (targetUser.muted || targetUser.locked || !targetUser.connected) {
+			var problem = ' but was already '+(!targetUser.connected ? 'offline' : targetUser.locked ? 'locked' : 'muted');
+			if (!target) {
+				return this.privateModCommand('('+targetUser.name+' would be muted by '+user.name+problem+'.)');
+			}
+			return this.addModCommand(''+targetUser.name+' would be muted by '+user.name+problem+'.' + (target ? " (" + target + ")" : ""));
 		}
 
 		targetUser.popup(user.name+' has muted you for 7 minutes. '+target);
@@ -201,9 +209,9 @@ var commands = exports.commands = {
 			return this.sendReply('Muting only applies to lobby - you probably wanted to /lock.');
 		}
 
-		if (targetUser.muted) {
-			this.addModCommand(''+targetUser.name+' was already muted; '+user.name+' was too late.' + (target ? " (" + target + ")" : ""));
-			return false;
+		if (((targetUser.muted && (targetUser.muteTime||0) >= 50*60*1000) || targetUser.locked) && !target) {
+			var problem = ' but was already '+(!targetUser.connected ? 'offline' : targetUser.locked ? 'locked' : 'muted');
+			return this.privateModCommand('('+targetUser.name+' would be muted by '+user.name+problem+'.)');
 		}
 
 		targetUser.popup(user.name+' has muted you for 60 minutes. '+target);
@@ -211,7 +219,7 @@ var commands = exports.commands = {
 		var alts = targetUser.getAlts();
 		if (alts.length) this.addModCommand(""+targetUser.name+"'s alts were also muted: "+alts.join(", "));
 
-		targetUser.mute(60*60*1000);
+		targetUser.mute(60*60*1000, true);
 	},
 
 	um: 'unmute',
@@ -240,6 +248,11 @@ var commands = exports.commands = {
 		}
 		if (!user.can('lock', targetUser)) {
 			return this.sendReply('/lock - Access denied.');
+		}
+
+		if ((targetUser.locked || Users.checkBanned(Object.keys(targetUser.ips)[0])) && !target) {
+			var problem = ' but was already '+(targetUser.locked ? 'locked' : 'banned');
+			return this.privateModCommand('('+targetUser.name+' would be locked by '+user.name+problem+'.)');
 		}
 
 		targetUser.popup(user.name+' has locked you from talking in chats, battles, and PMing regular users.\n\n'+target+'\n\nIf you feel that your lock was unjustified, you can still PM staff members (%, @, &, and ~) to discuss it.');
@@ -277,6 +290,11 @@ var commands = exports.commands = {
 			return this.sendReply('User '+this.targetUsername+' not found.');
 		}
 		if (!this.can('ban', targetUser)) return false;
+
+		if (Users.checkBanned(Object.keys(targetUser.ips)[0]) && !target) {
+			var problem = ' but was already banned';
+			return this.privateModCommand('('+targetUser.name+' would be banned by '+user.name+problem+'.)');
+		}
 
 		targetUser.popup(user.name+" has banned you.  If you feel that your banning was unjustified you can appeal the ban:\nhttp://www.smogon.com/forums/announcement.php?f=126&a=204\n\n"+target);
 
@@ -373,16 +391,13 @@ var commands = exports.commands = {
 			return this.sendReply('/promote - WARNING: This user is offline and could be unregistered. Use /forcepromote if you\'re sure you want to risk it.');
 		}
 		var groupName = (config.groups[nextGroup].name || nextGroup || '').trim() || 'a regular user';
-		var entry = ''+name+' was '+(isDemotion?'demoted':'promoted')+' to ' + groupName + ' by '+user.name+'.';
 		if (isDemotion) {
-			Rooms.lobby.logEntry(entry);
-			this.sendReply('You demoted ' + name + ' to ' + groupName + '.');
-			this.logModCommand(entry);
+			this.privateModCommand('('+name+' was demoted to ' + groupName + ' by '+user.name+'.)');
 			if (targetUser) {
 				targetUser.popup('You were demoted to ' + groupName + ' by ' + user.name + '.');
 			}
 		} else {
-			this.addModCommand(entry);
+			this.addModCommand(''+name+' was promoted to ' + groupName + ' by '+user.name+'.');
 		}
 		if (targetUser) {
 			targetUser.updateIdentity();
@@ -705,14 +720,22 @@ var commands = exports.commands = {
 	loadbanlist: function(target, room, user, connection) {
 		if (!this.can('modchat')) return false;
 
-		connection.sendTo(room, 'loading');
+		connection.sendTo(room, 'Loading ipbans.txt...');
 		fs.readFile('config/ipbans.txt', function (err, data) {
 			if (err) return;
 			data = (''+data).split("\n");
+			var count = 0;
 			for (var i=0; i<data.length; i++) {
-				if (data[i]) Users.bannedIps[data[i]] = '#ipban';
+				if (data[i] && !Users.bannedIps[data[i]]) {
+					Users.bannedIps[data[i]] = '#ipban';
+					count++;
+				}
 			}
-			connection.sendTo(room, 'banned '+i+' ips');
+			if (!count) {
+				connection.sendTo(room, 'No IPs were banned; ipbans.txt has not been updated since the last time /loadbanlist was called.');
+			} else {
+				connection.sendTo(room, ''+count+' IPs were loaded from ipbans.txt and banned.');
+			}
 		});
 	},
 
@@ -791,6 +814,36 @@ var commands = exports.commands = {
 		config.modchat = false;
 		Rooms.lobby.addRaw('<div class="broadcast-green"><b>We have logged the crash and are working on fixing it!</b><br />You may resume talking in the lobby and starting new battles.</div>');
 		Rooms.lobby.logEntry(user.name + ' used /crashlogged');
+	},
+
+	eval: function(target, room, user, connection, cmd, message) {
+		if (!user.checkConsolePermission(connection.socket)) {
+			return this.sendReply("/eval - Access denied.");
+		}
+		if (!this.canBroadcast()) return;
+
+		if (!this.broadcasting) this.sendReply('||>> '+target);
+		try {
+			var battle = room.battle;
+			var me = user;
+			this.sendReply('||<< '+eval(target));
+		} catch (e) {
+			this.sendReply('||<< error: '+e.message);
+			var stack = '||'+(''+e.stack).replace(/\n/g,'\n||');
+			connection.sendTo(room, stack);
+		}
+	},
+
+	evalbattle: function(target, room, user, connection, cmd, message) {
+		if (!user.checkConsolePermission(connection.socket)) {
+			return this.sendReply("/evalbattle - Access denied.");
+		}
+		if (!this.canBroadcast()) return;
+		if (!room.battle) {
+			return this.sendReply("/evalbattle - This isn't a battle room.");
+		}
+
+		room.battle.send('eval', target.replace(/\n/g, '\f'));
 	},
 
 	/*********************************************************

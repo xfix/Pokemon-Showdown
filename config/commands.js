@@ -204,6 +204,22 @@ var commands = exports.commands = {
 	},
 
 	/*********************************************************
+	 * Shortcuts
+	 *********************************************************/
+
+	invite: function(target, room, user) {
+		target = this.splitTarget(target);
+		if (!this.targetUser) {
+			return this.sendReply('User '+this.targetUsername+' not found.');
+		}
+		var roomid = (target || room.id);
+		if (!Rooms.get(roomid)) {
+			return this.sendReply('Room '+roomid+' not found.');
+		}
+		return this.parse('/msg '+this.targetUsername+', /invite '+roomid);
+	},
+
+	/*********************************************************
 	 * Informational commands
 	 *********************************************************/
 
@@ -298,6 +314,51 @@ var commands = exports.commands = {
 			buffer += "</ul>";
 		}
 		this.sendReplyBox(buffer);
+	},
+
+	matchup: 'effectiveness',
+	effectiveness: function(target, room, user) {
+		var targets = target.split(/[,/]/);
+		var type = Tools.getType(targets[1]);
+		var pokemon = Tools.getTemplate(targets[0]);
+		var defender;
+
+		if (!pokemon.exists || !type.exists) {
+			// try the other way around
+			pokemon = Tools.getTemplate(targets[1]);
+			type = Tools.getType(targets[0]);
+		}
+		defender = pokemon.species+' (not counting abilities)';
+
+		if (!pokemon.exists || !type.exists) {
+			// try two types
+			if (Tools.getType(targets[0]).exists && Tools.getType(targets[1]).exists) {
+				// two types
+				type = Tools.getType(targets[0]);
+				defender = Tools.getType(targets[1]).id;
+				pokemon = {types: [defender]};
+				if (Tools.getType(targets[2]).exists) {
+					defender = Tools.getType(targets[1]).id + '/' + Tools.getType(targets[2]).id;
+					pokemon = {types: [Tools.getType(targets[1]).id, Tools.getType(targets[2]).id]};
+				}
+			} else {
+				if (!targets[1]) {
+					return this.sendReply("Attacker and defender must be separated with a comma.");
+				}
+				return this.sendReply("'"+targets[0].trim()+"' and '"+targets[1].trim()+"' aren't a recognized combination.");
+			}
+		}
+
+		if (!this.canBroadcast()) return;
+
+		var typeMod = Tools.getEffectiveness(type.id, pokemon);
+		var notImmune = Tools.getImmunity(type.id, pokemon);
+		var factor = 0;
+		if (notImmune) {
+			factor = Math.pow(2, typeMod);
+		}
+
+		this.sendReplyBox(''+type.id+' attacks are '+factor+'x effective against '+defender+'.');
 	},
 
 	uptime: function(target, room, user) {
