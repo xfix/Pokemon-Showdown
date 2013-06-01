@@ -1696,5 +1696,45 @@ exports.BattleScripts = {
 		}
 
 		return team;
+	},
+	randomSeasonalJJTeam: function(side) {
+		// Seasonal Pokemon list
+		var seasonalPokemonList = [
+			'ninetales', 'sawsbuck', 'vanilluxe', 'vanillite', 'vanillish', 'rotommow', 'rotomfan', 'pikachu', 'raichu', 'solrock', 'sunflora', 
+			'castform', 'ludicolo', 'thundurus', 'tornadus', 'landorus', 'magmar', 'magmortar', 'rhydon', 'rhyperior', 'lapras', 
+			'starmie', 'manaphy', 'krabby', 'kingler', 'crawdaunt', 'victreebell', 'bellossom', 'maractus', 'exeggutor', 'tropius', 'malaconda', 
+			'krillowatt', 'cherrim', 'snorlax', 'butterfly', 'slaking', 'politoed', 'tentacool', 'tentacruel', 'sudowoodo', 'bonsai', 'groudon', 
+			'keldeo', 'venusaur', 'hooh', 'moltres', 'zapdos', 'reshiram ', 'blastoise', 'meloetta', 'roserade', 'lilligant', 'rotommow', 
+			'rotomheat', 'beautifuly', 'butterfree', 'beedrill', 'charizard', 'delcatty', 'drifblim', 'floatzel', 'jumpluff', 'lunatone', 
+			'solrock', 'machoke', 'machamp', 'machop', 'meganium', 'pelliper', 'wailord', 'rapidash', 'vileplume', 'aurumoth', 'syclant', 
+			'butterfree', 'beedrill', 'parasect', 'venomoth', 'scizor', 'pinsir', 'ledian', 'ariados', 'yanmega', 'forretress', 'shuckle', 
+			'heracross', 'beautifly', 'dustox', 'masquerain', 'ninjask', 'shedinja', 'volbeat', 'illumise', 'armaldo', 'kricketune', 'wormadam', 
+			'wormadamsandy', 'wormadamtrash', 'mothim', 'vespiquen', 'arceusbug', 'leavanny', 'scolipede', 'crustle', 'escavalier',
+			'galvantula', 'accelgor', 'durant', 'volcarona', 'genesect', 'rotomheat'
+		];
+		seasonalPokemonList = seasonalPokemonList.randomize();
+		var team = [this.randomSet(this.getTemplate('delibird'), 0)];
+		
+		// Now, let's make the team!
+		for (var i=1; i<6; i++) {
+			var pokemon = seasonalPokemonList[i];
+			var template = this.getTemplate(pokemon);
+			var set = this.randomSet(template, i);
+			if (template.id in {'vanilluxe':1, 'vanillite':1, 'vanillish':1}) {
+				set.moves = ['icebeam', 'weatherball', 'autotomize', 'flashcannon'];
+			}
+			if (template.id in {'pikachu':1, 'raichu':1}) {
+				set.moves = ['thunderbolt', 'surf', 'substitute', 'nastyplot'];
+			}
+			if (template.id in {'rhydon':1, 'rhyperior':1}) {
+				set.moves = ['surf', 'megahorn', 'earthquake', 'rockblast'];
+			}
+			if (template.id === 'reshiram') {
+				 set.moves = ['tailwhip', 'dragontail', 'irontail', 'aquatail'];
+			}
+			team.push(set);
+		}
+		
+		return team;
 	}
 };

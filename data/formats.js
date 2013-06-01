@@ -35,6 +35,17 @@ exports.BattleFormats = {
 		ruleset: ['Pokemon', 'Standard', 'Team Preview'],
 		banlist: ['Uber', 'Drizzle', 'Soul Dew', 'Drought', 'Sand Stream', 'Snow Warning']
 	},
+	gennextou: {
+		mod: 'gennext',
+		effectType: 'Format',
+		name: "Gen-NEXT OU",
+		section: "Other Metas",
+		challengeShow: true,
+		searchShow: true,
+		rated: true,
+		ruleset: ['Pokemon', 'Standard NEXT', 'Team Preview'],
+		banlist: ['Uber']
+	},
 	oulenient: {
 		effectType: 'Format',
 		name: "OU Lenient",
@@ -213,6 +224,23 @@ exports.BattleFormats = {
 		'Arceus-Water', 'Darkrai', 'Deoxys', 'Deoxys-A', 'Deoxys-D', 'Deoxys-S', 'Dialga', 'Genesect ', 'Giratina', 'Giratina-O', 'Groudon', 'Ho-Oh', 'Kyogre', 
 		'Kyurem-W', 'Lugia', 'Manaphy', 'Mewtwo', 'Palkia', 'Rayquaza', 'Reshiram', 'Shaymin-S', 'Thundurus', 'Tornadus-T', 'Zekrom']
 	},
+	"1v1meta": {
+        effectType: 'Format',
+        name: "1-V-1 Meta",
+		section: "Other Metas",
+        rated: true,
+        challengeShow: true,
+        searchShow: true,
+        debug: true,
+        onBegin: function() {
+    		this.p1.pokemon = this.p1.pokemon.slice(0,1);
+	        this.p1.pokemonLeft = this.p1.pokemon.length;
+	        this.p2.pokemon = this.p2.pokemon.slice(0,1);
+	        this.p2.pokemonLeft = this.p2.pokemon.length;
+        },
+        ruleset: ['Pokemon', 'Species Clause', 'Team Preview 1v1'],
+        banlist: ['Unreleased', 'Illegal', 'Arceus', 'Blaziken', 'Darkrai', 'Deoxys-A', 'Deoxys', 'Dialga', 'Giratina', 'Giritina-O', 'Groudon', 'Ho-Oh', 'Kyurem-W', 'Lugia', 'Mewtwo', 'Palkia', 'Rayquaza', 'Reshiram', 'Shaymin-S', 'Zekrom', 'Memento', 'Explosion', 'Perish Song', 'Destiny Bond', 'Healing Wish', 'Self-Destruct']
+    },
 	haxmons: {
 		effectType: 'Format',
 		name: "Haxmons",
@@ -981,6 +1009,77 @@ exports.BattleFormats = {
 			}
 		}
 	},
+	junejubilee: {
+		effectType: 'Format',
+		name: "June Jubilee",
+		section: "Seasonal",
+		team: 'randomSeasonalJJ',
+		canUseRandomTeam: true,
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		turn: 0,
+		onBegin: function() {
+			this.add('-message', "Greetings, trainer! Delibird needs your help! It's lost on the US and it needs to find its way back to the arctic before summer starts! Help your Delibird while travelling north, but you must defeat the opponent before he reaches there first!");
+			this.setWeather('Sunny Day');
+			delete this.weatherData.duration;
+		},
+		onBeforeMove: function(pokemon, target, move) {
+			// Reshiram changes weather with its tail until you reach the arctic
+			if (pokemon.template.speciesid === 'reshiram' && pokemon.side.battle.turn < 15) {
+				var weatherMsg = '';
+				var dice = this.random(100);
+				if (dice < 25) {
+					this.setWeather('Rain Dance');
+					weatherMsg = 'a Drizzle';
+				} else if (dice < 50) {
+					this.setWeather('Sunny Day');
+					weatherMsg = 'a Sunny Day';
+				} else if (dice < 75) {
+					this.setWeather('Hail');
+					weatherMsg = 'Hail';
+				} else {
+					this.setWeather('Sandstorm');
+					weatherMsg = 'a Sandstorm';
+				}
+				this.add('-message', "Reshiram caused " + weatherMsg + " with its tail!");
+				delete this.weatherData.duration;
+			}
+		},
+		onBeforeMove: function(pokemon) {
+			if (!pokemon.side.battle.seasonal) pokemon.side.battle.seasonal = {'none':false, 'drizzle':false, 'hail':false};
+			if (pokemon.side.battle.turn >= 4 && pokemon.side.battle.seasonal.none === false) {
+				this.add('-message', "You are travelling north and you have arrived to North Dakota! It isn't as sunny here...");
+				this.clearWeather();
+				pokemon.side.battle.seasonal.none = true;
+			}
+			if (pokemon.side.battle.turn >= 8 && pokemon.side.battle.seasonal.drizzle === false) {
+				this.add('-message', "You are travelling further north and you have arrived to Edmonton! It started raining a lot... and it's effing cold.");
+				this.setWeather('Rain Dance');
+				delete this.weatherData.duration;
+				pokemon.side.battle.seasonal.drizzle = true;
+			}
+			if (pokemon.side.battle.turn >= 12 && pokemon.side.battle.seasonal.hail === false) {
+				this.add('-message', "You have arrived to the arctic! Defeat the other trainer so Delibird can be free!");
+				this.setWeather('Hail');
+				delete this.weatherData.duration;
+				pokemon.side.battle.seasonal.hail = true;
+			}
+		},
+		onFaint: function(pokemon) {
+			if (pokemon.template.id === 'delibird') {
+				var name = pokemon.side.name;
+				var winner = '';
+				if (pokemon.side.id === 'p1') {
+					winner = 'p2';
+				} else {
+					winner = 'p1';
+				}
+				this.add('-message', "No!! You let Delibird down. He trusted you. You lost the battle, " + name + ". But you lost something else: your Pokémon's trust.");
+				pokemon.battle.win(winner);
+			}
+		}
+	},
 	challengecup: {
 		effectType: 'Format',
 		name: "Challenge Cup",
@@ -992,9 +1091,9 @@ exports.BattleFormats = {
 		searchShow: true,
 		ruleset: ['Pokemon']
 	},
-	challengecup1vs1: {
+	challengecup1v1: {
 		effectType: 'Format',
-		name: "Challenge Cup 1-vs-1",
+		name: "Challenge Cup 1-V-1",
 		section: "Singles",
 		team: 'randomCC',
 		canUseRandomTeam: true,
@@ -1099,16 +1198,6 @@ exports.BattleFormats = {
 		maxLevel: 1000,
 		// no restrictions, for serious
 		ruleset: []
-	},
-	gennextnextou: {
-		mod: 'gennext',
-		effectType: 'Format',
-		name: "[Gen NEXT] NEXT-OU",
-		challengeShow: true,
-		searchShow: true,
-		rated: true,
-		ruleset: ['Pokemon', 'Standard NEXT', 'Team Preview'],
-		banlist: ['Uber']
 	},
 	standardnext: {
 		effectType: 'Banlist',
