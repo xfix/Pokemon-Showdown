@@ -316,6 +316,43 @@ var commands = exports.commands = {
 		this.sendReplyBox(buffer);
 	},
 
+	weak: 'weakness',
+	weakness: function(target, room, user){
+		var targets = target.split(/[ ,\/]/);
+
+		var pokemon = Tools.getTemplate(target);
+		var type1 = Tools.getType(targets[0]);
+		var type2 = Tools.getType(targets[1]);
+
+		if (pokemon.exists) {
+			target = pokemon.species;
+		} else if (type1.exists && type2.exists) {
+			pokemon = {types: [type1.id, type2.id]};
+			target = type1.id + "/" + type2.id;
+		} else if (type1.exists) {
+			pokemon = {types: [type1.id]};
+			target = type1.id;
+		} else {
+			return this.sendReplyBox(target + " isn't a recognized type or pokemon.");
+		}
+
+		var weaknesses = [];
+		Object.keys(Data.base.TypeChart).forEach(function (type) {
+			var notImmune = Tools.getImmunity(type, pokemon);
+			if (notImmune) {
+				var typeMod = Tools.getEffectiveness(type, pokemon);
+				if (typeMod == 1) weaknesses.push(type);
+				if (typeMod == 2) weaknesses.push("<b>" + type + "</b>");
+			}
+		});
+
+		if (!weaknesses.length) {
+			this.sendReplyBox(target + " has no weaknesses.");
+		} else {
+			this.sendReplyBox(target + " is weak to: " + weaknesses.join(', ') + " (not counting abilities).");
+		}
+	},
+	
 	matchup: 'effectiveness',
 	effectiveness: function(target, room, user) {
 		var targets = target.split(/[,/]/);
@@ -791,11 +828,11 @@ var commands = exports.commands = {
 		}
 		if (target === 'all' || target === 'blockchallenges' || target === 'away' || target === 'idle') {
 			matched = true;
-			this.sendReply('/away - Blocks challenges so no one can challenge you.');
+			this.sendReply('/away - Blocks challenges so no one can challenge you. Deactivate it with /back.');
 		}
 		if (target === 'all' || target === 'allowchallenges' || target === 'back') {
 			matched = true;
-			this.sendReply('/back - Unlocks challenges so you can be challenged again.');
+			this.sendReply('/back - Unlocks challenges so you can be challenged again. Deactivate it with /away.');
 		}
 		if (target === 'all' || target === 'faq') {
 			matched = true;
@@ -810,12 +847,17 @@ var commands = exports.commands = {
 			this.sendReply('/highlight delete, word - delete a word from the highlight list.');
 			this.sendReply('/highlight delete - clear the highlight list');
 		}
-		if (target === 'timestamps') {
+		if (target === 'all' || target === 'timestamps') {
 			matched = true;
 			this.sendReply('Set your timestamps preference:');
 			this.sendReply('/timestamps [all|lobby|pms], [minutes|seconds|off]');
 			this.sendReply('all - change all timestamps preferences, lobby - change only lobby chat preferences, pms - change only PM preferences');
 			this.sendReply('off - set timestamps off, minutes - show timestamps of the form [hh:mm], seconds - show timestamps of the form [hh:mm:ss]');
+		}
+		if (target === 'all' || target === 'effectiveness') {
+			matched = true;
+			this.sendReply('/effectiveness [type1], [type2] - Provides the effectiveness of a [type1] attack to a [type2] Pokémon.');
+			this.sendReply('!effectiveness [type1], [type2] - Shows everyone the effectiveness of a [type1] attack to a [type2] Pokémon.');
 		}
 		if (target === '%' || target === 'altcheck' || target === 'alt' || target === 'alts' || target === 'getalts') {
 			matched = true;
@@ -837,7 +879,7 @@ var commands = exports.commands = {
 			matched = true;
 			this.sendReply('/unbanall - Unban all IP addresses. Requires: @ & ~');
 		}
-		if (target === '@' || target === 'modlog') {
+		if (target === '%' || target === 'modlog') {
 			matched = true;
 			this.sendReply('/modlog [n] - If n is a number or omitted, display the last n lines of the moderator log. Defaults to 15. If n is not a number, search the moderator log for "n". Requires: @ & ~');
 		}
@@ -869,13 +911,13 @@ var commands = exports.commands = {
 			matched = true;
 			this.sendReply('/demote [username], [group] - Demotes the user to the specified group or previous ranked group. Requires: & ~');
 		}
-		if (target === '&' || target === 'forcerenameto' || target === 'frt') {
+		if (target === '~' || target === 'forcerenameto' || target === 'frt') {
 			matched = true;
 			this.sendReply('/forcerenameto OR /frt [username] - Force a user to choose a new name. Requires: & ~');
 			this.sendReply('/forcerenameto OR /frt [username], [new name] - Forcibly change a user\'s name to [new name]. Requires: & ~');
 		}
 		if (target === '&' || target === 'forcetie') {
-			matched === true;
+			matched = true;
 			this.sendReply('/forcetie - Forces the current match to tie. Requires: & ~');
 		}
 		if (target === '&' || target === 'declare' ) {
@@ -921,7 +963,7 @@ var commands = exports.commands = {
 			if (user.group !== config.groupsranking[0]) {
 				this.sendReply('DRIVER COMMANDS: /mute, /unmute, /announce, /forcerename, /alts')
 				this.sendReply('MODERATOR COMMANDS: /ban, /unban, /unbanall, /ip, /modlog, /redirect, /kick');
-				this.sendReply('LEADER COMMANDS: /promote, /demote, /forcerenameto, /forcewin, /forcetie, /declare');
+				this.sendReply('LEADER COMMANDS: /promote, /demote, /forcewin, /forcetie, /declare');
 				this.sendReply('For details on all moderator commands, use /help @');
 			}
 			this.sendReply('For details of a specific command, use something like: /help data');

@@ -26,6 +26,8 @@ const MAX_MESSAGE_LENGTH = 300;
 
 const BROADCAST_COOLDOWN = 20*1000;
 
+const MESSAGE_COOLDOWN = 5*60*1000;
+
 const MAX_PARSE_RECURSION = 10;
 
 var crypto = require('crypto');
@@ -155,7 +157,7 @@ var parse = exports.parse = function(message, room, user, connection, levelsDeep
 						return false;
 					}
 
-					this.add('|c|'+user.getIdentity()+'|'+message);
+					this.add('|c|'+user.getIdentity(room.id)+'|'+message);
 
 					// broadcast cooldown
 					var normalized = toId(message);
@@ -242,8 +244,8 @@ function canTalk(user, room, connection, message) {
 		if (connection) connection.sendTo(room, 'You are locked from talking in chat.');
 		return false;
 	}
-	if (user.muted && room.id === 'lobby') {
-		if (connection) connection.sendTo(room, 'You are muted and cannot talk in the lobby.');
+	if (user.mutedRooms[room.id]) {
+		if (connection) connection.sendTo(room, 'You are muted and cannot talk in this room.');
 		return false;
 	}
 	if (config.modchat && room.id === 'lobby') {
@@ -280,6 +282,17 @@ function canTalk(user, room, connection, message) {
 
 		// remove zalgo
 		message = message.replace(/[\u0300-\u036f]{3,}/g,'');
+
+		if (room.id === 'lobby') {
+			var normalized = message.trim();
+			if ((normalized === user.lastMessage) &&
+					((Date.now() - user.lastMessageTime) < MESSAGE_COOLDOWN)) {
+				connection.popup("You can't send the same message again so soon.");
+				return false;
+			}
+			user.lastMessage = message;
+			user.lastMessageTime = Date.now();
+		}
 
 		if (config.chatfilter) {
 			return config.chatfilter(user, room, connection.socket, message);

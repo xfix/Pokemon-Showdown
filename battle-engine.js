@@ -2042,9 +2042,18 @@ var Battle = (function() {
 		}
 
 		if (this.p2.decision && this.p1.decision) {
-			this.add('html', '<div class="broadcast-red"><b>The battle crashed</b></div>');
-
-			this.win();
+			if (this.p2.decision === true && this.p1.decision === true) {
+				if (type !== 'move') {
+					// TODO: investigate this race condition; should be fixed
+					// properly later
+					return this.makeRequest('move');
+				}
+				this.add('html', '<div class="broadcast-red"><b>The battle crashed</b></div>');
+				this.win();
+			} else {
+				// some kind of weird race condition?
+				this.commitDecisions();
+			}
 			return;
 		}
 
@@ -3077,22 +3086,25 @@ var Battle = (function() {
 		side.decision = this.parseChoice(choice, side);
 
 		if (this.p1.decision && this.p2.decision) {
-			if (this.p1.decision !== true) {
-				this.addQueue(this.p1.decision, true, this.p1);
-			}
-			if (this.p2.decision !== true) {
-				this.addQueue(this.p2.decision, true, this.p2);
-			}
-
-			this.currentRequest = '';
-			this.p1.currentRequest = '';
-			this.p2.currentRequest = '';
-
-			this.p1.decision = true;
-			this.p2.decision = true;
-
-			this.go();
+			this.commitDecisions();
 		}
+	};
+	Battle.prototype.commitDecisions = function() {
+		if (this.p1.decision !== true) {
+			this.addQueue(this.p1.decision, true, this.p1);
+		}
+		if (this.p2.decision !== true) {
+			this.addQueue(this.p2.decision, true, this.p2);
+		}
+
+		this.currentRequest = '';
+		this.p1.currentRequest = '';
+		this.p2.currentRequest = '';
+
+		this.p1.decision = true;
+		this.p2.decision = true;
+
+		this.go();
 	};
 	Battle.prototype.undoChoice = function(sideid) {
 		var side = null;

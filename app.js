@@ -179,11 +179,12 @@ try {
 // and doing things on our server.
 
 var server = require('sockjs').createServer({
-	sockjs_url: "http://cdn.sockjs.org/sockjs-0.3.min.js",
+	sockjs_url: "//play.pokemonshowdown.com/js/lib/sockjs-0.3.min.js",
 	log: function(severity, message) {
 		if (severity === 'error') console.log('ERROR: '+message);
 	},
-	prefix: '/showdown'
+	prefix: '/showdown',
+	websocket: !config.disablewebsocket
 });
 
 // Make `app`, `appssl`, and `server` available to the console.
@@ -322,6 +323,35 @@ if (config.crashguard) {
  * Set up the server to be connected to
  *********************************************************/
 
+// this is global so it can be hotpatched if necessary
+global.isTrustedProxyIp = (function() {
+	if (!config.proxyip) {
+		return function() {
+			return false;
+		};
+	}
+	var iplib = require('ip');
+	var patterns = [];
+	for (var i = 0; i < config.proxyip.length; ++i) {
+		var range = config.proxyip[i];
+		var parts = range.split('/');
+		var subnet = iplib.toLong(parts[0]);
+		var bits = (parts.length < 2) ? 32 : parseInt(parts[1], 10);
+		var mask = -1 << (32 - bits);
+		patterns.push([subnet & mask, mask]);
+	}
+	return function(ip) {
+		var longip = iplib.toLong(ip);
+		for (var i = 0; i < patterns.length; ++i) {
+			var p = patterns[i];
+			if ((longip & p[1]) === p[0]) {
+				return true;
+			}
+		}
+		return false;
+	};
+})();
+
 var socketCounter = 0;
 server.on('connection', function(socket) {
 	if (!socket.remoteAddress) {
@@ -333,12 +363,12 @@ server.on('connection', function(socket) {
 	}
 	socket.id = (++socketCounter);
 
-	if (config.proxyip && (config.proxyip.indexOf(socket.remoteAddress) >= 0)) {
+	if (isTrustedProxyIp(socket.remoteAddress)) {
 		var ips = (socket.headers['x-forwarded-for'] || '').split(',');
 		var ip;
 		while (ip = ips.pop()) {
 			ip = ip.trim();
-			if (config.proxyip.indexOf(ip) < 0) {
+			if (!isTrustedProxyIp(ip)) {
 				socket.remoteAddress = ip;
 				break;
 			}

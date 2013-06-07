@@ -105,10 +105,11 @@ var commands = exports.commands = {
 
 	makechatroom: function(target, room, user) {
 		if (!this.can('makeroom')) return;
-		if (Rooms.rooms[target]) {
+		var id = toId(target);
+		if (Rooms.rooms[id]) {
 			return this.sendReply("The room '"+target+"' already exists.");
 		}
-		Rooms.rooms[target] = new Rooms.ChatRoom(target);
+		Rooms.rooms[id] = new Rooms.ChatRoom(id, target);
 		return this.sendReply("The room '"+target+"' was created.");
 	},
 
@@ -177,10 +178,7 @@ var commands = exports.commands = {
 			return this.sendReply('User '+this.targetUsername+' not found.');
 		}
 		if (!this.can('mute', targetUser)) return false;
-		if (room.id !== 'lobby') {
-			return this.sendReply('Muting only applies to lobby - you probably wanted to /lock.');
-		}
-		if (targetUser.muted || targetUser.locked || !targetUser.connected) {
+		if (targetUser.mutedRooms[room.id] || targetUser.locked || !targetUser.connected) {
 			var problem = ' but was already '+(!targetUser.connected ? 'offline' : targetUser.locked ? 'locked' : 'muted');
 			if (!target) {
 				return this.privateModCommand('('+targetUser.name+' would be muted by '+user.name+problem+'.)');
@@ -193,7 +191,7 @@ var commands = exports.commands = {
 		var alts = targetUser.getAlts();
 		if (alts.length) this.addModCommand(""+targetUser.name+"'s alts were also muted: "+alts.join(", "));
 
-		targetUser.mute(7*60*1000);
+		targetUser.mute(room.id, 7*60*1000);
 	},
 
 	hourmute: function(target, room, user) {
@@ -205,11 +203,8 @@ var commands = exports.commands = {
 			return this.sendReply('User '+this.targetUsername+' not found.');
 		}
 		if (!this.can('mute', targetUser)) return false;
-		if (room.id !== 'lobby') {
-			return this.sendReply('Muting only applies to lobby - you probably wanted to /lock.');
-		}
 
-		if (((targetUser.muted && (targetUser.muteTime||0) >= 50*60*1000) || targetUser.locked) && !target) {
+		if (((targetUser.mutedRooms[room.id] && (targetUser.muteDuration[room.id]||0) >= 50*60*1000) || targetUser.locked) && !target) {
 			var problem = ' but was already '+(!targetUser.connected ? 'offline' : targetUser.locked ? 'locked' : 'muted');
 			return this.privateModCommand('('+targetUser.name+' would be muted by '+user.name+problem+'.)');
 		}
@@ -219,7 +214,7 @@ var commands = exports.commands = {
 		var alts = targetUser.getAlts();
 		if (alts.length) this.addModCommand(""+targetUser.name+"'s alts were also muted: "+alts.join(", "));
 
-		targetUser.mute(60*60*1000, true);
+		targetUser.mute(room.id, 60*60*1000, true);
 	},
 
 	um: 'unmute',
@@ -232,9 +227,13 @@ var commands = exports.commands = {
 		}
 		if (!this.can('mute', targetUser)) return false;
 
+		if (!targetUser.mutedRooms[room.id]) {
+			return this.sendReply(''+targetUser.name+' isn\'t muted.');
+		}
+
 		this.addModCommand(''+targetUser.name+' was unmuted by '+user.name+'.');
 
-		targetUser.unmute();
+		targetUser.unmute(room.id);
 	},
 
 	ipmute: 'lock',
@@ -300,8 +299,14 @@ var commands = exports.commands = {
 
 		this.addModCommand(""+targetUser.name+" was banned by "+user.name+"." + (target ? " (" + target + ")" : ""));
 		var alts = targetUser.getAlts();
-		if (alts.length) this.addModCommand(""+targetUser.name+"'s alts were also banned: "+alts.join(", "));
+		if (alts.length) {
+			this.addModCommand(""+targetUser.name+"'s alts were also banned: "+alts.join(", "));
+			for (var i = 0; i < alts.length; ++i) {
+				this.add('|unlink|' + toId(alts[i]));
+			}
+		}
 
+		this.add('|unlink|' + targetUser.userid);
 		targetUser.ban();
 	},
 
@@ -433,15 +438,10 @@ var commands = exports.commands = {
 		case 'on':
 		case 'true':
 		case 'yes':
-			this.sendReply("If you're dealing with a spammer, make sure to run /loadbanlist first.");
-			this.sendReply("That said, the command you've been looking for has been renamed to: /modchat registered");
-			return false;
-			break;
 		case 'registered':
-			if (!user.can('modchatall')) {
-				return this.sendReply('/modchat - Access denied for registered setting.');
-			}
-			config.modchat = true;
+			this.sendReply("Modchat registered has been removed.");
+			this.sendReply("If you're dealing with a spammer, make sure to run /loadbanlist.");
+			return false;
 			break;
 		case 'off':
 		case 'false':

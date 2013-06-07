@@ -26,9 +26,11 @@ exports.serverid = 'testserver';
 // with inaccurate clocks, the default is 25 hours.
 exports.tokenexpiry = 25*60*60;
 
-// Proxy IP - a list of proxy IPs with trusted X-Forwarded-For headers
-//   The list can be an array, or a string with whatever delimiter you wish.
-//   Leave at false to never trust any proxy.
+// proxyip - proxy IPs with trusted X-Forwarded-For headers
+//   This can be either false (meaning not to trust any proxies) or an array
+//   of strings. Each string should be either an IP address or a subnet given
+//   in CIDR notation. You should usually leave this as `false` unless you
+//   know what you are doing.
 exports.proxyip = false;
 
 // login server data - don't forget the http:// and the trailing slash
@@ -148,7 +150,7 @@ exports.blacklist = [
 
 // reportbattlesperiod - by default, all battles are reported to clients
 // even if `reportbattles` is off. If you set this option to a value other
-// then false, then most battles will not be reported at all. Instead,
+// than false, then most battles will not be reported at all. Instead,
 // every so often the server will send information on the last 6 battles
 // to all clients; the `reportbattlesperiod` option specifies the length of
 // the period between reports in milliseconds.
