@@ -1080,6 +1080,37 @@ exports.BattleFormats = {
 			}
 		}
 	},
+	jollyjuly: {
+		effectType: 'Format',
+		name: "Jolly July",
+		section: "Seasonal",
+		team: 'randomSeasonalJuly',
+		canUseRandomTeam: true,
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		onBegin: function() {
+			this.add('-message', "You and your faithful favourite Pokémon are travelling around the world, and you will fight this trainer in many places!");
+			this.cities = {
+				'N': [
+					'Madrid', 'Paris', 'London', 'Ghent', 'Amsterdam', 'Gdansk',
+					'Munich', 'Rome', 'Rabat', 'Stockholm', 'Moscow', 'Beijing',
+					'Tokyo', 'Dubai', 'New York', 'Vancouver', 'Los Angeles',
+					'Edmonton', 'Houston', 'Mexico DF'
+				],
+				'S': [
+					'Buenos Aires', 'Lima', 'Johanesburg', 'Sydney', 'Melbourne',
+					'Santiago de Chile', 'Bogota', 'Lima', 'Montevideo',
+					'Wellington'
+				]
+			};
+		},
+		onBeforeMove: function(pokemon) {
+			if (pokemon.side.battle.turn === 1 && !pokemon.side.battle.city) {
+				
+			}
+		}
+	}
 	challengecup: {
 		effectType: 'Format',
 		name: "Challenge Cup",
