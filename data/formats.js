@@ -241,6 +241,18 @@ exports.BattleFormats = {
         ruleset: ['Pokemon', 'Species Clause', 'Team Preview 1v1'],
         banlist: ['Unreleased', 'Illegal', 'Arceus', 'Blaziken', 'Darkrai', 'Deoxys-A', 'Deoxys', 'Dialga', 'Giratina', 'Giritina-O', 'Groudon', 'Ho-Oh', 'Kyurem-W', 'Lugia', 'Mewtwo', 'Palkia', 'Rayquaza', 'Reshiram', 'Shaymin-S', 'Zekrom', 'Memento', 'Explosion', 'Perish Song', 'Destiny Bond', 'Healing Wish', 'Self-Destruct']
     },
+	stabmons: {
+		effectType: 'Format',
+        name: "Stabmons",
+		section: "Other Metas",
+		mod: 'stabmons',
+		rated: true,
+        challengeShow: true,
+        searchShow: true,
+        debug: true,
+		ruleset: ['Pokemon', 'Sleep Clause', 'Team Preview'],
+		banlist: ['Unreleased', 'Illegal']
+	},
 	haxmons: {
 		effectType: 'Format',
 		name: "Haxmons",
