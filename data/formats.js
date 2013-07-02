@@ -1108,12 +1108,13 @@ exports.BattleFormats = {
 					'Madrid', 'Paris', 'London', 'Ghent', 'Amsterdam', 'Gdansk',
 					'Munich', 'Rome', 'Rabat', 'Stockholm', 'Moscow', 'Beijing',
 					'Tokyo', 'Dubai', 'New York', 'Vancouver', 'Los Angeles',
-					'Edmonton', 'Houston', 'Mexico DF'
+					'Edmonton', 'Houston', 'Mexico DF', 'Barcelona', 'Blanes'
 				],
 				'S': [
 					'Buenos Aires', 'Lima', 'Johanesburg', 'Sydney', 'Melbourne',
 					'Santiago de Chile', 'Bogota', 'Lima', 'Montevideo',
-					'Wellington'
+					'Wellington', 'Canberra', 'Jakarta', 'Kampala', 'Mumbai',
+					'Auckland', 'Pretoria', 'Cape Town'
 				]
 			};
 		},

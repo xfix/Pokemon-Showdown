@@ -1024,7 +1024,7 @@ var ChatRoom = (function() {
 		this.logFile = null;
 		this.logFilename = '';
 		this.destroyingLog = false;
-		this.topic = '';
+		this.topic = 'test topic';
 
 		// `config.loglobby` is a legacy name
 		if (config.logchat || config.loglobby) {
@@ -1215,6 +1215,10 @@ var ChatRoom = (function() {
 		if (!merging) {
 			var userList = this.userList ? this.userList : this.getUserList();
 			this.send('|init|chat\n|title|'+this.title+'\n'+userList+'\n'+this.log.slice(-100).join('\n'), user);
+		}
+
+		if (this.topic !== '') {
+			user.connections[0].send('Current topic: ' + this.topic, user);
 		}
 
 		return user;
