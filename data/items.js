@@ -1803,10 +1803,14 @@ exports.BattleItems = {
 		fling: {
 			basePower: 30
 		},
-		onDamage: function(damage, target, source, effect) {
-			source.addVolatile('lifeorb');
-			console.log(source);
-			return Math.round(damage * (0x14CC / 0x1000));
+		onModifyDamage: function(damage, source, target, move) {
+			console.log('Adding LO to ' + source.species + ', curr: ' + damage);
+			if (damage > 0 && source) {
+				source.addVolatile('lifeorb');
+				damage = this.modify(damage, 1.3);
+				console.log('damage modified: ' + damage);
+			}
+			return damage;
 		},
 		effect: {
 			duration: 1,
