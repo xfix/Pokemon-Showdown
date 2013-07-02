@@ -1122,7 +1122,7 @@ exports.BattleFormats = {
 				
 			}
 		}
-	}
+	},
 	challengecup: {
 		effectType: 'Format',
 		name: "Challenge Cup",
