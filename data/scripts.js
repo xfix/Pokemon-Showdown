@@ -1772,7 +1772,16 @@ exports.BattleScripts = {
 		var team = [];
 		
 		// Now, let's make the team!
-		for (var i=1; i<5; i++) {
+		var date = Date();
+		date = date.split(' ');
+		var maxPokes = 5;
+		var independents = {4:'braviary', 5:'jynx', 9:'miltank', 10:'gorebyss', 20:'vigoroth', 21:'mrmime', 23:'lucario', 26:'lapras', 28:'regirock', 31:'slowking'};
+		if (parseInt(fecha[2]) in independents) {
+			// July is full of independence days, so add a Pokémon to all teams accordingly if necessary
+			maxPokes = 4;
+			team.push(this.randomSet(this.getTemplate(independents[parseInt(fecha[2])]), 1));
+		}
+		for (var i=1; i<maxPokes; i++) {
 			var pokemon = seasonalPokemonList[i];
 			var template = this.getTemplate(pokemon);
 			var set = this.randomSet(template, i);

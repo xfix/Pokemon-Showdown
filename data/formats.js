@@ -1033,9 +1033,6 @@ exports.BattleFormats = {
 		turn: 0,
 		onBegin: function() {
 			this.add('-message', "Greetings, trainer! Delibird needs your help! It's lost on the US and it needs to find its way back to the arctic before summer starts! Help your Delibird while travelling north, but you must defeat the opponent before he reaches there first!");
-			var date = Date();
-			date = date.split(' ');
-			if (parseInt(date[2]) === 4) this.add('-message', "Today is the 'MURICA day!");
 		},
 		onBeforeMove: function(pokemon, target, move) {
 			// Reshiram changes weather with its tail until you reach the arctic
@@ -1125,6 +1122,9 @@ exports.BattleFormats = {
 			if (this.random(100) < 50) this.currentPlace.hemisphere = 'S';
 			this.currentPlace.city = this.cities[this.currentPlace.hemisphere][0];
 			delete this.cities[this.currentPlace.hemisphere][0];
+			var date = Date();
+			date = date.split(' ');
+			if (parseInt(date[2]) === 4) this.add('-message', "Today is the 'MURICA day!");
 		},
 		onBeforeMove: function(pokemon) {
 			if (!this.lastMoveTurn) this.lastMoveTurn = 0;
