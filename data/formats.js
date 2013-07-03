@@ -1123,8 +1123,8 @@ exports.BattleFormats = {
 			this.cities.S = this.cities.S.randomize();
 			// We choose a hemisphere and city to be in at the beginning
 			if (this.random(100) < 50) this.currentPlace.hemisphere = 'S';
-			this.currentPlace.city = this.cities.[this.currentPlace.hemisphere][0];
-			delete this.cities.[this.currentPlace.hemisphere][0];
+			this.currentPlace.city = this.cities[this.currentPlace.hemisphere][0];
+			delete this.cities[this.currentPlace.hemisphere][0];
 		},
 		onBeforeMove: function(pokemon) {
 			if (!this.lastMoveTurn) this.lastMoveTurn = 0;
@@ -1132,20 +1132,20 @@ exports.BattleFormats = {
 			if (this.lastMoveTurn + nextChange >= pokemon.side.battle.turn) {
 				this.lastMoveTurn = pokemon.side.battle.turn;
 				if (this.random(100) < 50) this.currentPlace.hemisphere = 'S';
-				if (this.cities.[this.currentPlace.hemisphere].length > 0) {
-					this.cities.[this.currentPlace.hemisphere] = this.cities.[this.currentPlace.hemisphere].randomize();
+				if (this.cities[this.currentPlace.hemisphere].length > 0) {
+					this.cities[this.currentPlace.hemisphere] = this.cities[this.currentPlace.hemisphere].randomize();
 				} else {
 					this.currentPlace.hemisphere = (this.currentPlace.hemisphere === 'N')? 'S' : 'N';
-					if (this.cities.[this.currentPlace.hemisphere].length > 0) {
-						this.cities.[this.currentPlace.hemisphere] = this.cities.[this.currentPlace.hemisphere].randomize();
+					if (this.cities[this.currentPlace.hemisphere].length > 0) {
+						this.cities[this.currentPlace.hemisphere] = this.cities[this.currentPlace.hemisphere].randomize();
 					} else {
 						this.add('-message', "You have travelled all around the world, " + pokemon.side.name + "! You won!");
 						pokemon.battle.win(pokemon.side.id);
 						return false;
 					}
 				}
-				this.currentPlace.city = this.cities.[this.currentPlace.hemisphere][0];
-				delete this.cities.[this.currentPlace.hemisphere][0];
+				this.currentPlace.city = this.cities[this.currentPlace.hemisphere][0];
+				delete this.cities[this.currentPlace.hemisphere][0];
 				this.add('-message', "Travelling around the world, you have arrived to a new city in the " + this.currentPlace.hemisphere + " hemisphere, " + this.currentPlace.city + "!");
 				if (this.currentPlace.hemisphere === 'N') {
 					this.add('-fieldstart', 'move: Magic Room', '[of] Seasonal');
