@@ -1101,7 +1101,7 @@ exports.BattleFormats = {
 		searchShow: true,
 		onBegin: function() {
 			this.add('-message', "You and your faithful favourite Pokémon are travelling around the world, and you will fight this trainer in many places until either win or finish the travel!");
-			this.cities = {
+			pokemon.side.battle.cities = {
 				'N': [
 					'Madrid', 'Paris', 'London', 'Ghent', 'Amsterdam', 'Gdansk',
 					'Munich', 'Rome', 'Rabat', 'Stockholm', 'Moscow', 'Beijing',
@@ -1115,39 +1115,38 @@ exports.BattleFormats = {
 					'Auckland', 'Pretoria', 'Cape Town'
 				]
 			};
-			this.currentPlace = {'hemisphere':'N', 'city':'Townsville'};
-			this.cities.N = this.cities.N.randomize();
-			this.cities.S = this.cities.S.randomize();
+			pokemon.side.battle.currentPlace = {'hemisphere':'N', 'city':'Townsville'};
+			pokemon.side.battle.cities.N = pokemon.side.battle.cities.N.randomize();
+			pokemon.side.battle.cities.S = pokemon.side.battle.cities.S.randomize();
 			// We choose a hemisphere and city to be in at the beginning
-			if (this.random(100) < 50) this.currentPlace.hemisphere = 'S';
-			this.currentPlace.city = this.cities[this.currentPlace.hemisphere][0];
-			delete this.cities[this.currentPlace.hemisphere][0];
+			if (this.random(100) < 50) pokemon.side.battle.currentPlace.hemisphere = 'S';
+			pokemon.side.battle.currentPlace.city = pokemon.side.battle.cities[pokemon.side.battle.currentPlace.hemisphere][0];
+			delete pokemon.side.battle.cities[pokemon.side.battle.currentPlace.hemisphere][0];
 			var date = Date();
 			date = date.split(' ');
 			if (parseInt(date[2]) === 4) this.add('-message', "Today is the 'MURICA day!");
 		},
 		onBeforeMove: function(pokemon) {
-			if (!this.lastMoveTurn) this.lastMoveTurn = 0;
+			if (!pokemon.side.battle.lastMoveTurn) pokemon.side.battle.lastMoveTurn = 0;
 			var nextChange = this.random(2, 5);
-			if (this.lastMoveTurn + nextChange >= pokemon.side.battle.turn) {
-				this.lastMoveTurn = pokemon.side.battle.turn;
-				if (this.random(100) < 50) this.currentPlace.hemisphere = 'S';
-				if (this.cities[this.currentPlace.hemisphere].length > 0) {
-					this.cities[this.currentPlace.hemisphere] = this.cities[this.currentPlace.hemisphere].randomize();
-				} else {
-					this.currentPlace.hemisphere = (this.currentPlace.hemisphere === 'N')? 'S' : 'N';
-					if (this.cities[this.currentPlace.hemisphere].length > 0) {
-						this.cities[this.currentPlace.hemisphere] = this.cities[this.currentPlace.hemisphere].randomize();
+			if (pokemon.side.battle.lastMoveTurn + nextChange >= pokemon.side.battle.turn) {
+				pokemon.side.battle.lastMoveTurn = pokemon.side.battle.turn;
+				if (this.random(100) < 50) pokemon.side.battle.currentPlace.hemisphere = 'S';
+				if (pokemon.side.battle.cities[pokemon.side.battle.currentPlace.hemisphere].length > 0) {
+					pokemon.side.battle.cities[pokemon.side.battle.currentPlace.hemisphere] = pokemon.side.battle.cities[pokemon.side.battle.currentPlace.hemisphere].randomize();
+				} else {pokemon.side.battle = (pokemon.side.battle.currentPlace.hemisphere === 'N')? 'S' : 'N';
+					if (pokemon.side.battle.cities[pokemon.side.battle.currentPlace.hemisphere].length > 0) {
+						pokemon.side.battle.cities[pokemon.side.battle.currentPlace.hemisphere] = pokemon.side.battle.cities[pokemon.side.battle.currentPlace.hemisphere].randomize();
 					} else {
 						this.add('-message', "You have travelled all around the world, " + pokemon.side.name + "! You won!");
 						pokemon.battle.win(pokemon.side.id);
 						return false;
 					}
 				}
-				this.currentPlace.city = this.cities[this.currentPlace.hemisphere][0];
-				delete this.cities[this.currentPlace.hemisphere][0];
-				this.add('-message', "Travelling around the world, you have arrived to a new city in the " + this.currentPlace.hemisphere + " hemisphere, " + this.currentPlace.city + "!");
-				if (this.currentPlace.hemisphere === 'N') {
+				pokemon.spokemon.side.battleide.battle.currentPlace.city = pokemon.side.battle.cities[pokemon.side.battle.currentPlace.hemisphere][0];
+				delete pokemon.side.battle.cities[pokemon.side.battle.currentPlace.hemisphere][0];
+				pokemon.side.battle.add('-message', "Travelling around the world, you have arrived to a new city in the " + pokemon.side.battle.currentPlace.hemisphere + " hemisphere, " + this.currentPlace.city + "!");
+				if (pokemon.side.battle.currentPlace.hemisphere === 'N') {
 					this.add('-fieldstart', 'move: Magic Room', '[of] Seasonal');
 				} else {
 					this.add('-fieldend', 'move: Magic Room', '[of] Seasonal');
@@ -1157,8 +1156,8 @@ exports.BattleFormats = {
 		onModifyMove: function(move) {
 			if (move.id === 'fireblast') move.name = '4th July Fireworks';
 		},
-		onModifySpe: function(spe) {
-			if (this.currentPlace.hemisphere === 'S') return -spe;
+		onModifySpe: function(spe, pokemon) {
+			if (pokemon.side.battle.currentPlace.hemisphere === 'S') return -spe;
 			return spe;
 		}
 	},
