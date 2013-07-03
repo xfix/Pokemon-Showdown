@@ -1804,11 +1804,9 @@ exports.BattleItems = {
 			basePower: 30
 		},
 		onModifyDamage: function(damage, source, target, move) {
-			console.log('Adding LO to ' + source.species + ', curr: ' + damage);
 			if (damage > 0 && source) {
 				source.addVolatile('lifeorb');
 				damage = this.modify(damage, 1.3);
-				console.log('damage modified: ' + damage);
 			}
 			return damage;
 		},
@@ -2143,18 +2141,18 @@ exports.BattleItems = {
 			type: "Rock"
 		},
 		onResidual: function(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp/4 || (pokemon.hp <= pokemon.maxhp/2 && pokemon.ability === 'Gluttony')) {
+			if (pokemon.hp <= pokemon.maxhp/4 || (pokemon.hp <= pokemon.maxhp/2 && pokemon.ability === 'gluttony')) {
 				pokemon.eatItem();
 			}
 		},
 		onEat: function(pokemon) {
-			pokemon.addVolatile('MicleBerry');
+			pokemon.addVolatile('micleberry');
 		},
 		effect: {
 			duration: 2,
 			onModifyMove: function(move, pokemon) {
 				this.add('-enditem', pokemon, 'Micle Berry');
-				pokemon.removeVolatile('MicleBerry');
+				pokemon.removeVolatile('micleberry');
 				if (typeof move.accuracy === 'number') {
 					move.accuracy *= 1.2;
 				}
@@ -2163,14 +2161,6 @@ exports.BattleItems = {
 		num: 209,
 		gen: 4,
 		desc: "Holder's next move has 1.2x accuracy when at 1/4 max HP or less. Single use."
-	},
-	"moonball": {
-		id: "moonball",
-		name: "Moon Ball",
-		spritenum: 294,
-		num: 498,
-		gen: 2,
-		desc: "A Poke Ball for catching Pokemon that evolve using the Moon Stone."
 	},
 	"mindplate": {
 		id: "mindplate",
@@ -2204,6 +2194,14 @@ exports.BattleItems = {
 		num: 239,
 		gen: 2,
 		desc: "Holder's Grass-type attacks have 1.2x power."
+	},
+	"moonball": {
+		id: "moonball",
+		name: "Moon Ball",
+		spritenum: 294,
+		num: 498,
+		gen: 2,
+		desc: "A Poke Ball for catching Pokemon that evolve using the Moon Stone."
 	},
 	"muscleband": {
 		id: "muscleband",
@@ -2843,7 +2841,9 @@ exports.BattleItems = {
 			basePower: 10
 		},
 		onModifyPokemon: function(pokemon) {
-			pokemon.negateImmunity['Type'] = true;
+			for (var type in this.data.TypeChart) {
+				pokemon.negateImmunity[type] = true;
+			}
 		},
 		num: 543,
 		gen: 5,

@@ -1,6 +1,5 @@
 exports.BattleScripts = {
 	init: function() {
-		console.log('stabmons init');
 		for (var i in this.data.Learnsets) {
 			for (var n in this.data.Movedex) {
 				if (this.data.Movedex[n].id !== 'sketch') {
