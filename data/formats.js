@@ -1033,8 +1033,9 @@ exports.BattleFormats = {
 		turn: 0,
 		onBegin: function() {
 			this.add('-message', "Greetings, trainer! Delibird needs your help! It's lost on the US and it needs to find its way back to the arctic before summer starts! Help your Delibird while travelling north, but you must defeat the opponent before he reaches there first!");
-			this.setWeather('Sunny Day');
-			delete this.weatherData.duration;
+			var date = Date();
+			date = date.split(' ');
+			if (parseInt(date[2]) === 4) this.add('-message', "Today is the 'MURICA day!");
 		},
 		onBeforeMove: function(pokemon, target, move) {
 			// Reshiram changes weather with its tail until you reach the arctic
@@ -1102,7 +1103,7 @@ exports.BattleFormats = {
 		challengeShow: true,
 		searchShow: true,
 		onBegin: function() {
-			this.add('-message', "You and your faithful favourite Pokémon are travelling around the world, and you will fight this trainer in many places!");
+			this.add('-message', "You and your faithful favourite Pokémon are travelling around the world, and you will fight this trainer in many places until either win or finish the travel!");
 			this.cities = {
 				'N': [
 					'Madrid', 'Paris', 'London', 'Ghent', 'Amsterdam', 'Gdansk',
@@ -1117,11 +1118,48 @@ exports.BattleFormats = {
 					'Auckland', 'Pretoria', 'Cape Town'
 				]
 			};
+			this.currentPlace = {'hemisphere':'N', 'city':'Townsville'};
+			this.cities.N = this.cities.N.randomize();
+			this.cities.S = this.cities.S.randomize();
+			// We choose a hemisphere and city to be in at the beginning
+			if (this.random(100) < 50) this.currentPlace.hemisphere = 'S';
+			this.currentPlace.city = this.cities.[this.currentPlace.hemisphere][0];
+			delete this.cities.[this.currentPlace.hemisphere][0];
 		},
 		onBeforeMove: function(pokemon) {
-			if (pokemon.side.battle.turn === 1 && !pokemon.side.battle.city) {
-				
+			if (!this.lastMoveTurn) this.lastMoveTurn = 0;
+			var nextChange = this.random(2, 5);
+			if (this.lastMoveTurn + nextChange >= pokemon.side.battle.turn) {
+				this.lastMoveTurn = pokemon.side.battle.turn;
+				if (this.random(100) < 50) this.currentPlace.hemisphere = 'S';
+				if (this.cities.[this.currentPlace.hemisphere].length > 0) {
+					this.cities.[this.currentPlace.hemisphere] = this.cities.[this.currentPlace.hemisphere].randomize();
+				} else {
+					this.currentPlace.hemisphere = (this.currentPlace.hemisphere === 'N')? 'S' : 'N';
+					if (this.cities.[this.currentPlace.hemisphere].length > 0) {
+						this.cities.[this.currentPlace.hemisphere] = this.cities.[this.currentPlace.hemisphere].randomize();
+					} else {
+						this.add('-message', "You have travelled all around the world, " + pokemon.side.name + "! You won!");
+						pokemon.battle.win(pokemon.side.id);
+						return false;
+					}
+				}
+				this.currentPlace.city = this.cities.[this.currentPlace.hemisphere][0];
+				delete this.cities.[this.currentPlace.hemisphere][0];
+				this.add('-message', "Travelling around the world, you have arrived to a new city in the " + this.currentPlace.hemisphere + " hemisphere, " + this.currentPlace.city + "!");
+				if (this.currentPlace.hemisphere === 'N') {
+					this.add('-fieldstart', 'move: Magic Room', '[of] Seasonal');
+				} else {
+					this.add('-fieldend', 'move: Magic Room', '[of] Seasonal');
+				}
 			}
+		},
+		onModifyMove: function(move) {
+			if (move.id === 'fireblast') move.name = '4th July Fireworks';
+		},
+		onModifySpe: function(spe) {
+			if (this.currentPlace.hemisphere === 'S') return -spe;
+			return spe;
 		}
 	},
 	challengecup: {

@@ -1741,40 +1741,44 @@ exports.BattleScripts = {
 	randomSeasonalJuly: function(side) {
 		// Seasonal Pokemon list
 		var seasonalPokemonList = [
-			'ninetales', 'sawsbuck', 'vanilluxe', 'vanillite', 'vanillish', 'rotommow', 'rotomfan', 'pikachu', 'raichu', 'solrock', 'sunflora', 
-			'castform', 'ludicolo', 'thundurus', 'tornadus', 'landorus', 'magmar', 'magmortar', 'rhydon', 'rhyperior', 'lapras', 
-			'starmie', 'manaphy', 'krabby', 'kingler', 'crawdaunt', 'victreebell', 'bellossom', 'maractus', 'exeggutor', 'tropius', 'malaconda', 
-			'krillowatt', 'cherrim', 'snorlax', 'butterfree', 'slaking', 'politoed', 'tentacool', 'tentacruel', 'sudowoodo', 'groudon', 
-			'keldeo', 'venusaur', 'hooh', 'moltres', 'zapdos', 'reshiram ', 'blastoise', 'meloetta', 'roserade', 'lilligant', 
-			'rotomheat', 'beautifuly', 'butterfree', 'beedrill', 'charizard', 'delcatty', 'drifblim', 'floatzel', 'jumpluff', 'lunatone', 
-			'solrock', 'machoke', 'machamp', 'machop', 'meganium', 'pelliper', 'wailord', 'rapidash', 'vileplume', 'aurumoth', 'syclant', 
-			'butterfree', 'beedrill', 'parasect', 'venomoth', 'scizor', 'pinsir', 'ledian', 'ariados', 'yanmega', 'forretress', 'shuckle', 
-			'heracross', 'beautifly', 'dustox', 'masquerain', 'ninjask', 'shedinja', 'volbeat', 'illumise', 'armaldo', 'kricketune', 'wormadam', 
-			'wormadamsandy', 'wormadamtrash', 'mothim', 'vespiquen', 'arceusbug', 'leavanny', 'scolipede', 'crustle', 'escavalier',
-			'galvantula', 'accelgor', 'durant', 'volcarona', 'genesect', 'rotomheat'
+			'groudon', 'charizard', 'ninetales', 'arcanine', 'rapidash', 'flareon', 'moltres', 'typhlosion', 'magcargo', 
+			'houndoom', 'blaziken', 'camerupt', 'infernape', 'magmortar', 'emboar', 'simisear', 'chandelure', 'volcarona',
+			'darmanitan', 'hooh', 'reshiram', 'heatran', 'entei', 'meloetta', 'genesect', 'scizor', 'jirachi', 'zoroark',
+			'victini', 'crawdaunt', 'kingler', 'stoutland', 'ninetales', 'raikou', 'entei', 'suicune', 'toxicroak', 'politoed', 
+			'thundurus', 'thundurustherian', 'ferrothorn', 'venusaur', 'scizor', 'skarmory', 'staraptor', 'groudon', 
+			'arcanine', 'blastoise', 'heracross', 'honchkrow', 'murkrow', 'houndoom', 'yanmega', 'zapdos', 'venomoth', 
+			'escavalier', 'galvantula', 'lilligant', 'lanturn', 'moltres', 'rotommow', 'sharpedo', 'xatu', 'crustle', 
+			'hariyama', 'hitmonlee', 'hitmonchan', 'hitmontop', 'omastar', 'poliwrath', 'scyther', 'whimsicott', 
+			'basculin', 'beautifly', 'beedrill', 'alomomola', 'braviary', 'castform', 'carracosta', 'cherrim', 
+			'corsola', 'drifblim', 'exeggutor', 'fearow', 'jumpluff', 'leafeon', 'lapras', 'leavanny', 'ledian', 
+			'kricketune', 'solrock', 'lunatone', 'mantine', 'meganium', 'miltank', 'primeape', 'rapidash', 
+			'rotomfan', 'rotomwash', 'simisear', 'stantler', 'sunflora', 'swoobat', 'tauros', 'bouffalant', 
+			'tropius', 'vespiquen', 'victreebel', 'vileplume', 'wailord', 'zebstrika', 'celebi'
 		];
 		seasonalPokemonList = seasonalPokemonList.randomize();
-		var team = [this.randomSet(this.getTemplate('delibird'), 0)];
+
+		// Create the specific Pokémon for the user
+		var md5 = require('MD5');
+		var random = (197 * md5(toId(side.name)) + 346) % 649;
+		// Find the Pokemon. Castform by default because lol
+		var pokeName = 'castform';
+		for (var p in this.data.Pokedex) {
+			if (this.data.Pokedex[p].num === random) {
+				pokeName = p;
+				break;
+			}
+		}
+		var yourPokemon = this.randomSet(this.getTemplate(pokeName), 0);
+		var team = [];
 		
 		// Now, let's make the team!
-		for (var i=1; i<6; i++) {
+		for (var i=1; i<5; i++) {
 			var pokemon = seasonalPokemonList[i];
 			var template = this.getTemplate(pokemon);
 			var set = this.randomSet(template, i);
-			if (template.id in {'vanilluxe':1, 'vanillite':1, 'vanillish':1}) {
-				set.moves = ['icebeam', 'weatherball', 'autotomize', 'flashcannon'];
-			}
-			if (template.id in {'pikachu':1, 'raichu':1}) {
-				set.moves = ['thunderbolt', 'surf', 'substitute', 'nastyplot'];
-			}
-			if (template.id in {'rhydon':1, 'rhyperior':1}) {
-				set.moves = ['surf', 'megahorn', 'earthquake', 'rockblast'];
-			}
-			if (template.id === 'reshiram') {
-				 set.moves = ['tailwhip', 'dragontail', 'irontail', 'aquatail'];
-			}
 			team.push(set);
 		}
+		team.push(yourPokemon);
 		
 		return team;
 	}
