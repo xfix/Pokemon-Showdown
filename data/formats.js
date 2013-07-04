@@ -250,8 +250,8 @@ exports.BattleFormats = {
         challengeShow: true,
         searchShow: true,
         debug: true,
-		ruleset: ['Pokemon', 'Sleep Clause', 'Team Preview'],
-		banlist: ['Unreleased'],
+		ruleset: ['Pokemon', 'Evasion Abilities Clause', 'Team Preview', 'Sleep Clause', 'Species Clause', 'OHKO Clause', 'Moody Clause', 'Evasion Moves Clause'],
+		banlist: ['Unreleased', 'Uber', 'Drizzle ++ Swift Swim', 'Soul Dew'],
 		validateSet: function (set, format) {
 			var problems = [];
 			// Check that moves aren't repeated
