@@ -1626,45 +1626,39 @@ exports.BattleScripts = {
 		];
 		seasonalPokemonList = seasonalPokemonList.randomize();
 
-		// Add the trainer's specific Pokémon
-		var md5 = require('md5');
-		var num = Math.ceil((197 * md5(toId(side.name)) + 346) % 649);
+		// Create the specific Pokémon for the user
+		var md5 = require('MD5');
+		var random = (197 * md5(toId(side.name)) + 346) % 649;
+		// Find the Pokemon. Castform by default because lol
 		var pokeName = 'castform';
 		for (var p in this.data.Pokedex) {
-			if (this.data.Pokedex[p].num === num) {
+			if (this.data.Pokedex[p].num === random) {
 				pokeName = p;
 				break;
 			}
 		}
+		var yourPokemon = this.randomSet(this.getTemplate(pokeName), 0);
 		var team = [this.randomSet(this.getTemplate(pokeName), 0)];
 
 		// Specific Pokémon for independence days
 		
 		// Now, let's make the team!
-		for (var i=0; i<6; i++) {
+		var date = Date();
+		date = date.split(' ');
+		var maxPokes = 5;
+		var independents = {4:'braviary', 5:'jynx', 9:'miltank', 10:'gorebyss', 20:'vigoroth', 21:'mrmime', 23:'lucario', 26:'lapras', 28:'regirock'};
+		if (parseInt(fecha[2]) in independents) {
+			// July is full of independence days, so add a Pokémon to all teams accordingly if necessary
+			maxPokes = 4;
+			team.push(this.randomSet(this.getTemplate(independents[parseInt(fecha[2])]), 1));
+		}
+		for (var i=1; i<maxPokes; i++) {
 			var pokemon = seasonalPokemonList[i];
 			var template = this.getTemplate(pokemon);
 			var set = this.randomSet(template, i);
-			if (template.id in {'vanilluxe':1, 'vanillite':1, 'vanillish':1}) {
-				set.moves = ['icebeam', 'weatherball', 'autotomize', 'flashcannon'];
-			}
-			if (template.id in {'pikachu':1, 'raichu':1}) {
-				set.moves = ['thunderbolt', 'surf', 'substitute', 'nastyplot'];
-			}
-			if (template.id in {'rhydon':1, 'rhyperior':1}) {
-				set.moves = ['surf', 'megahorn', 'earthquake', 'rockblast'];
-			}
-			if (template.id === 'reshiram') {
-				set.moves = ['tailwhip', 'dragontail', 'irontail', 'aquatail'];
-			}
-			if (template.id === 'aggron') {
-				set.moves = ['surf', 'earthquake', 'bodyslam', 'rockslide'];
-			}
-			if (template.id === 'hariyama') {
-				set.moves = ['surf', 'closecombat', 'facade', 'fakeout'];
-			}
 			team.push(set);
 		}
+		team.push(yourPokemon);
 		
 		return team;
 	}
