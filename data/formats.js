@@ -251,7 +251,69 @@ exports.BattleFormats = {
         searchShow: true,
         debug: true,
 		ruleset: ['Pokemon', 'Sleep Clause', 'Team Preview'],
-		banlist: ['Unreleased', 'Illegal']
+		banlist: ['Unreleased'],
+		validateSet: function (set, format) {
+			var problems = [];
+			// Check that moves aren't repeated
+			var moves = [];
+			if (set.moves) {
+				var hasMove = {};
+				for (var i=0; i<set.moves.length; i++) {
+					var move = this.getMove(set.moves[i]);
+					var moveid = move.id;
+					if (hasMove[moveid]) continue;
+					hasMove[moveid] = true;
+					moves.push(set.moves[i]);
+				}
+			}
+			set.moves = moves;
+
+			// Check learnset for illegalities BUT same type moves
+			var lsetData = {set:set, format:format};
+			var template = this.getTemplate(string(set.species));
+			for (var i=0; i<set.moves.length; i++) {
+				if (!set.moves[i]) continue;
+				var move = this.getMove(string(set.moves[i]));
+				// Check if the Pokémon has the move type
+				var check = true;
+				for (var t in template.types) {
+					if (template.types[t] === move.type) check = false;
+				}
+				// Does not have type, check legalities
+				if (check) {
+					var problem = this.checkLearnset(move, template, lsetData);
+					if (problem) {
+						var problemString = name+" can't learn "+move.name;
+						if (problem.type === 'incompatible') {
+							if (isDW) {
+								problemString = problemString.concat(" because it's incompatible with its ability or another move.");
+							} else {
+								problemString = problemString.concat(" because it's incompatible with another move.");
+							}
+						} else if (problem.type === 'oversketched') {
+							problemString = problemString.concat(" because it can only sketch "+problem.maxSketches+" move"+(problem.maxSketches>1?"s":"")+".");
+						} else {
+							problemString = problemString.concat(".");
+						}
+						problems.push(problemString);
+					}
+				}
+			}
+
+			// Check EVs
+			var totalEV = 0;
+			for (var k in set.evs) {
+				if (typeof set.evs[k] !== 'number') {
+					set.evs[k] = 0;
+				}
+				totalEV += set.evs[k];
+			}
+			if (totalEV > 510) {
+				problems.push(name+" has more than 510 total EVs.");
+			}
+
+			return problems;
+		}
 	},
 	haxmons: {
 		effectType: 'Format',
