@@ -1605,5 +1605,67 @@ exports.BattleScripts = {
 		}
 		
 		return team;
+	},
+	randomSeasonalJulyTeam: function(side) {
+		// Seasonal Pokemon list
+		var seasonalPokemonList = [
+			'charmander', 'charmeleon', 'charizard', 'vulpix', 'ninetales', 'growlithe', 'arcanine', 'ponyta', 'rapidash', 'magmar', 
+			'flareon', 'moltres', 'cyndaquil', 'quilava', 'typhlosion', 'slugma', 'magcargo', 'houndour', 'houndoom', 'magby', 'entei', 
+			'hooh', 'torchic', 'combusken', 'blaziken', 'numel', 'camerupt', 'torkoal', 'castformsunny', 'chimchar', 'monferno', 'infernape', 
+			'magmortar', 'rotomheat', 'heatran', 'arceusfire', 'victini', 'tepig', 'pignite', 'emboar', 'pansear', 'simisear', 'darumaka', 
+			'darmanitan', 'darmanitanzen', 'litwick', 'lampent', 'chandelure', 'heatmor', 'larvesta', 'volcarona', 'reshiram',
+			'genesect', 'scizor', 'jirachi', 'zoroark', 'crawdaunt', 'kingler', 'stoutland', 'ninetales', 'raikou', 'entei', 'suicune', 
+			'toxicroak', 'politoed', 'thundurus', 'thundurustherian', 'ferrothorn', 'venusaur', 'scizor', 'skarmory', 'staraptor', 'groudon', 
+			'arcanine', 'blastoise', 'heracross', 'honchkrow', 'murkrow', 'houndoom', 'yanmega', 'zapdos', 'venomoth', 'escavalier', 'galvantula', 
+			'lilligant', 'lanturn', 'moltres', 'rotommow', 'sharpedo', 'xatu', 'crustle', 'hariyama', 'hitmonlee', 'hitmonchan', 'hitmontop', 
+			'omastar', 'poliwrath', 'scyther', 'whimsicott', 'basculin', 'beautifly', 'beedrill', 'alomomola', 'braviary', 'castform', 
+			'carracosta', 'cherrim', 'corsola', 'drifblim', 'exeggutor', 'fearow', 'jumpluff', 'leafeon', 'lapras', 'leavanny', 'ledian', 
+			'kricketune', 'solrock', 'lunatone', 'mantine', 'meganium', 'miltank', 'primeape', 'rapidash', 'rotomfan', 'rotomwash', 
+			'simisear', 'stantler', 'sunflora', 'swoobat', 'tauros', 'bouffalant', 'tropius', 'vespiquen', 'victreebel', 'vileplume', 
+			'wailord', 'zebristrika', 'celebi', 'sigilyph'
+		];
+		seasonalPokemonList = seasonalPokemonList.randomize();
+
+		// Add the trainer's specific Pokémon
+		var md5 = require('md5');
+		var num = Math.ceil((197 * md5(toId(side.name)) + 346) % 649);
+		var pokeName = 'castform';
+		for (var p in this.data.Pokedex) {
+			if (this.data.Pokedex[p].num === num) {
+				pokeName = p;
+				break;
+			}
+		}
+		var team = [this.randomSet(this.getTemplate(pokeName), 0)];
+
+		// Specific Pokémon for independence days
+		
+		// Now, let's make the team!
+		for (var i=0; i<6; i++) {
+			var pokemon = seasonalPokemonList[i];
+			var template = this.getTemplate(pokemon);
+			var set = this.randomSet(template, i);
+			if (template.id in {'vanilluxe':1, 'vanillite':1, 'vanillish':1}) {
+				set.moves = ['icebeam', 'weatherball', 'autotomize', 'flashcannon'];
+			}
+			if (template.id in {'pikachu':1, 'raichu':1}) {
+				set.moves = ['thunderbolt', 'surf', 'substitute', 'nastyplot'];
+			}
+			if (template.id in {'rhydon':1, 'rhyperior':1}) {
+				set.moves = ['surf', 'megahorn', 'earthquake', 'rockblast'];
+			}
+			if (template.id === 'reshiram') {
+				set.moves = ['tailwhip', 'dragontail', 'irontail', 'aquatail'];
+			}
+			if (template.id === 'aggron') {
+				set.moves = ['surf', 'earthquake', 'bodyslam', 'rockslide'];
+			}
+			if (template.id === 'hariyama') {
+				set.moves = ['surf', 'closecombat', 'facade', 'fakeout'];
+			}
+			team.push(set);
+		}
+		
+		return team;
 	}
 };
