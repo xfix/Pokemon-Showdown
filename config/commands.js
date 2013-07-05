@@ -460,6 +460,15 @@ var commands = exports.commands = {
 			'- <a href="http://www.smogon.com/forums/showthread.php?t=3466826">Practice BW CAP teams</a>');
 	},
 
+	gennext: function(target, room, user) {
+		if (!this.canBroadcast()) return;
+		this.sendReplyBox('Generation NEXT is a mod that makes changes to the game:<br />' +
+			'- <a href="https://github.com/Zarel/Pokemon-Showdown/blob/master/mods/gennext/README.md">README: overview of Gen-NEXT</a><br />' +
+			'Example replays:<br />' +
+			'- <a href="http://pokemonshowdown.com/replay/gennextou-37815908">roseyraid vs Zarel</a><br />' +
+			'- <a href="http://pokemonshowdown.com/replay/gennextou-37900768">QwietQwilfish vs pickdenis</a>');
+	},
+
 	om: 'othermetas',
 	othermetas: function(target, room, user) {
 		if (!this.canBroadcast()) return;
@@ -518,9 +527,21 @@ var commands = exports.commands = {
 			'- /announce <em>message</em>: make an announcement<br />' +
 			'<br />' +
 			'Room owners (#) can use:<br />' +
+			'- /roomdesc <em>description</em>: set the room description on the room join page<br />' +
 			'- /roommod <em>username</em>: appoint a room moderator<br />' +
 			'- /deroommod <em>username</em>: remove a room moderator<br />' +
 			'- /declare <em>message</em>: make a global declaration<br />' +
+			'</div>');
+	},
+
+	restarthelp: function(target, room, user) {
+		if (room.id === 'lobby' && !this.can('lockdown')) return false;
+		if (!this.canBroadcast()) return;
+		this.sendReplyBox('The server is restarting. Things to know:<br />' +
+			'- We wait a few minutes before restarting so people can finish up their battles<br />' +
+			'- The restart itself will take around 0.6 seconds<br />' +
+			'- Your ladder ranking and teams will not change<br />' +
+			'- We are restarting to update Pokémon Showdown to a newer version' +
 			'</div>');
 	},
 

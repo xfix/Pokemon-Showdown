@@ -299,6 +299,10 @@ var BattlePokemon = (function() {
 		if (this.template.baseStats['hp'] === 1) this.maxhp = 1; // shedinja
 		this.hp = this.hp || this.maxhp;
 
+		this.baseIvs = this.set.ivs;
+		this.baseHpType = this.hpType;
+		this.baseHpPower = this.hpPower;
+
 		this.clearVolatile(true);
 	}
 
@@ -596,6 +600,9 @@ var BattlePokemon = (function() {
 		this.ability = pokemon.ability;
 		this.moveset = [];
 		this.moves = [];
+		this.set.ivs = (this.battle.gen >= 5 ? this.set.ivs : pokemon.set.ivs);
+		this.hpType = (this.battle.gen >= 5 ? this.hpType : pokemon.hpType);
+		this.hpPower = (this.battle.gen >= 5 ? this.hpPower : pokemon.hpPower);
 		for (var i=0; i<pokemon.moveset.length; i++) {
 			var move = this.battle.getMove(this.set.moves[i]);
 			var moveData = pokemon.moveset[i];
@@ -663,6 +670,9 @@ var BattlePokemon = (function() {
 		}
 		this.transformed = false;
 		this.ability = this.baseAbility;
+		this.set.ivs = this.baseIvs;
+		this.hpType = this.baseHpType;
+		this.hpPower = this.baseHpPower;
 		for (var i in this.volatiles) {
 			if (this.volatiles[i].linkedStatus) {
 				this.volatiles[i].linkedPokemon.removeVolatile(this.volatiles[i].linkedStatus);
@@ -1523,6 +1533,7 @@ var Battle = (function() {
 			this.add('message', 'PLEASE REPORT IN BUG THREAD');
 			this.add('message', 'Event: '+eventid);
 			this.add('message', 'Parent event: '+this.event.id);
+			throw new Error("Stack overflow");
 			return false;
 		}
 		//this.add('Event: '+eventid+' (depth '+this.eventDepth+')');
@@ -1683,6 +1694,7 @@ var Battle = (function() {
 			this.add('message', 'PLEASE REPORT IN BUG THREAD');
 			this.add('message', 'Event: '+eventid);
 			this.add('message', 'Parent event: '+this.event.id);
+			throw new Error("Stack overflow");
 			return false;
 		}
 		if (!target) target = this;
