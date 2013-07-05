@@ -1161,6 +1161,7 @@ exports.BattleFormats = {
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
+		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod'],
 		onBegin: function() {
 			this.add('-message', "You and your faithful favourite Pokémon are travelling around the world, and you will fight this trainer in many places until either win or finish the travel!");
 			// ~learn international independence days with PS~
@@ -1196,7 +1197,7 @@ exports.BattleFormats = {
 		onBeforeMove: function(pokemon) {
 			// Set all the stuff
 			var dice = this.random(100);
-			if (pokemon.side.battle.turn === 1) {
+			if (!pokemon.side.battle.cities) {
 				// Set up the cities you visit around the world
 				pokemon.side.battle.cities = {
 					'N': [
@@ -1229,7 +1230,7 @@ exports.BattleFormats = {
 					"I've heard your mom is also travelling around the world catchin' em all, if you get what I mean, %s.",
 					"You fight like a Miltank!", "I'm your Stealth Rock to your Charizard, %s!", 
 					"I bet I could beat you with a Spinda. Or an Unown.", "I'm rubber, you're glue!", 
-					"I've seen Slowpokes with more training prowess, %s.", "You are no match to me, %s!",
+					"I've seen Slowpokes with more training prowess, %s.", "You are no match for me, %s!",
 					"%s, have you learned how to battle from Bianca?"
 				];
 				comments = comments.randomize();
