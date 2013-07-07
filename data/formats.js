@@ -343,7 +343,6 @@ exports.BattleFormats = {
         validateSet: function(set) {
 			var problems = [];
         	if (!set.level || set.level >= 50) set.forcedLevel = 50;
-			if (template.gen < 5) problems.push(set.species + ' must come from gen 5.');
 			
 			return problems;
         },
