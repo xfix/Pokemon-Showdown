@@ -326,7 +326,7 @@ exports.BattleFormats = {
 		team: 'random',
 		ruleset: ['Hax Clause', 'Team Preview']
 	},
-    gbusingles: {
+	gbusingles: {
 		effectType: 'Format',
 		name: "GBU Singles",
 		section: "Singles",
@@ -339,7 +339,7 @@ exports.BattleFormats = {
 		},
         ruleset: ['Pokemon', 'Species Clause', 'Item Clause', 'Team Preview GBU'],
         banlist: ['Unreleased', 'Illegal', 'Sky Drop', 'Dark Void', 'Soul Dew',
-			'Mewtwo', 'Mew', 'Lugia', 'Ho-Oh', 'Celebi', 'Kyogre', 'Groudon',
+	        'Mewtwo', 'Mew', 'Lugia', 'Ho-Oh', 'Celebi', 'Kyogre', 'Groudon',
 	        'Rayquaza', 'Jirachi',  'Deoxys', 'Deoxys-Attack', 'Deoxys-Speed', 'Deoxys-Defense',
 	        'Chatot', 'Dialga', 'Palkia', 'Giratina', 'Giratina-Origin', 'Phione',
 	        'Manaphy',  'Darkrai', 'Shaymin', 'Shaymin-Sky',
@@ -357,27 +357,26 @@ exports.BattleFormats = {
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
-        validateTeam: function(team) {
-        	var problems = []
-        	if (team.length > 3) problems.push('You can only bring three Pokémon.');
-        	return problems;
-        },
-        validateSet: function(set) {
+		validateTeam: function(team) {
+			var problems = []
+			if (team.length > 3) problems.push('You can only bring three Pokémon.');
+			return problems;
+		},
+		validateSet: function(set) {
 			if (!set.level || set.level >= 50) set.forcedLevel = 50;
-			
 			return [];
 		},
-        ruleset: ['Pokemon', 'Species Clause', 'Item Clause', 'Team Preview GBU', 'Sleep Clause'],
-        banlist: ['Unreleased', 'Illegal', 'Sky Drop', 'Dark Void', 'Soul Dew',
-      	    'Mewtwo', 'Mew', 'Lugia', 'Ho-Oh', 'Chatot', 'Celebi', 'Kyogre', 'Groudon', 'Rayquaza', 
-      	    'Jirachi', 'Deoxys', 'Deoxys-Attack', 'Deoxys-Speed', 'Deoxys-Defense', 'Dialga', 'Palkia', 'Giratina', 
-      	    'Giratina-Origin', 'Phione', 'Manaphy', 'Darkrai', 
-      	    'Shaymin', 'Arceus', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fighting', 'Arceus-Fire', 
-	        'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus-Poison', 
-	        'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water', 'Victini', 'Reshiram', 'Zekrom', 'Kyurem', 
-	        'Kyurem-Black', 'Kyurem-White', 'Keldeo', 'Keldeo-Resolute', 'Meloetta', 'Genesect'
-	    ]
-    },
+		ruleset: ['Pokemon', 'Species Clause', 'Item Clause', 'Team Preview GBU', 'Sleep Clause'],
+		banlist: ['Unreleased', 'Illegal', 'Sky Drop', 'Dark Void', 'Soul Dew',
+			'Mewtwo', 'Mew', 'Lugia', 'Ho-Oh', 'Chatot', 'Celebi', 'Kyogre', 'Groudon', 'Rayquaza',
+			'Jirachi', 'Deoxys', 'Deoxys-Attack', 'Deoxys-Speed', 'Deoxys-Defense', 'Dialga', 'Palkia', 'Giratina',
+			'Giratina-Origin', 'Phione', 'Manaphy', 'Darkrai',
+			'Shaymin', 'Arceus', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fighting', 'Arceus-Fire',
+			'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus-Poison',
+			'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water', 'Victini', 'Reshiram', 'Zekrom', 'Kyurem',
+			'Kyurem-Black', 'Kyurem-White', 'Keldeo', 'Keldeo-Resolute', 'Meloetta', 'Genesect'
+		]
+	},
 	gbuspringfriendly: {
         effectType: 'Format',
         name: "GBU Spring Friendly",
