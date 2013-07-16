@@ -476,15 +476,14 @@ exports.BattleFormats = {
 		banlist: []
 	},
 	stabmons: {
-        name: 'STABmons',
+        	name: 'STABmons',
 		section: 'Other Metagames',
-		
-		mod: 'stabmons',
+
 		effectType: 'Format',
 		rated: true,
-        challengeShow: true,
-        searchShow: true,
-        isTeambuilderFormat: true,
+        	challengeShow: true,
+        	searchShow: true,
+        	isTeambuilderFormat: true,
 		validateSet: function (set, format) {
 			var problems = [];
 			var moves = [];
