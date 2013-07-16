@@ -253,7 +253,7 @@ var GlobalRoom = (function() {
 	};
 	GlobalRoom.prototype.searchBattle = function(user, formatid) {
 		if (!user.connected) return;
-		if (lockdown) {
+		if (this.lockdown) {
 			user.popup("The server is shutting down. Battles cannot be started at this time.");
 			return;
 		}
@@ -354,10 +354,10 @@ var GlobalRoom = (function() {
 		// do nothing
 	};
 	GlobalRoom.prototype.add = function(message, noUpdate) {
-		rooms.lobby.add(message, noUpdate);
+		if (rooms.lobby) rooms.lobby.add(message, noUpdate);
 	};
 	GlobalRoom.prototype.addRaw = function(message) {
-		rooms.lobby.addRaw(message);
+		if (rooms.lobby) rooms.lobby.addRaw(message);
 	};
 	GlobalRoom.prototype.addChatRoom = function(title) {
 		var id = toId(title);
@@ -372,6 +372,13 @@ var GlobalRoom = (function() {
 		this.writeChatRoomData();
 		return true;
 	};
+	GlobalRoom.prototype.autojoin = function(user, connection) {
+		// we only autojoin regular rooms if the client requests it with /autojoin
+		// note that this restriction doesn't apply to staffAutojoin
+		for (var i=0; i<this.autojoin.length; i++) {
+			user.joinRoom(this.autojoin[i], connection);
+		}
+	};
 	GlobalRoom.prototype.checkAutojoin = function(user, connection) {
 		if (user.isStaff) {
 			for (var i=0; i<this.staffAutojoin.length; i++) {
@@ -382,6 +389,7 @@ var GlobalRoom = (function() {
 	GlobalRoom.prototype.onJoinConnection = function(user, connection) {
 		var initdata = '|updateuser|'+user.name+'|'+(user.named?'1':'0')+'|'+user.avatar+'\n';
 		connection.send(initdata+this.formatListText);
+		if (this.chatRooms.length > 2) connection.send('|queryresponse|rooms|null'); // should display room list
 	};
 	GlobalRoom.prototype.onJoin = function(user, connection, merging) {
 		if (!user) return false; // ???
@@ -396,6 +404,7 @@ var GlobalRoom = (function() {
 		if (!merging) {
 			var initdata = '|updateuser|'+user.name+'|'+(user.named?'1':'0')+'|'+user.avatar+'\n';
 			connection.send(initdata+this.formatListText);
+			if (this.chatRooms.length > 2) connection.send('|queryresponse|rooms|null'); // should display room list
 		}
 
 		return user;
@@ -430,7 +439,7 @@ var GlobalRoom = (function() {
 			return;
 		}
 
-		if (lockdown) {
+		if (this.lockdown) {
 			this.cancelSearch(p1, true);
 			this.cancelSearch(p2, true);
 			p1.popup("The server is shutting down. Battles cannot be started at this time.");
@@ -452,13 +461,13 @@ var GlobalRoom = (function() {
 		newRoom.joinBattle(p2, p2team);
 		this.cancelSearch(p1, true);
 		this.cancelSearch(p2, true);
-		if (config.reportbattles) {
+		if (config.reportbattles && rooms.lobby) {
 			rooms.lobby.add('|b|'+newRoom.id+'|'+p1.getIdentity()+'|'+p2.getIdentity());
 		}
 	};
 	GlobalRoom.prototype.addRoom = function(room, format, p1, p2, parent, rated) {
 		room = newRoom(room, format, p1, p2, parent, rated);
-		if (typeof room.i[this.id] !== 'undefined') return;
+		if (this.id in room.i) return;
 		room.i[this.id] = this.rooms.length;
 		this.rooms.push(room);
 		return room;
@@ -466,7 +475,7 @@ var GlobalRoom = (function() {
 	GlobalRoom.prototype.removeRoom = function(room) {
 		room = getRoom(room);
 		if (!room) return;
-		if (typeof room.i[this.id] !== 'undefined') {
+		if (this.id in room.i) {
 			this.rooms.splice(room.i[this.id],1);
 			delete room.i[this.id];
 			for (var i=0; i<this.rooms.length; i++) {
@@ -474,8 +483,12 @@ var GlobalRoom = (function() {
 			}
 		}
 	};
-	GlobalRoom.prototype.chat = function(user, message, socket) {
-		rooms.lobby.chat(user, message, socket);
+	GlobalRoom.prototype.chat = function(user, message, connection) {
+		if (rooms.lobby) return rooms.lobby.chat(user, message, connection);
+		message = CommandParser.parse(message, this, user, connection);
+		if (message) {
+			connection.sendPopup("You can't send messages directly to the server.");
+		}
 	};
 	return GlobalRoom;
 })();
@@ -577,9 +590,9 @@ var BattleRoom = (function() {
 						self.addRaw('Ladder (probably) updated, but score could not be retrieved ('+error+').');
 						self.update();
 						// log the battle anyway
-						//if (!Tools.getFormat(self.format).noLog) {
+						if (!Tools.getFormat(self.format).noLog) {
 							self.logBattle(p1score);
-						//}
+						}
 						return;
 					} else {
 						try {
@@ -608,9 +621,9 @@ var BattleRoom = (function() {
 							self.update();
 						}
 
-						//if (!Tools.getFormat(self.format).noLog) {
+						if (!Tools.getFormat(self.format).noLog) {
 							self.logBattle(p1score, p1rating, p2rating);
-						//}
+						}
 					}
 				});
 			}
@@ -731,7 +744,7 @@ var BattleRoom = (function() {
 		this.resetTimer = null;
 		this.resetUser = '';
 
-		if (lockdown) {
+		if (rooms.global.lockdown) {
 			this.add('The battle was not restarted because the server is preparing to shut down.');
 			return;
 		}
@@ -1098,7 +1111,6 @@ var ChatRoom = (function() {
 		this.logFile = null;
 		this.logFilename = '';
 		this.destroyingLog = false;
-		this.topic = 'test topic';
 
 		// `config.loglobby` is a legacy name
 		if (config.logchat || config.loglobby) {
@@ -1293,10 +1305,6 @@ var ChatRoom = (function() {
 			this.send('|init|chat\n|title|'+this.title+'\n'+userList+'\n'+this.log.slice(-100).join('\n'), connection);
 		}
 
-		if (this.topic !== '') {
-			user.connections[0].send('Current topic: ' + this.topic, user);
-		}
-
 		return user;
 	};
 	ChatRoom.prototype.onRename = function(user, oldid, joining) {
@@ -1378,7 +1386,7 @@ var getRoom = function(roomid, fallback) {
 	if (roomid && roomid.id) return roomid;
 	if (!roomid) roomid = 'default';
 	if (!rooms[roomid] && fallback) {
-		return rooms.lobby;
+		return rooms.global;
 	}
 	return rooms[roomid];
 };
@@ -1387,7 +1395,7 @@ var newRoom = function(roomid, format, p1, p2, parent, rated) {
 	if (!p1 || !p2) return false;
 	if (!roomid) roomid = 'default';
 	if (!rooms[roomid]) {
-		console.log("NEW ROOM: "+roomid);
+		// console.log("NEW BATTLE ROOM: "+roomid);
 		rooms[roomid] = new BattleRoom(roomid, format, p1, p2, parent, rated);
 	}
 	return rooms[roomid];
