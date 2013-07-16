@@ -192,7 +192,7 @@ exports.BattleFormats = {
 		isTeambuilderFormat: true,
 		validateSet: function(set) {
 			set.ability = 'Color Change';
-        },
+		},
 		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
 		banlist: ['Regigigas', 'Slaking', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electri', 'Arceus-Fighting', 'Arceus-Fire', 'Arceus-Flying', 
 		'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus-Normal', 'Arceus-Poison', 'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 
@@ -475,14 +475,14 @@ exports.BattleFormats = {
 		banlist: []
 	},
 	stabmons: {
-        name: 'STABmons',
+		name: 'STABmons',
 		section: 'Other Metagames',
-
+		
 		effectType: 'Format',
 		rated: true,
-        challengeShow: true,
-        searchShow: true,
-        isTeambuilderFormat: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
 		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
 		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
 	},
@@ -719,10 +719,10 @@ exports.BattleFormats = {
 				delete this.weatherData.duration;
 			}
 			this.debug('Cutting teams down to three.');
-    		this.p1.pokemon = this.p1.pokemon.slice(0,3);
-	        this.p1.pokemonLeft = this.p1.pokemon.length;
-	        this.p2.pokemon = this.p2.pokemon.slice(0,3);
-	        this.p2.pokemonLeft = this.p2.pokemon.length;
+			this.p1.pokemon = this.p1.pokemon.slice(0,3);
+			this.p1.pokemonLeft = this.p1.pokemon.length;
+			this.p2.pokemon = this.p2.pokemon.slice(0,3);
+			this.p2.pokemonLeft = this.p2.pokemon.length;
 		},
 		onSwitchIn: function(pokemon) {
 			var greenPokemon = {
@@ -811,7 +811,7 @@ exports.BattleFormats = {
 			var name = (pokemon.ability === 'illusion' && pokemon.illusion)? pokemon.illusion.toString().substr(4, pokemon.illusion.toString().length) : pokemon.name;
 			var stonedPokemon = {Koffing:1, Weezing:1, Slowpoke:1, Slowbro:1, Slowking:1, Psyduck:1, Spinda:1};
 			var stonerQuotes = ['your face is green!', 'I just realised that Arceus fainted for our sins', 'I can, you know, feel the colors', 
-			"you're my bro", "I'm imaginining a new color!", "I'm smelling the things I see!", 'hehe, hehe, funny', "I'm hungry!" , 'we are pokemanz',        
+			"you're my bro", "I'm imaginining a new color!", "I'm smelling the things I see!", 'hehe, hehe, funny', "I'm hungry!" , 'we are pokemanz', 
 			'Did you know that Eevee backwards is eevee?! AMAZING', 'aaaam gonna be the verrrry best like no one evar wasss', 
 			"I feel like someone is watching us through a screen!", "come at me bro"];
 			if (name in stonedPokemon) {
@@ -962,10 +962,10 @@ exports.BattleFormats = {
 						return;
 					}
 					var targetName = (target.ability === 'illusion' && target.illusion)? target.illusion.toString().substr(4, target.illusion.toString().length) : target.name;
-                    if (!target.volatiles['attract']) {
-                        this.add('-message', targetName + ': ' + answer);
-                    }
-                };
+					if (!target.volatiles['attract']) {
+						this.add('-message', targetName + ': ' + answer);
+					}
+				};
 			}
 		},
 		onFaint: function (pokemon) {
