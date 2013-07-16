@@ -507,7 +507,7 @@ exports.BattleFormats = {
 				if (template.types.indexOf(move.type) === -1) {
 					var problem = this.checkLearnset(move, template, lsetData);
 					if (problem) {
-						var problemString = name+" can't learn "+move.name;
+						var problemString = template.species+" can't learn "+move.name;
 						if (problem.type === 'incompatible') {
 							if (isDW) {
 								problemString = problemString.concat(" because it's incompatible with its ability or another move.");
