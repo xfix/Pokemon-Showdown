@@ -97,9 +97,10 @@ exports.BattleFormats = {
 			this.p2.pokemonLeft = this.p2.pokemon.length;
 		},
 		ruleset: ['Pokemon', 'Standard'],
-		banlist: ['Illegal', 'Soul Dew', 'Memento', 'Explosion', 'Perish Song', 'Destiny Bond', 'Healing Wish', 'Selfdestruct', 'Lunar Dance', 'Final Gambit',
-			'Arceus', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fighting', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus', 'Arceus-Poison', 'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water',
-			'Darkrai', 'Deoxys', 'Deoxys-Attack', 'Dialga', 'Giratina', 'Giratina-Origin', 'Groudon', 'Ho-Oh', 'Kyogre', 'Kyurem-White', 'Lugia', 'Mewtwo', 'Palkia', 'Rayquaza', 'Reshiram', 'Shaymin-Sky', 'Zekrom'
+		banlist: ['Soul Dew', 'Memento', 'Explosion', 'Perish Song', 'Destiny Bond', 'Healing Wish', 'Selfdestruct', 'Lunar Dance', 'Final Gambit',
+			'Mewtwo', 'Lugia', 'Ho-Oh', 'Blaziken', 'Kyogre', 'Groudon', 'Rayquaza', 'Deoxys', 'Deoxys-Attack', 'Dialga', 'Palkia', 'Giratina', 'Giratina-Origin', 'Darkrai', 'Shaymin-Sky',
+			'Arceus', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fighting', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus-Poison', 'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water',
+			'Reshiram', 'Zekrom', 'Landorus', 'Kyurem-White'
 		]
 	},
 	'6movebattling': {
@@ -162,7 +163,6 @@ exports.BattleFormats = {
 		searchShow: true,
 		ruleset: ['Pokemon', 'Team Preview 1v1', 'HP Percentage Mod'],
 		onBegin: function() {
-			this.debug('Cutting down to 1');
 			this.p1.pokemon = this.p1.pokemon.slice(0, 1);
 			this.p1.pokemonLeft = this.p1.pokemon.length;
 			this.p2.pokemon = this.p2.pokemon.slice(0, 1);
@@ -194,10 +194,10 @@ exports.BattleFormats = {
 			set.ability = 'Color Change';
 		},
 		ruleset: ['OU'],
-		banlist: ['Regigigas', 'Slaking', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electri', 'Arceus-Fighting', 'Arceus-Fire', 'Arceus-Flying', 
-		'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus-Normal', 'Arceus-Poison', 'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 
-		'Arceus-Water', 'Darkrai', 'Deoxys', 'Deoxys-A', 'Deoxys-D', 'Deoxys-S', 'Dialga', 'Genesect ', 'Giratina', 'Giratina-O', 'Groudon', 'Ho-Oh', 'Kyogre', 
-		'Kyurem-W', 'Lugia', 'Manaphy', 'Mewtwo', 'Palkia', 'Rayquaza', 'Reshiram', 'Shaymin-S', 'Thundurus', 'Tornadus-T', 'Zekrom']
+		banlist: ['Mewtwo', 'Lugia', 'Ho-Oh', 'Kyogre', 'Groudon', 'Rayquaza', 'Deoxys', 'Deoxys-Attack', 'Deoxys-Defense', 'Deoxys-Speed', 'Dialga', 'Palkia', 'Giratina', 'Giratina-Origin', 'Darkrai', 'Shaymin-Sky',
+			'Arceus', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fighting', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus-Poison', 'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water',
+			'Tornadus-Therian', 'Thundurus', 'Reshiram', 'Zekrom', 'Kyurem-White', 'Genesect'
+		]
 	},
 	customgame: {
 		name: 'Custom Game',
@@ -217,8 +217,7 @@ exports.BattleFormats = {
 
 		effectType: 'Format',
 		challengeShow: true,
-		canUseRandomTeam: true,
-		ruleset: ['Pokemon', 'Team Preview', 'HP Percentage Mod']
+		ruleset: ['OU']
 	},
 	doublescustomgame: {
 		name: 'Doubles Custom Game',
@@ -337,7 +336,7 @@ exports.BattleFormats = {
 		banlist: ['Carvanha', 'Meditite', 'Gligar', 'Scyther', 'Sneasel', 'Tangela', 'Vulpix', 'Yanma',
 			'Abra', 'Aipom', 'Archen', 'Axew', 'Bronzor', 'Chinchou', 'Clamperl', 'Cottonee', 'Cranidos', 'Croagunk', 'Diglett', 'Drifloon', 'Drilbur', 'Dwebble', 'Ferroseed', 'Foongus', 'Frillish', 'Gastly', 'Hippopotas', 'Houndour', 'Koffing', 'Larvesta', 'Lileep', 'Machop', 'Magnemite', 'Mienfoo', 'Misdreavus', 'Munchlax', 'Murkrow', 'Pawniard', 'Ponyta', 'Porygon', 'Riolu', 'Sandshrew', 'Scraggy', 'Shellder', 'Shroomish', 'Slowpoke', 'Snover', 'Staryu', 'Tentacool', 'Timburr', 'Tirtouga',
 			'Berry Juice', 'Dragon Rage', 'Sonic Boom'
-			]
+		]
 	},
 	monotype: {
 		name: 'Monotype (OU)',
@@ -493,7 +492,11 @@ exports.BattleFormats = {
 		searchShow: true,
 		isTeambuilderFormat: true,
 		ruleset: ['OU'],
-		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
+		banlist: ['Drizzle ++ Swift Swim', 'Soul Dew'
+			'Mewtwo', 'Lugia', 'Ho-Oh', 'Blaziken', 'Kyogre', 'Groudon', 'Rayquaza', 'Deoxys', 'Deoxys-Attack', 'Dialga', 'Palkia', 'Giratina', 'Giratina-Origin', 'Manaphy', 'Darkrai', 'Shaymin-Sky',
+			'Arceus', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fighting', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus-Poison', 'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water',
+			'Reshiram', 'Zekrom', 'Kyurem-White', 'Genesect'
+		]
 	},
 	statexchange: {
 		name: "Stat Exchange",
