@@ -217,7 +217,7 @@ exports.BattleFormats = {
 
 		effectType: 'Format',
 		challengeShow: true,
-		ruleset: ['OU']
+		ruleset: ['Pokemon', 'Team Preview', 'HP Percentage Mod']
 	},
 	doublescustomgame: {
 		name: 'Doubles Custom Game',
