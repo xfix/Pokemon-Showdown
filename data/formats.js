@@ -178,7 +178,7 @@ exports.BattleFormats = {
 		challengeShow: true,
 		searchShow: true,
 		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'Standard', 'Team Preview'],
+		ruleset: ['OU'],
 		banlist: ['Uber', 'Soul Dew', 'Drizzle', 'Drought', 'Sand Stream', 'Snow Warning']
 	},
 	colorchangemeta: {
@@ -193,7 +193,7 @@ exports.BattleFormats = {
 		validateSet: function(set) {
 			set.ability = 'Color Change';
 		},
-		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
+		ruleset: ['OU'],
 		banlist: ['Regigigas', 'Slaking', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electri', 'Arceus-Fighting', 'Arceus-Fire', 'Arceus-Flying', 
 		'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus-Normal', 'Arceus-Poison', 'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 
 		'Arceus-Water', 'Darkrai', 'Deoxys', 'Deoxys-A', 'Deoxys-D', 'Deoxys-S', 'Dialga', 'Genesect ', 'Giratina', 'Giratina-O', 'Groudon', 'Ho-Oh', 'Kyogre', 
@@ -244,7 +244,6 @@ exports.BattleFormats = {
 		searchShow: true,
 		isTeambuilderFormat: true,
 		onBegin: function() {
-			this.debug('cutting down to 4');
 			this.p1.pokemon = this.p1.pokemon.slice(0,4);
 			this.p1.pokemonLeft = this.p1.pokemon.length;
 			this.p2.pokemon = this.p2.pokemon.slice(0,4);
@@ -273,7 +272,6 @@ exports.BattleFormats = {
 			return [];
 		},
 		onBegin: function() {
-			this.debug('cutting down to 3');
 			this.p1.pokemon = this.p1.pokemon.slice(0,3);
 			this.p1.pokemonLeft = this.p1.pokemon.length;
 			this.p2.pokemon = this.p2.pokemon.slice(0,3);
@@ -322,21 +320,8 @@ exports.BattleFormats = {
 		challengeShow: true,
 		searchShow: true,
 		isTeambuilderFormat: true,
-		ruleset: ['CAP Pokemon', 'Standard DW', 'Team Preview', 'Sleep Clause Mod', 'Species Clause', 'OHKO Clause', 'Moody Clause', 'Evasion Moves Clause', 'HP Percentage Mod'],
+		ruleset: ['CAP Pokemon', 'Team Preview', 'Sleep Clause Mod', 'Species Clause', 'OHKO Clause', 'Moody Clause', 'Evasion Moves Clause', 'HP Percentage Mod'],
 		banlist: ['Uber', 'Soul Dew']
-	},
-	lcubers: {
-		name: 'LC Ubers',
-		section: 'Other Metagames',
-
-		effectType: 'Format',
-		maxLevel: 5,
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'Standard', 'Team Preview', 'Little Cup'],
-		banlist: ['Sonicboom', 'Dragon Rage', 'Berry Juice', 'Soul Dew']
 	},
 	lcuu: {
 		name: 'LC UU',
@@ -349,7 +334,10 @@ exports.BattleFormats = {
 		searchShow: true,
 		isTeambuilderFormat: true,
 		ruleset: ['LC'],
-		banlist: ['Abra', 'Aipom', 'Archen', 'Axew', 'Bronzor', 'Chinchou', 'Clamperl', 'Cottonee', 'Cranidos', 'Croagunk', 'Diglett', 'Dratini', 'Drifloon', 'Drilbur', 'Dwebble', 'Elekid', 'Ferroseed', 'Foongus', 'Frillish', 'Gastly', 'Hippopotas', 'Houndour', 'Koffing', 'Larvesta', 'Lileep', 'Machop', 'Magnemite', 'Mienfoo', 'Misdreavus', 'Murkrow', 'Onix', 'Pawniard', 'Ponyta', 'Porygon', 'Riolu', 'Sandshrew', 'Scraggy', 'Shellder', 'Slowpoke', 'Snover', 'Staryu', 'Timburr', 'Tirtouga']
+		banlist: ['Carvanha', 'Meditite', 'Gligar', 'Scyther', 'Sneasel', 'Tangela', 'Vulpix', 'Yanma',
+			'Abra', 'Aipom', 'Archen', 'Axew', 'Bronzor', 'Chinchou', 'Clamperl', 'Cottonee', 'Cranidos', 'Croagunk', 'Diglett', 'Drifloon', 'Drilbur', 'Dwebble', 'Ferroseed', 'Foongus', 'Frillish', 'Gastly', 'Hippopotas', 'Houndour', 'Koffing', 'Larvesta', 'Lileep', 'Machop', 'Magnemite', 'Mienfoo', 'Misdreavus', 'Munchlax', 'Murkrow', 'Pawniard', 'Ponyta', 'Porygon', 'Riolu', 'Sandshrew', 'Scraggy', 'Shellder', 'Shroomish', 'Slowpoke', 'Snover', 'Staryu', 'Tentacool', 'Timburr', 'Tirtouga',
+			'Berry Juice', 'Dragon Rage', 'Sonic Boom'
+			]
 	},
 	monotype: {
 		name: 'Monotype (OU)',
@@ -360,7 +348,7 @@ exports.BattleFormats = {
 		challengeShow: true,
 		searchShow: true,
 		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'Standard', 'Same Type Clause', 'Evasion Abilities Clause', 'Team Preview'],
+		ruleset: ['OU', 'Same Type Clause'],
 		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
 	},
 	negativemetagame: {
@@ -373,7 +361,7 @@ exports.BattleFormats = {
 		challengeShow: true,
 		searchShow: true,
 		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
+		ruleset: ['OU],
 		banlist: ['Smeargle']
 	},
 	offstat: {
@@ -386,7 +374,7 @@ exports.BattleFormats = {
 		searchShow: true,
 		rated: true,
 		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'Standard', 'Offstat Pokemon', 'Evasion Abilities Clause', 'Team Preview'],
+		ruleset: ['OU', 'Offstat Pokemon'],
 		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Stealth Rock', 'Spikes', 'Toxic Spikes', 'Kyurem-Black']
 	},
 	pu: {
@@ -396,7 +384,7 @@ exports.BattleFormats = {
 		effectType: 'Format',
 		challengeShow: true,
 		isTeambuilderFormat: true,
-		ruleset: ['NU', 'HP Percentage Mod'],
+		ruleset: ['NU'],
 		banlist: ['Charizard', 'Wartortle', 'Kadabra', 'Golem', 'Haunter', 'Exeggutor', 'Weezing', 'Kangaskhan', 'Pinsir', 'Lapras', 'Ampharos', 'Misdreavus', 'Piloswine', 'Miltank', 'Ludicolo', 'Swellow', 'Gardevoir', 'Ninjask', 'Torkoal', 'Cacturne', 'Altaria', 'Armaldo', 'Gorebyss', 'Regirock', 'Regice', 'Bastiodon', 'Floatzel', 'Drifblim', 'Skuntank', 'Lickilicky', 'Probopass', 'Rotom-Fan', 'Samurott', 'Musharna', 'Gurdurr', 'Sawk', 'Carracosta', 'Garbodor', 'Sawsbuck', 'Alomomola', 'Golurk', 'Braviary', 'Electabuzz', 'Electrode', 'Liepard', 'Tangela', 'Eelektross', 'Ditto', 'Seismitoad', 'Zangoose', 'Roselia', 'Serperior', 'Metang', 'Tauros', 'Cradily', 'Primeape', 'Scolipede', 'Jynx', 'Basculin', 'Gigalith', 'Camerupt', 'Golbat']
 	},
 	hackmons: {
@@ -441,6 +429,24 @@ exports.BattleFormats = {
 			'Reshiram', 'Zekrom', 'Kyurem-White'
 		]
 	},
+	skybattles: {
+		name: 'Sky Battles',
+		section: 'Other Metagames',
+		
+		effectType: 'Format',
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		validateSet: function(set) {
+			var template = this.getTemplate(set.species || set.name);
+			if (template.types.indexOf('Flying') === -1 && set.ability !== 'Levitate') {
+				return [set.species+" is not a Flying type and does not have the ability Levitate."];
+			}
+		},
+		ruleset: ['OU'],
+		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew', 'Iron Ball', 'Gravity', 'Smack Down', 'Skill Swap', 'Entrainment', 'Gastro Acid', 'Simple Beam', 'Worry Seed']
+	},
 	slowmons: {
 		name: 'Slowmons',
 		section: 'Other Metagames',
@@ -471,26 +477,8 @@ exports.BattleFormats = {
 				};
 			}
 		},
-		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview', 'Slowmons Pokemon'],
+		ruleset: ['OU', 'Slowmons Pokemon'],
 		banlist: []
-	},
-	skybattles: {
-		name: 'Sky Battles',
-		section: 'Other Metagames',
-		
-		effectType: 'Format',
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		isTeambuilderFormat: true,
-		validateSet: function(set) {
-			var template = this.getTemplate(set.species || set.name);
-			if (template.types.indexOf('Flying') === -1 && set.ability !== 'Levitate') {
-				return [set.species+" is not a Flying type and does not have the ability Levitate."];
-			}
-		},
-		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
-		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew', 'Iron Ball', 'Gravity', 'Smack Down', 'Skill Swap', 'Entrainment', 'Gastro Acid', 'Simple Beam', 'Worry Seed']
 	},
 	stabmons: {
 		name: 'STABmons',
@@ -501,7 +489,7 @@ exports.BattleFormats = {
 		challengeShow: true,
 		searchShow: true,
 		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
+		ruleset: ['OU'],
 		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
 	},
 	statexchange: {
@@ -514,7 +502,7 @@ exports.BattleFormats = {
 		challengeShow: true,
 		searchShow: true,
 		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
+		ruleset: ['OU'],
 		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
 	},
 	suicidecup: {
@@ -527,7 +515,7 @@ exports.BattleFormats = {
 		searchShow: true,
 		rated: true,
 		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'Standard', 'Suicide Pokemon', 'Evasion Abilities Clause', 'Team Preview'],
+		ruleset: ['OU', 'Suicide Pokemon'],
 		banlist: ['Shedinja', 'Self-Destruct', 'Explosion', 'Memento', 'Final Gambit', 'Healing Wish', 'Heal Pulse', 'Lunar Dance', 'Dream Eater', 'Snore', 'Frustration', 'Return', 'Fake Out', 'Natural Gift', 'Magic Room']
 	},
 	tiershift: {
@@ -540,7 +528,7 @@ exports.BattleFormats = {
 		challengeShow: true,
 		searchShow: true,
 		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview', 'HP Percentage Mod'],
+		ruleset: ['OU'],
 		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
 	},
 	typechartswap: {
@@ -553,7 +541,7 @@ exports.BattleFormats = {
 		challengeShow: true,
 		searchShow: true,
 		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
+		ruleset: ['OU'],
 		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
 	},
 	wonkymons: {
@@ -566,7 +554,7 @@ exports.BattleFormats = {
 		challengeShow: true,
 		searchShow: true,
 		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview', 'HP Percentage Mod'],
+		ruleset: ['OU'],
 		banlist: ['Drizzle ++ Swift Swim', 'Elekid ++ Wonder Guard']
 	},
 
@@ -583,7 +571,7 @@ exports.BattleFormats = {
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
-		ruleset: ['PotD', 'Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod']
+		ruleset: ['Random Battle']
 	},
 	winterwonderland: {
 		name: 'Winter Wonderland',
@@ -705,7 +693,7 @@ exports.BattleFormats = {
 				}
 			}
 		},
-		ruleset: ['PotD', 'Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod']
+		ruleset: ['Random Battle']
 	},
 	valentineventure: {
 		name: 'Valentine Venture',
@@ -718,7 +706,7 @@ exports.BattleFormats = {
 		rated: true,
 		challengeShow: true,
 		searchShow: true,
-		ruleset: ['PotD', 'Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod']
+		ruleset: ['Random Battle']
 	},
 	springforward: {
 		name: 'Spring Forward',
@@ -799,7 +787,7 @@ exports.BattleFormats = {
 				move.critRatio = 2;
 			}
 		},
-		ruleset: ['PotD', 'Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod']
+		ruleset: ['Random Battle']
 	},
 	foolsfestival: {
 		name: 'Fools Festival',
@@ -997,7 +985,7 @@ exports.BattleFormats = {
 			haikus = haikus.randomize();
 			this.add('-message', haikus[0]);
 		},
-		ruleset: ['PotD', 'Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod']
+		ruleset: ['Random Battle']
 	},
 	maymayhem: {
 		name: "May Mayhem",
@@ -1025,7 +1013,7 @@ exports.BattleFormats = {
 				this.add('-message', 'Never gonna give you up, never gonna let you down');
 			}
 		},
-		ruleset: ['PotD', 'Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod']
+		ruleset: ['Random Battle']
 	},
 	junejubilee: {
 		name: "June Jubilee",
@@ -1095,7 +1083,7 @@ exports.BattleFormats = {
 				pokemon.battle.win(winner);
 			}
 		},
-		ruleset: ['PotD', 'Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod']
+		ruleset: ['Random Battle']
 	},
 	jollyjuly: {
 		name: 'Jolly July',
@@ -1203,7 +1191,7 @@ exports.BattleFormats = {
 		onModifyMove: function(move) {
 			if (move.id === 'fireblast') move.name = 'July 4th Fireworks';
 		},
-		ruleset: ['PotD', 'Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod']
+		ruleset: ['Random Battle']
 	},
 
 	// Past Generations
