@@ -1015,17 +1015,6 @@ module.exports = (function () {
 		if (!problems.length) return false;
 		return problems;
 	};
-	
-	//function to get list of pokemon in a tier for easier use in formats banlists
-	Tools.prototype.getPokemon = function(tier) {
-		var list = [];
-		for (var i in this.data.Pokedex) {
-			var template = this.getTemplate(i);
-			if (template.tier === tier) list.push(template.species);
-		}
-		return list;
-	};
-	
 	/**
 	 * Install our Tools functions into the battle object
 	 */
