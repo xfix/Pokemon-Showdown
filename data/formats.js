@@ -179,7 +179,7 @@ exports.BattleFormats = {
 		searchShow: true,
 		isTeambuilderFormat: true,
 		ruleset: ['OU'],
-		banlist: ['Uber', 'Soul Dew', 'Drizzle', 'Drought', 'Sand Stream', 'Snow Warning']
+		banlist: ['Drizzle', 'Drought', 'Sand Stream', 'Snow Warning']
 	},
 	colorchangemeta: {
 		name: 'Color Change Meta',
@@ -193,7 +193,7 @@ exports.BattleFormats = {
 		validateSet: function(set) {
 			set.ability = 'Color Change';
 		},
-		ruleset: ['OU'],
+		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
 		banlist: ['Mewtwo', 'Lugia', 'Ho-Oh', 'Kyogre', 'Groudon', 'Rayquaza', 'Deoxys', 'Deoxys-Attack', 'Deoxys-Defense', 'Deoxys-Speed', 'Dialga', 'Palkia', 'Giratina', 'Giratina-Origin', 'Darkrai', 'Shaymin-Sky',
 			'Arceus', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fighting', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus-Poison', 'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water',
 			'Tornadus-Therian', 'Thundurus', 'Reshiram', 'Zekrom', 'Kyurem-White', 'Genesect'
@@ -333,10 +333,7 @@ exports.BattleFormats = {
 		searchShow: true,
 		isTeambuilderFormat: true,
 		ruleset: ['LC'],
-		banlist: ['Carvanha', 'Meditite', 'Gligar', 'Scyther', 'Sneasel', 'Tangela', 'Vulpix', 'Yanma',
-			'Abra', 'Aipom', 'Archen', 'Axew', 'Bronzor', 'Chinchou', 'Clamperl', 'Cottonee', 'Cranidos', 'Croagunk', 'Diglett', 'Drifloon', 'Drilbur', 'Dwebble', 'Ferroseed', 'Foongus', 'Frillish', 'Gastly', 'Hippopotas', 'Houndour', 'Koffing', 'Larvesta', 'Lileep', 'Machop', 'Magnemite', 'Mienfoo', 'Misdreavus', 'Munchlax', 'Murkrow', 'Pawniard', 'Ponyta', 'Porygon', 'Riolu', 'Sandshrew', 'Scraggy', 'Shellder', 'Shroomish', 'Slowpoke', 'Snover', 'Staryu', 'Tentacool', 'Timburr', 'Tirtouga',
-			'Berry Juice', 'Dragon Rage', 'Sonic Boom'
-		]
+		banlist: ['Abra', 'Aipom', 'Archen', 'Axew', 'Bronzor', 'Chinchou', 'Clamperl', 'Cottonee', 'Cranidos', 'Croagunk', 'Diglett', 'Drifloon', 'Drilbur', 'Dwebble', 'Ferroseed', 'Foongus', 'Frillish', 'Gastly', 'Hippopotas', 'Houndour', 'Koffing', 'Larvesta', 'Lileep', 'Machop', 'Magnemite', 'Mienfoo', 'Misdreavus', 'Munchlax', 'Murkrow', 'Pawniard', 'Ponyta', 'Porygon', 'Riolu', 'Sandshrew', 'Scraggy', 'Shellder', 'Shroomish', 'Slowpoke', 'Snover', 'Staryu', 'Tentacool', 'Timburr', 'Tirtouga']
 	},
 	monotype: {
 		name: 'Monotype (OU)',
@@ -348,7 +345,7 @@ exports.BattleFormats = {
 		searchShow: true,
 		isTeambuilderFormat: true,
 		ruleset: ['OU', 'Same Type Clause'],
-		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
+		banlist: []
 	},
 	negativemetagame: {
 		name: 'Negative Metagame',
@@ -374,7 +371,7 @@ exports.BattleFormats = {
 		rated: true,
 		isTeambuilderFormat: true,
 		ruleset: ['OU', 'Offstat Pokemon'],
-		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Stealth Rock', 'Spikes', 'Toxic Spikes', 'Kyurem-Black']
+		banlist: ['Stealth Rock', 'Spikes', 'Toxic Spikes', 'Kyurem-Black']
 	},
 	pu: {
 		name: 'PU',
@@ -443,10 +440,9 @@ exports.BattleFormats = {
 				return [set.species+" is not a Flying type and does not have the ability Levitate."];
 			}
 		},
-		ruleset: ['OU'],
-		banlist: ['Drizzle ++ Swift Swim',
-			'Lugia', 'Ho-Oh', 'Rayquaza', 'Giratina', 'Giratina-Origin', 'Shaymin-Sky', 'Arceus-Flying', 'Thundurus',
-			'Soul Dew', 'Iron Ball', 'Gravity', 'Smack Down', 'Skill Swap', 'Entrainment', 'Gastro Acid', 'Simple Beam', 'Worry Seed'
+		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
+		banlist: ['Drizzle ++ Swift Swim', 'Soul Dew', 'Iron Ball', 'Gravity', 'Smack Down', 'Skill Swap', 'Entrainment', 'Gastro Acid', 'Simple Beam', 'Worry Seed',
+			'Lugia', 'Ho-Oh', 'Rayquaza', 'Giratina', 'Giratina-Origin', 'Shaymin-Sky', 'Arceus-Flying', 'Thundurus'
 		]
 	},
 	slowmons: {
@@ -479,7 +475,7 @@ exports.BattleFormats = {
 				};
 			}
 		},
-		ruleset: ['OU', 'Slowmons Pokemon'],
+		ruleset: ['Pokemon', 'Slowmons Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
 		banlist: ['Mewtwo', 'Lugia', 'Ho-Oh', 'Kyogre', 'Groudon', 'Rayquaza', 'Deoxys', 'Deoxys-Attack', 'Deoxys-Defense', 'Deoxys-Speed', 'Dialga', 'Palkia', 'Giratina', 'Giratina-Origin', 'Manaphy', 'Darkrai', 'Shaymin-Sky',
 			'Arceus', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fighting', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus-Poison', 'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water',
 			'Tornadus-Therian', 'Thundurus', 'Reshiram', 'Zekrom', 'Landorus', 'Kyurem-White', 'Genesect'
@@ -494,7 +490,7 @@ exports.BattleFormats = {
 		challengeShow: true,
 		searchShow: true,
 		isTeambuilderFormat: true,
-		ruleset: ['OU'],
+		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
 		banlist: ['Drizzle ++ Swift Swim', 'Soul Dew',
 			'Mewtwo', 'Lugia', 'Ho-Oh', 'Blaziken', 'Kyogre', 'Groudon', 'Rayquaza', 'Deoxys', 'Deoxys-Attack', 'Dialga', 'Palkia', 'Giratina', 'Giratina-Origin', 'Manaphy', 'Darkrai', 'Shaymin-Sky',
 			'Arceus', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fighting', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus-Poison', 'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water',
@@ -512,7 +508,7 @@ exports.BattleFormats = {
 		searchShow: true,
 		isTeambuilderFormat: true,
 		ruleset: ['OU'],
-		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
+		banlist: []
 	},
 	suicidecup: {
 		name: 'Suicide Cup',
@@ -538,7 +534,7 @@ exports.BattleFormats = {
 		searchShow: true,
 		isTeambuilderFormat: true,
 		ruleset: ['OU'],
-		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
+		banlist: []
 	},
 	typechartswap: {
 		name: 'Type Chart Swap',
@@ -551,7 +547,7 @@ exports.BattleFormats = {
 		searchShow: true,
 		isTeambuilderFormat: true,
 		ruleset: ['OU'],
-		banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew']
+		banlist: []
 	},
 	wonkymons: {
 		name: 'Wonkymons',
@@ -564,7 +560,7 @@ exports.BattleFormats = {
 		searchShow: true,
 		isTeambuilderFormat: true,
 		ruleset: ['OU'],
-		banlist: ['Drizzle ++ Swift Swim', 'Elekid ++ Wonder Guard']
+		banlist: ['Elekid ++ Wonder Guard']
 	},
 
 	// Seasonals
