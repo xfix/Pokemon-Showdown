@@ -12,6 +12,13 @@ exports.BattleFormats = {
 				problems.push(set.species+' is not a real Pokemon.');
 			}
 			var hasHP = false;
+			if (item) {
+				if (item.gen > this.gen) {
+					problems.push(item.name+' does not exist in gen '+this.gen+'.');
+				} else if (item.isNonstandard) {
+					problems.push(item.name + ' is not a real item.');
+				}
+			}
 			if (set.moves) for (var i=0; i<set.moves.length; i++) {
 				var move = this.getMove(set.moves[i]);
 				if (move.gen > this.gen) {
@@ -33,7 +40,7 @@ exports.BattleFormats = {
 			
 			// Check if there's Hidden Power
 			if (hasHP) {
-				// All IVs to 31 forces correct Hidden Power from Typecharts
+				// All IVs to 31 forces correct Hidden Power from Typecharts in the engine
 				set.ivs = {hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31};
 				// There's no good shiny Pokémon with good HPs
 				set.shiny = false;
