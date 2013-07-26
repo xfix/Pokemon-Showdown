@@ -103,6 +103,24 @@ exports.BattleFormats = {
 			'Reshiram', 'Zekrom', 'Landorus', 'Kyurem-White'
 		]
 	},
+	globalshowdown: {
+		name: "2013 Global Showdown",
+		section: "Other Metagames",
+
+		effectType: 'Format',
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		onBegin: function() {
+			this.p1.pokemon = this.p1.pokemon.slice(0,3);
+			this.p1.pokemonLeft = this.p1.pokemon.length;
+			this.p2.pokemon = this.p2.pokemon.slice(0,3);
+			this.p2.pokemonLeft = this.p2.pokemon.length;
+		},
+		maxForcedLevel: 50,
+		ruleset: ['Pokemon', 'Species Clause', 'Item Clause', 'Team Preview GBU'],
+		banlist: ['Unreleased', 'Illegal', 'Chatot', 'Sky Drop', 'Dark Void', 'Soul Dew']
+	},
 	'6movebattling': {
 		name: "6 Move Battling (OU)",
 		section: "Other Metagames",
@@ -284,24 +302,6 @@ exports.BattleFormats = {
 		ruleset: ['Pokemon', 'Team Preview', 'HP Percentage Mod'],
 		banlist: ['Unreleased', 'Illegal'],
 		mimicGlitch: true
-	},
-	globalshowdown: {
-		name: "Global Showdown (Doubles)",
-		section: "Other Metagames",
-
-		effectType: 'Format',
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		onBegin: function() {
-			this.p1.pokemon = this.p1.pokemon.slice(0,3);
-			this.p1.pokemonLeft = this.p1.pokemon.length;
-			this.p2.pokemon = this.p2.pokemon.slice(0,3);
-			this.p2.pokemonLeft = this.p2.pokemon.length;
-		},
-		maxForcedLevel: 50,
-		ruleset: ['Pokemon', 'Species Clause', 'Item Clause', 'Team Preview GBU'],
-		banlist: ['Unreleased', 'Illegal', 'Chatot', 'Sky Drop', 'Dark Void', 'Soul Dew']
 	},
 	gscmodern: {
 		name: "GSC Modern",
