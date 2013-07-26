@@ -3042,6 +3042,21 @@ var Battle = (function() {
 			break;
 		case 'beforeTurn':
 			this.eachEvent('BeforeTurn');
+			// In triples, check that the Pokémon can touch eachother.
+			if (this.format === 'triples' && this.sides[0].length === 1 && this.sides[0].length === 1) {
+				for (var p in this.sides[0].active) {
+					if (!this.sides[0].active[p].fainted && p !== 1) {
+						this.switchIn(this.sides[0].active[p], 1);
+						break;
+					}
+				}
+				for (var p in this.sides[1].active) {
+					if (!this.sides[1].active[p].fainted && p !== 1) {
+						this.switchIn(this.sides[1].active[p], 1);
+						break;
+					}
+				}
+			}
 			break;
 		case 'residual':
 			this.add('');
