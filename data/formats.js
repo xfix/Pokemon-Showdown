@@ -556,13 +556,13 @@ exports.BattleFormats = {
 		ruleset: ['OU'],
 		banlist: []
 	},
-	triples: {
+	triplesdev: {
 		name: "Triples (Dev)",
 		section: "Other Metagames",
 		
 		effectType: 'Format',
 		gameType: 'triples',
-		//rated: true,
+		rated: true,
 		challengeShow: true,
 		//searchShow: true,
 		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
