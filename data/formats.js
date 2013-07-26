@@ -367,8 +367,8 @@ exports.BattleFormats = {
 		ruleset: ['OU'],
 		banlist: ['Smeargle']
 	},
-	offstat: {
-		name: "Offstat",
+	offstatmetagame: {
+		name: "Offstat Metagame",
 		section: "Other Metagames",
 
 		effectType: 'Format',
@@ -540,7 +540,7 @@ exports.BattleFormats = {
 		challengeShow: true,
 		searchShow: true,
 		isTeambuilderFormat: true,
-		ruleset: ['OU', 'Technicimons Pokemon'],
+		ruleset: ['OU', 'TechniciMons Pokemon'],
 		banlist: ['Slaking', 'Regigigas', 'Archeops']
 	},
 	tiershift: {
