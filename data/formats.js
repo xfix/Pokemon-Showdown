@@ -103,7 +103,7 @@ exports.BattleFormats = {
 			'Reshiram', 'Zekrom', 'Landorus', 'Kyurem-White'
 		]
 	},
-	globalshowdown: {
+	'2013globalshowdown': {
 		name: "2013 Global Showdown",
 		section: "Other Metagames",
 
@@ -122,7 +122,7 @@ exports.BattleFormats = {
 		ruleset: ['Pokemon', 'Species Clause', 'Item Clause', 'Team Preview GBU'],
 		banlist: ['Unreleased', 'Illegal', 'Chatot', 'Sky Drop', 'Dark Void', 'Soul Dew']
 	},
-	'6movebattling': {
+	'6movebattlingou': {
 		name: "6 Move Battling (OU)",
 		section: "Other Metagames",
 
@@ -186,7 +186,7 @@ exports.BattleFormats = {
 		searchShow: true,
 		ruleset: ['Pokemon', 'HP Percentage Mod']
 	},
-	challengecup1vs1: {
+	challengecup1v1: {
 		name: "Challenge Cup 1v1",
 		section: "Other Metagames",
 
@@ -204,7 +204,7 @@ exports.BattleFormats = {
 			this.p2.pokemonLeft = this.p2.pokemon.length;
 		}
 	},
-	clearskies: {
+	clearskiesou: {
 		name: "Clear Skies (OU)",
 		section: "Other Metagames",
 
@@ -342,7 +342,7 @@ exports.BattleFormats = {
 		ruleset: ['LC'],
 		banlist: ['Abra', 'Aipom', 'Archen', 'Axew', 'Bronzor', 'Chinchou', 'Clamperl', 'Cottonee', 'Cranidos', 'Croagunk', 'Diglett', 'Drifloon', 'Drilbur', 'Dwebble', 'Ferroseed', 'Foongus', 'Frillish', 'Gastly', 'Hippopotas', 'Houndour', 'Koffing', 'Larvesta', 'Lileep', 'Machop', 'Magnemite', 'Mienfoo', 'Misdreavus', 'Munchlax', 'Murkrow', 'Pawniard', 'Ponyta', 'Porygon', 'Riolu', 'Sandshrew', 'Scraggy', 'Shellder', 'Shroomish', 'Slowpoke', 'Snover', 'Staryu', 'Tentacool', 'Timburr', 'Tirtouga']
 	},
-	monotype: {
+	monotypeou: {
 		name: "Monotype (OU)",
 		section: "Other Metagames",
 
@@ -390,7 +390,7 @@ exports.BattleFormats = {
 		ruleset: ['NU'],
 		banlist: ['Charizard', 'Wartortle', 'Kadabra', 'Golem', 'Haunter', 'Exeggutor', 'Weezing', 'Kangaskhan', 'Pinsir', 'Lapras', 'Ampharos', 'Misdreavus', 'Piloswine', 'Miltank', 'Ludicolo', 'Swellow', 'Gardevoir', 'Ninjask', 'Torkoal', 'Cacturne', 'Altaria', 'Armaldo', 'Gorebyss', 'Regirock', 'Regice', 'Bastiodon', 'Floatzel', 'Drifblim', 'Skuntank', 'Lickilicky', 'Probopass', 'Rotom-Fan', 'Samurott', 'Musharna', 'Gurdurr', 'Sawk', 'Carracosta', 'Garbodor', 'Sawsbuck', 'Alomomola', 'Golurk', 'Braviary', 'Electabuzz', 'Electrode', 'Liepard', 'Tangela', 'Eelektross', 'Ditto', 'Seismitoad', 'Zangoose', 'Roselia', 'Serperior', 'Metang', 'Tauros', 'Cradily', 'Primeape', 'Scolipede', 'Jynx', 'Basculin', 'Gigalith', 'Camerupt', 'Golbat']
 	},
-	hackmons: {
+	purehackmons: {
 		name: "Pure Hackmons",
 		section: "Other Metagames",
 
@@ -585,7 +585,7 @@ exports.BattleFormats = {
 		ruleset: ['OU'],
 		banlist: []
 	},
-	doublesvgc2013: {
+	vgc2013doubles: {
 		name: "VGC 2013 (Doubles)",
 		section: "Other Metagames",
 
