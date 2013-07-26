@@ -530,6 +530,19 @@ exports.BattleFormats = {
 		ruleset: ['OU', 'Suicide Pokemon'],
 		banlist: ['Shedinja', 'Self-Destruct', 'Explosion', 'Memento', 'Final Gambit', 'Healing Wish', 'Heal Pulse', 'Lunar Dance', 'Dream Eater', 'Snore', 'Frustration', 'Return', 'Fake Out', 'Natural Gift', 'Magic Room']
 	},
+	technicimons: {
+		name: "TechniciMons",
+		section: "Other Metagames",
+
+		mod: 'technicimons',
+		effectType: 'Format',
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['OU', 'Technicimons Pokemon'],
+		banlist: ['Slaking', 'Regigigas', 'Archeops']
+	},
 	tiershift: {
 		name: "Tier Shift",
 		section: "Other Metagames",
@@ -545,7 +558,7 @@ exports.BattleFormats = {
 	},
 	triples: {
 		name: "Triples (Dev)",
-		section: 'Other Metagames',
+		section: "Other Metagames",
 		
 		effectType: 'Format',
 		gameType: 'triples',
@@ -614,16 +627,14 @@ exports.BattleFormats = {
 	// Seasonals
 	///////////////////////////////////////////////////////////////////
 
-	seasoningsgreetings: {
-		name: "Seasoning's Greetings",
+	seasonsgreetings: {
+		name: "Season's Greetings",
 		section: "Seasonals",
 
 		effectType: 'Format',
 		team: 'randomSeasonal',
 		canUseRandomTeam: true,
-		rated: true,
 		challengeShow: true,
-		searchShow: true,
 		ruleset: ['Random Battle']
 	},
 	winterwonderland: {
@@ -633,9 +644,7 @@ exports.BattleFormats = {
 		effectType: 'Format',
 		team: 'randomSeasonalWW',
 		canUseRandomTeam: true,
-		rated: true,
 		challengeShow: true,
-		searchShow: true,
 		onBegin: function() {
 			this.setWeather('Hail');
 			delete this.weatherData.duration;
@@ -756,9 +765,7 @@ exports.BattleFormats = {
 		team: 'randomSeasonalVV',
 		gameType: 'Doubles',
 		canUseRandomTeam: true,
-		rated: true,
 		challengeShow: true,
-		searchShow: true,
 		ruleset: ['Random Battle']
 	},
 	springforward: {
@@ -768,9 +775,7 @@ exports.BattleFormats = {
 		effectType: 'Format',
 		team: 'randomSeasonalSF',
 		canUseRandomTeam: true,
-		rated: true,
 		challengeShow: true,
-		searchShow: true,
 		onBegin: function() {
 			if (this.random(100) < 75) {
 				this.add('-message', 'March and April showers bring May flowers...');
@@ -848,9 +853,7 @@ exports.BattleFormats = {
 		effectType: 'Format',
 		team: 'randomSeasonalFF',
 		canUseRandomTeam: true,
-		rated: true,
 		challengeShow: true,
-		searchShow: true,
 		onBegin: function() {
 			var dice = this.random(100);
 			if (dice < 65) {
@@ -1046,9 +1049,7 @@ exports.BattleFormats = {
 		effectType: 'Format',
 		team: 'randomSeasonalMM',
 		canUseRandomTeam: true,
-		rated: true,
 		challengeShow: true,
-		searchShow: true,
 		onBegin: function() {
 			var date = Date();
 			date = date.split(' ');
@@ -1074,9 +1075,7 @@ exports.BattleFormats = {
 		effectType: 'Format',
 		team: 'randomSeasonalJJ',
 		canUseRandomTeam: true,
-		rated: true,
 		challengeShow: true,
-		searchShow: true,
 		turn: 0,
 		onBegin: function() {
 			this.add('-message', "Greetings, trainer! Delibird needs your help! It's lost on the US and it needs to find its way back to the arctic before summer starts! Help your Delibird while travelling north, but you must defeat the opponent before he reaches there first!");
@@ -1144,9 +1143,7 @@ exports.BattleFormats = {
 		effectType: 'Format',
 		team: 'randomSeasonalJuly',
 		canUseRandomTeam: true,
-		rated: true,
 		challengeShow: true,
-		searchShow: true,
 		onBegin: function() {
 			this.add('-message', 'You and your faithful favourite Pokémon are travelling around the world, and you will fight this trainer in many places until either win or finish the travel!');
 			var date = Date();
@@ -1650,6 +1647,19 @@ exports.BattleFormats = {
 					if (hasOneAttack) break;
 				}
 				if (!hasOneAttack) problems.push(set.species + ' must have an attacking move.');
+			}
+			return problems;
+		}
+	},
+	technicimonspokemon: {
+		validateSet: function(set, format) {
+			set.ability = 'Technician';
+			var problems = [];
+			if (set.moves) for (var i=0; i<set.moves.length; i++) {
+				var move = this.getMove(set.moves[i]);
+				if (move.basePower >= 100) {
+					problems.push(move.name+' is banned because it has 100+ base power.');
+				}
 			}
 			return problems;
 		}
