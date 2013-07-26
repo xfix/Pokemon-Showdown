@@ -415,49 +415,6 @@ exports.BattleFormats = {
 		searchShow: true,
 		ruleset: ['PotD', 'Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod']
 	},
-	smogondoubles: {
-		name: "Smogon Doubles",
-		section: "Other Metagames",
-
-		effectType: 'Format',
-		gameType: 'doubles',
-		rated: true,
-		challengeShow: true,
-		searchShow: true,
-		isTeambuilderFormat: true,
-		ruleset: ['Pokemon', 'Team Preview', 'Sleep Clause Mod', 'Species Clause', 'OHKO Clause', 'Moody Clause', 'Evasion Moves Clause', 'Evasion Abilities Clause', 'HP Percentage Mod'],
-		banlist: ['Illegal', 'Sky Drop', 'Dark Void', 'Soul Dew',
-			'Mewtwo', 'Lugia', 'Ho-Oh', 'Kyogre', 'Groudon', 'Rayquaza', 'Dialga', 'Palkia', 'Giratina', 'Giratina-Origin',
-			'Arceus', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fighting', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus', 'Arceus-Poison', 'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water',
-			'Reshiram', 'Zekrom', 'Kyurem-White'
-		]
-	},
-	triplesdev: {
-		name: "Triples Dev",
-		section: 'Other Metagames',
-		
-		effectType: 'Format',
-		gameType: 'triples',
-		challengeShow: true,
-		searchShow: true,
-		rated: true,
-		ruleset: ['Pokemon', 'Team Preview', 'Sleep Clause Mod', 'Species Clause', 'OHKO Clause', 'Moody Clause', 'Evasion Moves Clause', 'Evasion Abilities Clause', 'HP Percentage Mod'],
-		banlist: ['Unreleased', 'Illegal', 'Sky Drop', 'Dark Void', 'Soul Dew',
-			'Mewtwo',
-			'Lugia',
-			'Ho-Oh',
-			'Kyogre',
-			'Groudon',
-			'Rayquaza',
-			'Dialga',
-			'Palkia',
-			'Giratina', 'Giratina-Origin',
-			'Arceus', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fighting', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus', 'Arceus-Poison', 'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water',
-			'Reshiram',
-			'Zekrom',
-		'Kyurem-White'
-		]
-	},
 	skybattles: {
 		name: "Sky Battles",
 		section: "Other Metagames",
@@ -514,6 +471,23 @@ exports.BattleFormats = {
 			'Tornadus-Therian', 'Thundurus', 'Reshiram', 'Zekrom', 'Landorus', 'Kyurem-White', 'Genesect'
 		]
 	},
+	smogondoubles: {
+		name: "Smogon Doubles",
+		section: "Other Metagames",
+
+		effectType: 'Format',
+		gameType: 'doubles',
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Team Preview', 'Sleep Clause Mod', 'Species Clause', 'OHKO Clause', 'Moody Clause', 'Evasion Moves Clause', 'Evasion Abilities Clause', 'HP Percentage Mod'],
+		banlist: ['Illegal', 'Sky Drop', 'Dark Void', 'Soul Dew',
+			'Mewtwo', 'Lugia', 'Ho-Oh', 'Kyogre', 'Groudon', 'Rayquaza', 'Dialga', 'Palkia', 'Giratina', 'Giratina-Origin',
+			'Arceus', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fighting', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus', 'Arceus-Poison', 'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water',
+			'Reshiram', 'Zekrom', 'Kyurem-White'
+		]
+	},
 	stabmons: {
 		name: "STABmons",
 		section: "Other Metagames",
@@ -568,6 +542,22 @@ exports.BattleFormats = {
 		isTeambuilderFormat: true,
 		ruleset: ['OU'],
 		banlist: []
+	},
+	triples: {
+		name: "Triples (Dev)",
+		section: 'Other Metagames',
+		
+		effectType: 'Format',
+		gameType: 'triples',
+		//rated: true,
+		challengeShow: true,
+		//searchShow: true,
+		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
+		banlist: ['Unreleased', 'Illegal', 'Sky Drop', 'Dark Void', 'Soul Dew',
+			'Mewtwo', 'Lugia', 'Ho-Oh', 'Kyogre', 'Groudon', 'Rayquaza', 'Dialga', 'Palkia', 'Giratina', 'Giratina-Origin',
+			'Arceus', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fighting', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus', 'Arceus-Poison', 'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water',
+			'Reshiram', 'Zekrom', 'Kyurem-White'
+		]
 	},
 	typechartswap: {
 		name: "Type Chart Swap",
