@@ -46,7 +46,7 @@ module.exports = (function () {
 						data[dataType] = require(path)['Battle' + dataType];
 					}
 				} catch (e) {
-					console.log(e.stack);
+					console.log('CRASH LOADING DATA: '+e.stack);
 				}
 				if (!data[dataType]) data[dataType] = {};
 			}, this);
@@ -61,7 +61,7 @@ module.exports = (function () {
 					}
 				}
 			} catch (e) {
-				console.log(e.stack);
+				console.log('CRASH LOADING FORMATS: '+e.stack);
 			}
 		} else {
 			var baseData = moddedTools.base.data;
@@ -72,7 +72,7 @@ module.exports = (function () {
 						data[dataType] = require(path)['Battle' + dataType];
 					}
 				} catch (e) {
-					console.log(e.stack);
+					console.log('CRASH LOADING MOD DATA: '+e.stack);
 				}
 				if (!data[dataType]) data[dataType] = {};
 				for (var i in baseData[dataType]) {
@@ -461,9 +461,6 @@ module.exports = (function () {
 
 		do {
 			alreadyChecked[template.speciesid] = true;
-			if (format.id === 'stabmons') {
-				if (template.types.indexOf(this.getMove(move).type) > -1) return false;
-			}
 			if (template.learnset) {
 				if (template.learnset[move] || template.learnset['sketch']) {
 					var lset = template.learnset[move];

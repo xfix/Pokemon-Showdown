@@ -296,7 +296,7 @@ var commands = exports.commands = {
 			if (target === 'lobby') return connection.sendTo(target, "|noinit|nonexistent|");
 			return connection.sendTo(target, "|noinit|nonexistent|The room '"+target+"' does not exist.");
 		}
-		if (targetRoom && !targetRoom.battle && targetRoom !== Rooms.lobby && !user.named) {
+		if (targetRoom && targetRoom.isPrivate && !user.named) {
 			return connection.sendTo(target, "|noinit|namerequired|You must have a name in order to join the room '"+target+"'.");
 		}
 		if (!user.joinRoom(targetRoom || room, connection)) {
@@ -858,7 +858,7 @@ var commands = exports.commands = {
 		Rooms.global.lockdown = true;
 		for (var id in Rooms.rooms) {
 			if (id !== 'global') Rooms.rooms[id].addRaw('<div class="broadcast-red"><b>The server is restarting soon.</b><br />Please finish your battles quickly. No new battles can be started until the server resets in a few minutes.</div>');
-			if (Rooms.rooms[id].requestKickInactive) Rooms.rooms[id].requestKickInactive(user, true);
+			if (Rooms.rooms[id].requestKickInactive && !Rooms.rooms[id].battle.ended) Rooms.rooms[id].requestKickInactive(user, true);
 		}
 
 		this.logEntry(user.name + ' used /lockdown');
@@ -1199,10 +1199,6 @@ var commands = exports.commands = {
 
 	cancelsearch: 'search',
 	search: function(target, room, user) {
-		if (Rooms.global.lockdown) {
-			return this.popupReply("The server is shutting down. Battles cannot be started at this time.");
-		}
-
 		if (target) {
 			Rooms.global.searchBattle(user, target);
 		} else {
@@ -1211,11 +1207,7 @@ var commands = exports.commands = {
 	},
 
 	chall: 'challenge',
-	challenge: function(target, room, user) {
-		if (Rooms.global.lockdown) {
-			return this.popupReply("The server is shutting down. Battles cannot be started at this time.");
-		}
-
+	challenge: function(target, room, user, connection) {
 		target = this.splitTarget(target);
 		var targetUser = this.targetUser;
 		if (!targetUser || !targetUser.connected) {
@@ -1224,11 +1216,7 @@ var commands = exports.commands = {
 		if (targetUser.blockChallenges && !user.can('bypassblocks', targetUser)) {
 			return this.popupReply("The user '"+this.targetUsername+"' is not accepting challenges right now.");
 		}
-		if (typeof target !== 'string') target = 'customgame';
-		var problems = Tools.validateTeam(user.team, target);
-		if (problems) {
-			return this.popupReply("Your team was rejected for the following reasons:\n\n- "+problems.join("\n- "));
-		}
+		if (!user.prepBattle(target, 'challenge', connection)) return;
 		user.makeChallenge(targetUser, target);
 	},
 
@@ -1250,7 +1238,7 @@ var commands = exports.commands = {
 		user.cancelChallengeTo(target);
 	},
 
-	accept: function(target, room, user) {
+	accept: function(target, room, user, connection) {
 		var userid = toUserid(target);
 		var format = '';
 		if (user.challengesFrom[userid]) format = user.challengesFrom[userid].format;
@@ -1258,11 +1246,7 @@ var commands = exports.commands = {
 			this.popupReply(target+" cancelled their challenge before you could accept it.");
 			return false;
 		}
-		var problems = Tools.validateTeam(user.team, format);
-		if (problems) {
-			this.popupReply("Your team was rejected for the following reasons:\n\n- "+problems.join("\n- "));
-			return false;
-		}
+		if (!user.prepBattle(format, 'challenge', connection)) return;
 		user.acceptChallengeFrom(userid);
 	},
 

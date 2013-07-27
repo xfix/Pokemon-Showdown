@@ -216,7 +216,7 @@ var GlobalRoom = (function() {
 		return roomList;
 	};
 	GlobalRoom.prototype.getRooms = function() {
-		var rooms = {official:[], chat:[]};
+		var rooms = {official:[], chat:[], userCount: rooms.global.userCount};
 		for (var i=0; i<this.chatRooms.length; i++) {
 			var room = this.chatRooms[i];
 			if (room.isPrivate) continue;
@@ -253,25 +253,10 @@ var GlobalRoom = (function() {
 	};
 	GlobalRoom.prototype.searchBattle = function(user, formatid) {
 		if (!user.connected) return;
-		if (this.lockdown) {
-			user.popup("The server is shutting down. Battles cannot be started at this time.");
-			return;
-		}
 
 		formatid = toId(formatid);
 
-		var format = Tools.getFormat(formatid);
-		if (!format.searchShow) {
-			user.popup("That format is not available for searching.");
-			return;
-		}
-
-		var team = user.team;
-		var problems = Tools.validateTeam(team, formatid);
-		if (problems) {
-			user.popup("Your team was rejected for the following reasons:\n\n- "+problems.join("\n- "));
-			return;
-		}
+		if (!user.prepBattle(formatid, 'search')) return;
 
 		// tell the user they've started searching
 		var newSearchData = {
@@ -283,7 +268,7 @@ var GlobalRoom = (function() {
 		var newSearch = {
 			userid: user.userid,
 			formatid: formatid,
-			team: team,
+			team: user.team,
 			rating: 1500,
 			time: new Date().getTime()
 		};
@@ -1129,7 +1114,6 @@ var ChatRoom = (function() {
 			this.userList = this.getUserList();
 		}
 		this.reportJoinsQueue = [];
-		this.lastGlobalCount = -1;
 		this.reportJoinsInterval = setInterval(
 			this.reportRecentJoins.bind(this), config.reportjoinsperiod
 		);
@@ -1137,11 +1121,7 @@ var ChatRoom = (function() {
 	ChatRoom.prototype.type = 'chat';
 
 	ChatRoom.prototype.reportRecentJoins = function() {
-		// special case for the lobby
-		if ((this.id === 'lobby') && (this.lastGlobalCount !== rooms.global.userCount)) {
-			this.reportJoinsQueue.push('|usercount|' + rooms.global.userCount);
-			this.lastGlobalCount = rooms.global.userCount;
-		} else if (this.reportJoinsQueue.length === 0) {
+		if (this.reportJoinsQueue.length === 0) {
 			// nothing to report
 			return;
 		}
@@ -1235,9 +1215,6 @@ var ChatRoom = (function() {
 			buffer += ','+this.users[i].getIdentity(this.id);
 		}
 		var msg = '|users|'+counter+buffer;
-		if (this.id === 'lobby' && rooms.global) {
-			msg += '\n|usercount|'+rooms.global.userCount;
-		}
 		return msg;
 	};
 	ChatRoom.prototype.update = function() {
