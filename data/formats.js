@@ -1251,6 +1251,7 @@ exports.BattleFormats = {
 		section: "Seasonals",
 
 		effectType: 'Format',
+		gameType: 'doubles',
 		team: 'randomSeasonalAA',
 		canUseRandomTeam: true,
 		challengeShow: true,
@@ -1271,10 +1272,10 @@ exports.BattleFormats = {
 			var result = true;
 			for (var i=0; i<pokemon.battle.sides.length; i++) {
 				for (var j=0; j<pokemon.battle.sides[i].active.length; j++) {
-					if (!pokemon.battle.sides[i].active[j].volatiles['perishsong']) {
+					if (pokemon.battle.sides[i].active[j] && !pokemon.battle.sides[i].active[j].volatiles['perishsong']) {
 						result = false;
 					}
-					if (pokemon.battle.sides[i].active[j].ability !== 'soundproof') {
+					if (pokemon.battle.sides[i].active[j] && pokemon.battle.sides[i].active[j].ability !== 'soundproof') {
 						pokemon.battle.sides[i].active[j].addVolatile('perishsong');
 					} else {
 						this.add('-immune', pokemon.battle.sides[i].active[j], '[msg]');
