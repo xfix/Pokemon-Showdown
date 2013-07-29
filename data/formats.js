@@ -1246,6 +1246,46 @@ exports.BattleFormats = {
 		},
 		ruleset: ['Random Battle']
 	},
+	averageaugust: {
+		name: "Average August",
+		section: "Seasonals",
+
+		effectType: 'Format',
+		team: 'randomSeasonalAA',
+		canUseRandomTeam: true,
+		challengeShow: true,
+		onBegin: function() {
+			var shipNames = [
+				'Zarelrules', 'Joimawesome', 'Treeckonoob', 'MJailBait', 'mikelpuns', 'TTTtttttt', 'Frazzle Dazzle', 
+				'TIbot', 'CDXCIV', 'Srs Bsns Trts', 'Leemz', 'Eggymad', 'Snoffles', 'bmelted', 'Poopes', 'Hugonedugen', 
+				'Il Haunter', 'chaospwns', 'WaterBro', 'niggie', 'DOOM', 'qhore', 'Jizzmine', 'aldarown'
+			].randomize();
+			this.add('-message', 
+				'Alas, poor trainers! You both were aboard the fantastic ship S. S. ' + shipNames[0] 
+				+ " when a sudden summer Hurricane made it hit a Wairlod and now it's sinking! "
+				+ "There are not enough life boats for everyone nor trainers ain't sharing their Water-type friends, "
+				+ "so you'll have to fight to access the life boat! Good luck! You have to be fast to not to be hit by the Hurricane!"
+			);
+		},
+		onSwitchIn: function(pokemon) {
+			var result = true;
+			for (var i=0; i<pokemon.battle.sides.length; i++) {
+				for (var j=0; j<pokemon.battle.sides[i].active.length; j++) {
+					if (!this.sides[i].active[j].volatiles['perishsong']) {
+						result = false;
+					}
+					if (this.sides[i].active[j].ability !== 'soundproof') {
+						this.sides[i].active[j].addVolatile('perishsong');
+					} else {
+						this.add('-immune', this.sides[i].active[j], '[msg]');
+						this.add('-end', this.sides[i].active[j], 'Perish Song');
+					}
+				}
+			}
+			if (result) return false;
+			this.add('-fieldactivate', 'move: Perish Song');
+		}
+	},
 
 	// Past Generations
 	///////////////////////////////////////////////////////////////////
