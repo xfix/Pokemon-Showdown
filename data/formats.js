@@ -1276,6 +1276,26 @@ exports.BattleFormats = {
 				+ "There are not enough life boats for everyone nor trainers ain't sharing their Water-type friends, "
 				+ "so you'll have to fight to access a life boat! Good luck! You have to be fast to not to be hit by the Hurricane!"
 			);
+		},
+		onSwitchIn: function(pokemon) {
+			if (pokemon.battle.turn > 0) {
+				var result = true;
+				for (var i=0; i<pokemon.battle.sides.length; i++) {
+					for (var j=0; j<pokemon.battle.sides[i].active.length; j++) {
+						if (pokemon.battle.sides[i].active[j] && !pokemon.battle.sides[i].active[j].volatiles['perishsong']) {
+							result = false;
+						}
+						if (pokemon.battle.sides[i].active[j] && pokemon.battle.sides[i].active[j].ability !== 'soundproof') {
+							pokemon.battle.sides[i].active[j].addVolatile('perishsong');
+						} else {
+							this.add('-immune', pokemon.battle.sides[i].active[j], '[msg]');
+							this.add('-end', pokemon.battle.sides[i].active[j], 'Perish Song');
+						}
+					}
+				}
+				if (result) return false;
+				this.add('-fieldactivate', 'move: Perish Song');
+			}
 		}
 	},
 
