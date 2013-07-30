@@ -2020,15 +2020,23 @@ exports.BattleScripts = {
 		if (lead === 'kyogre') {
 			ability = 'Thick Fat';
 			teamPool = kyogresPirates;
+			moveToGet = 'hurricane';
 		} else {
 			ability = 'Tinted Lens';
 			teamPool = groudonsSailors;
+			moveToGet = 'sunnyday';
 		}
 		for (var i=1; i<6; i++) {
 			var pokemon = teamPool[i];
 			var template = this.getTemplate(pokemon);
 			var set = this.randomSet(template, i);
 			set.ability = ability;
+			for (var m in set.moves[m]) {
+				set.moves[m] = set.moves[m].toLowerCase();
+			}
+			if (!(moveToGet in set.moves)) {
+				moves[3] = moveToGet;
+			}
 			team.push(set);
 		}
 		

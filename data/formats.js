@@ -1278,7 +1278,7 @@ exports.BattleFormats = {
 			);
 		},
 		onSwitchIn: function(pokemon) {
-			if (pokemon.battle.turn > 1) {
+			if (pokemon.battle.turn > 0) {
 				var result = true;
 				for (var i=0; i<pokemon.battle.sides.length; i++) {
 					for (var j=0; j<pokemon.battle.sides[i].active.length; j++) {
