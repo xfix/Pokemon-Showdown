@@ -12,11 +12,11 @@ exports.BattleFormats = {
 				problems.push(set.species+' is not a real Pokemon.');
 			}
 			var hasHP = false;
-			if (item) {
-				if (item.gen > this.gen) {
-					problems.push(item.name+' does not exist in gen '+this.gen+'.');
+			if (set.item) {
+				if (set.item.gen > this.gen) {
+					problems.push(set.item.name+' does not exist in gen '+this.gen+'.');
 				} else if (item.isNonstandard) {
-					problems.push(item.name + ' is not a real item.');
+					problems.push(set.item.name + ' is not a real item.');
 				}
 			}
 			if (set.moves) for (var i=0; i<set.moves.length; i++) {
