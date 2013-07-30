@@ -2035,7 +2035,7 @@ exports.BattleScripts = {
 				set.moves[m] = set.moves[m].toLowerCase();
 			}
 			if (!(moveToGet in set.moves)) {
-				moves[3] = moveToGet;
+				set.moves[3] = moveToGet;
 			}
 			team.push(set);
 		}
