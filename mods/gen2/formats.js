@@ -15,7 +15,7 @@ exports.BattleFormats = {
 			if (set.item) {
 				if (set.item.gen > this.gen) {
 					problems.push(set.item.name+' does not exist in gen '+this.gen+'.');
-				} else if (item.isNonstandard) {
+				} else if (set.item.isNonstandard) {
 					problems.push(set.item.name + ' is not a real item.');
 				}
 			}
