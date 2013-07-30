@@ -1997,44 +1997,38 @@ exports.BattleScripts = {
 		return team;
 	},
 	randomSeasonalAATeam: function(side) {
-		// Seasonal Pokemon list
-		var seasonalPokemonList = [
-			'alomomola', 'arcanine', 'arceusfire', 'basculin', 'beautifly', 'beedrill', 'blastoise', 'blaziken', 'bouffalant',
-			'braviary', 'camerupt', 'carracosta', 'castform', 'celebi', 'chandelure', 'charizard', 'charmander',
-			'charmeleon', 'cherrim', 'chimchar', 'combusken', 'corsola', 'crawdaunt', 'crustle', 'cyndaquil', 'darmanitan',
-			'darumaka', 'drifblim', 'emboar', 'entei', 'escavalier', 'exeggutor', 'fearow', 'ferrothorn',
-			'flareon', 'galvantula', 'genesect', 'groudon', 'growlithe', 'hariyama', 'heatmor', 'heatran', 'heracross',
-			'hitmonchan', 'hitmonlee', 'hitmontop', 'honchkrow', 'hooh', 'houndoom', 'houndour', 'infernape', 'jirachi',
-			'jumpluff', 'kingler', 'kricketune', 'lampent', 'lanturn', 'lapras', 'larvesta', 'leafeon', 'leavanny', 'ledian',
-			'lilligant', 'litwick', 'lunatone', 'magby', 'magcargo', 'magmar', 'magmortar', 'mantine', 'meganium', 'miltank',
-			'moltres', 'monferno', 'murkrow', 'ninetales', 'numel', 'omastar', 'pansear', 'pignite', 'politoed', 'poliwrath',
-			'ponyta', 'primeape', 'quilava', 'raikou', 'rapidash', 'reshiram', 'rotomfan', 'rotomheat', 'rotommow', 'rotomwash',
-			'scizor', 'scyther', 'sharpedo', 'sigilyph', 'simisear', 'skarmory', 'slugma', 'solrock', 'stantler', 'staraptor',
-			'stoutland', 'suicune', 'sunflora', 'swoobat', 'tauros', 'tepig', 'thundurus', 'thundurustherian', 'torchic',
-			'torkoal', 'toxicroak', 'tropius', 'typhlosion', 'venomoth', 'venusaur', 'vespiquen', 'victini', 'victreebel',
-			'vileplume', 'volcarona', 'vulpix', 'wailord', 'whimsicott', 'xatu', 'yanmega', 'zapdos', 'zebstrika', 'zoroark'
+		// First we choose the lead
+		var dice = this.random(100);
+		var lead = (dice  < 50)? 'groudon' : 'kyogre';
+		var groudonsSailors = [
+			'smeargle', 'exploud', 'onix', 'blissey', 'chansey', 'luxray', 'entei', 'machop', 'machoke', 'machamp', 
+			'arcanine', 'alakazam', 'arceusfire', 'bibarel', 'blaziken', 'heatran', 'charizard', 'meloetta'
 		];
-		seasonalPokemonList = seasonalPokemonList.randomize();
+		var kyogresPirates = [
+			'tornadus', 'tornadustherian', 'volcarona', 'dragonite', 'ducklett', 'pelipper', 'pidgeot', 'pidgey',
+			'swanna', 'whimsicott', 'wingull', 'landorus', 'thundurus', 'thundurustherian', 'arceusflyng'
+		];
+		groudonsSailors = groudonsSailors.randomize();
+		kyogresPirates = kyogresPirates.randomize();
 
-		// Create the specific Pokémon for the user
-		var crypto = require('crypto');
-		var hash = parseInt(crypto.createHash('md5').update(toId(side.name)).digest('hex').substr(0, 8), 16);
-		var random = (5 * hash + 6) % 649;
-		// Find the Pokemon. Castform by default because lol
-		var pokeName = 'castform';
-		for (var p in this.data.Pokedex) {
-			if (this.data.Pokedex[p].num === random) {
-				pokeName = p;
-				break;
-			}
-		}
-		var team = [this.randomSet(this.getTemplate(pokeName), 0)];
+		// Add the lead.
+		var team = [this.randomSet(this.getTemplate(lead), 0)];
 		
-		// Now, let's make the team!
+		// Now, let's make the team. Each side has a different ability.
+		var teamPool = [];
+		var ability = 'Illuminate';
+		if (lead === 'kyogre') {
+			ability = 'Thick Fat';
+			teamPool = kyogresPirates;
+		} else {
+			ability = 'Tinted Lens';
+			teamPool = groudonsSailors;
+		}
 		for (var i=1; i<6; i++) {
-			var pokemon = seasonalPokemonList[i];
+			var pokemon = teamPool[i];
 			var template = this.getTemplate(pokemon);
 			var set = this.randomSet(template, i);
+			set.ability = ability;
 			team.push(set);
 		}
 		
