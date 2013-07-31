@@ -982,10 +982,10 @@ var User = (function () {
 			connection.popup(message);
 			return false;
 		}
-		/*if (ResourceMonitor.countPrepBattle(connection.ip || connection.latestIp, this.name)) {
+		if (ResourceMonitor.countPrepBattle(connection.ip || connection.latestIp, this.name)) {
 			connection.popup("Due to high load, you are limited to 6 battles every 3 minutes.");
 			return false;
-		}*/
+		}
 
 		var format = Tools.getFormat(formatid);
 		if (!format[''+type+'Show']) {
@@ -1280,7 +1280,7 @@ exports.getNextGroupSymbol = function(group, isDown, excludeRooms) {
 		var iterations = 0;
 		while (config.groups[nextGroupRank].roomonly && iterations < 10) {
 			nextGroupRank = config.groupsranking[config.groupsranking.indexOf(group) + (isDown ? -2 : 2)];
-			iterations++; // This is to prevent bad config files from crashing the server
+			iterations++; // This is to prevent bad config files from crashing the server.
 		}
 	}
 	if (!nextGroupRank) {

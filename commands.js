@@ -575,6 +575,7 @@ var commands = exports.commands = {
 		} else if (Users.usergroups[userid]) {
 			currentGroup = Users.usergroups[userid].substr(0,1);
 		}
+		
 		var nextGroup = target ? target : Users.getNextGroupSymbol(currentGroup, cmd === 'demote', true);
 		if (target === 'deauth') nextGroup = config.groupsranking[0];
 		if (!config.groups[nextGroup]) {
