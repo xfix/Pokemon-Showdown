@@ -575,8 +575,8 @@ var commands = exports.commands = {
 		} else if (Users.usergroups[userid]) {
 			currentGroup = Users.usergroups[userid].substr(0,1);
 		}
-
-		var nextGroup = target ? target : (cmd === 'demote')? (currentGroup === '&') ? '@' : Users.getNextGroupSymbol(currentGroup, true) : Users.getNextGroupSymbol(currentGroup, false);
+		var isDemotion = (cmd === 'demote');
+		var nextGroup = target ? target : (currentGroup === '&' && isDemotion)? '@' : (currentGroup === '@' && !isDemotion)? '&' : Users.getNextGroupSymbol(currentGroup, isDemotion);
 		if (target === 'deauth') nextGroup = config.groupsranking[0];
 		if (!config.groups[nextGroup]) {
 			return this.sendReply('Group \'' + nextGroup + '\' does not exist.');
