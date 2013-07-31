@@ -1276,7 +1276,7 @@ exports.pruneInactiveTimer = setInterval(
 
 exports.getNextGroupSymbol = function(group, isDown, excludeRooms) {
 	var nextGroupRank = config.groupsranking[config.groupsranking.indexOf(group) + (isDown ? -1 : 1)];
-	if (excludeRooms === true) {
+	if (excludeRooms === true && config.groups[nextGroupRank]) {
 		var iterations = 0;
 		while (config.groups[nextGroupRank].roomonly && iterations < 10) {
 			nextGroupRank = config.groupsranking[config.groupsranking.indexOf(group) + (isDown ? -2 : 2)];
