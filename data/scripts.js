@@ -2001,12 +2001,18 @@ exports.BattleScripts = {
 		var dice = this.random(100);
 		var lead = (dice  < 50)? 'groudon' : 'kyogre';
 		var groudonsSailors = [
-			'smeargle', 'exploud', 'onix', 'blissey', 'chansey', 'luxray', 'entei', 'machop', 'machoke', 'machamp', 
-			'arcanine', 'alakazam', 'arceusfire', 'bibarel', 'blaziken', 'heatran', 'charizard', 'meloetta'
+			'alakazam', 'arbok', 'arcanine', 'arceusfire', 'bibarel', 'bisharp', 'blaziken', 'blissey', 'cacturne',
+			'chandelure', 'chansey', 'chansey', 'charizard', 'cloyster', 'conkeldurr', 'druddigon', 'electivire',
+			'emboar', 'entei', 'exploud', 'gardevoir', 'genesect', 'golurk', 'hariyama', 'heatran', 'infernape',
+			'jellicent', 'lilligant', 'lucario', 'luxray', 'machamp', 'machoke', 'machop', 'magmortar', 'meloetta',
+			'onix', 'poliwrath', 'primeape', 'smeargle', 'snorlax', 'toxicroak', 'typhlosion', 'weezing'
 		];
 		var kyogresPirates = [
-			'tornadus', 'tornadustherian', 'volcarona', 'dragonite', 'ducklett', 'pelipper', 'pidgeot', 'pidgey',
-			'swanna', 'whimsicott', 'wingull', 'landorus', 'thundurus', 'thundurustherian', 'arceusflyng'
+			'absol', 'arceusflying', 'cofagrigus', 'crobat', 'darkrai', 'delibird', 'dragonite', 'ducklett', 
+			'garchomp', 'gengar', 'golem', 'gothitelle', 'honchkrow', 'krookodile', 'landorus', 'ludicolo', 
+			'mandibuzz', 'pelipper', 'pidgeot', 'pidgey', 'sableye', 'scizor', 'scyther', 'sharpedo', 'shiftry', 
+			'skarmory', 'staraptor', 'swanna', 'thundurus', 'thundurustherian', 'tornadus', 'tornadustherian', 
+			'tyranitar', 'volcarona', 'wailord', 'weavile', 'whimsicott', 'wingull', 'zoroark'
 		];
 		groudonsSailors = groudonsSailors.randomize();
 		kyogresPirates = kyogresPirates.randomize();
@@ -2024,7 +2030,7 @@ exports.BattleScripts = {
 		} else {
 			ability = 'Tinted Lens';
 			teamPool = groudonsSailors;
-			moveToGet = 'sunnyday';
+			moveToGet = 'vcreate';
 		}
 		for (var i=1; i<6; i++) {
 			var pokemon = teamPool[i];
