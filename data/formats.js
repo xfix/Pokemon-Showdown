@@ -497,8 +497,15 @@ exports.BattleFormats = {
 		challengeShow: true,
 		searchShow: true,
 		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Evasion Abilities Clause', 'Team Preview', 'Sleep Clause Mod', 'Species Clause', 'OHKO Clause', 'Moody Clause', 'Evasion Moves Clause', 'HP Percentage Mod'],
+		banlist: ['Unreleased', 'Drizzle ++ Swift Swim', 'Soul Dew',
+			'Mewtwo', 'Lugia', 'Ho-Oh', 'Blaziken', 'Kyogre', 'Groudon', 'Rayquaza', 'Deoxys', 'Deoxys-Attack', 'Dialga', 'Palkia', 'Giratina', 'Giratina-Origin', 'Manaphy', 'Darkrai', 'Shaymin-Sky',
+			'Arceus', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fighting', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus-Poison', 'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water',
+			'Reshiram', 'Zekrom', 'Kyurem-White', 'Genesect'
+		],
 		validateSet: function (set, format) {
 			var problems = [];
+			// Check that moves aren't repeated
 			var moves = [];
 			if (set.moves) {
 				var hasMove = {};
@@ -511,21 +518,21 @@ exports.BattleFormats = {
 				}
 			}
 			set.moves = moves;
-			var lsetData = {set:set};
+
+			// Check learnset for illegalities unless the move shares typing
+			var lsetData = {set:set, format:format};
 			var template = this.getTemplate(string(set.species));
 			for (var i=0; i<set.moves.length; i++) {
 				if (!set.moves[i]) continue;
 				var move = this.getMove(string(set.moves[i]));
+				// Check if the Pokémon has the move type
 				if (template.types.indexOf(move.type) === -1) {
 					var problem = this.checkLearnset(move, template, lsetData);
 					if (problem) {
-						var problemString = template.species+" can't learn "+move.name;
+						var problemString = template.species + " can't learn " + move.name;
 						if (problem.type === 'incompatible') {
-							if (isDW) {
-								problemString = problemString.concat(" because it's incompatible with its ability or another move.");
-							} else {
-								problemString = problemString.concat(" because it's incompatible with another move.");
-							}
+							problemString = problemString.concat(((isDW)? " because it's incompatible with its ability or another move."
+							: " because it's incompatible with another move."));
 						} else if (problem.type === 'oversketched') {
 							problemString = problemString.concat(' because it can only sketch '+problem.maxSketches+' move'+(problem.maxSketches>1?'s':'')+'.');
 						} else {
@@ -535,7 +542,8 @@ exports.BattleFormats = {
 					}
 				}
 			}
-		
+			
+			// Check the EVs
 			var totalEV = 0;
 			for (var k in set.evs) {
 				if (typeof set.evs[k] !== 'number') set.evs[k] = 0;
@@ -544,13 +552,7 @@ exports.BattleFormats = {
 			if (totalEV > 510) problems.push(name+' has more than 510 total EVs.');
 			
 			return problems;
-		},
-		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
-		banlist: ['Drizzle ++ Swift Swim', 'Soul Dew',
-			'Mewtwo', 'Lugia', 'Ho-Oh', 'Blaziken', 'Kyogre', 'Groudon', 'Rayquaza', 'Deoxys', 'Deoxys-Attack', 'Dialga', 'Palkia', 'Giratina', 'Giratina-Origin', 'Manaphy', 'Darkrai', 'Shaymin-Sky',
-			'Arceus', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fighting', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus-Poison', 'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water',
-			'Reshiram', 'Zekrom', 'Kyurem-White', 'Genesect'
-		]
+		}
 	},
 	statexchange: {
 		name: "Stat Exchange",
@@ -1344,7 +1346,8 @@ exports.BattleFormats = {
 				if (result) return false;
 				this.add('-fieldactivate', 'move: Perish Song');
 			}
-		}
+		},
+		ruleset: ['Random Battle']
 	},
 
 	// Past Generations
