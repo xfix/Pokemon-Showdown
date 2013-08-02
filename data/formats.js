@@ -254,19 +254,6 @@ exports.BattleFormats = {
 		challengeShow: true,
 		ruleset: ['Pokemon', 'Team Preview', 'HP Percentage Mod']
 	},
-	doublescustomgame: {
-		name: "Doubles Custom Game",
-		section: "Other Metagames",
-
-		effectType: 'Format',
-		gameType: 'doubles',
-		challengeShow: true,
-		canUseRandomTeam: true,
-		debug: true,
-		maxLevel: 1000,
-		defaultLevel: 100,
-		ruleset: []
-	},
 	gbusingles: {
 		name: "GBU Singles",
 		section: "Other Metagames",
@@ -473,7 +460,7 @@ exports.BattleFormats = {
 	},
 	smogondoubles: {
 		name: "Smogon Doubles",
-		section: "Other Metagames",
+		section: "Doubles",
 
 		effectType: 'Format',
 		gameType: 'doubles',
@@ -487,6 +474,32 @@ exports.BattleFormats = {
 			'Arceus', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fighting', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus', 'Arceus-Poison', 'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water',
 			'Reshiram', 'Zekrom', 'Kyurem-White'
 		]
+	},
+	smogondoublesubers: {
+		name: "Smogon Doubles Ubers",
+		section: "Doubles",
+
+		effectType: 'Format',
+		gameType: 'doubles',
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		ruleset: ['Pokemon', 'Team Preview', 'Sleep Clause Mod', 'Species Clause', 'OHKO Clause', 'Moody Clause', 'Evasion Moves Clause', 'Evasion Abilities Clause', 'HP Percentage Mod'],
+		banlist: ['Illegal', 'Sky Drop', 'Dark Void']
+	},
+	doublescustomgame: {
+		name: "Doubles Custom Game",
+		section: "Doubles",
+
+		effectType: 'Format',
+		gameType: 'doubles',
+		challengeShow: true,
+		canUseRandomTeam: true,
+		debug: true,
+		maxLevel: 1000,
+		defaultLevel: 100,
+		ruleset: []
 	},
 	stabmons: {
 		name: "STABmons",
@@ -591,7 +604,7 @@ exports.BattleFormats = {
 	},
 	vgc2013doubles: {
 		name: "VGC 2013 (Doubles)",
-		section: "Other Metagames",
+		section: "Doubles",
 
 		effectType: 'Format',
 		gameType: 'doubles',
