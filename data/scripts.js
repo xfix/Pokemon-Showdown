@@ -2001,12 +2001,18 @@ exports.BattleScripts = {
 		var dice = this.random(100);
 		var lead = (dice  < 50)? 'groudon' : 'kyogre';
 		var groudonsSailors = [
-			'smeargle', 'exploud', 'onix', 'blissey', 'chansey', 'luxray', 'entei', 'machop', 'machoke', 'machamp', 
-			'arcanine', 'alakazam', 'arceusfire', 'bibarel', 'blaziken', 'heatran', 'charizard', 'meloetta'
+			'alakazam', 'arbok', 'arcanine', 'arceusfire', 'bibarel', 'bisharp', 'blaziken', 'blissey', 'cacturne',
+			'chandelure', 'chansey', 'chansey', 'charizard', 'cloyster', 'conkeldurr', 'druddigon', 'electivire',
+			'emboar', 'entei', 'exploud', 'gardevoir', 'genesect', 'golurk', 'hariyama', 'heatran', 'infernape',
+			'jellicent', 'lilligant', 'lucario', 'luxray', 'machamp', 'machoke', 'machop', 'magmortar', 'meloetta',
+			'onix', 'poliwrath', 'primeape', 'smeargle', 'snorlax', 'toxicroak', 'typhlosion', 'weezing'
 		];
 		var kyogresPirates = [
-			'tornadus', 'tornadustherian', 'volcarona', 'dragonite', 'ducklett', 'pelipper', 'pidgeot', 'pidgey',
-			'swanna', 'whimsicott', 'wingull', 'landorus', 'thundurus', 'thundurustherian', 'arceusflyng'
+			'absol', 'arceusflying', 'cofagrigus', 'crobat', 'darkrai', 'delibird', 'dragonite', 'ducklett', 
+			'garchomp', 'gengar', 'golem', 'gothitelle', 'honchkrow', 'krookodile', 'landorus', 'ludicolo', 
+			'mandibuzz', 'pelipper', 'pidgeot', 'pidgey', 'sableye', 'scizor', 'scyther', 'sharpedo', 'shiftry', 
+			'skarmory', 'staraptor', 'swanna', 'thundurus', 'thundurustherian', 'tornadus', 'tornadustherian', 
+			'tyranitar', 'volcarona', 'wailord', 'weavile', 'whimsicott', 'wingull', 'zoroark'
 		];
 		groudonsSailors = groudonsSailors.randomize();
 		kyogresPirates = kyogresPirates.randomize();
@@ -2022,19 +2028,22 @@ exports.BattleScripts = {
 			teamPool = kyogresPirates;
 			moveToGet = 'hurricane';
 		} else {
-			ability = 'Tinted Lens';
+			var dice = this.random(100);
+			ability = (dice < 33)? 'Water Absorb' : 'Tinted Lens';
 			teamPool = groudonsSailors;
-			moveToGet = 'sunnyday';
+			moveToGet = 'vcreate';
 		}
 		for (var i=1; i<6; i++) {
 			var pokemon = teamPool[i];
 			var template = this.getTemplate(pokemon);
 			var set = this.randomSet(template, i);
 			set.ability = ability;
+			var hasMoves = {};
 			for (var m in set.moves[m]) {
 				set.moves[m] = set.moves[m].toLowerCase();
+				hasMoves[set.moves[m]] = true;
 			}
-			if (!(moveToGet in set.moves)) {
+			if (!(moveToGet in hasMoves)) {
 				set.moves[3] = moveToGet;
 			}
 			team.push(set);
