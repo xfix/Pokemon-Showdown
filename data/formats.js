@@ -1309,7 +1309,8 @@ exports.BattleFormats = {
 				if (result) return false;
 				this.add('-fieldactivate', 'move: Perish Song');
 			}
-		}
+		},
+		ruleset: ['Random Battle']
 	},
 
 	// Past Generations

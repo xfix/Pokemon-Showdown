@@ -3721,12 +3721,6 @@ exports.BattleFormatsData = {
 		],
 		tier: "Uber"
 	},
-	arceusunknown: {
-		eventPokemon: [
-			{"generation":4,"level":100,"moves":["judgment","roaroftime","spacialrend","shadowforce"],"pokeball":"cherishball"},
-		],
-		tier: "Uber"
-	},
 	victini: {
 		viableMoves: {"vcreate":1,"boltstrike":1,"uturn":1,"psychic":1,"focusblast":1,"blueflare":1},
 		eventPokemon: [
