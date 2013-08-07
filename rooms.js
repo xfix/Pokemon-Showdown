@@ -54,6 +54,10 @@ var GlobalRoom = (function() {
 		this.autojoin = []; // rooms that users autojoin upon connecting
 		this.staffAutojoin = []; // rooms that staff autojoin upon connecting
 		for (var i=0; i<this.chatRoomData.length; i++) {
+			if (!this.chatRoomData[i] || !this.chatRoomData[i].title) {
+				console.log('ERROR: Room number ' + i + ' has no data.');
+				continue;
+			}
 			var id = toId(this.chatRoomData[i].title);
 			console.log("NEW CHATROOM: "+id);
 			var room = rooms[id] = new ChatRoom(id, this.chatRoomData[i].title, this.chatRoomData[i]);
@@ -219,6 +223,7 @@ var GlobalRoom = (function() {
 		var rooms = {official:[], chat:[], userCount: this.userCount, battleCount: this.battleCount};
 		for (var i=0; i<this.chatRooms.length; i++) {
 			var room = this.chatRooms[i];
+			if (!room) continue;
 			if (room.isPrivate) continue;
 			(!room.auth ? rooms.official : rooms.chat).push({
 				title: room.title,
@@ -357,34 +362,43 @@ var GlobalRoom = (function() {
 		this.writeChatRoomData();
 		return true;
 	};
-	GlobalRoom.prototype.removeChatRoom = function(title) {
-		var id = toId(title);
-		if (!rooms[id]) return false;
-		// Kick all players in roomid
-		for (var u in rooms[id].users) {
-			var user = Users.get(u);
-			if (user) user.leaveRoom(id);
+	GlobalRoom.prototype.deregisterChatRoom = function(id) {
+		var id = toId(id);
+		var room = rooms[id];
+		if (!room) return false; // room doesn't exist
+		if (!room.chatRoomData) return false; // room isn't registered
+		// deregister from global chatRoomData
+		// looping from the end is a pretty trivial optimization, but the
+		// assumption is that more recently added rooms are more likely to
+		// be deleted
+		for (var i=this.chatRoomData.length-1; i>=0; i--) {
+			if (id === toId(this.chatRoomData[i].title)) {
+				this.chatRoomData.splice(i, 1);
+				this.writeChatRoomData();
+				break;
+			}
 		}
-		// Find chatRoomData
-		var chatRoomDataToDelete = false;
-		for (var r in this.chatRoomData) {
-			if (toId(this.chatRoomData[r].title) === id) chatRoomDataToDelete = r;
-		}
-		if (!chatRoomDataToDelete) return false;
-		var chatRoomsToDelete = false;
-		// Find chatRooms
-		for (var r in this.chatRooms) {
-			if (toId(this.chatRooms[r].title) === id) chatRoomsToDelete = r;
-		}
-		if (!chatRoomsToDelete) return false;
-		// Delete all the room data and write the file
-		delete this.chatRooms[chatRoomsToDelete];
-		delete this.chatRoomData[chatRoomDataToDelete];
-		delete rooms[id];
-		this.writeChatRoomData();
+		delete room.chatRoomData;
 		return true;
 	};
-	GlobalRoom.prototype.autojoin = function(user, connection) {
+	GlobalRoom.prototype.delistChatRoom = function(id) {
+		var id = toId(id);
+		if (!rooms[id]) return false; // room doesn't exist
+		for (var i=this.chatRooms.length-1; i>=0; i--) {
+			if (id === this.chatRooms[i].id) {
+				this.chatRooms.splice(i, 1);
+				break;
+			}
+		}
+	};
+	GlobalRoom.prototype.removeChatRoom = function(id) {
+		var id = toId(id);
+		var room = rooms[id];
+		if (!room) return false; // room doesn't exist
+		room.destroy();
+		return true;
+	};
+	GlobalRoom.prototype.autojoinRooms = function(user, connection) {
 		// we only autojoin regular rooms if the client requests it with /autojoin
 		// note that this restriction doesn't apply to staffAutojoin
 		for (var i=0; i<this.autojoin.length; i++) {
@@ -1390,6 +1404,22 @@ var ChatRoom = (function() {
 		modlog.write('['+(new Date().toJSON())+'] ('+room.id+') '+result+'\n');
 	};
 	ChatRoom.prototype.logEntry = function() {};
+	ChatRoom.prototype.destroy = function() {
+		// deallocate ourself
+
+		// remove references to ourself
+		for (var i in this.users) {
+			this.users[i].leaveRoom(this);
+			delete this.users[i];
+		}
+		this.users = null;
+
+		rooms.global.deregisterChatRoom(this.id);
+		rooms.global.delistChatRoom(this.id);
+
+		// get rid of some possibly-circular references
+		delete rooms[this.id];
+	};
 	return ChatRoom;
 })();
 

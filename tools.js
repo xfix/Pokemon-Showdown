@@ -461,9 +461,8 @@ module.exports = (function () {
 
 		do {
 			alreadyChecked[template.speciesid] = true;
-			if (format.id === 'stabmons') {
-				if (template.types.indexOf(this.getMove(move).type) > -1) return false;
-			}
+			// Stabmons hack to avoid copying all of validateSet to formats.
+			if (format.id === 'stabmons' && template.types.indexOf(this.getMove(move).type) > -1) return false; 
 			if (template.learnset) {
 				if (template.learnset[move] || template.learnset['sketch']) {
 					var lset = template.learnset[move];
