@@ -162,6 +162,28 @@ exports.BattleFormats = {
 		ruleset: ['Pokemon', 'OHKO Clause', 'HP Percentage Mod'],
 		banlist: ['Wonder Guard', 'Pure Power', 'Huge Power', 'Shadow Tag', 'Arena Trap']
 	},
+	budgetmons: {
+		name: "Budgetmons",
+		section: "Other Metagames",
+
+		effectType: 'Format',
+		rated: true,
+		challengeShow: true,
+		searchShow: true,
+		isTeambuilderFormat: true,
+		validateTeam: function(team, format) {
+			var bst = 0;
+			for (var i=0; i<team.length; i++) {
+				var template = this.getTemplate(team[i].species);
+				Object.values(template.baseStats, function(value) {
+					bst += value;
+				});
+			}
+			if (bst > 2000) return ['The combined BST of your team is greater than 2000.'];
+		},
+		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
+		banlist: ['Drizzle ++ Swift Swim', 'Soul Dew']
+	},
 	cap: {
 		name: "CAP",
 		section: "Other Metagames",
@@ -300,7 +322,13 @@ exports.BattleFormats = {
 		challengeShow: true,
 		searchShow: true,
 		isTeambuilderFormat: true,
-		ruleset: ['GSC Modern Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
+		validateSet: function(set, format) {
+			var problems = [];
+			var template = this.getTemplate(set.species);
+			if (template.gen > 2) problems.push(set.species + ' must come from Gen 1 or Gen 2.');
+			return problems;
+		},
+		ruleset: ['Standard', 'Evasion Abilities Clause', 'Team Preview'],
 		banlist: ['Mewtwo', 'Lugia', 'Ho-Oh', 'Venusaur', 'Drizzle ++ Swift Swim']
 	},
 	joimmons: {
@@ -1657,15 +1685,6 @@ exports.BattleFormats = {
 			if (!this.checkAbilities(selectedAbilities, defaultAbilities)) {
 				return ['That is not a valid Ability Exchange team.'];
 			}
-		}
-	},
-	gscmodernpokemon: {
-		effectType: 'Banlist',
-		validateSet: function(set, format) {
-			var problems = [];
-			var template = this.getTemplate(set.species);
-			if (template.gen > 2) problems.push(set.species + ' must come from Gen 1 or Gen 2.');
-			return problems;
 		}
 	},
 	offstatpokemon: {
