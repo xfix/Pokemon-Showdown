@@ -145,6 +145,13 @@
 
 var commands = exports.commands = {
 
+	ip: 'whois',
+	getip: 'whois',
+	rooms: 'whois',
+	altcheck: 'whois',
+	alt: 'whois',
+	alts: 'whois',
+	getalts: 'whois',
 	whois: function(target, room, user) {
 		var targetUser = this.targetUserOrSelf(target);
 		if (!targetUser) {
@@ -234,6 +241,8 @@ var commands = exports.commands = {
 	 *********************************************************/
 
 	stats: 'data',
+	dex: 'data',
+	pokedex: 'data',
 	data: function(target, room, user) {
 		if (!this.canBroadcast()) return;
 
@@ -657,6 +666,15 @@ var commands = exports.commands = {
 			'- <a href="http://www.smogon.com/forums/showthread.php?t=3466826">Practice BW CAP teams</a>');
 	},
 
+	gennext: function(target, room, user) {
+		if (!this.canBroadcast()) return;
+		this.sendReplyBox('NEXT (also called Gen-NEXT) is a mod that makes changes to the game:<br />' +
+			'- <a href="https://github.com/Zarel/Pokemon-Showdown/blob/master/mods/gennext/README.md">README: overview of NEXT</a><br />' +
+			'Example replays:<br />' +
+			'- <a href="http://pokemonshowdown.com/replay/gennextou-37815908">roseyraid vs Zarel</a><br />' +
+			'- <a href="http://pokemonshowdown.com/replay/gennextou-37900768">QwietQwilfish vs pickdenis</a>');
+	},
+
 	om: 'othermetas',
 	othermetas: function(target, room, user) {
 		if (!this.canBroadcast()) return;
@@ -686,10 +704,6 @@ var commands = exports.commands = {
 		if (target === 'all' || target === 'seasonal') {
 			matched = true;
 			buffer += '- <a href="http://www.smogon.com/sim/seasonal">Seasonal Ladder</a><br />';
-		}
-		if (target === 'all' || target === 'smogondoubles' || target === 'doubles') {
-			matched = true;
-			buffer += '- <a href="http://www.smogon.com/forums/threads/3476469/">Smogon Doubles</a><br />';
 		}
 		if (target === 'all' || target === 'vgc2013' || target === 'vgc') {
 			matched = true;
@@ -814,6 +828,10 @@ var commands = exports.commands = {
 			matched = true;
 			buffer += '- <a href="http://www.smogon.com/bw/tiers/lc">Little Cup Pokemon</a><br />';
 		}
+		if (target === 'all' || target === 'doubles') {
+			matched = true;
+			buffer += '- <a href="http://www.smogon.com/bw/metagames/doubles">Doubles</a><br />';
+		}
 		if (!matched) {
 			return this.sendReply('The Tiers entry "'+target+'" was not found. Try /tiers for general help.');
 		}
@@ -833,7 +851,9 @@ var commands = exports.commands = {
 		var atLeastOne = false;
 		var generation = (targets[1] || "bw").trim().toLowerCase();
 		var genNumber = 5;
-
+		var doublesFormats = {'vgc2012':1,'vgc2013':1,'doubles':1};
+		var doublesFormat = (!targets[2] && generation in doublesFormats)? generation : (targets[2] || '').trim().toLowerCase();
+		var doublesText = '';
 		if (generation === "bw" || generation === "bw2" || generation === "5" || generation === "five") {
 			generation = "bw";
 		} else if (generation === "dp" || generation === "dpp" || generation === "4" || generation === "four") {
@@ -850,6 +870,15 @@ var commands = exports.commands = {
 			genNumber = 1;
 		} else {
 			generation = "bw";
+		}
+		if (doublesFormat !== '') {
+			// Smogon only has doubles formats analysis from gen 5 onwards.
+			if (!(generation in {'bw':1,'xy':1}) || !(doublesFormat in doublesFormats)) {
+				doublesFormat = '';
+			} else {
+				doublesText = {'vgc2012':'VGC 2012 ','vgc2013':'VGC 2013 ','doubles':'Doubles '}[doublesFormat];
+				doublesFormat = '/' + doublesFormat;
+			}
 		}
 		
 		// Pokemon
@@ -879,7 +908,7 @@ var commands = exports.commands = {
 			if (poke === 'arceus') poke = 'arceus-normal';
 			if (poke === 'thundurus-therian') poke = 'thundurus-t';
 	
-			this.sendReplyBox('<a href="http://www.smogon.com/'+generation+'/pokemon/'+poke+'">'+generation.toUpperCase()+' '+pokemon.name+' analysis</a>, brought to you by <a href="http://www.smogon.com">Smogon University</a>');
+			this.sendReplyBox('<a href="http://www.smogon.com/'+generation+'/pokemon/'+poke+doublesFormat+'">'+generation.toUpperCase()+' '+doublesText+pokemon.name+' analysis</a>, brought to you by <a href="http://www.smogon.com">Smogon University</a>');
 		}
 		
 		// Item
@@ -912,6 +941,10 @@ var commands = exports.commands = {
 	 * Miscellaneous commands
 	 *********************************************************/
 
+	birkal: function(target, room, user) {
+		this.sendReply("It's not funny anymore.");
+	},
+
 	potd: function(target, room, user) {
 		if (!this.can('potd')) return false;
 
@@ -929,6 +962,11 @@ var commands = exports.commands = {
 	register: function() {
 		if (!this.canBroadcast()) return;
 		this.sendReply("You must win a rated battle to register.");
+	},
+
+	br: 'banredirect',
+	banredirect: function() {
+		this.sendReply('/banredirect - This command is obsolete and has been removed.');
 	},
 
 	lobbychat: function(target, room, user, connection) {
