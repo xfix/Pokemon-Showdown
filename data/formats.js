@@ -179,10 +179,10 @@ exports.BattleFormats = {
 					bst += value;
 				});
 			}
-			if (bst > 2000) return ['The combined BST of your team is greater than 2000.'];
+			if (bst > 2300) return ['The combined BST of your team is greater than 2300.'];
 		},
-		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
-		banlist: ['Drizzle ++ Swift Swim', 'Soul Dew']
+		ruleset: ['OU'],
+		banlist: []
 	},
 	cap: {
 		name: "CAP",
