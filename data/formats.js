@@ -597,8 +597,8 @@ exports.BattleFormats = {
 		challengeShow: true,
 		searchShow: true,
 		isTeambuilderFormat: true,
-		ruleset: ['OU'],
-		banlist: ['Elekid ++ Wonder Guard']
+		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
+		banlist: ['Elekid ++ Wonder Guard', 'Moody', 'Soul Dew']
 	},
 
 	// Seasonals
