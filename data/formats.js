@@ -1287,7 +1287,7 @@ exports.BattleFormats = {
 		searchShow: true,
 		isTeambuilderFormat: true,
 		ruleset: ['Pokemon', 'Team Preview', 'Sleep Clause Mod', 'Species Clause', 'OHKO Clause', 'Moody Clause', 'Evasion Moves Clause', 'Evasion Abilities Clause', 'HP Percentage Mod'],
-		banlist: ['Illegal', 'Dark Void', 'Soul Dew',
+		banlist: ['Illegal', 'Soul Dew', 'Dark Void', 'Sky Drop',
 			'Mewtwo', 'Lugia', 'Ho-Oh', 'Kyogre', 'Groudon', 'Rayquaza', 'Dialga', 'Palkia', 'Giratina', 'Giratina-Origin',
 			'Arceus', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fighting', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus', 'Arceus-Poison', 'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water',
 			'Reshiram', 'Zekrom', 'Kyurem-White'
@@ -1304,7 +1304,7 @@ exports.BattleFormats = {
 		searchShow: true,
 		isTeambuilderFormat: true,
 		ruleset: ['Pokemon', 'Team Preview', 'Sleep Clause Mod', 'Species Clause', 'OHKO Clause', 'Moody Clause', 'Evasion Moves Clause', 'Evasion Abilities Clause', 'HP Percentage Mod'],
-		banlist: ['Illegal', 'Sky Drop', 'Dark Void']
+		banlist: ['Illegal', 'Dark Void', 'Sky Drop']
 	},
 	vgc2013: {
 		name: "VGC 2013",
@@ -1411,9 +1411,8 @@ exports.BattleFormats = {
 		mod: 'gen4',
 		effectType: 'Format',
 		challengeShow: true,
-		canUseRandomTeam: true,
 		debug: true,
-		ruleset: ['HP Percentage Mod']
+		ruleset: []
 	},
 	gen3ou: {
 		name: "[Gen 3] OU",
@@ -1450,9 +1449,8 @@ exports.BattleFormats = {
 		mod: 'gen3',
 		effectType: 'Format',
 		challengeShow: true,
-		canUseRandomTeam: true,
 		debug: true,
-		ruleset: ['HP Percentage Mod']
+		ruleset: []
 	},
 	gen2ou: {
 		name: "[Gen 2] OU",
@@ -1466,6 +1464,16 @@ exports.BattleFormats = {
 		isTeambuilderFormat: true,
 		ruleset: ['Pokemon', 'Standard'],
 		banlist: ['Uber']
+	},
+	gen2customgame: {
+		name: "[Gen 2] Custom Game",
+		section: "Past Generations",
+
+		mod: 'gen2',
+		effectType: 'Format',
+		challengeShow: true,
+		debug: true,
+		ruleset: ['Pokemon']
 	},
 	gen1ou: {
 		name: "[Gen 1] OU",
@@ -1530,7 +1538,7 @@ exports.BattleFormats = {
 		effectType: 'Format',
 		challengeShow: true,
 		debug: true,
-		ruleset: ['Pokemon', 'HP Percentage Mod']
+		ruleset: ['Pokemon']
 	},
 
 	// Rulesets
