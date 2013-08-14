@@ -50,7 +50,7 @@ exports.BattleFormats = {
 		searchShow: true,
 		isTeambuilderFormat: true,
 		ruleset: ['UU'],
-		banlist: ['UU', 'BL2', 'Shell Smash + Baton Pass']
+		banlist: ['UU', 'BL2', 'Shell Smash + Baton Pass', 'Snow Warning']
 	},
 	nu: {
 		name: "NU",
