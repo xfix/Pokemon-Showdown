@@ -379,5 +379,138 @@ exports.BattleFormats = {
 			}
 			return ["Your team must share a type."];
 		}
+	},
+	// New rulesets
+	abilityexchangepokemon: {
+		effectType: 'Banlist',
+		validateTeam: function(team, format) {
+			var selectedAbilities = [];
+			var defaultAbilities = [];
+			var bannedAbilities = {adaptability:1, arenatrap:1, contrary:1, hugepower:1, imposter:1, purepower:1, prankster:1, serenegrace:1, shadowtag:1, simple:1, speedboost:1, tintedlens:1, wonderguard:1};
+			var problems = [];
+			for (var i=0; i<team.length; i++) {
+				var template = this.getTemplate(team[i].species);
+				var ability = this.getAbility(team[i].ability);
+				var abilities = Object.extended(template.abilities).values();
+				if (ability.id in bannedAbilities && abilities.indexOf(ability.name) === -1) {
+					problems.push(ability.name+' is banned on Pokemon that do not legally have it.');
+				}
+				selectedAbilities.push(ability.name);
+				defaultAbilities.push(abilities);
+			}
+			if (problems.length) return problems;
+			if (!this.checkAbilities(selectedAbilities, defaultAbilities)) {
+				return ['That is not a valid Ability Exchange team.'];
+			}
+		}
+	},
+	offstatpokemon: {
+		effectType: 'Banlist',
+		validateSet: function(set, format) {
+			var problems = [];
+			var template = this.getTemplate(set.species);
+			var attackingStat = '';
+			var badStat = '';
+			if (template.baseStats['atk'] > template.baseStats['spa']) {
+				attackingStat = 'atk';
+				badStat = 'spa';
+			} else {
+				attackingStat = 'spa';
+				badStat = 'atk';
+			}
+			if (template.baseStats[attackingStat] - template.baseStats[badStat] < 50) {
+				problems.push(set.species + ' is not allowed in Offstat since its main stat is not at least 50 points higher.');
+			}
+			if (set.moves) for (var i=0; i<set.moves.length; i++) {
+				var move = this.getMove(set.moves[i]);
+				if ((move.category === 'Special' && badStat !== 'spa') || (move.category === 'Physical' && badStat !== 'atk')) {
+					problems.push(move.name + ' is not allowed since it uses the highest attacking stat of ' + set.species + '.');
+				}
+			}
+			return problems;
+		}
+	},
+	slowmonspokemon: {
+		effectType: 'Banlist',
+		validateSet: function(set, format) {
+			var problems = [];
+			if (set.level < 100) problems.push(set.species + ' must be level 100.');
+			return problems;
+		}
+	},
+	suicidepokemon: {
+		effectType: 'Banlist',
+		validateTeam: function(team, format) {
+			if (team.length < 6) return ["You need 6 Pokemon on your team."];
+		},
+		validateSet: function(set, format) {
+			var problems = [];
+			var template = this.getTemplate(set.species);
+			if (set.level < 100) problems.push(set.species + ' must be level 100.');
+			if (!set.moves || set.moves.length < 4) {
+				problems.push(set.species + ' must have four moves.');
+			} else {
+				var hasOneAttack = false;
+				for (var i=0; i<4; i++) {
+					var move = this.getMove(set.moves[i]);
+					hasOneAttack = (move.category === 'Special' || move.category === 'Physical');
+					if (hasOneAttack) break;
+				}
+				if (!hasOneAttack) problems.push(set.species + ' must have an attacking move.');
+			}
+			return problems;
+		}
+	},
+	technicimonspokemon: {
+		validateSet: function(set, format) {
+			var noTechnician = {Slaking:1, Regigigas:1};
+			if (!noTechnician[set.species]) set.ability = 'Technician';
+			var problems = [];
+			if (set.moves) for (var i=0; i<set.moves.length; i++) {
+				var move = this.getMove(set.moves[i]);
+				if (move.basePower >= 100) {
+					problems.push(move.name+' is banned because its base power is 100 or higher.');
+				}
+			}
+			return problems;
+		}
+	},
+	sixmoves: {
+		effectType: 'Banlist',
+		validateSet: function(set, format) {
+			var item = this.getItem(set.item);
+			var template = this.getTemplate(set.species);
+			var problems = [];
+
+			if (set.species === set.name) delete set.name;
+			if (template.num == 493) {
+				if (set.ability === 'Multitype' && item.onPlate) {
+					set.species = 'Arceus-'+item.onPlate;
+				} else {
+					set.species = 'Arceus';
+				}
+			}
+			if (template.num == 487) {
+				if (item.id === 'griseousorb') {
+					set.species = 'Giratina-Origin';
+				} else {
+					set.species = 'Giratina';
+				}
+			}
+			if (template.num == 555) set.species = 'Darmanitan';
+			if (template.num == 648) set.species = 'Meloetta';
+			if (template.num == 351) set.species = 'Castform';
+			if (template.num == 421) set.species = 'Cherrim';
+			if (template.num == 647) {
+				if (set.species === 'Keldeo-Resolution' && set.moves.indexOf('Secret Sword') < 0) set.species = 'Keldeo';
+			}
+			if (template.isNonstandard) problems.push(set.species+' is not a real Pokemon.');
+			if (set.moves) for (var i=0; i<set.moves.length; i++) {
+				var move = this.getMove(set.moves[i]);
+				if (move.isNonstandard) problems.push(move.name+' is not a real move.');
+			}
+			if (set.moves && set.moves.length > 6) problems.push((set.name||set.species) + ' has more than six moves.');
+			return problems;
+		}
 	}
 };
