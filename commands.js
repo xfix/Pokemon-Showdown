@@ -21,14 +21,16 @@ var commands = exports.commands = {
 	},
 
 	me: function(target, room, user, connection) {
-		target = this.canTalk(target);
+		// By default, /me allows a blank message
+		if (target) target = this.canTalk(target);
 		if (!target) return;
 
 		return '/me ' + target;
 	},
 
 	mee: function(target, room, user, connection) {
-		target = this.canTalk(target);
+		// By default, /mee allows a blank message
+		if (target) target = this.canTalk(target);
 		if (!target) return;
 
 		return '/mee ' + target;
@@ -314,19 +316,22 @@ var commands = exports.commands = {
 	},
 
 	join: function(target, room, user, connection) {
+		if (!target) return false;
 		var targetRoom = Rooms.get(target) || Rooms.get(toId(target));
-		if (target && !targetRoom) {
+		if (!targetRoom) {
 			if (target === 'lobby') return connection.sendTo(target, "|noinit|nonexistent|");
 			return connection.sendTo(target, "|noinit|nonexistent|The room '"+target+"' does not exist.");
 		}
-		if (targetRoom && targetRoom.isPrivate && !user.named) {
+		if (targetRoom.isPrivate && !user.named) {
 			return connection.sendTo(target, "|noinit|namerequired|You must have a name in order to join the room '"+target+"'.");
 		}
-		if (user.userid in targetRoom.bannedUsers) {
+		if (user.userid && targetRoom.bannedUsers && user.userid in targetRoom.bannedUsers) {
 			return connection.sendTo(target, "|noinit|joinfailed|You are banned from that room!");
 		}
-		for (var ip in user.ips) {
-			if (ip in targetRoom.bannedIps) return connection.sendTo(target, "|noinit|joinfailed|You are banned from that room!");
+		if (user.ips && targetRoom.bannedIps) {
+			for (var ip in user.ips) {
+				if (ip in targetRoom.bannedIps) return connection.sendTo(target, "|noinit|joinfailed|You are banned from that room!");
+			}
 		}
 
 		if (!user.joinRoom(targetRoom || room, connection)) {
@@ -342,7 +347,7 @@ var commands = exports.commands = {
 		var userid = toId(name);
 		if (!userid || userid === '') return this.sendReply("User '"+name+"' does not exist.");
 		if (!this.can('ban', targetUser, room)) return false;
-		if (!Rooms.rooms[room.id].users[targetUser.userid]) {
+		if (!Rooms.rooms[room.id].users[userid]) {
 			return this.sendReply('User '+this.targetUsername+' is not in the room ' + room.id + '.');
 		}
 		room.bannedUsers[userid] = true;
@@ -434,7 +439,7 @@ var commands = exports.commands = {
 			return this.sendReply('User '+this.targetUsername+' not found.');
 		}
 		if (Rooms.rooms[targetRoom.id].users[targetUser.userid]) {
-			return this.sendReply("The player " + targetUser.name + " is already in the room " + target + "!");	
+			return this.sendReply("The player " + targetUser.name + " is already in the room " + target + "!");
 		}
 		if (!Rooms.rooms[room.id].users[targetUser.userid]) {
 			return this.sendReply('User '+this.targetUsername+' is not in the room ' + room.id + '.');
@@ -644,13 +649,13 @@ var commands = exports.commands = {
 	/*********************************************************
 	 * Moderating: Other
 	 *********************************************************/
-	
+
 	modnote: function(target, room, user, connection, cmd) {
 		if (!target) return this.parse('/help note');
 		if (!this.can('mute')) return false;
 		return this.privateModCommand('(' + user.name + ' notes: ' + target + ')');
 	},
-	
+
 	demote: 'promote',
 	promote: function(target, room, user, connection, cmd) {
 		if (!target) return this.parse('/help promote');
@@ -665,7 +670,7 @@ var commands = exports.commands = {
 		} else if (Users.usergroups[userid]) {
 			currentGroup = Users.usergroups[userid].substr(0,1);
 		}
-		
+
 		var nextGroup = target ? target : Users.getNextGroupSymbol(currentGroup, cmd === 'demote', true);
 		if (target === 'deauth') nextGroup = config.groupsranking[0];
 		if (!config.groups[nextGroup]) {
@@ -820,7 +825,7 @@ var commands = exports.commands = {
 	modlog: function(target, room, user, connection) {
 		if (!this.can('modlog')) return false;
 		var lines = 0;
-		if (!target.match('[^0-9]')) { 
+		if (!target.match('[^0-9]')) {
 			lines = parseInt(target || 15, 10);
 			if (lines > 100) lines = 100;
 		}
@@ -927,7 +932,7 @@ var commands = exports.commands = {
 		if (this.can('hotpatch')) return false;
 		fs.writeFile('data/learnsets.js', 'exports.BattleLearnsets = '+JSON.stringify(BattleLearnsets)+";\n");
 		this.sendReply('learnsets.js saved.');
-	},	
+	},
 
 	disableladder: function(target, room, user) {
 		if (!this.can('disableladder')) return false;
