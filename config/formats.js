@@ -515,7 +515,7 @@ exports.Formats = [
 
 		mod: 'wonkymons',
 		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
-		banlist: ['Elekid ++ Wonder Guard', 'Moody', 'Soul Dew']
+		banlist: ['Moody', 'Wonder Guard', 'Palkia ++ Contrary', 'Terrakion ++ Shadow Tag', 'Kyurem-Black ++ Shadow Tag', 'Soul Dew']
 	},
 
 	// Seasonals
