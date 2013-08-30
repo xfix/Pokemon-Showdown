@@ -1164,6 +1164,13 @@ exports.Formats = [
 			}
 		}
 	},
+	{
+		name: "School Schemes",
+		section: "Seasonals",
+
+		team: 'randomSeasonalSS',
+		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod']
+	},
 	
 	// Doubles
 	///////////////////////////////////////////////////////////////////

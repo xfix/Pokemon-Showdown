@@ -2015,5 +2015,33 @@ exports.BattleScripts = {
 		}
 		
 		return team;
+	},
+	randomSeasonalSSTeam: function(side) {
+		var crypto = require('crypto');
+		var hash = parseInt(crypto.createHash('md5').update(toId(side.name)).digest('hex').substr(0, 8), 16);
+		var randoms = {
+			(13 * hash + 11) % 649: 1,
+			(18 * hash + 66) % 649: 1,
+			(25 * hash + 73) % 649: 1,
+			(1 * hash + 16) % 649: 1,
+			(23 * hash + 132) % 649: 1,
+			(5 * hash + 6) % 649: 1
+		};
+		var team = [];
+		var mons = 0;
+		for (var p in this.data.Pokedex) {
+			if (this.data.Pokedex[p].num in randoms) {
+				team.push(this.randomSet(this.getTemplate(p), mons));
+				mons++;
+			}
+		}
+		// Just in case the randoms generated the same number... highly unlikely
+		var defaults = ['unown', 'castform', 'charizard', 'pikachu', 'arceus', 'cherrim'].randomize();
+		while (mons < 6) {
+			team.push(this.randomSet(this.getTemplate(defaults[mons]), mons));
+			mons++;
+		}
+		
+		return team;
 	}
 };
