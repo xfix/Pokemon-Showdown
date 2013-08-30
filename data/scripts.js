@@ -2033,16 +2033,27 @@ exports.BattleScripts = {
 		}
 		var team = [];
 		var mons = 0;
+		var fashion = [
+			'Choice Scarf', 'Choice Specs', 'Silk Scarf', 'Wise Glasses', 'Choice Band', 'Wide Lens',
+			'Zoom Lens', 'Destiny Knot', 'BlackGlasses', 'Expert Belt', 'Black Belt', 'Macho Brace',
+			'Focus Sash', "King's Rock", 'Muscle Band', 'Mystic Water', 'Binding Band', 'Rocky Helmet'
+		];
 		for (var p in this.data.Pokedex) {
 			if (this.data.Pokedex[p].num in randoms) {
-				team.push(this.randomSet(this.getTemplate(p), mons));
+				var set = this.randomSet(this.getTemplate(p), mons);
+				fashion = fashion.randomize();
+				if (fashion.indexOf(set.item) === -1) set.item = fashion[0];
+				team.push();
 				mons++;
 			}
 		}
 		// Just in case the randoms generated the same number... highly unlikely
 		var defaults = ['unown', 'castform', 'charizard', 'pikachu', 'arceus', 'cherrim'].randomize();
 		while (mons < 6) {
-			team.push(this.randomSet(this.getTemplate(defaults[mons]), mons));
+			var set = this.randomSet(this.getTemplate(defaults[mons]), mons);
+			fashion = fashion.randomize();
+			if (fashion.indexOf(set.item) === -1) set.item = fashion[0];
+			team.push();
 			mons++;
 		}
 		
