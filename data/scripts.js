@@ -2019,14 +2019,18 @@ exports.BattleScripts = {
 	randomSeasonalSSTeam: function(side) {
 		var crypto = require('crypto');
 		var hash = parseInt(crypto.createHash('md5').update(toId(side.name)).digest('hex').substr(0, 8), 16);
-		var randoms = {
-			(13 * hash + 11) % 649: 1,
-			(18 * hash + 66) % 649: 1,
-			(25 * hash + 73) % 649: 1,
-			(1 * hash + 16) % 649: 1,
-			(23 * hash + 132) % 649: 1,
-			(5 * hash + 6) % 649: 1
-		};
+		var randNums = [
+			(13 * hash + 11) % 649,
+			(18 * hash + 66) % 649,
+			(25 * hash + 73) % 649,
+			(1 * hash + 16) % 649,
+			(23 * hash + 132) % 649,
+			(5 * hash + 6) % 649
+		];
+		var randoms = {};
+		for (var i=0; i<6; i++) {
+			randoms[randNums[i]] = true;
+		}
 		var team = [];
 		var mons = 0;
 		for (var p in this.data.Pokedex) {
