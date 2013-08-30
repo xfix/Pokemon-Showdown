@@ -2040,11 +2040,10 @@ exports.BattleScripts = {
 		];
 		for (var p in this.data.Pokedex) {
 			if (this.data.Pokedex[p].num in randoms) {
-				var name = (this.data.Pokedex[p].baseSpecies)? this.data.Pokedex[p].baseSpecies : p;
-				var set = this.randomSet(this.getTemplate(name), mons);
+				var set = this.randomSet(this.getTemplate(p), mons);
 				fashion = fashion.randomize();
 				if (fashion.indexOf(set.item) === -1) set.item = fashion[0];
-				team.push();
+				team.push(set);
 				mons++;
 			}
 		}
@@ -2054,7 +2053,7 @@ exports.BattleScripts = {
 			var set = this.randomSet(this.getTemplate(defaults[mons]), mons);
 			fashion = fashion.randomize();
 			if (fashion.indexOf(set.item) === -1) set.item = fashion[0];
-			team.push();
+			team.push(set);
 			mons++;
 		}
 		
