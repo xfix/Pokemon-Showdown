@@ -1305,6 +1305,22 @@ exports.Formats = [
 					move.heal = [1,2];
 					break;
 				}
+			} else if (move.id === 'offerbeer') {
+				move.category = 'Status';
+				move.volatileStatus = 'confusion';
+				move.volatileStatus = 'disable';
+				move.boosts = {'atk':-1, 'spa':-1, 'def':1, 'spd':1, 'spe'-1, 'accuracy':-1, 'evasion':1};
+				move.onTryHit = function() {
+					this.add('-message', "Oh, why, thank you! This beer is delicious!");
+				};
+				move.effect = {
+					onBeforeMove: function(pokemon, target, move) {
+						if (this.random(10) < 3) {
+							this.useMove('Sing', target);
+							return;
+						}
+					}
+				};
 			}
 		}
 	},

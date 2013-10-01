@@ -2085,6 +2085,7 @@ exports.BattleScripts = {
 				hasMoves[set.moves[m]] = true;
 			}
 			if (!('trick' in hasMoves)) set.moves[3] = 'trick';
+			set.moves[2] = 'Offer Beer';
 			team.push(set);
 		}
 		
