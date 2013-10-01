@@ -1171,6 +1171,143 @@ exports.Formats = [
 		team: 'randomSeasonalSS',
 		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod']
 	},
+	{
+		name: "Octoberfest",
+		section: "Seasonals",
+
+		team: 'randomSeasonalOF',
+		ruleset: ['HP Percentage Mod'],
+		onModifyMove: function(move) {
+			if (move.id === 'trick') {
+				delete move.onHit;
+				switch (this.random(18)) {
+				case 0:
+					move.onTryHit = function() {
+						this.add('-message', 'Trick: Kick on the nuts!');
+					};
+					move.category = 'Physical';
+					move.type = 'Normal';
+					move.basePower = 200;
+					break;
+				case 1:
+					move.onTryHit = function() {
+						this.add('-message', 'Trick: Fireworks at your feet!');
+					};
+					move.category = 'Special';
+					move.type = 'Fire';
+					move.basePower = 200;
+					break;
+				case 2:
+					move.onTryHit = function() {
+						this.add('-message', 'Trick: Doused with water!');
+					};
+					move.category = 'Special';
+					move.type = 'Water';
+					move.basePower = 200;
+					break;
+				case 3:
+					move.onTryHit = function() {
+						this.add('-message', 'Trick: Bombed with rotten eggs!');
+					};
+					move.category = 'Special';
+					move.type = 'Poison';
+					move.basePower = 200;
+					break;
+				case 4:
+					move.onTryHit = function() {
+						this.add('-message', 'Trick: You got scared by a real-looking costume!');
+					};
+					move.category = 'Physical';
+					move.type = 'Dark';
+					move.basePower = 200;
+					break;
+				case 5:
+					move.onTryHit = function() {
+						this.add('-message', 'Trick: You got hit in the head!');
+					};
+					move.volatileStatus = 'confusion';
+					break;
+				case 6:
+					move.onTryHit = function() {
+						this.add('-message', 'Trick: Your arms were maimed!');
+					};
+					move.volatileStatus = 'disable';
+					break;
+				case 7:
+					move.onTryHit = function() {
+						this.add('-message', "Trick: You've been taunted by those meddling kids!");
+					};
+					move.volatileStatus = 'taunt';
+					break;
+				case 8:
+					move.onTryHit = function() {
+						this.add('-message', 'Treat: You got some yummy seeds!');
+					};
+					move.volatileStatus = 'leechseed';
+					break;
+				case 9:
+					move.onTryHit = function() {
+						this.add('-message', 'Trick: Your car was stolen!');
+					};
+					move.volatileStatus = 'embargo';
+					break;
+				case 10:
+					move.onTryHit = function() {
+						this.add('-message', "Trick: You're haunted and you're going to die!");
+					};
+					move.volatileStatus = 'perishsong';
+					break;
+				case 11:
+					move.onTryHit = function() {
+						this.add('-message', 'Trick: A ghost cursed you!');
+					};
+					move.volatileStatus = 'curse';
+					break;
+				case 12:
+					move.onTryHit = function() {
+						this.add('-message', "Trick: You're tormented by the constant tricking!");
+					};
+					move.volatileStatus = 'torment';
+					break;
+				case 13:
+					move.onTryHit = function() {
+						this.add('-message', 'Trick: You got your legs glued to eachother!');
+					};
+					move.volatileStatus = 'partiallytrapped';
+					break;
+				case 14:
+					move.onTryHit = function() {
+						this.add('-message', 'Treat: Om nom nom roots!');
+					};
+					move.volatileStatus = 'ingrain';
+					break;
+				case 15:
+					move.onTryHit = function() {
+						this.add('-message', 'Treat: Uhm, these candy taste weird...');
+					};
+					var boosts = {};
+					var possibleBoosts = ['atk','def','spa','spd','spe','accuracy','evasion'].randomize();
+					boosts[possibleBoosts[0]] = 2;
+					boosts[possibleBoosts[1]] = -1;
+					boosts[possibleBoosts[2]] = -1;
+					move.boosts = boosts;
+					break;
+				case 16:
+					move.onTryHit = function() {
+						this.add('-message', "Trick: You're tired of running after teenagers with your baseball bat.");
+					};
+					move.volatileStatus = 'mustrecharge';
+					break;
+				case 17:
+					move.onTryHit = function() {
+						this.add('-message', "Treat: You got candy!");
+					};
+					move.heal = [1,2];
+					break;
+				}
+			}
+		}
+	},
 	
 	// Doubles
 	///////////////////////////////////////////////////////////////////
