@@ -1305,10 +1305,15 @@ exports.Formats = [
 					move.heal = [1,2];
 					break;
 				}
-			} else if (move.id === 'offerbeer') {
+			} else if (move.id === 'present') {
+				move.accuracy = 100;
+				move.basePower = 0;
 				move.category = 'Status';
 				move.volatileStatus = 'confusion';
 				move.volatileStatus = 'disable';
+				move.pp = 10;
+				move.priority = 0;
+				move.name = 'Offer Beer';
 				move.boosts = {'atk':-1, 'spa':-1, 'def':1, 'spd':1, 'spe':-1, 'accuracy':-1, 'evasion':1};
 				move.onTryHit = function() {
 					this.add('-message', "Oh, why, thank you! This beer is delicious!");
