@@ -273,7 +273,7 @@ var commands = exports.commands = {
 		var name = targetUser ? targetUser.name : this.targetUsername;
 
 		var currentGroup = (room.auth[userid] || ' ');
-		if (!targetUser && !room.auth) {
+		if (!targetUser && !room.auth[userid]) {
 			return this.sendReply("User '"+this.targetUsername+"' is offline and unauthed, and so can't be promoted.");
 		}
 
@@ -287,6 +287,12 @@ var commands = exports.commands = {
 		}
 		if (nextGroup !== ' ' && !user.can('room'+config.groups[nextGroup].id, null, room)) {
 			return this.sendReply('/' + cmd + ' - Access denied for promoting to '+config.groups[nextGroup].name+'.');
+		}
+		if (currentGroup === nextGroup) {
+			return this.sendReply("User '"+this.targetUsername+"' is already a "+(config.groups[nextGroup].name || 'regular user')+" in this room.");
+		}
+		if (config.groups[nextGroup].globalonly) {
+			return this.sendReply("The rank of "+config.groups[nextGroup].name+" is global-only and can't be room-promoted to.");
 		}
 
 		var isDemotion = (config.groups[nextGroup].rank < config.groups[currentGroup].rank);
@@ -308,6 +314,9 @@ var commands = exports.commands = {
 		}
 		if (targetUser) {
 			targetUser.updateIdentity();
+		}
+		if (room.chatRoomData) {
+			Rooms.global.writeChatRoomData();
 		}
 	},
 
@@ -391,7 +400,7 @@ var commands = exports.commands = {
 	},
 
 	roomauth: function(target, room, user, connection) {
-		if (!room.auth) return this.sendReply("/roomauth - This room isn't designed for per-room moderation and therefor has no auth list.");
+		if (!room.auth) return this.sendReply("/roomauth - This room isn't designed for per-room moderation and therefore has no auth list.");
 		var buffer = [];
 		for (var u in room.auth) {
 			buffer.push(room.auth[u] + u);
@@ -532,6 +541,7 @@ var commands = exports.commands = {
 		targetUser.unmute(room.id);
 	},
 
+	l: 'lock',
 	ipmute: 'lock',
 	lock: function(target, room, user) {
 		if (!target) return this.parse('/help lock');
@@ -785,6 +795,28 @@ var commands = exports.commands = {
 
 		this.add('|raw|<div class="broadcast-blue"><b>'+target+'</b></div>');
 		this.logModCommand(user.name+' declared '+target);
+	},
+
+	gdeclare: 'globaldeclare',
+	globaldeclare: function(target, room, user) {
+		if (!target) return this.parse('/help globaldeclare');
+		if (!this.can('gdeclare')) return false;
+
+		for (var id in Rooms.rooms) {
+			if (id !== 'global') Rooms.rooms[id].addRaw('<div class="broadcast-blue"><b>'+target+'</b></div>');
+		}
+		this.logModCommand(user.name+' globally declared '+target);
+	},
+
+	cdeclare: 'chatdeclare',
+	chatdeclare: function(target, room, user) {
+		if (!target) return this.parse('/help chatdeclare');
+		if (!this.can('gdeclare')) return false;
+
+		for (var id in Rooms.rooms) {
+			if (id !== 'global') if (Rooms.rooms[id].type !== 'battle') Rooms.rooms[id].addRaw('<div class="broadcast-blue"><b>'+target+'</b></div>');
+		}
+		this.logModCommand(user.name+' globally declared (chat level) '+target);
 	},
 
 	wall: 'announce',
