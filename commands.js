@@ -339,6 +339,7 @@ var commands = exports.commands = {
 		}
 	},
 
+	rb: 'roomban',
 	roomban: function(target, room, user, connection) {
 		if (!target) return this.parse('/help roomban');
 		target = this.splitTarget(target, true);
@@ -455,7 +456,7 @@ var commands = exports.commands = {
 		if (!targetRoom) {
 			return this.sendReply("The room '" + target + "' does not exist.");
 		}
-		if (!this.can('kick', targetUser, room)) return false;
+		if (!this.can('warn', targetUser, room) || !this.can('warn', targetUser, targetRoom)) return false;
 		if (!targetUser || !targetUser.connected) {
 			return this.sendReply('User '+this.targetUsername+' not found.');
 		}
@@ -980,7 +981,7 @@ var commands = exports.commands = {
 	},
 
 	savelearnsets: function(target, room, user) {
-		if (this.can('hotpatch')) return false;
+		if (!this.can('hotpatch')) return false;
 		fs.writeFile('data/learnsets.js', 'exports.BattleLearnsets = '+JSON.stringify(BattleLearnsets)+";\n");
 		this.sendReply('learnsets.js saved.');
 	},

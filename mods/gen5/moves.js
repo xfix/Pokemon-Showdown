@@ -46,6 +46,24 @@ exports.BattleMovedex = {
 		inherit: true,
 		onTryHit: function() {}
 	},
+	defog: {
+		inherit: true,
+		desc: "Lowers one adjacent target's evasion by 1 stage. Whether or not the target's evasion was affected, the effects of Reflect, Light Screen, Safeguard, Mist, Spikes, Toxic Spikes, and Stealth Rock end for the target's side. Pokemon protected by Magic Coat or the Ability Magic Bounce are unaffected and instead use this move themselves. Ignores a target's Substitute, although a Substitute will still block the evasion lowering.",
+		shortDesc: "Removes target's hazards, lowers evasion by 1.",
+		onHit: function(pokemon) {
+			if (!pokemon.volatiles['substitute']) this.boost({evasion:-1});
+			var sideConditions = {reflect:1, lightscreen:1, safeguard:1, mist:1, spikes:1, toxicspikes:1, stealthrock:1};
+			for (var i in sideConditions) {
+				if (pokemon.side.removeSideCondition(i)) {
+					this.add('-sideend', pokemon.side, this.getEffect(i).name, '[from] move: Defog', '[of] '+pokemon);
+				}
+			}
+		}
+	},
+	dracometeor: {
+		inherit: true,
+		basePower: 140
+	},
 	dragonpulse: {
 		inherit: true,
 		basePower: 90
@@ -134,12 +152,22 @@ exports.BattleMovedex = {
 		inherit: true,
 		basePower: 100
 	},
+	hex: {
+		inherit: true,
+		basePower: 50,
+		basePowerCallback: function(pokemon, target) {
+			if (target.status) return 100;
+			return 50;
+		}
+	},
 	hiddenpower: {
 		inherit: true,
 		basePower: 0,
 		basePowerCallback: function(pokemon) {
 			return pokemon.hpPower || 70;
-		}
+		},
+		desc: "Deals damage to one adjacent target. This move's type and power depend on the user's individual values (IVs). Power varies between 30 and 70, and type can be any but Normal.",
+		shortDesc: "Varies in power and type based on the user's IVs."
 	},
 	hiddenpowerbug: {
 		inherit: true,
@@ -257,6 +285,14 @@ exports.BattleMovedex = {
 		inherit: true,
 		basePower: 95
 	},
+	naturepower: {
+		inherit: true,
+		desc: "This move calls another move for use depending on the battle terrain. Earthquake in Wi-Fi battles.",
+		shortDesc: "Attack changes based on terrain. (Earthquake)",
+		onHit: function(target) {
+			this.useMove('earthquake', target);
+		}
+	},
 	overheat: {
 		inherit: true,
 		basePower: 140
@@ -269,6 +305,14 @@ exports.BattleMovedex = {
 	poisongas: {
 		inherit: true,
 		accuracy: 80
+	},
+	powergem: {
+		inherit: true,
+		basePower: 70
+	},
+	roar: {
+		inherit: true,
+		isNotProtectable: false
 	},
 	rocktomb: {
 		inherit: true,
@@ -313,6 +357,14 @@ exports.BattleMovedex = {
 		inherit: true,
 		type: "Normal"
 	},
+	swordsdance: {
+		inherit: true,
+		pp: 30
+	},
+	synchronoise: {
+		inherit: true,
+		basePower: 70
+	},
 	thief: {
 		inherit: true,
 		basePower: 40
@@ -341,6 +393,10 @@ exports.BattleMovedex = {
 			}
 			return 50;
 		}
+	},
+	whirlwind: {
+		inherit: true,
+		isNotProtectable: false
 	},
 	willowisp: {
 		inherit: true,
