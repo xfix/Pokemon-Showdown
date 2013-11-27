@@ -902,7 +902,7 @@ var commands = exports.commands = {
 		// Specific case for modlog command. Room can be indicated with a comma, lines go after the comma.
 		// Otherwise, the text is defaulted to text search in current room's modlog.
 		var roomId = room.id;
-		var rooms = {};
+		var roomLogs = {};
 		if (target.indexOf(',') > -1) {
 			var targets = target.split(',');
 			target = targets[1].trim();
@@ -911,20 +911,20 @@ var commands = exports.commands = {
 
 		// Control if we really, really want to check all modlogs for a word.
 		if (roomId === 'all') {
-			for (var i in Rooms.rooms) rooms[i] = true;
+			for (var i in Rooms.rooms) roomLogs[i] = true;
 		} else {
-			rooms[roomId] = true;
+			roomLogs[roomId] = true;
 		}
 
 		// Seek for all rooms input for the lines or text
 		var result = [];
-		for (var r in rooms) {
+		for (var r in roomLogs) {
 			if (!target.match('[^0-9]')) {
 				lines = parseInt(target || 15, 10);
 				if (lines > 100) lines = 100;
 			}
 			var filename = 'logs/modlog_' + r + '.txt';
-			var command = 'tail -'+lines+' '+filename;
+			var command = 'tail -' + lines + ' ' + filename;
 			var grepLimit = 100;
 			if (!lines || lines < 0) { // searching for a word instead
 				if (target.match(/^["'].+["']$/)) target = target.substring(1,target.length-1);
