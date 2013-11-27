@@ -903,7 +903,7 @@ var commands = exports.commands = {
 			lines = parseInt(target || 15, 10);
 			if (lines > 100) lines = 100;
 		}
-		var filename = 'logs/modlog.txt';
+		var filename = 'logs/modlog_' + room.id + '.txt';
 		var command = 'tail -'+lines+' '+filename;
 		var grepLimit = 100;
 		if (!lines || lines < 0) { // searching for a word instead
