@@ -902,43 +902,58 @@ var commands = exports.commands = {
 		// Specific case for modlog command. Room can be indicated with a comma, lines go after the comma.
 		// Otherwise, the text is defaulted to text search in current room's modlog.
 		var roomId = room.id;
+		var rooms = {};
 		if (target.indexOf(',') > -1) {
 			var targets = target.split(',');
 			target = targets[1].trim();
 			roomId = toId(targets[0]) || room.id;
 		}
-		if (!target.match('[^0-9]')) {
-			lines = parseInt(target || 15, 10);
-			if (lines > 100) lines = 100;
-		}
-		var filename = 'logs/modlog_' + roomId + '.txt';
-		var command = 'tail -'+lines+' '+filename;
-		var grepLimit = 100;
-		if (!lines || lines < 0) { // searching for a word instead
-			if (target.match(/^["'].+["']$/)) target = target.substring(1,target.length-1);
-			command = "awk '{print NR,$0}' "+filename+" | sort -nr | cut -d' ' -f2- | grep -m"+grepLimit+" -i '"+target.replace(/\\/g,'\\\\\\\\').replace(/["'`]/g,'\'\\$&\'').replace(/[\{\}\[\]\(\)\$\^\.\?\+\-\*]/g,'[$&]')+"'";
+
+		// Control if we really, really want to check all modlogs for a word.
+		if (roomId === 'all') {
+			for (var i in Rooms.rooms) rooms[i] = true;
+		} else {
+			rooms[roomId] = true;
 		}
 
-		require('child_process').exec(command, function(error, stdout, stderr) {
-			if (error && stderr) {
-				connection.popup('/modlog empty or erred - modlog does not support Windows');
-				console.log('/modlog error: '+error);
-				return false;
+		// Seek for all rooms input for the lines or text
+		var result = [];
+		for (var r in rooms) {
+			if (!target.match('[^0-9]')) {
+				lines = parseInt(target || 15, 10);
+				if (lines > 100) lines = 100;
 			}
-			if (lines) {
-				if (!stdout) {
-					connection.popup('The modlog is empty. (Weird.)');
-				} else {
-					connection.popup('Displaying the last '+lines+' lines of the Moderator Log of the room ' + roomId + ':\n\n'+stdout);
-				}
-			} else {
-				if (!stdout) {
-					connection.popup('No moderator actions containing "'+target+'" were found on room ' + roomId + '.');
-				} else {
-					connection.popup('Displaying the last '+grepLimit+' logged actions containing "'+target+'" on the room ' + roomId + ':\n\n'+stdout);
-				}
+			var filename = 'logs/modlog_' + r + '.txt';
+			var command = 'tail -'+lines+' '+filename;
+			var grepLimit = 100;
+			if (!lines || lines < 0) { // searching for a word instead
+				if (target.match(/^["'].+["']$/)) target = target.substring(1,target.length-1);
+				command = "awk '{print NR,$0}' "+filename+" | sort -nr | cut -d' ' -f2- | grep -m"+grepLimit+" -i '"+target.replace(/\\/g,'\\\\\\\\').replace(/["'`]/g,'\'\\$&\'').replace(/[\{\}\[\]\(\)\$\^\.\?\+\-\*]/g,'[$&]')+"'";
 			}
-		});
+
+			require('child_process').exec(command, function(error, stdout, stderr) {
+				if (error && stderr) {
+					result.push('/modlog empty on room ' + r + ' or erred - modlog does not support Windows');
+					console.log('/modlog error: '+error);
+				}
+				if (lines) {
+					if (!stdout) {
+						result.push('The modlog is empty. (Weird.)');
+					} else {
+						result.push('Displaying the last '+lines+' lines of the Moderator Log of the room ' + r + ':\n\n'+stdout);
+					}
+				} else {
+					if (!stdout) {
+						result.push('No moderator actions containing "'+target+'" were found on room ' + r + '.');
+					} else {
+						result.push('Displaying the last '+grepLimit+' logged actions containing "'+target+'" on the room ' + r + ':\n\n'+stdout);
+					}
+				}
+			});
+		}
+
+		// Outout the results
+		connection.popup(result.join('\n'));
 	},
 
 	bw: 'banword',
