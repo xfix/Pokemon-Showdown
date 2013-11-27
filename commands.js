@@ -904,7 +904,7 @@ var commands = exports.commands = {
 		var roomId = room.id;
 		if (target.indexOf(',') > -1) {
 			var targets = target.split(',');
-			target = targets[1];
+			target = targets[1].trim();
 			roomId = toId(targets[0]) || room.id;
 		}
 		if (!target.match('[^0-9]')) {
@@ -933,7 +933,7 @@ var commands = exports.commands = {
 				}
 			} else {
 				if (!stdout) {
-					connection.popup('No moderator actions containing "'+target+'" were found.');
+					connection.popup('No moderator actions containing "'+target+'" were found on room ' + roomId + '.');
 				} else {
 					connection.popup('Displaying the last '+grepLimit+' logged actions containing "'+target+'" on the room ' + roomId + ':\n\n'+stdout);
 				}
