@@ -923,9 +923,8 @@ var commands = exports.commands = {
 			roomNames = 'all rooms';
 		} else {
 			roomLogs[roomId] = true;
-			roomNames = 'room ' + Object.keys(roomLogs).join(', ');
+			roomNames = 'the room ' + Object.keys(roomLogs).join(', ');
 		}
-		
 
 		// Seek for all rooms input for the lines or text
 		var filename = [];
@@ -948,13 +947,13 @@ var commands = exports.commands = {
 				if (!stdout) {
 					connection.popup('The modlog is empty. (Weird.)');
 				} else {
-					connection.popup('Displaying the last '+lines+' lines of the Moderator Log of the ' + roomNames + ':\n\n'+stdout);
+					connection.popup('Displaying the last '+lines+' lines of the Moderator Log of ' + roomNames + ':\n\n'+stdout);
 				}
 			} else {
 				if (!stdout) {
 					connection.popup('No moderator actions containing "'+target+'" were found on ' + roomNames + '.');
 				} else {
-					connection.popup('Displaying the last '+grepLimit+' logged actions containing "'+target+'" on the ' + roomNames + ':\n\n'+stdout);
+					connection.popup('Displaying the last '+grepLimit+' logged actions containing "'+target+'" on ' + roomNames + ':\n\n'+stdout);
 				}
 			}
 			return output;
