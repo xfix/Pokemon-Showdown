@@ -923,6 +923,7 @@ var commands = exports.commands = {
 			roomNames = 'all rooms';
 		} else {
 			roomLogs[roomId] = true;
+			roomId = room.id;
 			roomNames = 'the room ' + Object.keys(roomLogs).join(', ');
 		}
 
