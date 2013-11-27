@@ -917,12 +917,15 @@ var commands = exports.commands = {
 		var wordSearch = (!lines || lines < 0);
 
 		// Control if we really, really want to check all modlogs for a word.
+		var roomNames = '';
 		if (roomId === 'all' && wordSearch) {
 			for (var i in Rooms.rooms) roomLogs[i] = true;
+			roomNames = 'all rooms';
 		} else {
 			roomLogs[roomId] = true;
+			roomNames = 'room ' + Object.keys(roomLogs).join(', ');
 		}
-		var roomNames = Object.keys(roomLogs).join(', ');
+		
 
 		// Seek for all rooms input for the lines or text
 		var filename = [];
@@ -938,20 +941,20 @@ var commands = exports.commands = {
 		require('child_process').exec(command, function(error, stdout, stderr) {
 			var output = '';
 			if (error && stderr) {
-				connection.popup('/modlog empty on room(s) ' + roomNames + ' or erred - modlog does not support Windows');
+				connection.popup('/modlog empty on ' + roomNames + ' or erred - modlog does not support Windows');
 				console.log('/modlog error: '+error);
 			}
 			if (lines) {
 				if (!stdout) {
 					connection.popup('The modlog is empty. (Weird.)');
 				} else {
-					connection.popup('Displaying the last '+lines+' lines of the Moderator Log of the room(s) ' + roomNames + ':\n\n'+stdout);
+					connection.popup('Displaying the last '+lines+' lines of the Moderator Log of the ' + roomNames + ':\n\n'+stdout);
 				}
 			} else {
 				if (!stdout) {
-					connection.popup('No moderator actions containing "'+target+'" were found on room(s)' + roomNames + '.');
+					connection.popup('No moderator actions containing "'+target+'" were found on ' + roomNames + '.');
 				} else {
-					connection.popup('Displaying the last '+grepLimit+' logged actions containing "'+target+'" on the room(s) ' + roomNames + ':\n\n'+stdout);
+					connection.popup('Displaying the last '+grepLimit+' logged actions containing "'+target+'" on the ' + roomNames + ':\n\n'+stdout);
 				}
 			}
 			return output;
