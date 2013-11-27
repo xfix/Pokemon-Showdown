@@ -902,7 +902,7 @@ var commands = exports.commands = {
 		// Specific case for modlog command. Room can be indicated with a comma, lines go after the comma.
 		// Otherwise, the text is defaulted to text search in current room's modlog.
 		var roomId = room.id;
-		if (target.indexOf(',')) {
+		if (target.indexOf(',') > -1) {
 			var targets = target.split(',');
 			target = targets[1];
 			roomId = toId(targets[0]) || room.id;
