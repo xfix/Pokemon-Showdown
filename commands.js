@@ -927,7 +927,7 @@ var commands = exports.commands = {
 			// Get a list of all the rooms
 			var fileList = fs.readdirSync('logs/modlog');
 			for (var i=0; i<fileList.length; i++) {
-				filename += 'logs/modlog/' + fileList[i] + '.txt ';
+				filename += 'logs/modlog/' + fileList[i] + ' ';
 			}
 		} else {
 			roomid = room.id;
