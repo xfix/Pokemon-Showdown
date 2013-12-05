@@ -927,8 +927,10 @@ var commands = exports.commands = {
 			// Get a list of all the rooms
 			fs.readdir('logs/modlog', function(err, files){
 				filename = files.join(' ');
+				console.log(filename);
 			});
 		} else {
+			roomid = room.id;
 			roomNames = 'the room ' + roomId;
 			filename = 'logs/modlog/modlog_' + roomId + '.txt';
 		}
