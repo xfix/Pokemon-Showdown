@@ -925,9 +925,10 @@ var commands = exports.commands = {
 		if (roomId === 'all' && wordSearch) {
 			roomNames = 'all rooms';
 			// Get a list of all the rooms
-			fs.readdir('logs/modlog', function(err, files){
-				filename = files.join(' ');
-				console.log(filename);
+			fs.readdir('logs/modlog', function(err, files) {
+				for (var i=0; i<files.length; i++) {
+					filename += 'logs/modlog/' + files[i] + ' ';
+				}
 			});
 		} else {
 			roomid = room.id;
