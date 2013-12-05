@@ -925,11 +925,10 @@ var commands = exports.commands = {
 		if (roomId === 'all' && wordSearch) {
 			roomNames = 'all rooms';
 			// Get a list of all the rooms
-			fs.readdir('logs/modlog', function(err, files) {
-				for (var i=0; i<files.length; i++) {
-					filename += 'logs/modlog/' + files[i] + ' ';
-				}
-			});
+			var fileList = fs.readdirSync('logs/modlog');
+			for (var i=0; i<fileList.length; i++) {
+				filename += 'logs/modlog/' + fileList[i] + '.txt ';
+			}
 		} else {
 			roomid = room.id;
 			roomNames = 'the room ' + roomId;
