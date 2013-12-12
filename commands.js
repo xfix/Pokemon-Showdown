@@ -930,7 +930,7 @@ var commands = exports.commands = {
 				filename += 'logs/modlog/' + fileList[i] + ' ';
 			}
 		} else {
-			roomid = room.id;
+			roomId = room.id;
 			roomNames = 'the room ' + roomId;
 			filename = 'logs/modlog/modlog_' + roomId + '.txt';
 		}
@@ -942,7 +942,7 @@ var commands = exports.commands = {
 			if (target.match(/^["'].+["']$/)) target = target.substring(1,target.length-1);
 			command = "awk '{print NR,$0}' " + filename + " | sort -nr | cut -d' ' -f2- | grep -m"+grepLimit+" -i '"+target.replace(/\\/g,'\\\\\\\\').replace(/["'`]/g,'\'\\$&\'').replace(/[\{\}\[\]\(\)\$\^\.\?\+\-\*]/g,'[$&]')+"'";
 		}
-		
+
 		// Execute the file search to see modlog
 		require('child_process').exec(command, function(error, stdout, stderr) {
 			if (error && stderr) {
