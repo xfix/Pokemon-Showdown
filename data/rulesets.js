@@ -8,13 +8,8 @@ exports.BattleFormats = {
 
 	standard: {
 		effectType: 'Banlist',
-		ruleset: ['Sleep Clause Mod', 'Species Clause', 'OHKO Clause', 'Moody Clause', 'Evasion Moves Clause', 'HP Percentage Mod'],
+		ruleset: ['Sleep Clause Mod', 'Species Clause', 'OHKO Clause', 'Moody Clause', 'Evasion Moves Clause', 'Endless Battle Clause', 'HP Percentage Mod'],
 		banlist: ['Unreleased', 'Illegal']
-	},
-	standardpokebank: {
-		effectType: 'Banlist',
-		ruleset: ['Sleep Clause Mod', 'Species Clause', 'Moody Clause', 'OHKO Clause', 'Evasion Moves Clause', 'HP Percentage Mod'],
-		banlist: ['Illegal']
 	},
 	standardnext: {
 		effectType: 'Banlist',
@@ -23,13 +18,8 @@ exports.BattleFormats = {
 	},
 	standardubers: {
 		effectType: 'Banlist',
-		ruleset: ['Sleep Clause Mod', 'Species Clause', 'Moody Clause', 'OHKO Clause', 'HP Percentage Mod'],
+		ruleset: ['Sleep Clause Mod', 'Species Clause', 'Moody Clause', 'OHKO Clause', 'Endless Battle Clause', 'HP Percentage Mod'],
 		banlist: ['Unreleased', 'Illegal']
-	},
-	standarddw: {
-		effectType: 'Banlist',
-		ruleset: ['Sleep Clause Mod', 'Species Clause', 'OHKO Clause', 'Evasion Moves Clause', 'HP Percentage Mod'],
-		banlist: ['Illegal', 'Moody']
 	},
 	standardgbu: {
 		effectType: 'Banlist',
@@ -54,7 +44,7 @@ exports.BattleFormats = {
 			'Zekrom',
 			'Kyurem', 'Kyurem-Black', 'Kyurem-White',
 			'Keldeo', 'Keldeo-Resolute',
-			'Meloetta',
+			'Meloetta', 'Meloetta-Pirouette',
 			'Genesect',
 			'Xerneas',
 			'Yveltal',
@@ -174,16 +164,18 @@ exports.BattleFormats = {
 				}
 			}
 			if (template.num == 647) { // Keldeo
-				if (set.species === 'Keldeo-Resolute' && set.moves.indexOf('Secret Sword') < 0) {
-					problems.push('Keldeo-Resolute needs to have Secret Sword.');
+				if (set.moves.indexOf('Secret Sword') < 0) {
+					set.species = 'Keldeo';
 				}
-				set.species = 'Keldeo';
 			}
 			if (template.num == 648) { // Meloetta
 				if (set.species === 'Meloetta-Pirouette' && set.moves.indexOf('Relic Song') < 0) {
 					problems.push('Meloetta-Pirouette transforms in-battle with Relic Song.');
 				}
 				set.species = 'Meloetta';
+			}
+			if (template.num == 681) { // Aegislash
+				set.species = 'Aegislash';
 			}
 			return problems;
 		}
@@ -376,6 +368,14 @@ exports.BattleFormats = {
 		banlist: ['Minimize', 'Double Team'],
 		onStart: function() {
 			this.add('rule', 'Evasion Moves Clause: Evasion moves are banned');
+		}
+	},
+	endlessbattleclause: {
+		effectType: 'Banlist',
+		name: 'Endless Battle Clause',
+		banlist: ['Heal Pulse + Leppa Berry + Recycle', 'Pain Split + Leppa Berry + Recycle', 'Fling + Leppa Berry + Recycle'],
+		onStart: function() {
+			this.add('rule', 'Endless Battle Clause: Forcing endless battles is banned.');
 		}
 	},
 	moodyclause: {

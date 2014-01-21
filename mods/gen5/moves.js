@@ -7,6 +7,10 @@ exports.BattleMovedex = {
 		inherit: true,
 		basePower: 55
 	},
+	airslash: {
+		inherit: true,
+		pp: 20
+	},
 	assist: {
 		inherit: true,
 		desc: "A random move among those known by the user's party members is selected for use. Does not select Assist, Bestow, Chatter, Circle Throw, Copycat, Counter, Covet, Destiny Bond, Detect, Dragon Tail, Endure, Feint, Focus Punch, Follow Me, Helping Hand, Me First, Metronome, Mimic, Mirror Coat, Mirror Move, Nature Power, Protect, Rage Powder, Sketch, Sleep Talk, Snatch, Struggle, Switcheroo, Thief, Transform, or Trick.",
@@ -75,7 +79,13 @@ exports.BattleMovedex = {
 	},
 	chatter: {
 		inherit: true,
-		basePower: 60
+		basePower: 60,
+		desc: "Deals damage to one adjacent or non-adjacent target. This move has an X% chance to confuse the target, where X is 0 unless the user is a Chatot that hasn't Transformed. If the user is a Chatot, X is 0 or 10 depending on the volume of Chatot's recorded cry, if any; 0 for a low volume or no recording, 10 for a medium to high volume recording. Pokemon with the Ability Soundproof are immune.",
+		shortDesc: "10% chance to confuse the target.",
+		secondary: {
+			chance: 10,
+			volatileStatus: 'confusion'
+		}
 	},
 	copycat: {
 		inherit: true,
@@ -141,7 +151,6 @@ exports.BattleMovedex = {
 		basePowerCallback: function(target, source, move) {
 			if (move.sourceEffect in {grasspledge:1, waterpledge:1}) {
 				this.add('-combine');
-				this.debug('triple damage');
 				return 150;
 			}
 			return 50;
@@ -197,11 +206,14 @@ exports.BattleMovedex = {
 		basePowerCallback: function(target, source, move) {
 			if (move.sourceEffect in {waterpledge:1, firepledge:1}) {
 				this.add('-combine');
-				this.debug('triple damage');
 				return 150;
 			}
 			return 50;
 		}
+	},
+	growth: {
+		inherit: true,
+		pp: 40
 	},
 	gunkshot: {
 		inherit: true,
@@ -322,32 +334,12 @@ exports.BattleMovedex = {
 		}
 	},
 	knockoff: {
-		num: 282,
-		accuracy: 100,
+		inherit: true,
 		basePower: 20,
-		category: "Physical",
 		desc: "Deals damage to one adjacent target and causes it to drop its held item. This move cannot force Pokemon with the Ability Sticky Hold to lose their held item, or force a Giratina, an Arceus, or a Genesect to lose their Griseous Orb, Plate, or Drive, respectively. Items lost to this move cannot be regained with Recycle. Makes contact.",
 		shortDesc: "Removes the target's held item.",
-		id: "knockoff",
-		isViable: true,
-		name: "Knock Off",
 		pp: 20,
-		priority: 0,
-		isContact: true,
-		onHit: function(target, source) {
-			var item = target.getItem();
-			if (item.id === 'mail') {
-				target.setItem('');
-			} else {
-				item = target.takeItem(source);
-			}
-			if (item) {
-				this.add('-enditem', target, item.name, '[from] move: Knock Off', '[of] '+source);
-			}
-		},
-		secondary: false,
-		target: "normal",
-		type: "Dark"
+		onBasePower: function() {}
 	},
 	leafstorm: {
 		inherit: true,
@@ -364,6 +356,10 @@ exports.BattleMovedex = {
 	magicroom: {
 		inherit: true,
 		priority: 0
+	},
+	magmastorm: {
+		inherit: true,
+		basePower: 120
 	},
 	meteormash: {
 		inherit: true,
@@ -422,6 +418,10 @@ exports.BattleMovedex = {
 	psychoshift: {
 		inherit: true,
 		accuracy: 90
+	},
+	psywave: {
+		inherit: true,
+		accuracy: 80
 	},
 	quickguard: {
 		inherit: true,
@@ -484,6 +484,10 @@ exports.BattleMovedex = {
 		basePower: 50,
 		pp: 10
 	},
+	sacredsword: {
+		inherit: true,
+		pp: 20
+	},
 	secretpower: {
 		inherit: true,
 		secondary: {
@@ -497,6 +501,29 @@ exports.BattleMovedex = {
 		inherit: true,
 		basePower: 100,
 		pp: 15
+	},
+	skydrop: {
+		inherit: true,
+		onTry: function(attacker, defender, move) {
+			if (defender.fainted) return false;
+			if (attacker.removeVolatile(move.id)) {
+				return;
+			}
+			if (defender.volatiles['substitute'] || defender.side === attacker.side) {
+				return false;
+			}
+			if (defender.volatiles['protect']) {
+				this.add('-activate', defender, 'Protect');
+				return null;
+			}
+			if (defender.volatiles['bounce'] || defender.volatiles['dig'] || defender.volatiles['dive'] || defender.volatiles['fly'] || defender.volatiles['shadowforce']) {
+				this.add('-miss', attacker, defender);
+				return null;
+			}
+			this.add('-prepare', attacker, move.name, defender);
+			attacker.addVolatile(move.id, defender);
+			return null;
+		}
 	},
 	sleeppowder: {
 		inherit: true,
@@ -566,6 +593,14 @@ exports.BattleMovedex = {
 		inherit: true,
 		basePower: 70
 	},
+	tailwind: {
+		inherit: true,
+		pp: 30
+	},
+	technoblast: {
+		inherit: true,
+		basePower: 85
+	},
 	thief: {
 		inherit: true,
 		basePower: 40,
@@ -602,7 +637,6 @@ exports.BattleMovedex = {
 		basePowerCallback: function(target, source, move) {
 			if (move.sourceEffect in {firepledge:1, grasspledge:1}) {
 				this.add('-combine');
-				this.debug('triple damage');
 				return 150;
 			}
 			return 50;
