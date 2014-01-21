@@ -1297,7 +1297,7 @@ exports.Formats = [
 				}
 			}
 		}
-	}
+	},
 	// Winter's Wont, January 2014
 	{
 		name: "[Seasonal] Winter's Wont",
