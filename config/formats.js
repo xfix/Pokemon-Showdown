@@ -388,6 +388,35 @@ exports.Formats = [
 		}
 	},
 	{
+		name: "(Almost) Any Ability XY",
+		section: "Other Metagames",
+		
+		ruleset: ['Pokemon', 'Team Preview', 'Standard'],
+		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Slaking', 'Regigigas', 'Archeops', 'Prankster + Smeargle', 'Sturdy + Shedinja', 'ignoreillegalabilities'],
+		validateSet: function(set) {
+			var bannedAbilities = {
+				'Simple': 1,
+				'Contrary': 1,
+				'Fur Coat': 1,
+				'Huge Power': 1,
+				'Pure Power': 1,
+				'Speed Boost': 1,
+				'Shadow Tag': 1,
+				'Arena Trap': 1,
+				'Parental Bond': 1,
+				'Wonder Guard': 1
+			};
+			if (set.ability in bannedAbilities) {
+				var template = this.getTemplate(set.species || set.name);
+				var legalAbility = false;
+				for (var i in template.abilities) {
+					if (set.ability === template.abilities[i]) legalAbility = true;
+				}
+				if (!legalAbility) return ['The ability "' + set.ability + '" is banned on Pokémon that do not naturally have it.'];
+			}
+		}
+	},
+	{
 		name: "Challenge Cup",
 		section: "Other Metagames",
 
