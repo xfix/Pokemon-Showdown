@@ -417,6 +417,13 @@ exports.Formats = [
 		}
 	},
 	{
+		name: "Swapmons",
+		section: "Other Metagames",
+		
+		mod: 'swapmons',
+		ruleset: ['Pokemon', 'Team Preview', 'Standard']
+	},
+	{
 		name: "Challenge Cup",
 		section: "Other Metagames",
 
