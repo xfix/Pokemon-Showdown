@@ -372,6 +372,22 @@ exports.Formats = [
 		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite']
 	},
 	{
+		name: "Alphabet Cup",
+		section: "Other Metagames",
+		
+		ruleset: ['Pokemon', 'Team Preview', 'Standard'],
+		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite'],
+		validateTeam: function(team, format) {
+			var letters = {};
+			var letter = '';
+			for (var i = 0; i < team.length; i++) {
+				letter = Tools.getTemplate(team[i]).species.slice(0,1).toUpperCase();
+				if (letter in letters) return ['Your team cannot have more that one Pokémon starting with the letter "' + letter + '".'];
+				letters[letter] = 1;
+			}
+		}
+	},
+	{
 		name: "Challenge Cup",
 		section: "Other Metagames",
 

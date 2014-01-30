@@ -585,6 +585,8 @@ var Validator = (function() {
 			alreadyChecked[template.speciesid] = true;
 			// Stabmons hack to avoid copying all of validateSet to formats.
 			if (format.id === 'stabmons' && template.types.indexOf(tools.getMove(move).type) > -1) return false;
+			// Alphabet Cup hack
+			if (format.id === 'alphabetcup' && template.species.slice(0,1).toLowerCase() === Tools.getMove(move).name.slice(0,1).toLowerCase() && Tools.getMove(move).name !== 'Sketch') return false;
 			if (template.learnset) {
 				if (template.learnset[move] || template.learnset['sketch']) {
 					sometimesPossible = true;
