@@ -1355,6 +1355,51 @@ exports.Formats = [
 		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite']
 	},
 	{
+		name: "Alphabet Cup",
+		section: "Other Metagames",
+		
+		ruleset: ['Pokemon', 'Team Preview', 'Standard'],
+		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite'],
+		validateTeam: function(team, format) {
+			var letters = {};
+			var letter = '';
+			for (var i = 0; i < team.length; i++) {
+				letter = Tools.getTemplate(team[i]).species.slice(0,1).toUpperCase();
+				if (letter in letters) return ['Your team cannot have more that one Pokémon starting with the letter "' + letter + '".'];
+				letters[letter] = 1;
+			}
+		}
+	},
+	{
+		name: "(Almost) Any Ability XY",
+		section: "Other Metagames",
+		
+		ruleset: ['Pokemon', 'Team Preview', 'Standard'],
+		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Slaking', 'Regigigas', 'Archeops', 'Prankster + Smeargle', 'Sturdy + Shedinja', 'ignoreillegalabilities'],
+		validateSet: function(set) {
+			var bannedAbilities = {
+				'Simple': 1,
+				'Contrary': 1,
+				'Fur Coat': 1,
+				'Huge Power': 1,
+				'Pure Power': 1,
+				'Speed Boost': 1,
+				'Shadow Tag': 1,
+				'Arena Trap': 1,
+				'Parental Bond': 1,
+				'Wonder Guard': 1
+			};
+			if (set.ability in bannedAbilities) {
+				var template = this.getTemplate(set.species || set.name);
+				var legalAbility = false;
+				for (var i in template.abilities) {
+					if (set.ability === template.abilities[i]) legalAbility = true;
+				}
+				if (!legalAbility) return ['The ability "' + set.ability + '" is banned on Pokémon that do not naturally have it.'];
+			}
+		}
+	},
+	{
 		name: "Challenge Cup",
 		section: "Other Metagames",
 
