@@ -412,6 +412,23 @@ exports.Formats = [
 		ruleset: ['Pokemon', 'Team Preview', 'Standard']
 	},
 	{
+		name: "Offstat XY",
+		section: "Other Metagames",
+
+		ruleset: ['Pokemon', 'Team Preview', 'Standard'],
+		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Stealth Rock', 'Spikes', 'Toxic Spikes'],
+		validateSet: function(set) {
+			var template = this.getTemplate(set.species || set.name);
+			var statDiff = template.baseStats['atk'] - template.baseStats['spa'];
+			if (Math.abs(statDiff) < 50) return [set.species + ' does not have a difference between attacking stats of 50 or greater.'];
+			var attackerType = statDiff > 0 ? 'Special':'Physical';
+			for (var i in set.moves) {
+				var move = this.getMove(string(set.moves[i]));
+				if (move.category !== attackerType && move.category !== 'Status') return [set.species + ' can only use ' + attackerType + ' attacks.'];
+			}
+		}
+	},
+	{
 		name: "Challenge Cup",
 		section: "Other Metagames",
 
