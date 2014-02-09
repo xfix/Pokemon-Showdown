@@ -429,6 +429,24 @@ exports.Formats = [
 		}
 	},
 	{
+		name: "TechniciMons XY",
+		section: "Other Metagames",
+
+		mod: 'technicimonsxy',
+		ruleset: ['Pokemon', 'Team Preview', 'Standard'],
+		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Heat Crash', 'Heavy Slam', 'Ignore Illegal Abilities'],
+		validateSet: function(set) {
+			if (set.species === 'Regigigas') set.ability = 'Slow Start';
+			else if (set.species === 'Slaking') set.ability = 'Truant';
+			else if (set.species === 'Ditto') set.ability = 'Imposter';
+			else set.ability = 'Technician';
+			for (var i in set.moves) {
+				var move = this.getMove(string(set.moves[i]));
+				if (move.basePower && move.basePower >= 100) return ['The move ' + move.name + ' is banned because it has 100+ Base Power.'];
+			}
+		}
+	},
+	{
 		name: "Challenge Cup",
 		section: "Other Metagames",
 
