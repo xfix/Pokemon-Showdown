@@ -434,7 +434,24 @@ exports.Formats = [
 
 		mod: 'technicimonsxy',
 		ruleset: ['Pokemon', 'Team Preview', 'Standard'],
-		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Heat Crash', 'Heavy Slam', 'Ignore Illegal Abilities'],
+		banlist: ['Soul Dew', 'Heat Crash', 'Heavy Slam', 'Ignore Illegal Abilities',
+			'Mewtwo', 'Mewtwo-Mega-X', 'Mewtwo-Mega-Y',
+			'Lugia',
+			'Ho-Oh',
+			'Kyogre',
+			'Groudon',
+			'Rayquaza',
+			'Deoxys', 'Deoxys-Attack',
+			'Dialga',
+			'Palkia',
+			'Giratina', 'Giratina-Origin',
+			'Darkrai',
+			'Arceus', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fairy', 'Arceus-Fighting', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus-Poison', 'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water',
+			'Reshiram',
+			'Zekrom',
+			'Kyurem-White',
+			'Xerneas',
+			'Yveltal'],
 		validateSet: function(set) {
 			if (set.species === 'Regigigas') set.ability = 'Slow Start';
 			else if (set.species === 'Slaking') set.ability = 'Truant';
