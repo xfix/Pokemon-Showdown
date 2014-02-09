@@ -364,7 +364,7 @@ exports.Formats = [
 		section: "Other Metagames",
 		
 		ruleset: ['Pokemon', 'Team Preview', 'Standard'],
-		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite'],
+		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Swoobat'],
 		validateTeam: function(team, format) {
 			var letters = {};
 			var letter = '';
