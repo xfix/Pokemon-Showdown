@@ -447,6 +447,14 @@ exports.Formats = [
 		}
 	},
 	{
+		name: "Sketchmons XY",
+		section: "Other Metagames",
+
+		mod: 'sketchmonsxy',
+		ruleset: ['Pokemon', 'Team Preview', 'Standard'],
+		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite']
+	},
+	{
 		name: "Challenge Cup",
 		section: "Other Metagames",
 
