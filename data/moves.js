@@ -260,6 +260,15 @@ exports.BattleMovedex = {
 		name: "Ally Switch",
 		pp: 15,
 		priority: 1,
+		onTryHit: function(source) {
+			if (source.side.active.length === 1) return false;
+			if (source.side.active.length === 3 && source.position === 1) return false;
+		},
+		onHit: function(pokemon) {
+			var newPosition = (pokemon.position === 0 ? pokemon.side.active.length - 1 : 0);
+			if (pokemon.side.active[newPosition].fainted) return false;
+			this.swapPosition(pokemon, newPosition);
+		},
 		secondary: false,
 		target: "self",
 		type: "Psychic"
@@ -804,7 +813,7 @@ exports.BattleMovedex = {
 					if (this.effectData.index >= 6) break;
 				} while (!pokemon.side.pokemon[this.effectData.index] ||
 						pokemon.side.pokemon[this.effectData.index].fainted ||
-						pokemon.side.pokemon[this.effectData.index].status)
+						pokemon.side.pokemon[this.effectData.index].status);
 			}
 		},
 		secondary: false,
@@ -1504,8 +1513,8 @@ exports.BattleMovedex = {
 			else if (this.isTerrain('grassyterrain')) newType = 'Grass';
 			else if (this.isTerrain('mistyterrain')) newType = 'Fairy';
 
+			if (!target.setType(newType)) return false;
 			this.add('-start', target, 'typechange', newType);
-			target.setType(newType);
 		},
 		secondary: false,
 		target: "self",
@@ -1887,8 +1896,9 @@ exports.BattleMovedex = {
 				return false;
 			}
 			var type = possibleTypes[this.random(possibleTypes.length)];
+
+			if (!target.setType(type)) return false;
 			this.add('-start', target, 'typechange', type);
-			target.setType(type);
 		},
 		secondary: false,
 		target: "self",
@@ -1923,8 +1933,9 @@ exports.BattleMovedex = {
 				return false;
 			}
 			var type = possibleTypes[this.random(possibleTypes.length)];
+
+			if (!source.setType(type)) return false;
 			this.add('-start', source, 'typechange', type);
-			source.setType(type);
 		},
 		secondary: false,
 		target: "normal",
@@ -3660,7 +3671,16 @@ exports.BattleMovedex = {
 		name: "Fairy Lock",
 		pp: 10,
 		priority: 0,
-		//todo
+		pseudoWeather: 'fairylock',
+		effect: {
+			duration: 2,
+			onStart: function(target) {
+				this.add('-activate', target, 'move: Fairy Lock');
+			},
+			onModifyPokemon: function(pokemon) {
+				pokemon.tryTrap();
+			}
+		},
 		secondary: false,
 		target: "all",
 		type: "Fairy"
@@ -4543,7 +4563,7 @@ exports.BattleMovedex = {
 		isBounceable: true,
 		onHit: function(target) {
 			if (target.hasType('Grass')) return false;
-			target.addType('Grass');
+			if (!target.addType('Grass')) return false;
 			this.add('-start', target, 'typechange', target.getTypes(true).join('/'), '[from] move: Forest\'s Curse');
 		},
 		secondary: false,
@@ -7041,7 +7061,9 @@ exports.BattleMovedex = {
 		onBasePowerPriority: 4,
 		onBasePower: function(basePower, pokemon, target) {
 			var item = target.getItem();
-			if (item.id && !item.megaStone) {
+			var noKnockOff = (item.megaStone || (item.onPlate && target.baseTemplate.baseSpecies === 'Arceus') || 
+				(item.onDrive && target.baseTemplate.baseSpecies === 'Genesect') || (item.onTakeItem && item.onTakeItem(item, target) === false));
+			if (item.id && !noKnockOff) {
 				return this.chainModify(1.5);
 			}
 		},
@@ -7304,7 +7326,7 @@ exports.BattleMovedex = {
 			onFoeModifyDamage: function(damage, source, target, move) {
 				if (this.getCategory(move) === 'Special' && target.side === this.effectData.target) {
 					if (!move.crit && source.ability !== 'infiltrator') {
-						this.debug('Light Screen weaken')
+						this.debug('Light Screen weaken');
 						if (source.side.active.length > 1) return this.chainModify(0.66);
 						return this.chainModify(0.5);
 					}
@@ -9963,7 +9985,7 @@ exports.BattleMovedex = {
 				this.cancelMove(target);
 				for (var i=this.queue.length-1; i>=0; i--) {
 					if (this.queue[i].choice === 'residual') {
-						this.queue.splice(i,0,decision)
+						this.queue.splice(i,0,decision);
 						break;
 					}
 				}
@@ -10338,9 +10360,10 @@ exports.BattleMovedex = {
 		pp: 15,
 		priority: 0,
 		onHit: function(target, source) {
+			if (source.num === 493) return false;
 			this.add('-start', source, 'typechange', target.getTypes(true).join('/'), '[from] move: Reflect Type', '[of] '+target);
 			source.typesData = [];
-			for (var i=0, l=target.typesData; i<l; i++) {
+			for (var i=0, l=target.typesData.length; i<l; i++) {
 				if (target.typesData[i].suppressed) continue;
 				source.typesData.push({
 					type: target.typesData[i].type,
@@ -10427,7 +10450,7 @@ exports.BattleMovedex = {
 			if (!target.setStatus('slp')) return false;
 			target.statusData.time = 3;
 			target.statusData.startTime = 3;
-			this.heal(target.maxhp) //Aeshetic only as the healing happens after you fall asleep in-game
+			this.heal(target.maxhp); //Aeshetic only as the healing happens after you fall asleep in-game
 			this.add('-status', target, 'slp', '[from] move: Rest');
 		},
 		secondary: false,
@@ -12221,8 +12244,8 @@ exports.BattleMovedex = {
 		priority: 0,
 		isBounceable: true,
 		onHit: function(target) {
+			if (!target.setType('Water')) return false;
 			this.add('-start', target, 'typechange', 'Water');
-			target.setType('Water');
 		},
 		secondary: false,
 		target: "normal",
@@ -13896,7 +13919,7 @@ exports.BattleMovedex = {
 		isBounceable: true,
 		onHit: function(target) {
 			if (target.hasType('Ghost')) return false;
-			target.addType('Ghost');
+			if (!target.addType('Ghost')) return false;
 			this.add('-start', target, 'typechange', target.getTypes(true).join('/'), '[from] move: Trick-or-Treat');
 		},
 		secondary: false,
@@ -13936,7 +13959,7 @@ exports.BattleMovedex = {
 					// If stat is speed and does not overflow (Trick Room Glitch) return negative speed.
 					if (statName === 'spe' && stat <= 1809) return -stat;
 					return stat;
-				}
+				};
 			},
 			onResidualOrder: 23,
 			onEnd: function() {
