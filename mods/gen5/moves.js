@@ -70,7 +70,7 @@ exports.BattleMovedex = {
 		shortDesc: "Changes user's type based on terrain. (Ground)",
 		onHit: function(target) {
 			this.add('-start', target, 'typechange', 'Ground');
-			target.types = ['Ground'];
+			target.setType('Ground');
 		}
 	},
 	charm: {

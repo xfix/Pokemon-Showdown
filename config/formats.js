@@ -203,12 +203,10 @@ exports.Formats = [
 			'Kyurem-White',
 			'Xerneas',
 			'Yveltal',
-			'Abomasnow',
 			'Aegislash',
 			'Alakazam',
 			'Amoonguss',
 			'Azumarill',
-			'Blaziken',
 			'Breloom',
 			'Chandelure',
 			'Charizard',
@@ -235,33 +233,30 @@ exports.Formats = [
 			'Kangaskhan',
 			'Klefki',
 			'Landorus-Therian',
-			'Latios',
 			'Lucario',
-			'Malamar',
 			'Mamoswine',
 			'Manectric',
 			'Mawile',
+			'Meowstic',
 			'Metagross',
 			'Ninetales',
 			'Politoed',
 			'Reuniclus',
 			'Rotom-Wash',
+			'Rhyperior',
 			'Sableye',
-			'Salamence',
 			'Scizor',
 			'Scrafty',
 			'Sylveon',
 			'Talonflame',
 			'Terrakion',
 			'Thundurus',
-			'Thundurus-Therian',
 			'Togekiss',
 			'Trevenant',
 			'Tyranitar',
 			'Venusaur',
 			'Volcarona',
-			'Whimsicott',
-			'Zapdos']
+			'Whimsicott']
 	},
 	{
 		name: "XY Battle Spot Doubles",
@@ -1311,12 +1306,14 @@ exports.Formats = [
 		section: 'Seasonal',
 		mod: 'inverse',
 		gameType: 'doubles',
-		team: 'randomSeasonalWinter',
+		team: 'randomSeasonalFF',
 		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod'],
-		maxLevel: 1000,
 		onBegin: function() {
-			this.setWeather('Hail');
-			delete this.weatherData.duration;
+			this.add('-message', "新年快乐");
+		},
+		onModifyMove: function(move) {
+			if (move.id === 'explosion') move.name = 'Firecrackers';
+			else if (move.type === 'Fire') move.name = 'Fireworks';
 		}
 	},
 
@@ -1324,18 +1321,9 @@ exports.Formats = [
 	///////////////////////////////////////////////////////////////////
 
 	{
-		name: "Averagemons",
-		section: "OM of the Month",
-
-		mod: 'averagemons',
-		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
-		banlist: ['Soul Dew', 'Thick Club', 'Deepseatooth', 'Deepseascale', 'Light Ball', 'Mawilite', 'Medichamite', 'Eviolite', 'Shedinja', 'Smeargle', 'Huge Power', 'Pure Power']
-	},
-	{
 		name: "Middle Cup",
 		section: "OM of the Month",
-		
-		searchShow: false,
+
 		ruleset: ['Pokemon', 'Team Preview', 'Standard'],
 		banlist: ['Illegal', 'Eviolite'],
 		maxLevel: 50,
@@ -1359,7 +1347,7 @@ exports.Formats = [
 		section: "Other Metagames",
 		
 		ruleset: ['Pokemon', 'Team Preview', 'Standard'],
-		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite'],
+		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Swoobat'],
 		validateTeam: function(team, format) {
 			var letters = {};
 			var letter = '';
@@ -1405,6 +1393,73 @@ exports.Formats = [
 		
 		mod: 'swapmons',
 		ruleset: ['Pokemon', 'Team Preview', 'Standard']
+	},
+	{
+		name: "Offstat XY",
+		section: "Other Metagames",
+
+		ruleset: ['Pokemon', 'Team Preview', 'Standard'],
+		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Stealth Rock', 'Spikes', 'Toxic Spikes'],
+		validateSet: function(set) {
+			var template = this.getTemplate(set.species || set.name);
+			var statDiff = template.baseStats['atk'] - template.baseStats['spa'];
+			if (Math.abs(statDiff) < 50) return [set.species + ' does not have a difference between attacking stats of 50 or greater.'];
+			var attackerType = statDiff > 0 ? 'Special':'Physical';
+			for (var i in set.moves) {
+				var move = this.getMove(string(set.moves[i]));
+				if (move.category !== attackerType && move.category !== 'Status') return [set.species + ' can only use ' + attackerType + ' attacks.'];
+			}
+		}
+	},
+	{
+		name: "TechniciMons XY",
+		section: "Other Metagames",
+
+		mod: 'technicimonsxy',
+		ruleset: ['Pokemon', 'Team Preview', 'Standard'],
+		banlist: ['Soul Dew', 'Heat Crash', 'Heavy Slam', 'Ignore Illegal Abilities',
+			'Mewtwo', 'Mewtwo-Mega-X', 'Mewtwo-Mega-Y',
+			'Lugia',
+			'Ho-Oh',
+			'Kyogre',
+			'Groudon',
+			'Rayquaza',
+			'Deoxys', 'Deoxys-Attack',
+			'Dialga',
+			'Palkia',
+			'Giratina', 'Giratina-Origin',
+			'Darkrai',
+			'Arceus', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fairy', 'Arceus-Fighting', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus-Poison', 'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water',
+			'Reshiram',
+			'Zekrom',
+			'Kyurem-White',
+			'Xerneas',
+			'Yveltal'],
+		validateSet: function(set) {
+			if (set.species === 'Regigigas') set.ability = 'Slow Start';
+			else if (set.species === 'Slaking') set.ability = 'Truant';
+			else if (set.species === 'Ditto') set.ability = 'Imposter';
+			else set.ability = 'Technician';
+			for (var i in set.moves) {
+				var move = this.getMove(string(set.moves[i]));
+				if (move.basePower && move.basePower >= 100) return ['The move ' + move.name + ' is banned because it has 100+ Base Power.'];
+			}
+		}
+	},
+	{
+		name: "Sketchmons XY",
+		section: "Other Metagames",
+
+		mod: 'sketchmonsxy',
+		ruleset: ['Pokemon', 'Team Preview', 'Standard'],
+		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite']
+	},
+	{
+		name: "MegaMons",
+		section: "Other Metagames",
+
+		ruleset: ['Pokemon', 'Team Preview', 'Standard'],
+		banlist: ['Soul Dew', 'Gengar-Mega', 'Mewtwo-Mega-X', 'Mewtwo-Mega-Y', 'Mewtwonite-Y', 'Mewtwonite-X', 'Gengarite']
 	},
 	{
 		name: "Challenge Cup",
@@ -1536,6 +1591,15 @@ exports.Formats = [
 		searchShow: false,
 		ruleset: ['Pokemon', 'Ability Exchange Pokemon', 'Sleep Clause Mod', 'Species Clause', 'OHKO Clause', 'Moody Clause', 'Evasion Moves Clause', 'HP Percentage Mod', 'Team Preview'],
 		banlist: ['Unreleased', 'Illegal', 'Ignore Illegal Abilities', 'Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Slaking', 'Regigigas']
+	},
+	{
+		name: "Averagemons",
+		section: "Other Metagames",
+
+		searchShow: false,
+		mod: 'averagemons',
+		ruleset: ['Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
+		banlist: ['Soul Dew', 'Thick Club', 'Deepseatooth', 'Deepseascale', 'Light Ball', 'Mawilite', 'Medichamite', 'Eviolite', 'Shedinja', 'Smeargle', 'Huge Power', 'Pure Power']
 	},
 	{
 		name: "Gen-NEXT OU",

@@ -118,7 +118,8 @@ exports.BattleFormats = {
 			set.moves = moves;
 
 			if (template.requiredItem) {
-				if (template.isMega) {
+				if (template.isMega && format.id !== 'megamons') { // MegaMons hack that I will correct when I have time
+					console.log(template.tier);
 					// Mega evolutions evolve in-battle
 					set.species = template.baseSpecies;
 					var baseAbilities = Tools.getTemplate(set.species).abilities;
@@ -131,7 +132,7 @@ exports.BattleFormats = {
 					}
 					if (!niceAbility) set.ability = baseAbilities['0'];
 				}
-				if (item.name !== template.requiredItem) {
+				if (item.name !== template.requiredItem && !(template.isMega && format.id === 'megamons')) { // MegaMons hack - see above
 					problems.push((set.name||set.species) + ' needs to hold '+template.requiredItem+'.');
 				}
 			}
@@ -391,12 +392,9 @@ exports.BattleFormats = {
 	endlessbattleclause: {
 		effectType: 'Banlist',
 		name: 'Endless Battle Clause',
-		banlist: ['Leppa Berry + Recycle'],
+		banlist: ['Leppa Berry + Recycle', 'Harvest + Leppa Berry', 'Shadow Tag + Leppa Berry + Trick'],
 		onStart: function() {
 			this.add('rule', 'Endless Battle Clause: Forcing endless battles is banned.');
-		},
-		validateSet: function(set) {
-			if (set.ability === 'harvest' && set.item === 'leppaberry') return ['The combination of Harvest and Leppa Berry is banned by Endless Battle Clause.'];
 		}
 	},
 	moodyclause: {
