@@ -1471,6 +1471,14 @@ exports.Formats = [
 		banlist: ['Soul Dew', 'Gengar-Mega', 'Mewtwo-Mega-X', 'Mewtwo-Mega-Y', 'Mewtwonite-Y', 'Mewtwonite-X', 'Gengarite']
 	},
 	{
+		name: "Balanced TypeChart",
+		section: "Other Metagames",
+
+		mod: 'balancedtypechart',
+		ruleset: ['Pokemon', 'Team Preview', 'Standard'],
+		banlist: ['Soul Dew', 'Uber', 'Gengarite', 'Kangaskhanite', 'Kyurem-Black']
+	},
+	{
 		name: "Challenge Cup",
 		section: "Other Metagames",
 
