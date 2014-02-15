@@ -267,7 +267,7 @@ exports.BattleMovedex = {
 		onHit: function(pokemon) {
 			var newPosition = (pokemon.position === 0 ? pokemon.side.active.length - 1 : 0);
 			if (pokemon.side.active[newPosition].fainted) return false;
-			this.swapPosition(pokemon, newPosition);
+			this.swapPosition(pokemon, newPosition, 'move: Ally Switch');
 		},
 		secondary: false,
 		target: "self",
@@ -832,7 +832,7 @@ exports.BattleMovedex = {
 		pp: 10,
 		priority: 0,
 		onTryHit: function(target, pokemon) {
-			if (!pokemon.lastItem || !this.getItem(pokemon.lastItem).isBerry) {
+			if (!pokemon.ateBerry) {
 				return false;
 			}
 		},
@@ -1369,6 +1369,7 @@ exports.BattleMovedex = {
 			if (source.hp && item.isBerry && target.takeItem(source)) {
 				this.add('-enditem', target, item.name, '[from] stealeat', '[move] Bug Bite', '[of] '+source);
 				this.singleEvent('Eat', item, null, source, null, null);
+				source.ateBerry = true;
 			}
 		},
 		secondary: false,
@@ -4280,6 +4281,7 @@ exports.BattleMovedex = {
 				if (item.isBerry && item.id !== 'enigmaberry') {
 					move.onHit = function(foe) {
 						this.singleEvent('Eat', item, null, foe, null, null);
+						foe.ateBerry = true;
 					};
 				} else if (item.fling.effect) {
 					move.onHit = item.fling.effect;
@@ -4602,7 +4604,7 @@ exports.BattleMovedex = {
 		getEffectiveness: function(source, target, pokemon) {
 			var type = source.type || source;
 			var totalTypeMod = 0;
-			var types = target.getTypes();
+			var types = target.getTypes && target.getTypes() || target.types;
 			for (var i=0; i<types.length; i++) {
 				if (!this.data.TypeChart[types[i]]) continue;
 				if (types[i] === 'Water') {
@@ -7061,7 +7063,7 @@ exports.BattleMovedex = {
 		onBasePowerPriority: 4,
 		onBasePower: function(basePower, pokemon, target) {
 			var item = target.getItem();
-			var noKnockOff = (item.megaStone || (item.onPlate && target.baseTemplate.baseSpecies === 'Arceus') || 
+			var noKnockOff = ((item.onPlate && target.baseTemplate.baseSpecies === 'Arceus') || 
 				(item.onDrive && target.baseTemplate.baseSpecies === 'Genesect') || (item.onTakeItem && item.onTakeItem(item, target) === false));
 			if (item.id && !noKnockOff) {
 				return this.chainModify(1.5);
@@ -9309,6 +9311,7 @@ exports.BattleMovedex = {
 			if (source.hp && item.isBerry && target.takeItem(source)) {
 				this.add('-enditem', target, item.name, '[from] stealeat', '[move] Pluck', '[of] '+source);
 				this.singleEvent('Eat', item, null, source, null, null);
+				source.ateBerry = true;
 			}
 		},
 		secondary: false,
