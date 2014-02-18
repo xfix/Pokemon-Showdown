@@ -137,7 +137,7 @@ exports.BattleScripts = {
 			if (!targets.length) {
 				this.attrLastMove('[notarget]');
 				this.add('-notarget');
-				if (move.selfdestruct && this.gen == 5) {
+				if (move.selfdestruct && this.gen >= 5) {
 					this.faint(pokemon, pokemon, move);
 				}
 				return true;
@@ -1095,12 +1095,19 @@ exports.BattleScripts = {
 					if (setupType && (hasMove['rockpolish'] || hasMove['agility'])) rejected = true;
 					if (hasMove['discharge'] || hasMove['trickroom']) rejected = true;
 					if (hasMove['rest'] && hasMove['sleeptalk']) rejected = true;
+					if (hasMove['yawn'] || hasMove['spore'] || hasMove['sleeppowder']) rejected = true;
 					break;
 				case 'lavaplume':
 					if (hasMove['willowisp']) rejected = true;
 					break;
 				case 'trickroom':
 					if (hasMove['rockpolish'] || hasMove['agility']) rejected = true;
+					break;
+				case 'willowisp':
+					if (hasMove['scald'] || hasMove['yawn'] || hasMove['spore'] || hasMove['sleeppowder']) rejected = true;
+					break;
+				case 'toxic':
+					if (hasMove['thunderwave'] || hasMove['willowisp'] || hasMove['scald'] || hasMove['yawn'] || hasMove['spore'] || hasMove['sleeppowder']) rejected = true;
 					break;
 				}
 
@@ -1286,6 +1293,9 @@ exports.BattleScripts = {
 				if (ability === 'Moody' && template.id !== 'bidoof') {
 					rejectAbility = true;
 				}
+				if (ability === 'Limber' && template.id === 'stunfisk') {
+					rejectAbility = true;
+				}
 				if (ability === 'Lightningrod' && template.types.indexOf('Ground') >= 0) {
 					rejectAbility = true;
 				}
@@ -1381,6 +1391,8 @@ exports.BattleScripts = {
 				item = 'Eviolite';
 			} else if (shouldMegaEvo === true) {
 				item = this.getTemplate(template.otherFormes[0]).requiredItem;
+				// Mega Mawile should never start with Sheer Force
+				if (template.species === 'Mawile') ability = 'Intimidate';
 			} else if (hasMove['reflect'] && hasMove['lightscreen']) {
 				item = 'Light Clay';
 			} else if (hasMove['shellsmash']) {
@@ -1542,7 +1554,6 @@ exports.BattleScripts = {
 		var level = levelScale[template.tier] || 90;
 		if (customScale[template.name]) level = customScale[template.name];
 
-		if (template.name === 'Chandelure' && ability === 'Shadow Tag') level = 70;
 		if (template.name === 'Serperior' && ability === 'Contrary') level = 74;
 		if (template.name === 'Magikarp' && hasMove['magikarpsrevenge']) level = 85;
 		if (template.name === 'Spinda' && ability !== 'Contrary') level = 95;
@@ -1786,7 +1797,13 @@ exports.BattleScripts = {
 		var moveKeys = Object.keys(template.viableDoublesMoves || template.viableMoves || template.learnset).randomize();
 		// Make protect viable for everyone
 		// Delete this once all Pokémon have viable doubles sets
-		if ('protect' in template.learnset) moveKeys.push('protect');
+		var hasProtectingMove = false;
+		for (var i = 0; i < moveKeys.length && !hasProtectingMove; i++) {
+			if (moveKeys[i] in {'protect':1,'detect':1,'kingsshield':1,'spikyshield':1}) hasProtectingMove = true;
+		}
+		if (!hasProtectingMove) {
+			if (template.learnset && 'protect' in template.learnset) moveKeys.push('protect');
+		}
 		var moves = [];
 		var ability = '';
 		var item = '';
@@ -2144,12 +2161,19 @@ exports.BattleScripts = {
 					if (setupType && (hasMove['rockpolish'] || hasMove['agility'])) rejected = true;
 					if (hasMove['discharge'] || hasMove['trickroom']) rejected = true;
 					if (hasMove['rest'] && hasMove['sleeptalk']) rejected = true;
+					if (hasMove['yawn'] || hasMove['spore'] || hasMove['sleeppowder']) rejected = true;
 					break;
 				case 'lavaplume':
 					if (hasMove['willowisp']) rejected = true;
 					break;
 				case 'trickroom':
 					if (hasMove['rockpolish'] || hasMove['agility']) rejected = true;
+					break;
+				case 'willowisp':
+					if (hasMove['scald'] || hasMove['yawn'] || hasMove['spore'] || hasMove['sleeppowder']) rejected = true;
+					break;
+				case 'toxic':
+					if (hasMove['thunderwave'] || hasMove['willowisp'] || hasMove['scald'] || hasMove['yawn'] || hasMove['spore'] || hasMove['sleeppowder']) rejected = true;
 					break;
 				}
 

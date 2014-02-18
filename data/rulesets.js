@@ -239,10 +239,6 @@ exports.BattleFormats = {
 			}
 		}
 	},
-	legal: {
-		effectType: 'Banlist',
-		banlist: ['Crobat+BraveBird+Hypnosis']
-	},
 	potd: {
 		effectType: 'Rule',
 		onPotD: '',
