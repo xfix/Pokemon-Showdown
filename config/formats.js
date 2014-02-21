@@ -1365,6 +1365,7 @@ exports.Formats = [
 	{
 		name: "CAP",
 		section: "Other Metagames",
+		column: 3,
 
 		ruleset: ['CAP Pokemon', 'Standard', 'Team Preview'],
 		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite']
@@ -1502,6 +1503,83 @@ exports.Formats = [
 
 		ruleset: ['Pokemon', 'Standard'],
 		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Genesect', 'Lucarionite', 'Deoxys-Speed', 'Deoxys-Defense']
+	},
+	{
+		name: "Protean Palace",
+		section: "Other Metagames",
+		
+		ruleset: ['Pokemon', 'Standard', 'Team Preview'],
+		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Lucarionite'],
+		onBeforeMove: function(pokemon, target, move) {
+			// Note: Protean mechanics are incomplete.
+			// In particular, its interactions with Electrify and Ion Deluge are ignored.
+			// It should be updated here when they are fixed.
+			// Also, the effects of Aerilate, Pixilate and Refrigerate are subject to interpretation.
+
+			if (!move) return;
+			var moveType = '';
+			if (move.id === 'hiddenpower') {
+				moveType = pokemon.hpType;
+			} else if (move.type === 'Normal' && !pokemon.ignore['Ability']) {
+				switch(pokemon.ability) {
+					case 'aerilate':
+						moveType = 'Flying';
+						break;
+					case 'pixilate':
+						moveType = 'Fairy';
+						break;
+					case 'refrigerate':
+						moveType = 'Ice';
+						break;
+					default:
+						moveType = 'Normal';
+				}
+			} else {
+				moveType = move.type;
+			}
+			if (pokemon.getTypes().join() !== moveType) {
+				this.add('-start', pokemon, 'typechange', moveType);
+				pokemon.setType(moveType);
+			}
+		}
+	},
+	{
+		name: "Classicmons",
+		section: "Other Metagames",
+
+		mod: 'categoryold',
+		ruleset: ['Pokemon', 'Standard', 'Team Preview'],
+		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite']
+	},
+	{
+		name: "Physical Special Swap",
+		section: "Other Metagames",
+
+		mod: 'categoryswap',
+		ruleset: ['Pokemon', 'Standard', 'Team Preview'],
+		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Lucarionite'],
+		onBoostPriority: 100,
+		onBoost: function(boost, target, source, effect) {
+			// abilities and status moves remain unchanged
+			if (effect.effectType !== 'Move' || effect.category === 'Status') return;
+			var newBoosts = {};
+			if (source === target) {
+				// offensive boosts for the source are switched
+				newBoosts['atk'] = boost['spa'];
+				newBoosts['spa'] = boost['atk'];
+			} else {
+				// defensive boosts for the target are switched
+				newBoosts['def'] = boost['spd'];
+				newBoosts['spd'] = boost['def'];
+			}
+			for (var stat in newBoosts) {
+				if (newBoosts[stat]) {
+					boost[stat] = newBoosts[stat];
+				} else {
+					delete boost[stat];
+				}
+			}
+		}
 	},
 	{
 		name: "Challenge Cup",
