@@ -173,7 +173,7 @@ var commands = exports.commands = {
 	},
 
 	privateroom: function(target, room, user) {
-		if (!this.can('privateroom')) return;
+		if (!this.can('privateroom', null, room)) return;
 		if (target === 'off') {
 			delete room.isPrivate;
 			this.addModCommand(user.name+' made this room public.');
@@ -384,7 +384,7 @@ var commands = exports.commands = {
 		for (var ip in targetUser.ips) {
 			room.bannedIps[ip] = true;
 		}
-		targetUser.popup(user.name+" has banned you from the room " + room.id + "." + (target ? " (" + target + ")" : ""));
+		targetUser.popup(user.name+" has banned you from the room " + room.id + ". To appeal the ban, PM the moderator that banned you or a room owner." + (target ? " (" + target + ")" : ""));
 		this.addModCommand(""+targetUser.name+" was banned from room " + room.id + " by "+user.name+"." + (target ? " (" + target + ")" : ""));
 		var alts = targetUser.getAlts();
 		if (alts.length) {
