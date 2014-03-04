@@ -352,13 +352,15 @@ exports.Formats = [
 	{
 		name: "[Seasonal] Seasoning's Greetings",
 		team: 'randomSeasonal',
+		mod: 'gen5',
 		section: 'Seasonal',
-		ruleset: ['PotD', 'Pokemon', 'Sleep Clause']
+		ruleset: ['PotD', 'Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod']
 	},
 	// Winter Wonderland, December 2012 and January 2013
 	{
 		name: "[Seasonal] Winter Wonderland",
 		team: 'randomSeasonalWW',
+		mod: 'gen5',
 		section: 'Seasonal',
 		onBegin: function() {
 			this.setWeather('Hail');
@@ -470,20 +472,22 @@ exports.Formats = [
 				}
 			}
 		},
-		ruleset: ['PotD', 'Pokemon', 'Sleep Clause']
+		ruleset: ['PotD', 'Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod']
 	},
 	// Valentine Venture, February 2013
 	{
 		name: "[Seasonal] Valentine Venture",
 		team: 'randomSeasonalVV',
+		mod: 'gen5',
 		section: 'Seasonal',
 		gameType: 'doubles',
-		ruleset: ['PotD', 'Pokemon', 'Sleep Clause']
+		ruleset: ['PotD', 'Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod']
 	},
 	// Spring Forward, March 2013
 	{
 		name: "[Seasonal] Spring Forward",
 		team: 'randomSeasonalSF',
+		mod: 'gen5',
 		section: 'Seasonal',
 		onBegin: function() {
 			if (this.random(100) < 75) {
@@ -556,12 +560,13 @@ exports.Formats = [
 				move.critRatio = 2;
 			}
 		},
-		ruleset: ['PotD', 'Pokemon', 'Sleep Clause']
+		ruleset: ['PotD', 'Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod']
 	},
 	// Fools Festival, April 2013
 	{
 		name: "[Seasonal] Fools Festival",
 		section: 'Seasonal',
+		mod: 'gen5',
 		team: 'randomSeasonalFF',
 		onBegin: function() {
 			var dice = this.random(100);
@@ -765,12 +770,14 @@ exports.Formats = [
 			haikus = haikus.randomize();
 			this.add('-message', haikus[0]);
 		},
-		ruleset: ['PotD', 'Pokemon', 'Sleep Clause']
+		ruleset: ['PotD', 'Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod']
 	},
 	{
 		name: "[Seasonal] May Mayhem",
 		section: "Seasonal",
+		mod: 'gen5',
 		team: 'randomSeasonalMM',
+		ruleset: ['PotD', 'Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod'],
 		onBegin: function() {
 			// Shameless plug
 			var date = Date();
@@ -793,8 +800,9 @@ exports.Formats = [
 	{
 		name: "[Seasonal] June Jubilee",
 		section: "Seasonal",
+		mod: 'gen5',
 		team: 'randomSeasonalJJ',
-		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod'],
+		ruleset: ['Sleep Clause Mod', 'HP Percentage Mod'],
 		onBegin: function() {
 			this.add('-message', "Greetings, trainer! Delibird needs your help! It's lost in the US and it needs to find its way back to the arctic before summer starts! Help your Delibird while travelling north, but you must defeat the opponent before he reaches there first!");
 			this.setWeather('Sunny Day');
@@ -860,6 +868,7 @@ exports.Formats = [
 	{
 		name: "[Seasonal] Jolly July",
 		section: 'Seasonal',
+		mod: 'gen5',
 		team: 'randomSeasonalJuly',
 		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod'],
 		onBegin: function() {
@@ -978,6 +987,7 @@ exports.Formats = [
 	{
 		name: "[Seasonal] Average August",
 		section: 'Seasonal',
+		mod: 'gen5',
 		team: 'randomSeasonalAA',
 		gameType: 'doubles',
 		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod'],
@@ -1028,6 +1038,7 @@ exports.Formats = [
 	{
 		name: "[Seasonal] School Schemes",
 		section: 'Seasonal',
+		mod: 'gen5',
 		team: 'randomSeasonalSS',
 		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod']
 	},
@@ -1578,6 +1589,20 @@ exports.Formats = [
 				} else {
 					delete boost[stat];
 				}
+			}
+		}
+	},
+	{
+		name: "PacifistMons",
+		section: "Other Metagames",
+
+		ruleset: ['Pokemon', 'Standard', 'Team Preview'],
+		banlist: ['Heatran', 'Gengarite', 'Taunt', 'Magic Guard'],
+		validateSet: function(set) {
+			for (var i in set.moves) {
+				var move = this.getMove(string(set.moves[i]));
+				if (move.heal) return [move.name + ' is banned as it is a healing move.'];
+				if (move.category !== 'Status') return [move.name + ' is banned as it is an attacking move.'];
 			}
 		}
 	},
