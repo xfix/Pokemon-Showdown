@@ -1599,11 +1599,13 @@ exports.Formats = [
 		ruleset: ['Pokemon', 'Standard', 'Team Preview'],
 		banlist: ['Heatran', 'Gengarite', 'Taunt', 'Magic Guard'],
 		validateSet: function(set) {
+			var problems = [];
 			for (var i in set.moves) {
 				var move = this.getMove(string(set.moves[i]));
-				if (move.heal) return [move.name + ' is banned as it is a healing move.'];
-				if (move.category !== 'Status') return [move.name + ' is banned as it is an attacking move.'];
+				if (move.heal) problems.push(move.name + ' is banned as it is a healing move.');
+				if (move.category !== 'Status') problems.push(move.name + ' is banned as it is an attacking move.');
 			}
+			return problems;
 		}
 	},
 	{
