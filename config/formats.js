@@ -344,7 +344,7 @@ exports.Formats = [
 		debug: true,
 		ruleset: ['Team Preview']
 	},
-/*
+
 	// Seasonals
 	///////////////////////////////////////////////////////////////////
 
@@ -1343,7 +1343,7 @@ exports.Formats = [
 			else if (move.type === 'Fire') move.name = 'Fireworks';
 		}
 	},
-*/
+
 	// Other Metagames
 	///////////////////////////////////////////////////////////////////
 
