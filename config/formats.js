@@ -1768,6 +1768,41 @@ exports.Formats = [
 		mimicGlitch: true
 	},
 
+	// Tournament Rules
+	///////////////////////////////////////////////////////////////////
+
+	{
+		name: "Passive Aggressive",
+		section: "Tournaments",
+
+		searchShow: false,
+		ruleset: ['Pokemon', 'Standard', 'Team Preview'],
+		banlist: [
+			// Standard OU bans
+			'Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Lucarionite',
+			// Banned Pokemon
+			'Heatran',
+			// Banned Abilities
+			'Magic Guard', 'Magic Bounce', 'Poison Heal', 'Regenerator', 'Arena Trap', 'Shadow Tag',
+			// Banned Moves
+			'Taunt', 'Magic Coat', 'Perish Song', 'Substitute', 'Heal Bell', 'Aromatherapy', 'Ingrain', 'Aqua Ring',
+			'Healing Wish', 'Refresh', 'Snatch', 'Safeguard', 'Grassy Terrain', 'Lunar Dance', 'Moonlight', 'Morning Sun',
+			'Rest', 'Synthesis', 'Swallow', 'Wish', 'Pain Split', 'Nature Power', 'Mean Look', 'Block', 'Spider Web',
+			// Banned Items
+			'Leftovers', 'Sitrus Berry', 'Aguav Berry', 'Berry Juice', 'Black Sludge', 'Enigma Berry', 'Figy Berry',
+			'Iapapa Berry', 'Mago Berry', 'Wiki Berry', 'Assault Vest'
+		],
+		validateSet: function(set) {
+			var problems = [];
+			for (var i in set.moves) {
+				var move = this.getMove(string(set.moves[i]));
+				if (move.heal) problems.push(move.name + ' is banned as it is a healing move.');
+				if (move.category !== 'Status') problems.push(move.name + ' is banned as it is an attacking move.');
+			}
+			return problems;
+		}
+	},
+
 	// BW2 Singles
 	///////////////////////////////////////////////////////////////////
 
