@@ -1790,7 +1790,7 @@ exports.Formats = [
 			'Rest', 'Synthesis', 'Swallow', 'Wish', 'Pain Split', 'Nature Power', 'Mean Look', 'Block', 'Spider Web',
 			// Banned Items
 			'Leftovers', 'Sitrus Berry', 'Aguav Berry', 'Berry Juice', 'Black Sludge', 'Enigma Berry', 'Figy Berry',
-			'Iapapa Berry', 'Mago Berry', 'Wiki Berry', 'Assault Vest'
+			'Iapapa Berry', 'Mago Berry', 'Wiki Berry', 'Assault Vest', 'Oran Berry'
 		],
 		validateSet: function(set) {
 			var problems = [];
