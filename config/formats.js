@@ -1359,19 +1359,12 @@ exports.Formats = [
 	///////////////////////////////////////////////////////////////////
 
 	{
-		name: "Middle Cup",
+		name: "OU Theorymon",
 		section: "OM of the Month",
 
-		ruleset: ['Pokemon', 'Team Preview', 'Standard'],
-		banlist: ['Illegal', 'Eviolite'],
-		maxLevel: 50,
-		defaultLevel: 50,
-		validateSet: function(set) {
-			var template = this.getTemplate(set.species || set.name);
-			if (!template.evos || template.evos.length === 0 || !template.prevo) {
-				return [set.species + " is not the middle Pokémon in an evolution chain."];
-			}
-		}
+		mod: 'theorymon',
+		ruleset: ['Pokemon', 'Standard', 'Team Preview'],
+		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Lucarionite']
 	},
 	{
 		name: "CAP",
@@ -1379,7 +1372,7 @@ exports.Formats = [
 		column: 3,
 
 		ruleset: ['CAP Pokemon', 'Standard', 'Team Preview'],
-		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite']
+		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Lucarionite']
 	},
 	{
 		name: "Alphabet Cup",
@@ -1684,17 +1677,22 @@ exports.Formats = [
 			'Arceus', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fairy', 'Arceus-Fighting', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus-Poison', 'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water',
 			'Darkrai',
 			'Deoxys-Attack',
+			'Deoxys',
 			'Gengarite',
 			'Giratina', 'Giratina-Origin',
+			'Groudon',
 			'Ho-Oh',
 			'Kangaskhanite',
 			'Kyogre',
 			'Kyurem-Black',
+			'Lugia',
 			'Mewtwo', 'Mewtwo-Mega-X', 'Mewtwo-Mega-Y',
 			'Palkia',
 			'Rayquaza',
+			'Reshiram',
 			'Shaymin-Sky',
 			'Soul Dew',
+			'Kyurem-White',
 			'Xerneas',
 			'Yveltal',
 			'Zekrom'
@@ -1722,6 +1720,21 @@ exports.Formats = [
 		section: "Other Metagames",
 
 		ruleset: ['OU', 'Same Type Clause']
+	},
+	{
+		name: "Middle Cup",
+		section: "Other Metagames",
+
+		ruleset: ['Pokemon', 'Team Preview', 'Standard'],
+		banlist: ['Illegal', 'Eviolite'],
+		maxLevel: 50,
+		defaultLevel: 50,
+		validateSet: function(set) {
+			var template = this.getTemplate(set.species || set.name);
+			if (!template.evos || template.evos.length === 0 || !template.prevo) {
+				return [set.species + " is not the middle Pokémon in an evolution chain."];
+			}
+		}
 	},
 	{
 		name: "STABmons",
