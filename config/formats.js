@@ -1607,6 +1607,14 @@ exports.Formats = [
 		}
 	},
 	{
+		name: "Stat Mirror",
+		section: "Other Metagames",
+
+		mod: "statmirror",
+		ruleset: ['Pokemon', 'Standard', 'Team Preview'],
+		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Lucarionite']
+	},
+	{
 		name: "Challenge Cup",
 		section: "Other Metagames",
 
