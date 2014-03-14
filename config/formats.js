@@ -1615,6 +1615,14 @@ exports.Formats = [
 		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Lucarionite']
 	},
 	{
+		name: "Scalemons",
+		section: "Other Metagames",
+
+		mod: "scalemons",
+		ruleset: ['Pokemon', 'Standard', 'Team Preview'],
+		banlist: ["Huge Power","Pure Power","Mawilite","Medichamite","Kangashkhanite","Eviolite","Light Ball","Thick Club","Deepseatooth","Deepseascale","Soul Dew","Munchlax","Smeargle"]
+	},
+	{
 		name: "Challenge Cup",
 		section: "Other Metagames",
 
