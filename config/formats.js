@@ -1523,6 +1523,19 @@ exports.Formats = [
 		banlist: ["Huge Power","Pure Power","Mawilite","Medichamite","Kangashkhanite","Eviolite","Light Ball","Thick Club","Deepseatooth","Deepseascale","Soul Dew","Munchlax","Smeargle"]
 	},
 	{
+		name: "Stat Split",
+		section: "Other Metagames",
+
+		mod: "statsplit",
+		ruleset: ['Pokemon', 'Team Preview', 'Standard'],
+		banlist: ['Soul Dew', 'Gengarite', 'Kangaskhanite', 'Lucarionite', 'Mewtwonite X', 'Mewtwonite Y',
+			'Arceus', 'Arceus-Bug', 'Arceus-Dark', 'Arceus-Dragon', 'Arceus-Electric', 'Arceus-Fairy', 'Arceus-Fighting', 'Arceus-Fire', 'Arceus-Flying',
+			'Arceus-Ghost', 'Arceus-Grass', 'Arceus-Ground', 'Arceus-Ice', 'Arceus-Poison', 'Arceus-Psychic', 'Arceus-Rock', 'Arceus-Steel', 'Arceus-Water',
+			'Deoxys', 'Deoxys-Attack', 'Dialga', 'Giratina', 'Giratina-Origin', 'Groudon', 'Ho-Oh', 'Kyogre',
+			'Lugia', 'Mewtwo', 'Mewtwo-Mega-X', 'Mewtwo-Mega-Y', 'Palkia', 'Rayquaza', 'Xerneas', 'Yveltal', 'Zekrom', 'Genesect'
+		]
+	},
+	{
 		name: "Clash of the Classes",
 		section: "Other Metagames",
 
