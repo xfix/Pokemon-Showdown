@@ -1523,6 +1523,83 @@ exports.Formats = [
 		banlist: ["Huge Power","Pure Power","Mawilite","Medichamite","Kangashkhanite","Eviolite","Light Ball","Thick Club","Deepseatooth","Deepseascale","Soul Dew","Munchlax","Smeargle"]
 	},
 	{
+		name: "Clash of the Classes",
+		section: "Other Metagames",
+
+		ruleset: ['Pokemon', 'Standard', 'Team Preview'],
+		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Lucarionite'],
+		validateTeam: function(team, format) {
+			var problems = [];
+			var classes = {
+				mage: {
+					alakazam:1,
+					chansey:1,
+					clefable:1,
+					delphox:1,
+					gardevoir:1,
+					gengar:1,
+					latios:1,
+					meloetta:1,
+					mismagius:1,
+					roserade:1
+				},
+				knight: {
+					aegislash:1,
+					bisharp:1,
+					braviary:1,
+					cobalion:1,
+					escavalier:1,
+					gallade:1,
+					heracross:1,
+					keldeo:1,
+					lucario:1,
+					terrakion:1
+				},
+				warrior: {
+					aerodactyl:1,
+					aggron:1,
+					breloom:1,
+					conkeldurr:1,
+					druddigon:1,
+					garchomp:1,
+					mawile:1,
+					medicham:1,
+					rhyperior:1,
+					tyranitar:1
+				},
+				ninja: {
+					accelgor:1,
+					crobat:1,
+					gliscor:1,
+					greninja:1,
+					ninjask:1,
+					sableye:1,
+					sceptile:1,
+					scizor:1,
+					weavile:1,
+					zoroark:1
+				}
+			};
+
+			var teamClass;
+			for (var i = 0; i < team.length; i++) {
+				var pokeClass = false;
+				var template = Tools.getTemplate(team[i].species);
+				for (var c in classes) {
+					if (template.id in classes[c]) {
+						if (!teamClass) teamClass = c;
+						pokeClass = c;
+						break;
+					}
+				}
+				if (teamClass && pokeClass && pokeClass !== teamClass) problems.push('Your team must contain only Pokémon from a single class.');
+				if (!pokeClass) problems.push(template.species + ' is not in any of the current classes.');
+			}
+			if (!teamClass) problems.push('Your team does not have a class.');
+			return problems;
+		}
+	},
+	{
 		name: "Challenge Cup",
 		section: "Other Metagames",
 
