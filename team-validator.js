@@ -599,6 +599,9 @@ var Validator = (function() {
 						// Chatter, Struggle and Magikarp's Revenge cannot be sketched
 						if (move in {'chatter':1, 'struggle':1, 'magikarpsrevenge':1}) return true;
 					}
+					// why do I keep adding hacks instead of doing it a better way
+					// Ability Shift allows all move combinations
+					if (format.id === 'abilityshift') return false;
 					if (typeof lset === 'string') lset = [lset];
 
 					for (var i=0, len=lset.length; i<len; i++) {
