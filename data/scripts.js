@@ -970,6 +970,9 @@ exports.BattleScripts = {
 				case 'flamethrower': case 'fierydance':
 					if (hasMove['lavaplume'] || hasMove['overheat'] || hasMove['fireblast'] || hasMove['blueflare']) rejected = true;
 					break;
+				case 'fireblast':
+					if (hasMove['lavaplume']) rejected = true;
+					break;
 				case 'overheat':
 					if (setupType === 'Special' || hasMove['fireblast']) rejected = true;
 					break;
@@ -1296,6 +1299,9 @@ exports.BattleScripts = {
 				if ((ability === 'Defiant' || ability === 'Moxie') && !counter['Physical'] && !hasMove['batonpass']) {
 					rejectAbility = true;
 				}
+				if (ability === 'Snow Warning' && hasMove['naturepower']) {
+					rejectAbility = true;
+				}
 				// below 2 checks should be modified, when it becomes possible, to check if the team contains rain or sun
 				if (ability === 'Swift Swim' && !hasMove['raindance']) {
 					rejectAbility = true;
@@ -1391,7 +1397,7 @@ exports.BattleScripts = {
 				} else {
 					item = 'Choice Scarf';
 				}
-			} else if (hasMove['rest'] && !hasMove['sleeptalk'] && ability !== 'Natural Cure' && ability !== 'Shed Skin') {
+			} else if (hasMove['rest'] && !hasMove['sleeptalk'] && ability !== 'Natural Cure' && ability !== 'Shed Skin' && (ability !== 'Hydration' || !hasMove['raindance'])) {
 				item = 'Chesto Berry';
 			} else if (hasMove['naturalgift']) {
 				item = 'Liechi Berry';
