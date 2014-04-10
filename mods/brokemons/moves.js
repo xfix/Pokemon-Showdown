@@ -50,5 +50,11 @@ exports.BattleMovedex = {
 			chance: 20,
 			volatileStatus: 'flinch'
 		}
+	},
+	// Air Cutter - 70 BP, 100 Acc, high critical hit ratio
+	aircutter: {
+		inherit: true,
+		basePower: 70,
+		accuracy: 100
 	}
 }
