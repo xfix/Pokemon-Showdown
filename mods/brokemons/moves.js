@@ -63,5 +63,10 @@ exports.BattleMovedex = {
 		basePower: 45,
 		accuracy: 100,
 		multihit: 2
+	},
+	// Arm Thrust - 25 BP, 100 Acc, hits 2-5 times
+	armthrust: {
+		inherit: true,
+		basePower: 25
 	}
 }
