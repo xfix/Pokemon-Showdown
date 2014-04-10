@@ -68,5 +68,10 @@ exports.BattleMovedex = {
 	armthrust: {
 		inherit: true,
 		basePower: 25
+	},
+	// Aromatic Mist - Heals 50% of user's HP and raises user's SpD by 1 stage (16 PP)
+	aromaticmist: {
+		inherit: true,
+		heal: [1,2]
 	}
 }
