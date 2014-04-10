@@ -73,5 +73,19 @@ exports.BattleMovedex = {
 	aromaticmist: {
 		inherit: true,
 		heal: [1,2]
+	},
+	// Assurance - 40 BP, 100 Acc, +1 priority (48 BP)
+	assurance: {
+		inherit: true,
+		basePower: 40,
+		basePowerCallback: function(pokemon, target) {
+			if (pokemon.volatiles.assurance && pokemon.volatiles.assurance.hurt) {
+				this.debug('Boosted for being damaged this turn');
+				return 80;
+			}
+			return 40;
+		},
+		priority: 1,
+		pp: 30
 	}
 }
