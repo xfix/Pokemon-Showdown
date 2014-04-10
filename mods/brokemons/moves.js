@@ -99,5 +99,22 @@ exports.BattleMovedex = {
 		basePower: 25,
 		accuracy: 100,
 		type: "Steel"
+	},
+	// Beat Up - 25 BP, 100 Acc, hits 2-5 times
+	beatup: {
+		num: 251,
+		accuracy: 100,
+		basePower: 25,
+		category: "Physical",
+		desc: "Deals damage to one adjacent target and hits two to five times. Has a 1/3 chance to hit two or three times, and a 1/6 chance to hit four or five times. If one of the hits breaks the target's Substitute, it will take damage for the remaining hits. If the user has the Ability Skill Link, this move will always hit five times.",
+		shortDesc: "Hits 2-5 times in one turn.",
+		id: "beatup",
+		name: "Beat Up",
+		pp: 20,
+		priority: 0,
+		multihit: [2,5],
+		secondary: false,
+		target: "normal",
+		type: "Dark"
 	}
 }
