@@ -92,5 +92,12 @@ exports.BattleMovedex = {
 	aurasphere: {
 		inherit: true,
 		basePower: 90
+	},
+	// Barrage - 25 BP, 100 Acc, Steel type, hits 2-5 times
+	barrage: {
+		inherit: true,
+		basePower: 25,
+		accuracy: 100,
+		type: "Steel"
 	}
 }
