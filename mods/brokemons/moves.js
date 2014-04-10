@@ -64,6 +64,32 @@ exports.BattleMovedex = {
 		accuracy: 100,
 		multihit: 2
 	},
+	// Aqua Ring - Restores 1/16 of the pokemon on the user's side max HP each turn, lasts for 10 turns, lasts even if user switches out
+	// Thanks go to sirDonovan, for helping me with making this work.
+	aquaring: {
+		inherit: true,
+		volatileStatus: false,
+		sideCondition: 'aquaring',
+		effect: {
+			duration: 10,
+			onStart: function(side) {
+				this.add('-sidestart', side, 'move: Aqua Ring');
+			},
+			onResidualOrder: 5,
+			onResidualSubOrder: 2,
+			onResidual: function(side) {
+				var target = side.active[this.effectData.sourcePosition];
+				this.effectData.hp = target.maxhp/16;
+				if (!target.fainted) {
+					this.heal(this.effectData.hp, target, target);
+				}
+			},
+			onEnd: function(side) {
+				this.add('-sideend', side, 'move: Aqua Ring');
+			}
+		},
+		target: "allySide"
+	},
 	// Arm Thrust - 25 BP, 100 Acc, hits 2-5 times
 	armthrust: {
 		inherit: true,
