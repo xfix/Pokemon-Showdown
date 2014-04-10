@@ -40,5 +40,15 @@ exports.BattleMovedex = {
 	aerialace: {
 		inherit: true,
 		basePower: 75
+	},
+	// Air Slash - 85 BP, 90 Acc, 20% chance to flinch target
+	airslash: {
+		inherit: true,
+		basePower: 85,
+		accuracy: 90,
+		secondary: {
+			chance: 20,
+			volatileStatus: 'flinch'
+		}
 	}
 }
