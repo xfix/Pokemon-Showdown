@@ -535,6 +535,13 @@ exports.Formats = [
 		}
 	},
 	{
+		name: "Brokemons",
+		section: "Other Metagames",
+
+		mod: 'brokemons',
+		ruleset: ['Pokemon', 'Standard', 'Team Preview']
+	},
+	{
 		name: "Gen-NEXT OU",
 		section: "Other Metagames",
 
