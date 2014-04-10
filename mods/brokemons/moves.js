@@ -35,5 +35,10 @@ exports.BattleMovedex = {
 		inherit: true,
 		affectedByImmunities: false,
 		getEffectiveness: weakToType('Steel')
+	},
+	// Aerial Ace - 75 BP, -- Acc, never misses
+	aerialace: {
+		inherit: true,
+		basePower: 75
 	}
 }
