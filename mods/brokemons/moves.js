@@ -29,5 +29,11 @@ exports.BattleMovedex = {
 		pp: 10,
 		affectedByImmunities: false,
 		getEffectiveness: weakToType('Steel')
+	},
+	// Acid Spray - 40 BP, 100 Acc, 100% chance to lower target's SpD by 2 stages, hits Steel-types super effectively (16 PP)
+	acidspray: {
+		inherit: true,
+		affectedByImmunities: false,
+		getEffectiveness: weakToType('Steel')
 	}
 }
