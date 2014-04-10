@@ -87,5 +87,10 @@ exports.BattleMovedex = {
 		},
 		priority: 1,
 		pp: 30
+	},
+	// Aura Sphere - 90 BP, -- Acc, never misses
+	aurasphere: {
+		inherit: true,
+		basePower: 90
 	}
 }
