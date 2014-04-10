@@ -56,5 +56,12 @@ exports.BattleMovedex = {
 		inherit: true,
 		basePower: 70,
 		accuracy: 100
+	},
+	// Aqua Tail - 45 BP, 100 Acc, hits twice
+	aquatail: {
+		inherit: true,
+		basePower: 45,
+		accuracy: 100,
+		multihit: 2
 	}
 }
