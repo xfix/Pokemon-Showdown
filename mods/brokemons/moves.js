@@ -173,15 +173,18 @@ exports.BattleMovedex = {
 		secondary: false,
 		getEffectiveness: weakToType('Flying')
 	},
+	// Bone Rush - 25 BP, 100 Acc, hits Flying-types neutrally, hits 2-5 times
 	bonerush: {
 		inherit: true,
 		accuracy: 100,
 		affectedByImmunities: false
 	},
+	// Bonemerang - 50 BP, 90 Acc, hits Flying-types neutrally, hits twice
 	bonemerang: {
 		inherit: true,
 		affectedByImmunities: false
 	},
+	// Boomburst - 140 BP, 90 Acc, lowers user's SpA by 2 stages
 	boomburst: {
 		inherit: true,
 		accuracy: 90,
@@ -191,6 +194,7 @@ exports.BattleMovedex = {
 			}
 		}
 	},
+	// Bubblebeam - 70 BP, 30% chance to lower Speed by 1 stage. (24 PP)
 	bubblebeam: {
 		inherit: true,
 		basePower: 70,
@@ -202,6 +206,7 @@ exports.BattleMovedex = {
 			}
 		}
 	},
+	// Bug Bite - 40 BP, 100 Acc, +1 priority
 	bugbite: {
 		inherit: true,
 		basePower: 40,
