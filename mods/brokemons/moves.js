@@ -172,5 +172,10 @@ exports.BattleMovedex = {
 		affectedByImmunities: false,
 		secondary: false,
 		getEffectiveness: weakToType('Flying')
+	},
+	bonerush: {
+		inherit: true,
+		accuracy: 100,
+		affectedByImmunities: false
 	}
 }
