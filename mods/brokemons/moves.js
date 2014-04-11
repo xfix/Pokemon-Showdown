@@ -181,5 +181,14 @@ exports.BattleMovedex = {
 	bonemerang: {
 		inherit: true,
 		affectedByImmunities: false
+	},
+	boomburst: {
+		inherit: true,
+		accuracy: 90,
+		self: {
+			boosts: {
+				spa: -2
+			}
+		}
 	}
 }
