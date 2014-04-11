@@ -177,5 +177,9 @@ exports.BattleMovedex = {
 		inherit: true,
 		accuracy: 100,
 		affectedByImmunities: false
+	},
+	bonemerang: {
+		inherit: true,
+		affectedByImmunities: false
 	}
 }
