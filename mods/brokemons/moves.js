@@ -143,5 +143,18 @@ exports.BattleMovedex = {
 		secondary: false,
 		target: "normal",
 		type: "Dark"
+	},
+	// Blast Burn - 90 BP, 100 Acc, 50% chance to burn the foe.
+	blastburn: {
+		inherit: true,
+		accuracy: 100,
+		basePower: 90,
+		desc: "Deals damage to one adjacent target with a 50% chance to burn it.",
+		shortDesc: "50% chance to burn the target.",
+		self: {},
+		secondary: {
+			chance: 50,
+			status: 'brn'
+		}
 	}
 }
