@@ -190,5 +190,16 @@ exports.BattleMovedex = {
 				spa: -2
 			}
 		}
+	},
+	bubblebeam: {
+		inherit: true,
+		basePower: 70,
+		pp: 15,
+		secondary: {
+			chance: 30,
+			boosts: {
+				spe: -1
+			}
+		}
 	}
 }
