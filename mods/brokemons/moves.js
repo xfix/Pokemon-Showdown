@@ -156,5 +156,11 @@ exports.BattleMovedex = {
 			chance: 50,
 			status: 'brn'
 		}
+	},
+	// Blizzard - 120 BP, 75 Acc, 10% chance to freeze target
+	blizzard: {
+		inherit: true,
+		basePower: 120,
+		accuracy: 75
 	}
 }
