@@ -24,11 +24,13 @@ function createTypeChanger(id, name, type) {
 }
 
 exports.BattleAbilities = {
+	// Adaptability: Powers up STAB moves by 1.8x
 	adaptability: {
 		inherit: true,
 		onModifyMove: function(move) {
 			move.stab = 1.8;
 		}
 	},
+	// Aerilate: Turns Normal moves into Flying moves and boosts them by 1.4x
 	aerilate: createTypeChanger('aerilate', 'Aerilate', 'Flying')
 }
