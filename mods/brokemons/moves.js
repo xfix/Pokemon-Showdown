@@ -201,5 +201,10 @@ exports.BattleMovedex = {
 				spe: -1
 			}
 		}
+	},
+	bugbite: {
+		inherit: true,
+		basePower: 40,
+		priority: 1
 	}
 }
