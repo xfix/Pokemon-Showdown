@@ -32,5 +32,23 @@ exports.BattleAbilities = {
 		}
 	},
 	// Aerilate: Turns Normal moves into Flying moves and boosts them by 1.4x
-	aerilate: createTypeChanger('aerilate', 'Aerilate', 'Flying')
+	aerilate: createTypeChanger('aerilate', 'Aerilate', 'Flying'),
+	// Aftermath: Takes away 1/3 of the max HP of the attacker landing the finishing hit.
+	aftermath: {
+		inherit: true,
+		onFaint: function(target, source, effect) {
+			if (effect && effect.effectType === 'Move' && effect.isContact && source) {
+				this.damage(source.maxhp/3, source, target);
+			}
+		}
+	},
+	// Air Lock: Removes all weather
+	airlock: {
+		inherit: true,
+		onStart: function () {
+			this.clearWeather();
+		},
+		onAnyModifyPokemon: undefined,
+		onAnyTryWeather: undefined
+	}
 }
