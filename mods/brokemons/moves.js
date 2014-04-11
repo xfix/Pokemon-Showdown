@@ -162,5 +162,15 @@ exports.BattleMovedex = {
 		inherit: true,
 		basePower: 120,
 		accuracy: 75
+	},
+	// Bone Club - 70 BP, 100 Acc, hits Flying-types super effectively (16 PP)
+	boneclub: {
+		inherit: true,
+		accuracy: 100,
+		basePower: 70,
+		pp: 10,
+		affectedByImmunities: false,
+		secondary: false,
+		getEffectiveness: weakToType('Flying')
 	}
 }
