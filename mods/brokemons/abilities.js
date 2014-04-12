@@ -50,5 +50,7 @@ exports.BattleAbilities = {
 		},
 		onAnyModifyPokemon: undefined,
 		onAnyTryWeather: undefined
-	}
+	},
+	// Amplifate: Turns Normal moves into Electric moves and boosts them by 1.4x
+	amplifate: createTypeChanger('amplifate', 'Amplifate', 'Electric')
 }
