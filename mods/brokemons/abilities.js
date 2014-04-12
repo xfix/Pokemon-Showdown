@@ -52,5 +52,15 @@ exports.BattleAbilities = {
 		onAnyTryWeather: undefined
 	},
 	// Amplifate: Turns Normal moves into Electric moves and boosts them by 1.4x
-	amplifate: createTypeChanger('amplifate', 'Amplifate', 'Electric')
+	amplifate: createTypeChanger('amplifate', 'Amplifate', 'Electric'),
+	// Analytic: Boosts power of moves when the Pokemon moves last by 1.4x
+	analytic: {
+		inherit: true,
+		onBasePower: function(basePower, attacker, defender, move) {
+			if (!this.willMove(defender)) {
+				this.debug('Analytic (x1.4) boost');
+				return this.chainModify(1.4);
+			}
+		}
+	}
 }
