@@ -211,5 +211,18 @@ exports.BattleMovedex = {
 		inherit: true,
 		basePower: 40,
 		priority: 1
+	},
+	chargebeam: {
+		inherit: true,
+		accuracy: 95,
+		basePower: 60,
+		secondary: {
+			chance: 100,
+			self: {
+				boosts: {
+					spa: 1
+				}
+			}
+		}
 	}
 }
