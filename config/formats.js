@@ -539,7 +539,7 @@ exports.Formats = [
 		section: "Other Metagames",
 
 		mod: 'brokemons',
-		ruleset: ['Pokemon', 'Standard', 'Team Preview']
+		ruleset: ['Pokemon', 'HP Percentage Mod']
 	},
 	{
 		name: "Gen-NEXT OU",
