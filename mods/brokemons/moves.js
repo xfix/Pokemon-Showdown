@@ -250,5 +250,13 @@ exports.BattleMovedex = {
 		inherit: true,
 		basePower: 75,
 		accuracy: 100
+	},
+	// Comet Punch - 20 BP, 100 Acc, Fighting type, hits 2-5 times, +1 priority
+	cometpunch: {
+		inherit: true,
+		priority: 1,
+		basePower: 20,
+		accuracy: 100,
+		type: 'Fighting'
 	}
 }
