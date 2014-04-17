@@ -212,6 +212,7 @@ exports.BattleMovedex = {
 		basePower: 40,
 		priority: 1
 	},
+	// Charge Beam - 60 BP, 95 Acc, 100% chance to raise user's Sp. Attack
 	chargebeam: {
 		inherit: true,
 		accuracy: 95,
