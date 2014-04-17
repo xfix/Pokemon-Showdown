@@ -285,5 +285,12 @@ exports.BattleMovedex = {
 		inherit: true,
 		heal: [1,4],
 		pp: 10
+	},
+	// Crabhammer - 120 BP, 85 Acc, high critical hit ratio (8 PP)
+	crabhammer: {
+		inherit: true,
+		basePower: 120,
+		accuracy: 85,
+		pp: 5
 	}
 }
