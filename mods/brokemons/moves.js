@@ -292,5 +292,17 @@ exports.BattleMovedex = {
 		basePower: 120,
 		accuracy: 85,
 		pp: 5
+	},
+	// Cross Chop - 90 BP, 100 Acc, 10% chance to flinch the target (16 PP)
+	crosschop: {
+		inherit: true,
+		basePower: 90,
+		accuracy: 100,
+		critRatio: 0,
+		secondary: {
+			chance: 10,
+			volatileStatus: 'flinch'
+		},
+		pp: 10
 	}
 }
