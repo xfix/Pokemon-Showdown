@@ -258,5 +258,15 @@ exports.BattleMovedex = {
 		basePower: 20,
 		accuracy: 100,
 		type: 'Fighting'
+	},
+	// Confusion - 40 BP, 100 Acc, +1 priority, 20% chance to confuse target
+	confusion: {
+		inherit: true,
+		priority: 1,
+		basePower: 40,
+		secondary: {
+			chance: 20,
+			volatileStatus: 'confusion'
+		}
 	}
 }
