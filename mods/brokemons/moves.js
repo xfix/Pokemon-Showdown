@@ -212,6 +212,21 @@ exports.BattleMovedex = {
 		basePower: 40,
 		priority: 1
 	},
+	// Chatter - 70 BP, 100 Acc, Confuses both the user and the opponent. (8 PP)
+	chatter: {
+		inherit: true,
+		accuracy: 100,
+		basePower: 70,
+		onModifyMove: function () {},
+		pp: 5,
+		secondary: {
+			chance: 100,
+			onHit: function(target, source) {
+				target.addVolatile('confusion');
+				source.addVolatile('confusion');
+			}
+		}
+	},
 	// Charge Beam - 60 BP, 95 Acc, 100% chance to raise user's Sp. Attack
 	chargebeam: {
 		inherit: true,
