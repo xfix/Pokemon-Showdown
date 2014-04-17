@@ -279,5 +279,10 @@ exports.BattleMovedex = {
 				spe: -1
 			}
 		}
+	},
+	// Cosmic Power - Heals 25% of user's health, and raises the user's Defense and Special Defense by one stage each (16 PP)
+	cosmicpower: {
+		inherit: true,
+		heal: [1,4]
 	}
 }
