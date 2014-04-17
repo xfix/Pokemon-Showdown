@@ -238,5 +238,11 @@ exports.BattleMovedex = {
 				}
 			}
 		}
+	},
+	// Chip Away - 90 BP, 100 Acc, Rock type, ignores target's stat changes
+	chipaway: {
+		inherit: true,
+		basePower: 90,
+		type: 'Rock'
 	}
 }
