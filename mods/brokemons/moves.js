@@ -169,7 +169,6 @@ exports.BattleMovedex = {
 		basePower: 70,
 		pp: 10,
 		affectedByImmunities: false,
-		secondary: false,
 		getEffectiveness: weakToType('Flying')
 	},
 	// Bone Rush - 25 BP, 100 Acc, hits Flying-types neutrally, hits 2-5 times
