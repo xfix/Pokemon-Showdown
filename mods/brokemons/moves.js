@@ -244,5 +244,11 @@ exports.BattleMovedex = {
 		inherit: true,
 		basePower: 90,
 		type: 'Rock'
+	},
+	// Clear Smog - 75 BP, 100 Acc, removes target's stat changes
+	clearsmog: {
+		inherit: true,
+		basePower: 75,
+		accuracy: 100
 	}
 }
