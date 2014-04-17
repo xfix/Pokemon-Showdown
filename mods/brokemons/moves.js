@@ -268,5 +268,15 @@ exports.BattleMovedex = {
 			chance: 20,
 			volatileStatus: 'confusion'
 		}
+	},
+	// Constrict - 55 BP, 100 Acc, 100% chance to lower the target's Speed
+	constrict: {
+		basePower: 55,
+		secondary: {
+			chance: 100,
+			boosts: {
+				spe: -1
+			}
+		}
 	}
 }
