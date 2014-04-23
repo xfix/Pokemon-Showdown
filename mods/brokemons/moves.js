@@ -336,5 +336,5 @@ exports.BattleMovedex = {
 		basePower: 100,
 		accuracy: 100,
 		pp: 15,
-	},
+	}
 }
