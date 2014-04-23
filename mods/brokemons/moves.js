@@ -304,5 +304,17 @@ exports.BattleMovedex = {
 			volatileStatus: 'flinch'
 		},
 		pp: 10
+	},
+	// Cross Poison  - 45 BP, 100 Acc, hits twice, 20% chance to badly poison the target (32 PP)
+	crosspoison: {
+		inherit: true,
+		basePower: 45,
+		accuracy: 100,
+		critRatio: 0,
+		secondary: {
+			chance: 20,
+			volatileStatus: 'tox'
+		},
+		pp: 20
 	}
 }
