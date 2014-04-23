@@ -336,5 +336,12 @@ exports.BattleMovedex = {
 		basePower: 100,
 		accuracy: 100,
 		pp: 15,
+	},
+	// Dark Void - Puts the target to sleep. User loses 1/16th of their HP.
+	darkvoid: {
+		inherit: true,
+		onHit: function(target, source) {
+			this.directDamage(source.maxhp/16, source, source);
+		}
 	}
 }
