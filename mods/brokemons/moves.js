@@ -318,6 +318,23 @@ exports.BattleMovedex = {
 			chance: 20,
 			volatileStatus: 'tox'
 		},
-		pp: 20
-	}
+		pp: 20,
+	},
+	// Crush Claw - 85 BP, 100 Acc, 50% chance to lower target's Defense (8 PP)
+	crushclaw: {
+		inherit: true,
+		basePower: 85,
+		accuracy: 100,
+		desc: "Deals damage to one adjacent target. Has a 50% chance to lower target's Defense.",
+		shortDesc: "50% chance to lower target's Defense.",
+		type: "Flying",
+		pp: 5,
+	},
+	// Dazzling Gleam - 100 BP, 100 Acc, no additional effect (24 PP)
+	dazzlinggleam: {
+		inherit: true,
+		basePower: 100,
+		accuracy: 100,
+		pp: 15,
+	},
 }
