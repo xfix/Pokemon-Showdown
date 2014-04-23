@@ -310,6 +310,9 @@ exports.BattleMovedex = {
 		inherit: true,
 		basePower: 45,
 		accuracy: 100,
+		desc: "Deals damage to one adjacent target and hits twice in one turn. Has a 20% chance to Badly Poison target.",
+		shortDesc: "Hits twice in one turn. 20% chance to Badly Poison.",
+		multihit: 2,
 		critRatio: 0,
 		secondary: {
 			chance: 20,
