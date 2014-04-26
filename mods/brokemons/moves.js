@@ -318,7 +318,7 @@ exports.BattleMovedex = {
 			chance: 20,
 			volatileStatus: 'tox'
 		},
-		pp: 20,
+		pp: 20
 	},
 	// Crush Claw - 85 BP, 100 Acc, 50% chance to lower target's Defense (8 PP)
 	crushclaw: {
@@ -328,14 +328,14 @@ exports.BattleMovedex = {
 		desc: "Deals damage to one adjacent target. Has a 50% chance to lower target's Defense.",
 		shortDesc: "50% chance to lower target's Defense.",
 		type: "Flying",
-		pp: 5,
+		pp: 5
 	},
 	// Dazzling Gleam - 100 BP, 100 Acc, no additional effect (24 PP)
 	dazzlinggleam: {
 		inherit: true,
 		basePower: 100,
 		accuracy: 100,
-		pp: 15,
+		pp: 15
 	},
 	// Dark Void - Puts the target to sleep. User loses 1/16th of their HP.
 	darkvoid: {
@@ -343,5 +343,149 @@ exports.BattleMovedex = {
 		onHit: function(target, source) {
 			this.directDamage(source.maxhp/16, source, source);
 		}
-	}
-}
+	},
+	// Defog - -- BP, 100 Acc, removes all entry hazards on feild (32 pp)
+	defog: {
+		inherit: true,
+		accuracy: 100,
+		pp: 20,
+		onHit: function(target, source) {
+			if (!target.volatiles['substitute']) this.boost({evasion:-0});
+			var sideConditions = {reflect:1, lightscreen:1, safeguard:1, mist:1, spikes:1, toxicspikes:1, stealthrock:1, stickyweb:1};
+			for (var i in sideConditions) {
+				if (target.side.removeSideCondition(i)) {
+					this.add('-sideend', target.side, this.getEffect(i).name, '[from] move: Defog', '[of] '+target);
+				}
+			}
+			for (var i in sideConditions) {
+				if (i === 'reflect' || i === 'lightscreen') continue;
+				if (source.side.removeSideCondition(i)) {
+					this.add('-sideend', source.side, this.getEffect(i).name, '[from] move: Defog', '[of] '+source);
+				}
+			}
+		}
+	},
+	//Disarming Voice - 40 BP, 100 Acc, +1 priority (48 PP)
+	disarmingvoice: {
+		inherit: true,
+		accuracy: 100,
+		desc: "Deal Damage to one adjacent target. Priority +1.",
+		shortDesc: "Usually goes first.",
+		pp: 30,
+		priority: 1
+	},
+	//Dizzy Punch - 80 BP, 100 Acc, 60% chance to confuse target (8 PP)
+	dizzypunch: {
+		inherit: true,
+		basePower: 80,
+		desc: "Deals damage to target with a 60% chance to confuse it. Makes contact. Damage is boosted to 1.2x by the ability Iron Fist.",
+		shortDesc: "60% chance to confuse the target.",
+		pp: 5
+		secondary: {
+			chance: 60,
+			volatileStatus: 'confusion'
+		}
+	},
+	//Double Hit - 45 BP, 100 Acc, hits twice (16 PP)
+	doublehit: {
+		inherit: true,
+		accuracy: 100,
+		basePower: 45
+	},
+	//Double Kick - 45 BP, 100 Acc, hits twice (16 PP)
+	doublekick: {
+		inherit: true,
+		basePower: 45
+	},
+	//Double Slap - 45 BP, 100 Acc, Fairy type, hits twice, 10% chance to flinch target (16 PP)
+	doubleslap: {
+		inherit: true,
+		accuracy: 100,
+		basepower: 45,
+		desc: "Deals damage to one adjacent target and hits twice. If one of the hits breaks the target's Substitute, it will take damage for the remaining hits. Makes contact. 10% chance to flinch the target.",
+		shortDesc: "Hits twice in one turn. 10% chance to flinch the target.",
+		multihit: 2,
+		secondary: {
+			chance: 10,
+			volatileStatus: 'flinch'
+		},
+		type: "Fairy"
+	},
+	//Double Edge - 110 BP, 100 Acc, Deal 1/4th damage done as recoil to the user (16 PP)
+	doubleedge: {
+		inherit: true,
+		basePower: 110,
+		desc: "Deals damage to one adjacent target. If the target lost HP, the user takes recoil damage equal to 25% that HP, rounded half up, but not less than 1HP. Makes contact.",
+		shortDesc: "Has 25% recoil.",
+		pp: 10,
+		recoil: [25,100]
+	},
+	//Dragon Breath - 80 BP, 100 Acc, 30% chance to paralyze target (24 PP)
+	dragonbreath: {
+		inherit: true,
+		basePower: 80,
+		pp: 15
+	},
+	//Draco Meteor - 140 BP, 90 Acc, lowers user's Sp. Attack harshly
+	dracometoer: {
+		inherit: true,
+		basePower: 140
+	},
+	//Dragon Pulse - 95 BP, 100 Acc
+	dragonpulse: {
+		inherit: true,
+		basePower 95
+	},
+	//Dragon Rush - 40 BP, 100 Acc, +1 priority (32 PP)
+	dragonrush: {
+		inherit: true,
+		accuracy: 100,
+		basePower: 40,
+		desc: "Deal Damage to one adjacent target. Priority +1.",
+		shortDesc: "Usually goes first.",
+		pp: 20,
+		priority: 1,
+		secondary: false
+	},
+	//Draining Kiss - 60 BP, 100 Acc, heals 75% of damage inflicted on target (16 PP)
+	drainingkiss: {
+		inherit: true,
+		basePower: 60
+	},
+	//Drill Peck - 80 BP, 100 Acc, 30% chance to lower foe's Defense
+	drillpeck: {
+		desc: "Deals damage to one adjacent or non-adjacent target with a 30% chance to lower its Defense by 1 stage. Makes contact.",
+		shortDesc: "30% chance to lower target's Defense by 1.",
+		secondary: {
+			chance: 30,
+			boosts: {
+				def: -1
+			}
+		}
+	},
+	//Drill Run - 40 BP, 100 Acc, +1 priority (32 PP)
+	drillrun: {
+		accuracy: 100,
+		basePower: 40,
+		desc: "Deal Damage to one adjacent target. Priority +1.",
+		shortDesc: "Usually goes first.",
+		pp: 20,
+		priority: 1,
+		critRatio: 0,
+	},
+	//Dual Chop - 45 BP, 100 Acc, hits twice
+	dualchop: {
+		accuracy: 100,
+		basePower: 45,
+	},
+	//Egg Bomb  - 100 BP, 100 Acc, Grass type, 10% chance to flinch target (16 PP)
+	eggbomb: {
+		accuracy: 100,
+		desc: "Deals damage to one adjacent target. 10% chance to flinch the target.",
+		shortDesc: "10% chance to flinch the target.",
+		secondary: {
+			chance: 10,
+			volatileStatus: 'flinch'
+		},
+		type: "Grass"
+	},
