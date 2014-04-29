@@ -96,5 +96,26 @@ exports.BattleAbilities = {
 				}
 			}
 		}
+	},
+	// Illuminate: Upon entering battle, the opponent’s Speed lowers
+	// one stage. Pokémon with the Clear Body or White Smoke ability
+	// are unaffected. If both sides switch on the same turn, and
+	// first player sends out a Pokémon with Illuminate, the opponent’s
+	// Speed will be lowered before the opponent’s Pokémon switches.
+	illuminate: {
+		inherit: true,
+		onStart: function (pokemon) {
+			var foeactive = pokemon.side.foe.active;
+			for (var i = 0; i < foeactive.length; i++) {
+				if (!foeactive[i] || foeactive[i].fainted) continue;
+				if (foeactive[i].volatiles['substitute']) {
+					// does it give a message?
+					this.add('-activate', foeactive[i], 'Substitute', 'ability: Illuminate', '[of] ' + pokemon);
+				} else {
+					this.add('-ability', pokemon, 'Illuminate', '[of] ' + foeactive[i]);
+					this.boost({spe: -1}, foeactive[i], pokemon);
+				}
+			}
+		}
 	}
 }
