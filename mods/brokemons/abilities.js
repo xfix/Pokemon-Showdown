@@ -117,5 +117,34 @@ exports.BattleAbilities = {
 				}
 			}
 		}
+	},
+	// Incubate: User gains 1/8 of its HP in sunshine, but loses 1/8 of
+	// its HP in hail, and Fire attacks heal 25% of the Pokémon's HP,
+	// but Ice attacks do 25% more damage
+	incubate: {
+		onTryHit: function (target, source, move) {
+			if (target !== source && move.type === 'Fire') {
+				if (!this.heal(target.maxhp / 4)) {
+					this.add('-immune', target, '[msg]');
+				}
+				return null;
+			}
+		},
+		onBasePowerPriority: 7,
+		onFoeBasePower: function (basePower, attacker, defender, move) {
+			if (this.effectData.target !== defender) return;
+			if (move.type === 'Ice') {
+				return this.chainModify(1.25);
+			}
+		},
+		onWeather: function (target, source, effect) {
+			if (effect.id === 'sunnyday') {
+				this.heal(target.maxhp / 8);
+			} else if (effect.id === 'hail') {
+				this.damage(target.maxhp / 8);
+			}
+		},
+		id: "incubate",
+		name: "Incubate"
 	}
 }
