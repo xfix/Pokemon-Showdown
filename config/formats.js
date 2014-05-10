@@ -498,6 +498,14 @@ exports.Formats = [
 		}
 	},
 	{
+		name: "Moody Metronome Smeargles",
+		section: "Other Metagames",
+
+		ruleset: ['Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod'],
+		team: 'random',
+		mod: 'smeargle'
+	},
+	{
 		name: "Gen-NEXT OU",
 		section: "Other Metagames",
 
