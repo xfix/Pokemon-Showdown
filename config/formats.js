@@ -1325,6 +1325,14 @@ exports.Formats = [
 		ruleset: ['Pokemon', 'Team Preview', 'Standard']
 	},
 	{
+		name: "Negative Metagame XY",
+		section: "Other Metagames",
+
+		mod: 'negative',
+		ruleset: ['Pokemon', 'Team Preview', 'Standard'],
+		banlist: ['Huge Power', 'Pure Power', 'Light Ball', 'Thick Club', 'DeepSeaTooth', 'DeepSeaScale', 'Eviolite', 'Smeargle']
+	},
+	{
 		name: "Offstat XY",
 		section: "Other Metagames",
 
