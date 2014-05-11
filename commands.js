@@ -120,13 +120,7 @@ var commands = exports.commands = {
 
 		var message = '|pm|' + user.getIdentity() + '|' + targetUser.getIdentity() + '|' + target;
 		user.send(message);
-		if (targetUser !== user) {
-			if (ShadowBan.isShadowBanned(user)) {
-				ShadowBan.room.add('|c|' + user.getIdentity() + "|__(Private to " + targetUser.getIdentity() + ")__ " + target);
-			} else {
-				targetUser.send(message);
-			}
-		}
+		if (targetUser !== user) targetUser.send(message);
 		targetUser.lastPM = user.userid;
 		user.lastPM = targetUser.userid;
 	},
@@ -424,26 +418,34 @@ var commands = exports.commands = {
 		var targetUser = this.targetUser;
 		var name = this.targetUsername;
 		var userid = toId(name);
+		var success;
 
 		if (!userid || !targetUser) return this.sendReply("User '" + name + "' does not exist.");
 		if (!this.can('ban', targetUser, room)) return false;
 		if (!room.bannedUsers || !room.bannedIps) {
 			return this.sendReply("Room bans are not meant to be used in room " + room.id + ".");
 		}
-		if (room.bannedUsers[userid]) delete room.bannedUsers[userid];
-		for (var ip in targetUser.ips) {
-			if (room.bannedIps[ip]) delete room.bannedIps[ip];
+		if (room.bannedUsers[userid]) {
+			delete room.bannedUsers[userid];
+			success = true;
 		}
+		for (var ip in targetUser.ips) {
+			if (room.bannedIps[ip]) {
+				delete room.bannedIps[ip];
+				success = true;
+			}
+		}
+		if (!success) return this.sendReply("User " + targetUser.name + " is not banned from room " + room.id + ".");
+
 		targetUser.popup("" + user.name + " has unbanned you from the room " + room.id + ".");
 		this.addModCommand("" + targetUser.name + " was unbanned from room " + room.id + " by " + user.name + ".");
 		var alts = targetUser.getAlts();
-		if (alts.length) {
-			this.addModCommand("" + targetUser.name + "'s alts were also unbanned from room " + room.id + ": " + alts.join(", "));
-			for (var i = 0; i < alts.length; ++i) {
-				var altId = toId(alts[i]);
-				if (room.bannedUsers[altId]) delete room.bannedUsers[altId];
-			}
+		if (!alts.length) return;
+		for (var i = 0; i < alts.length; ++i) {
+			var altId = toId(alts[i]);
+			if (room.bannedUsers[altId]) delete room.bannedUsers[altId];
 		}
+		this.addModCommand("" + targetUser.name + "'s alts were also unbanned from room " + room.id + ": " + alts.join(", "));
 	},
 
 	roomauth: function (target, room, user, connection) {
@@ -494,7 +496,7 @@ var commands = exports.commands = {
 
 		this.addModCommand("" + targetUser.name + " was warned by " + user.name + "." + (target ? " (" + target + ")" : ""));
 		targetUser.send('|c|~|/warn ' + target);
-		this.add('|unlink|' + targetUser.userid);
+		this.add('|unlink|' + this.getLastIdOf(targetUser));
 	},
 
 	redirect: 'redir',
@@ -547,7 +549,7 @@ var commands = exports.commands = {
 		this.addModCommand("" + targetUser.name + " was muted by " + user.name + " for 7 minutes." + (target ? " (" + target + ")" : ""));
 		var alts = targetUser.getAlts();
 		if (alts.length) this.addModCommand("" + targetUser.name + "'s alts were also muted: " + alts.join(", "));
-		this.add('|unlink|' + targetUser.userid);
+		this.add('|unlink|' + this.getLastIdOf(targetUser));
 
 		targetUser.mute(room.id, 7 * 60 * 1000);
 	},
@@ -575,7 +577,7 @@ var commands = exports.commands = {
 		this.addModCommand("" + targetUser.name + " was muted by " + user.name + " for 60 minutes." + (target ? " (" + target + ")" : ""));
 		var alts = targetUser.getAlts();
 		if (alts.length) this.addModCommand("" + targetUser.name + "'s alts were also muted: " + alts.join(", "));
-		this.add('|unlink|' + targetUser.userid);
+		this.add('|unlink|' + this.getLastIdOf(targetUser));
 
 		targetUser.mute(room.id, 60 * 60 * 1000, true);
 	},
@@ -623,7 +625,7 @@ var commands = exports.commands = {
 		this.addModCommand("" + targetUser.name + " was locked from talking by " + user.name + "." + (target ? " (" + target + ")" : ""));
 		var alts = targetUser.getAlts();
 		if (alts.length) this.addModCommand("" + targetUser.name + "'s alts were also locked: " + alts.join(", "));
-		this.add('|unlink|' + targetUser.userid);
+		this.add('|unlink|' + this.getLastIdOf(targetUser));
 
 		targetUser.lock();
 	},
@@ -642,46 +644,6 @@ var commands = exports.commands = {
 		} else {
 			this.sendReply("User " + target + " is not locked.");
 		}
-	},
-
-	sban: 'shadowban',
-	shadowban: function (target, room, user) {
-		if (!target) return this.parse('/help shadowban');
-
-		var params = this.splitTarget(target).split(',');
-		var action = params[0].trim().toLowerCase();
-		var reason = params.slice(1).join(',').trim();
-		if (!(action in CommandParser.commands)) {
-			action = 'mute';
-			reason = params.join(',').trim();
-		}
-
-		if (!this.targetUser) {
-			return this.sendReply("User '" + this.targetUsername + "' not found.");
-		}
-		if (!this.can('shadowban', this.targetUser)) return false;
-
-		var targets = ShadowBan.addUser(this.targetUser);
-		if (targets.length === 0) {
-			return this.sendReply("That user's messages are already being redirected to the shadow ban room.");
-		}
-		this.privateModCommand("(" + user.name + " has added to the shadow ban user list: " + targets.join(", ") + (reason ? " (" + reason + ")" : "") + ")");
-
-		return this.parse('/' + action + ' ' + user.userid + ',' + reason);
-	},
-
-	unsban: 'unshadowban',
-	unshadowban: function (target, room, user) {
-		if (!target) return this.parse('/help unshadowban');
-		this.splitTarget(target);
-
-		if (!this.can('shadowban')) return false;
-
-		var targets = ShadowBan.removeUser(this.targetUser || this.targetUsername);
-		if (targets.length === 0) {
-			return this.sendReply("That user is not in the shadow ban list.");
-		}
-		this.privateModCommand("(" + user.name + " has removed from the shadow ban user list: " + targets.join(", ") + ")");
 	},
 
 	b: 'ban',
@@ -714,7 +676,7 @@ var commands = exports.commands = {
 			}
 		}
 
-		this.add('|unlink|' + targetUser.userid);
+		this.add('|unlink|' + this.getLastIdOf(targetUser));
 		targetUser.ban();
 	},
 
@@ -1396,7 +1358,7 @@ var commands = exports.commands = {
 		}
 		if (target === 'all') {
 			this.sendReply("Calculating Total size...");
-			var total = (roomSize + configSize + rmSize + appSize + cpSize + simSize + toolsSize + usersSize) || 0;
+			var total = (roomSize + configSize + rmSize + cpSize + simSize + toolsSize + usersSize) || 0;
 			var units = ["bytes", "K", "M", "G"];
 			var converted = total;
 			var unit = 0;
@@ -1455,8 +1417,6 @@ var commands = exports.commands = {
 	 * Battle commands
 	 *********************************************************/
 
-	concede: 'forfeit',
-	surrender: 'forfeit',
 	forfeit: function (target, room, user) {
 		if (!room.battle) {
 			return this.sendReply("There's nothing to forfeit here.");

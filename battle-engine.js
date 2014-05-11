@@ -2403,10 +2403,6 @@ var Battle = (function () {
 			pokemon.moveset[m].used = false;
 		}
 		this.add('switch', pokemon, pokemon.getDetails);
-		if (pokemon.template.isMega) this.add('-formechange', pokemon, pokemon.template.species);
-		if (pokemon.illusion && pokemon.illusion.template.isMega) {
-			this.add('-formechange', pokemon.illusion, pokemon.illusion.template.species);
-		}
 		pokemon.update();
 		this.runEvent('SwitchIn', pokemon);
 		this.addQueue({pokemon: pokemon, choice: 'runSwitch'});
@@ -2464,10 +2460,6 @@ var Battle = (function () {
 			pokemon.moveset[m].used = false;
 		}
 		this.add('drag', pokemon, pokemon.getDetails);
-		if (pokemon.template.isMega) this.add('-formechange', pokemon, pokemon.template.species);
-		if (pokemon.illusion && pokemon.illusion.template.isMega) {
-			this.add('-formechange', pokemon.illusion, pokemon.illusion.template.species);
-		}
 		pokemon.update();
 		this.runEvent('SwitchIn', pokemon);
 		this.addQueue({pokemon: pokemon, choice: 'runSwitch'});
@@ -3115,7 +3107,7 @@ var Battle = (function () {
 			}
 			if (decision.choice === 'move') {
 				if (this.getMove(decision.move).beforeTurnCallback) {
-					this.addQueue({choice: 'beforeTurnMove', pokemon: decision.pokemon, move: decision.move}, true);
+					this.addQueue({choice: 'beforeTurnMove', pokemon: decision.pokemon, move: decision.move, targetLoc: decision.targetLoc}, true);
 				}
 			} else if (decision.choice === 'switch') {
 				if (decision.pokemon.switchFlag && decision.pokemon.switchFlag !== true) {
