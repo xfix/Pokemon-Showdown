@@ -32,7 +32,9 @@ exports.BattleStatuses = {
 		onModifyMove: function (move, pokemon) {
 			var pokemonMoves = pokemon.moveset;
 			var original = pokemonMoves.original || pokemonMoves;
-			original[0].pp -= 1;
+			if (original[0].pp === 0) {
+				original[0].pp -= 1;
+			}
 			residual.call(this, pokemon);
 		},
 		onSwitch: function (pokemon) {
