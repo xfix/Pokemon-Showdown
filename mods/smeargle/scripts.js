@@ -3,7 +3,7 @@ exports.BattleScripts = {
 	randomTeam: function () {
 		var team = [];
 		var i;
-		for (i = 0; i < 6; i++) {
+		for (i = 0; i < 3; i++) {
 			team.push({
 				name: 'Smeargle',
 				moves: ['metronome'],
