@@ -410,7 +410,7 @@ exports.Formats = [
 		}
 	},
 	{
-		name: "Moody Metronome Smeargles",
+		name: "Random Moody Smeargles",
 		section: "Other Metagames",
 
 		ruleset: ['Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod'],
