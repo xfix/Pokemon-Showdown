@@ -112,6 +112,18 @@ exports.BattleAbilities = {
 			}
 		}
 	},
+	// Battle Armor: Prevents critical hits and reduces all taken damage
+	// to 11/12ths of its original damage, and Pokemon with this ability
+	// are immune to damage from sandstorm
+	battlearmor: {
+		inherit: true,
+		onImmunity: function (type, pokemon) {
+			if (type === 'sandstorm') return false;
+		},
+		onSourceModifyDamage: function (damage, source, target, move) {
+			return this.chainModify(11 / 12);
+		}
+	},
 	// Illuminate: Upon entering battle, the opponent’s Speed lowers
 	// one stage. Pokémon with the Clear Body or White Smoke ability
 	// are unaffected. If both sides switch on the same turn, and
