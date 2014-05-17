@@ -167,6 +167,21 @@ exports.BattleAbilities = {
 		onAnyModifyPokemon: undefined,
 		onAnyTryWeather: undefined
 	},
+	// Competitive: This Pokemon's Special Attack is boosted by 1 for
+	// each of its stats that is lowered by a foe.
+	competitive: {
+		inherit: true,
+		onAfterEachBoost: function (boost, target, source) {
+			if (!source || target.side === source.side) {
+				return;
+			}
+			for (var i in boost) {
+				for (var i = 0; i < -boost[i]; i++) {
+					this.boost({spa: 1});
+				}
+			}
+		}
+	},
 	// Illuminate: Upon entering battle, the opponent’s Speed lowers
 	// one stage. Pokémon with the Clear Body or White Smoke ability
 	// are unaffected. If both sides switch on the same turn, and
