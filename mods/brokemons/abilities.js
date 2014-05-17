@@ -134,6 +134,15 @@ exports.BattleAbilities = {
 	},
 	// Burninate: Turns Normal moves into Fire moves and boosts them by 1.4x
 	burninate: createTypeChanger('burninate', 'Burninate', 'Fire'),
+	// Chlorophyll: User's speed is raised by 1.5x in heavy sunlight
+	chlorophyll: {
+		inherit: true,
+		onModifySpe: function (speMod) {
+			if (this.isWeather('sunnyday')) {
+				return this.chain(speMod, 1.5);
+			}
+		}
+	},
 	// Illuminate: Upon entering battle, the opponent’s Speed lowers
 	// one stage. Pokémon with the Clear Body or White Smoke ability
 	// are unaffected. If both sides switch on the same turn, and
