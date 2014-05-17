@@ -97,6 +97,21 @@ exports.BattleAbilities = {
 			}
 		}
 	},
+	// Bad Dreams: Causes all sleeping targets to lose 1/6 of their HP
+	// every turn they're asleep
+	baddreams: {
+		inherit: true,
+		onResidual: function (pokemon) {
+			if (!pokemon.hp) return;
+			for (var i = 0; i < pokemon.side.foe.active.length; i++) {
+				var target = pokemon.side.foe.active[i];
+				if (!target || !target.hp) continue;
+				if (target.status === 'slp') {
+					this.damage(target.maxhp / 6, target);
+				}
+			}
+		}
+	},
 	// Illuminate: Upon entering battle, the opponent’s Speed lowers
 	// one stage. Pokémon with the Clear Body or White Smoke ability
 	// are unaffected. If both sides switch on the same turn, and
