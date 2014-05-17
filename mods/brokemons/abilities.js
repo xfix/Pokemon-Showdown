@@ -159,7 +159,7 @@ exports.BattleAbilities = {
 		}
 	},
 	// Cloud Nine: Removes all weather
-	airlock: {
+	cloudnine: {
 		inherit: true,
 		onStart: function () {
 			this.clearWeather();
