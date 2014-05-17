@@ -143,6 +143,21 @@ exports.BattleAbilities = {
 			}
 		}
 	},
+	// Clear Body: Prevents user's stats from being lowered (either by foe
+	// with moves like Growl or by user with moves like Superpower)
+	clearbody: {
+		inherit: true,
+		onBoost: function (boost, target, source, effect) {
+			var showMsg = false;
+			for (var i in boost) {
+				if (boost[i] < 0) {
+					delete boost[i];
+					showMsg = true;
+				}
+			}
+			if (showMsg && !effect.secondaries) this.add("-fail", target, "unboost", "[from] ability: Clear Body", "[of] " + target);
+		}
+	}
 	// Illuminate: Upon entering battle, the opponent’s Speed lowers
 	// one stage. Pokémon with the Clear Body or White Smoke ability
 	// are unaffected. If both sides switch on the same turn, and
