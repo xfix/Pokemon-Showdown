@@ -157,7 +157,16 @@ exports.BattleAbilities = {
 			}
 			if (showMsg && !effect.secondaries) this.add("-fail", target, "unboost", "[from] ability: Clear Body", "[of] " + target);
 		}
-	}
+	},
+	// Cloud Nine: Removes all weather
+	airlock: {
+		inherit: true,
+		onStart: function () {
+			this.clearWeather();
+		},
+		onAnyModifyPokemon: undefined,
+		onAnyTryWeather: undefined
+	},
 	// Illuminate: Upon entering battle, the opponent’s Speed lowers
 	// one stage. Pokémon with the Clear Body or White Smoke ability
 	// are unaffected. If both sides switch on the same turn, and
