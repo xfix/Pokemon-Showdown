@@ -124,6 +124,14 @@ exports.BattleAbilities = {
 			return this.chainModify(11 / 12);
 		}
 	},
+	// Big Pecks: User's Defense cannot be lowered, and in addition,
+	// the user gets +1 Defense every time it switches in
+	bigpecks: {
+		inherit: true,
+		onStart: function () {
+			this.boost({def:1});
+		}
+	},
 	// Illuminate: Upon entering battle, the opponent’s Speed lowers
 	// one stage. Pokémon with the Clear Body or White Smoke ability
 	// are unaffected. If both sides switch on the same turn, and
