@@ -343,5 +343,18 @@ exports.BattleMovedex = {
 		onHit: function(target, source) {
 			this.directDamage(source.maxhp/16, source, source);
 		}
+	},
+	// Defog - -- BP, 100 Acc, removes all entry hazards on field (32 PP)
+	defog: {
+		inherit: true,
+		accuracy: 100,
+		onHit: function (target, source) {
+			var sideConditions = {spikes:1, toxicspikes:1, stealthrock:1, stickyweb:1};
+			for (var i in sideConditions) {
+				if (target.side.removeSideCondition(i)) {
+					this.add('-sideend', target.side, this.getEffect(i).name, '[from] move: Defog', '[of] ' + target);
+				}
+			}
+		}
 	}
 }
