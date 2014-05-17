@@ -41,6 +41,11 @@ exports.BattleMovedex = {
 		inherit: true,
 		basePower: 75
 	},
+	// Bulletproof protects from blast moves
+	aeroblast: {
+		inherit: true,
+		isBullet: true
+	},
 	// Air Slash - 85 BP, 90 Acc, 20% chance to flinch target
 	airslash: {
 		inherit: true,
@@ -154,7 +159,8 @@ exports.BattleMovedex = {
 		secondary: {
 			chance: 50,
 			status: 'brn'
-		}
+		},
+		isBullet: true
 	},
 	// Blizzard - 120 BP, 75 Acc, 10% chance to freeze target
 	blizzard: {
@@ -356,5 +362,25 @@ exports.BattleMovedex = {
 				}
 			}
 		}
+	},
+	// Bulletproof protects from blast moves
+	fireblast: {
+		inherit: true,
+		isBullet: true
+	},
+	// Bulletproof protects from blast moves
+	moonblast: {
+		inherit: true,
+		isBullet: true
+	},
+	// Bulletproof protects from blast moves
+	rockblast: {
+		inherit: true,
+		isBullet: true
+	},
+	// Bulletproof protects from blast moves
+	technoblast: {
+		inherit: true,
+		isBullet: true
 	}
 }
