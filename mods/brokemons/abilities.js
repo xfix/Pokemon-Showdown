@@ -132,6 +132,8 @@ exports.BattleAbilities = {
 			this.boost({def:1});
 		}
 	},
+	// Burninate: Turns Normal moves into Fire moves and boosts them by 1.4x
+	burninate: createTypeChanger('burninate', 'Burninate', 'Fire'),
 	// Illuminate: Upon entering battle, the opponent’s Speed lowers
 	// one stage. Pokémon with the Clear Body or White Smoke ability
 	// are unaffected. If both sides switch on the same turn, and
