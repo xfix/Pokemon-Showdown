@@ -216,7 +216,7 @@ exports.BattleAbilities = {
 		id: "keeneye",
 		name: "Keen Eye",
 		rating: 3.5,
-		num: 14
+		num: 51
 	},
 	"solidrock": {
 		inherit: true,
@@ -255,6 +255,17 @@ exports.BattleAbilities = {
 		}
 	},
 	"clearbody": {
+		inherit: true,
+		onBoost: function (boost, target, source) {
+			for (var i in boost) {
+				if (boost[i] < 0) {
+					delete boost[i];
+					this.add("-message", target.name + "'s stats were not lowered! (placeholder)");
+				}
+			}
+		}
+	},
+	"whitesmoke": {
 		inherit: true,
 		onBoost: function (boost, target, source) {
 			for (var i in boost) {

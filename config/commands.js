@@ -347,7 +347,7 @@ var commands = exports.commands = {
 					continue;
 				}
 			}
-			return this.sendReplyBox("'" + sanitize(target, true) + "' could not be found in any of the search categories.");
+			return this.sendReplyBox("'" + Tools.escapeHTML(target) + "' could not be found in any of the search categories.");
 		}
 
 		if (showAll && Object.size(searches) === 0 && megaSearch === null && feSearch === null) return this.sendReplyBox("No search parameters other than 'all' were found. Try '/help dexsearch' for more information on this command.");
@@ -540,7 +540,7 @@ var commands = exports.commands = {
 			pokemon = {types: [type1.id]};
 			target = type1.id;
 		} else {
-			return this.sendReplyBox("" + sanitize(target) + " isn't a recognized type or pokemon.");
+			return this.sendReplyBox("" + Tools.escapeHTML(target) + " isn't a recognized type or pokemon.");
 		}
 
 		var weaknesses = [];
@@ -638,8 +638,8 @@ var commands = exports.commands = {
 			"% <b>Driver</b> - The above, and they can mute. Global % can also lock users and check for alts<br />" +
 			"@ <b>Moderator</b> - The above, and they can ban users<br />" +
 			"&amp; <b>Leader</b> - The above, and they can promote to moderator and force ties<br />" +
-			"~ <b>Administrator</b> - They can do anything, like change what this message says<br />" +
-			"# <b>Room Owner</b> - They are administrators of the room and can almost totally control it"
+			"# <b>Room Owner</b> - They are leaders of the room and can almost totally control it<br />" +
+			"~ <b>Administrator</b> - They can do anything, like change what this message says"
 		);
 	},
 
@@ -653,6 +653,11 @@ var commands = exports.commands = {
 			"- <a href=\"https://github.com/Zarel/Pokemon-Showdown\">Server source code</a><br />" +
 			"- <a href=\"https://github.com/Zarel/Pokemon-Showdown-Client\">Client source code</a>"
 		);
+	},
+
+	staff: function (target, room, user) {
+	    if (!this.canBroadcast()) return;
+	    this.sendReplyBox("<a href=\"http://www.smogon.com/sim/staff_list\">Pokemon Showdown Staff List</a>");
 	},
 
 	avatars: function (target, room, user) {
@@ -677,13 +682,11 @@ var commands = exports.commands = {
 	smogintro: function (target, room, user) {
 		if (!this.canBroadcast()) return;
 		this.sendReplyBox(
-			"Welcome to Smogon's Official Pokémon Showdown server! The Mentoring room can be found <a href=\"http://play.pokemonshowdown.com/communitymentoring\">here</a> or by using /join communitymentoring.<br /><br />" +
-			"Here are some useful links to Smogon\'s Mentorship Program to help you get integrated into the community:<br />" +
+			"Welcome to Smogon's official simulator! Here are some useful links to <a href=\"http://www.smogon.com/mentorship/\">Smogon\'s Mentorship Program</a> to help you get integrated into the community:<br />" +
 			"- <a href=\"http://www.smogon.com/mentorship/primer\">Smogon Primer: A brief introduction to Smogon's subcommunities</a><br />" +
 			"- <a href=\"http://www.smogon.com/mentorship/introductions\">Introduce yourself to Smogon!</a><br />" +
 			"- <a href=\"http://www.smogon.com/mentorship/profiles\">Profiles of current Smogon Mentors</a><br />" +
-			"- <a href=\"http://mibbit.com/#mentor@irc.synirc.net\">#mentor: the Smogon Mentorship IRC channel</a><br />" +
-			"All of these links and more can be found at the <a href=\"http://www.smogon.com/mentorship/\">Smogon Mentorship Program's hub</a>."
+			"- <a href=\"http://mibbit.com/#mentor@irc.synirc.net\">#mentor: the Smogon Mentorship IRC channel</a>"
 		);
 	},
 
@@ -828,7 +831,7 @@ var commands = exports.commands = {
 		if (!target) {
 			if (!this.canBroadcast()) return;
 			this.sendReplyBox("Please follow the rules:<br />" +
-				(room.rulesLink ? "- <a href=\"" + sanitize(room.rulesLink) + "\">" + sanitize(room.title) + " room rules</a><br />" : "") +
+				(room.rulesLink ? "- <a href=\"" + Tools.escapeHTML(room.rulesLink) + "\">" + Tools.escapeHTML(room.title) + " room rules</a><br />" : "") +
 				"- <a href=\"http://pokemonshowdown.com/rules\">" + (room.rulesLink ? "Global rules" : "Rules") + "</a>");
 			return;
 		}
@@ -1076,6 +1079,15 @@ var commands = exports.commands = {
 		return this.sendReplyBox("Random number (1 - " + maxRoll + "): " + rand);
 	},
 
+	pr: 'pickrandom',
+	pick: 'pickrandom',
+	pickrandom: function (target, room, user) {
+		var options = target.split(',');
+		if (options.length < 2) return this.sendReplyBox("Please give more than one option, separated by commas");
+		if (!this.canBroadcast()) return false;
+		return this.sendReplyBox('<em>We randomly picked:</em> ' + Tools.escapeHTML(options.sample().trim()));
+	},
+
 	register: function () {
 		if (!this.canBroadcast()) return;
 		this.sendReplyBox('You will be prompted to register upon winning a rated battle. Alternatively, there is a register button in the <button name="openOptions"><i class="icon-cog"></i> Options</button> menu in the upper right.');
@@ -1104,7 +1116,7 @@ var commands = exports.commands = {
 			return this.parse('/help showimage');
 		}
 
-		this.sendReply('|raw|<img src="' + sanitize(targets[0]) + '" alt="" width="' + toId(targets[1]) + '" height="' + toId(targets[2]) + '" />');
+		this.sendReply('|raw|<img src="' + Tools.escapeHTML(targets[0]) + '" alt="" width="' + toId(targets[1]) + '" height="' + toId(targets[2]) + '" />');
 	},
 
 	htmlbox: function (target, room, user) {
