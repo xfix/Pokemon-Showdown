@@ -51,13 +51,6 @@ exports.Formats = [
 		banlist: ['UU', 'BL2']
 	},
 	{
-		name: "NU (beta)",
-		section: "XY Singles",
-
-		ruleset: ['RU'],
-		banlist: ['RU', 'BL3']
-	},
-	{
 		name: "LC",
 		section: "XY Singles",
 
@@ -103,6 +96,13 @@ exports.Formats = [
 		}
 	},
 	{
+		name: "CAP Volkraken Playtest",
+		section: "XY Singles",
+
+		ruleset: ['CAP Pokemon', 'Standard', 'Team Preview'],
+		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Lucarionite', 'Tomohawk', 'Necturna', 'Mollux', 'Aurumoth', 'Malaconda', 'Cawmodore', 'Syclant', 'Revenankh', 'Pyroak', 'Fidgit', 'Stratagem', 'Arghonaut', 'Kitsunoh', 'Cyclohm', 'Colossoil', 'Krilowatt', 'Voodoom']
+	},
+	{
 		name: "Custom Game",
 		section: "XY Singles",
 
@@ -128,39 +128,14 @@ exports.Formats = [
 		ruleset: ['PotD', 'Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod']
 	},
 	{
-		name: "Smogon Doubles",
+		name: "Smogon Doubles (current)",
 		section: "XY Doubles",
 
 		gameType: 'doubles',
-		searchShow: false,
 		ruleset: ['Pokemon', 'Standard Doubles', 'Team Preview'],
 		banlist: ['Soul Dew', 'Dark Void',
 			'Mewtwo', 'Lugia', 'Ho-Oh', 'Kyogre', 'Groudon', 'Rayquaza', 'Dialga', 'Palkia', 'Giratina', 'Giratina-Origin',
 			'Arceus', 'Reshiram', 'Zekrom', 'Kyurem-White', 'Xerneas', 'Yveltal'
-		]
-	},
-	{
-		name: "Smogon Doubles (suspect test)",
-		section: "XY Doubles",
-
-		gameType: 'doubles',
-		ruleset: ['Pokemon', 'Standard Doubles', 'Team Preview'],
-		banlist: ['Dark Void', 'Soul Dew', 'Kangaskhanite',
-			'Mewtwo',
-			'Lugia',
-			'Ho-Oh',
-			'Kyogre',
-			'Groudon',
-			'Rayquaza',
-			'Dialga',
-			'Palkia',
-			'Giratina', 'Giratina-Origin',
-			'Arceus',
-			'Reshiram',
-			'Zekrom',
-			'Kyurem-White',
-			'Xerneas',
-			'Yveltal'
 		]
 	},
 	{
@@ -1626,6 +1601,16 @@ exports.Formats = [
 			if (!teamClass) problems.push('Your team does not have a class.');
 			return problems;
 		}
+
+
+
+	},
+	{
+		name: "NU (alpha)",
+		section: "Other Metagames",
+
+		ruleset: ['RU (beta)'],
+		banlist: ['RU', 'BL3']
 	},
 	{
 		name: "Challenge Cup",
@@ -1681,7 +1666,8 @@ exports.Formats = [
 		name: "OU Monotype",
 		section: "Other Metagames",
 
-		ruleset: ['OU', 'Same Type Clause']
+		ruleset: ['OU', 'Same Type Clause'],
+		banlist: ['Talonflame']
 	},
 	{
 		name: "Sky Battles",
@@ -1842,14 +1828,6 @@ exports.Formats = [
 	// BW2 Singles
 	///////////////////////////////////////////////////////////////////
 
-	// {
-	// 	name: "[Gen 5] CAP Cawmodore Playtest",
-	// 	section: "BW2 Singles",
-
-	// 	mod: 'gen5',
-	// 	ruleset: ['CAP Pokemon', 'Standard', 'Evasion Abilities Clause', 'Team Preview'],
-	// 	banlist: ['Uber', 'Drizzle ++ Swift Swim', 'Soul Dew', "Tomohawk", "Necturna", "Mollux", "Aurumoth", "Malaconda", "Syclant", "Revenankh", "Pyroak", "Fidgit", "Stratagem", "Arghonaut", "Kitsunoh", "Cyclohm", "Colossoil", "Krilowatt", "Voodoom"]
-	// },
 	{
 		name: "[Gen 5] OU",
 		section: "BW2 Singles",
