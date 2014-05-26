@@ -30,6 +30,14 @@ exports.Formats = [
 		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Lucarionite', 'Swagger']
 	},
 	{
+		name: "OU (suspect test)",
+		section: "XY Singles",
+
+		challengeShow: false,
+		ruleset: ['Pokemon', 'Standard', 'Team Preview'],
+		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Lucarionite', 'Swagger']
+	},
+	{
 		name: "Ubers",
 		section: "XY Singles",
 
@@ -1322,6 +1330,26 @@ exports.Formats = [
 				var move = this.getMove(string(set.moves[i]));
 				if (move.category !== attackerType && move.category !== 'Status') return [set.species + ' can only use ' + attackerType + ' attacks.'];
 			}
+		}
+	},
+	{
+		name: "Mediocre-Mons",
+		section: "Other Metagames",
+
+		ruleset: ['OU'],
+		banlist: ['Huge Power', 'Pure Power', 'Mawilite'],
+		validateTeam: function (team, format) {
+			var problems = [];
+			for (var i = 0; i < team.length; i++) {
+				var template = this.getTemplate(team[i].species);
+				for (var s in template.baseStats) {
+					if (template.baseStats[s] >= 100) {
+						problems.push(template.species + ' is banned because it has base stat(s) of 100 or more.');
+						break;
+					}
+				}
+			}
+			return problems;
 		}
 	},
 	{
