@@ -1333,6 +1333,26 @@ exports.Formats = [
 		}
 	},
 	{
+		name: "Mediocre-Mons",
+		section: "Other Metagames",
+
+		ruleset: ['OU'],
+		banlist: ['Huge Power', 'Pure Power', 'Mawilite'],
+		validateTeam: function (team, format) {
+			var problems = [];
+			for (var i = 0; i < team.length; i++) {
+				var template = this.getTemplate(team[i].species);
+				for (var s in template.baseStats) {
+					if (template.baseStats[s] >= 100) {
+						problems.push(template.species + ' is banned because it has base stat(s) of 100 or more.');
+						break;
+					}
+				}
+			}
+			return problems;
+		}
+	},
+	{
 		name: "TechniciMons XY",
 		section: "Other Metagames",
 
