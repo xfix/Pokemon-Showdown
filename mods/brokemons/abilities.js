@@ -182,6 +182,18 @@ exports.BattleAbilities = {
 			}
 		}
 	},
+	// Color Change: Makes the users type the same as the first attack the user has.
+	colorchange: {
+		inherit: true,
+		onStart: function (pokemon) {
+			var move = pokemon.moveset[0].id;
+			var moveType = move === 'hiddenpower' ? pokemon.hpType : this.getMove(move).type;
+			if (pokemon.getTypes().join() !== moveType) {
+				if (!pokemon.setType(moveType)) return false;
+				this.add('-start', pokemon, 'typechange', moveType, '[from] Color Change');
+			}
+		}
+	},
 	// Illuminate: Upon entering battle, the opponent’s Speed lowers
 	// one stage. Pokémon with the Clear Body or White Smoke ability
 	// are unaffected. If both sides switch on the same turn, and
