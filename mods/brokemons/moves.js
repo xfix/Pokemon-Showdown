@@ -361,6 +361,11 @@ exports.BattleMovedex = {
 					this.add('-sideend', target.side, this.getEffect(i).name, '[from] move: Defog', '[of] ' + target);
 				}
 			}
+			for (var i in sideConditions) {
+				if (source.side.removeSideCondition(i)) {
+					this.add('-sideend', source.side, this.getEffect(i).name, '[from] move: Defog', '[of] ' + source);
+				}
+			}
 		}
 	},
 	// Bulletproof protects from blast moves
