@@ -48,8 +48,8 @@ exports.BattleAbilities = {
 		onStart: function () {
 			this.clearWeather();
 		},
-		onAnyModifyPokemon: undefined,
-		onAnyTryWeather: undefined
+		onAnyModifyPokemon: function () {},
+		onAnyTryWeather: function () {}
 	},
 	// Amplifate: Turns Normal moves into Electric moves and boosts them by 1.4x
 	amplifate: createTypeChanger('amplifate', 'Amplifate', 'Electric'),
@@ -164,8 +164,8 @@ exports.BattleAbilities = {
 		onStart: function () {
 			this.clearWeather();
 		},
-		onAnyModifyPokemon: undefined,
-		onAnyTryWeather: undefined
+		onAnyModifyPokemon: function () {},
+		onAnyTryWeather: function () {}
 	},
 	// Competitive: This Pokemon's Special Attack is boosted by 1 for
 	// each of its stats that is lowered by a foe.
@@ -193,7 +193,7 @@ exports.BattleAbilities = {
 				this.add('-start', pokemon, 'typechange', moveType, '[from] Color Change');
 			}
 		},
-		onAfterMoveSecondary: undefined
+		onAfterMoveSecondary: function () {}
 	},
 	damp: {
 		inherit: true,
@@ -209,8 +209,8 @@ exports.BattleAbilities = {
 				return this.chainModify(2);
 			}
 		},
-		onAnyTryMove: undefined,
-		onAnyDamage: undefined
+		onAnyTryMove: function () {},
+		onAnyDamage: function () {}
 	},
 	// Illuminate: Upon entering battle, the opponent’s Speed lowers
 	// one stage. Pokémon with the Clear Body or White Smoke ability
