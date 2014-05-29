@@ -192,10 +192,11 @@ exports.BattleAbilities = {
 				if (!pokemon.setType(moveType)) return false;
 				this.add('-start', pokemon, 'typechange', moveType, '[from] Color Change');
 			}
-		}
+		},
+		onAfterMoveSecondary: undefined
 	},
 	damp: {
-		inherit; true,
+		inherit: true,
 		onFoeBasePower: function (basePower, attacker, defender, move) {
 			if (this.effectData.target !== defender) return;
 
@@ -207,7 +208,9 @@ exports.BattleAbilities = {
 			case 'Electric':
 				return this.chainModify(2);
 			}
-		}
+		},
+		onAnyTryMove: undefined,
+		onAnyDamage: undefined
 	},
 	// Illuminate: Upon entering battle, the opponent’s Speed lowers
 	// one stage. Pokémon with the Clear Body or White Smoke ability
