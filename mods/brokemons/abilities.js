@@ -222,6 +222,19 @@ exports.BattleAbilities = {
 		onModifyAtk: function () {},
 		onModifySpA: function () {}
 	},
+	defiant: {
+		inherit: true,
+		onAfterEachBoost: function (boost, target, source) {
+			if (!source || target.side === source.side) {
+				return;
+			}
+			for (var i in boost) {
+				for (var i = 0; i < -boost[i]; i++) {
+					this.boost({atk: 1});
+				}
+			}
+		}
+	},
 	// Illuminate: Upon entering battle, the opponent’s Speed lowers
 	// one stage. Pokémon with the Clear Body or White Smoke ability
 	// are unaffected. If both sides switch on the same turn, and
