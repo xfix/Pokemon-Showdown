@@ -381,6 +381,7 @@ var commands = exports.commands = {
 	rb: 'roomban',
 	roomban: function (target, room, user, connection) {
 		if (!target) return this.parse('/help roomban');
+		if (user.locked || user.mutedRooms[room.id]) return this.sendReply("You cannot do this while unable to talk.");
 
 		target = this.splitTarget(target, true);
 		var targetUser = this.targetUser;
@@ -407,12 +408,13 @@ var commands = exports.commands = {
 				room.bannedUsers[altId] = true;
 			}
 		}
-		this.add('|unlink|' + targetUser.userid);
+		this.add('|unlink|' + this.getLastIdOf(targetUser));
 		targetUser.leaveRoom(room.id);
 	},
 
 	roomunban: function (target, room, user, connection) {
 		if (!target) return this.parse('/help roomunban');
+		if (user.locked || user.mutedRooms[room.id]) return this.sendReply("You cannot do this while unable to talk.");
 
 		target = this.splitTarget(target, true);
 		var targetUser = this.targetUser;
@@ -480,12 +482,11 @@ var commands = exports.commands = {
 	k: 'warn',
 	warn: function (target, room, user) {
 		if (!target) return this.parse('/help warn');
+		if (user.locked || user.mutedRooms[room.id]) return this.sendReply("You cannot do this while unable to talk.");
 
 		target = this.splitTarget(target);
 		var targetUser = this.targetUser;
-		if (!targetUser || !targetUser.connected) {
-			return this.sendReply("User " + this.targetUsername + " not found.");
-		}
+		if (!targetUser || !targetUser.connected) return this.sendReply("User '" + this.targetUsername + "' does not exist.");
 		if (room.isPrivate && room.auth) {
 			return this.sendReply("You can't warn here: This is a privately-owned room not subject to global rules.");
 		}
@@ -502,6 +503,7 @@ var commands = exports.commands = {
 	redirect: 'redir',
 	redir: function (target, room, user, connection) {
 		if (!target) return this.parse('/help redirect');
+		if (user.locked || user.mutedRooms[room.id]) return this.sendReply("You cannot do this while unable to talk.");
 		target = this.splitTarget(target);
 		var targetUser = this.targetUser;
 		var targetRoom = Rooms.get(target) || Rooms.get(toId(target));
@@ -527,12 +529,11 @@ var commands = exports.commands = {
 	m: 'mute',
 	mute: function (target, room, user) {
 		if (!target) return this.parse('/help mute');
+		if (user.locked || user.mutedRooms[room.id]) return this.sendReply("You cannot do this while unable to talk.");
 
 		target = this.splitTarget(target);
 		var targetUser = this.targetUser;
-		if (!targetUser) {
-			return this.sendReply("User " + this.targetUsername + " not found.");
-		}
+		if (!targetUser) return this.sendReply("User '" + this.targetUsername + "' does not exist.");
 		if (target.length > MAX_REASON_LENGTH) {
 			return this.sendReply("The reason is too long. It cannot exceed " + MAX_REASON_LENGTH + " characters.");
 		}
@@ -557,12 +558,11 @@ var commands = exports.commands = {
 	hm: 'hourmute',
 	hourmute: function (target, room, user) {
 		if (!target) return this.parse('/help hourmute');
+		if (user.locked || user.mutedRooms[room.id]) return this.sendReply("You cannot do this while unable to talk.");
 
 		target = this.splitTarget(target);
 		var targetUser = this.targetUser;
-		if (!targetUser) {
-			return this.sendReply("User " + this.targetUsername + " not found.");
-		}
+		if (!targetUser) return this.sendReply("User '" + this.targetUsername + "' does not exist.");
 		if (target.length > MAX_REASON_LENGTH) {
 			return this.sendReply("The reason is too long. It cannot exceed " + MAX_REASON_LENGTH + " characters.");
 		}
@@ -585,10 +585,9 @@ var commands = exports.commands = {
 	um: 'unmute',
 	unmute: function (target, room, user) {
 		if (!target) return this.parse('/help unmute');
+		if (user.locked || user.mutedRooms[room.id]) return this.sendReply("You cannot do this while unable to talk.");
 		var targetUser = Users.get(target);
-		if (!targetUser) {
-			return this.sendReply("User " + target + " not found.");
-		}
+		if (!targetUser) return this.sendReply("User '" + target + "' does not exist.");
 		if (!this.can('mute', targetUser, room)) return false;
 
 		if (!targetUser.mutedRooms[room.id]) {
@@ -604,12 +603,11 @@ var commands = exports.commands = {
 	ipmute: 'lock',
 	lock: function (target, room, user) {
 		if (!target) return this.parse('/help lock');
+		if (user.locked || user.mutedRooms[room.id]) return this.sendReply("You cannot do this while unable to talk.");
 
 		target = this.splitTarget(target);
 		var targetUser = this.targetUser;
-		if (!targetUser) {
-			return this.sendReply("User " + this.targetUser + " not found.");
-		}
+		if (!targetUser) return this.sendReply("User '" + this.targetUsername + "' does not exist.");
 		if (target.length > MAX_REASON_LENGTH) {
 			return this.sendReply("The reason is too long. It cannot exceed " + MAX_REASON_LENGTH + " characters.");
 		}
@@ -632,6 +630,7 @@ var commands = exports.commands = {
 
 	unlock: function (target, room, user) {
 		if (!target) return this.parse('/help unlock');
+		if (user.locked || user.mutedRooms[room.id]) return this.sendReply("You cannot do this while unable to talk.");
 		if (!this.can('lock')) return false;
 
 		var unlocked = Users.unlock(target);
@@ -642,19 +641,18 @@ var commands = exports.commands = {
 				((names.length > 1) ? "were" : "was") +
 				" unlocked by " + user.name + ".");
 		} else {
-			this.sendReply("User " + target + " is not locked.");
+			this.sendReply("User '" + target + "' is not locked.");
 		}
 	},
 
 	b: 'ban',
 	ban: function (target, room, user) {
 		if (!target) return this.parse('/help ban');
+		if (user.locked || user.mutedRooms[room.id]) return this.sendReply("You cannot do this while unable to talk.");
 
 		target = this.splitTarget(target);
 		var targetUser = this.targetUser;
-		if (!targetUser) {
-			return this.sendReply("User " + this.targetUsername + " not found.");
-		}
+		if (!targetUser) return this.sendReply("User '" + this.targetUsername + "' does not exist.");
 		if (target.length > MAX_REASON_LENGTH) {
 			return this.sendReply("The reason is too long. It cannot exceed " + MAX_REASON_LENGTH + " characters.");
 		}
@@ -682,6 +680,7 @@ var commands = exports.commands = {
 
 	unban: function (target, room, user) {
 		if (!target) return this.parse('/help unban');
+		if (user.locked || user.mutedRooms[room.id]) return this.sendReply("You cannot do this while unable to talk.");
 		if (!this.can('ban')) return false;
 
 		var name = Users.unban(target);
@@ -689,12 +688,13 @@ var commands = exports.commands = {
 		if (name) {
 			this.addModCommand("" + name + " was unbanned by " + user.name + ".");
 		} else {
-			this.sendReply("User " + target + " is not banned.");
+			this.sendReply("User '" + target + "' is not banned.");
 		}
 	},
 
 	unbanall: function (target, room, user) {
 		if (!this.can('rangeban')) return false;
+		if (user.locked || user.mutedRooms[room.id]) return this.sendReply("You cannot do this while unable to talk.");
 		// we have to do this the hard way since it's no longer a global
 		for (var i in Users.bannedIps) {
 			delete Users.bannedIps[i];
@@ -706,6 +706,7 @@ var commands = exports.commands = {
 	},
 
 	banip: function (target, room, user) {
+		if (user.locked || user.mutedRooms[room.id]) return this.sendReply("You cannot do this while unable to talk.");
 		target = target.trim();
 		if (!target) {
 			return this.parse('/help banip');
@@ -717,6 +718,7 @@ var commands = exports.commands = {
 	},
 
 	unbanip: function (target, room, user) {
+		if (user.locked || user.mutedRooms[room.id]) return this.sendReply("You cannot do this while unable to talk.");
 		target = target.trim();
 		if (!target) {
 			return this.parse('/help unbanip');
@@ -734,7 +736,7 @@ var commands = exports.commands = {
 	 *********************************************************/
 
 	modnote: function (target, room, user, connection, cmd) {
-		if (!target) return this.parse('/help note');
+		if (!target) return this.parse('/help modnote');
 		if (target.length > MAX_REASON_LENGTH) {
 			return this.sendReply("The note is too long. It cannot exceed " + MAX_REASON_LENGTH + " characters.");
 		}
@@ -804,6 +806,7 @@ var commands = exports.commands = {
 
 	modchat: function (target, room, user) {
 		if (!target) return this.sendReply("Moderated chat is currently set to: " + room.modchat);
+		if (user.locked || user.mutedRooms[room.id]) return this.sendReply("You cannot do this while unable to talk.");
 		if (!this.can('modchat', null, room)) return false;
 
 		if (room.modchat && room.modchat.length <= 1 && Config.groupsranking.indexOf(room.modchat) > 1 && !user.can('modchatall', null, room)) {
@@ -910,22 +913,19 @@ var commands = exports.commands = {
 	fr: 'forcerename',
 	forcerename: function (target, room, user) {
 		if (!target) return this.parse('/help forcerename');
-		target = this.splitTarget(target);
+		if (user.locked || user.mutedRooms[room.id]) return this.sendReply("You cannot do this while unable to talk.");
+		target = this.splitTarget(target, true);
 		var targetUser = this.targetUser;
 		if (!targetUser) {
-			return this.sendReply("User " + this.targetUsername + " not found.");
+			return this.sendReply("User '" + this.targetUsername + "' was not found or had already changed its name.");
 		}
 		if (!this.can('forcerename', targetUser)) return false;
 
-		if (targetUser.userid === toId(this.targetUser)) {
-			var entry = targetUser.name + " was forced to choose a new name by " + user.name + (target ? ": " + target: "");
-			this.privateModCommand("(" + entry + ")");
-			Rooms.global.cancelSearch(targetUser);
-			targetUser.resetName();
-			targetUser.send("|nametaken||" + user.name + " has forced you to change your name. " + target);
-		} else {
-			this.sendReply("User " + targetUser.name + " is no longer using that name.");
-		}
+		var entry = targetUser.name + " was forced to choose a new name by " + user.name + (target ? ": " + target: "");
+		this.privateModCommand("(" + entry + ")");
+		Rooms.global.cancelSearch(targetUser);
+		targetUser.resetName();
+		targetUser.send("|nametaken||" + user.name + " has forced you to change your name. " + target);
 	},
 
 	modlog: function (target, room, user, connection) {
@@ -1230,7 +1230,7 @@ var commands = exports.commands = {
 				}
 			}
 			Users.checkRangeBanned = Cidr.checker(rangebans);
-			connection.sendTo(room, "ibans.txt has been reloaded.");
+			connection.sendTo(room, "ipbans.txt has been reloaded.");
 		});
 	},
 

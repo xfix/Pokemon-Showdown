@@ -1272,6 +1272,14 @@ exports.Formats = [
 		}
 	},
 	{
+		name: "Tier Shift (pre-alpha)",
+		section: "Other Metagames",
+
+		mod: 'tiershift',
+		searchShow: false,
+		ruleset: ['OU']
+	},
+	{
 		name: "CAP",
 		section: "Other Metagames",
 		column: 3,
