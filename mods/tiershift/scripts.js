@@ -21,8 +21,8 @@ exports.BattleScripts = {
 			}
 
 			if (adjustment) {
-				for (var i in this.data.Pokedex[i].baseStats) {
-					this.modData('Pokedex', i).baseStats[i] += adjustment;
+				for (var j in this.data.Pokedex[i].baseStats) {
+					this.modData('Pokedex', i).baseStats[j] += adjustment;
 				}
 			}
 		}
