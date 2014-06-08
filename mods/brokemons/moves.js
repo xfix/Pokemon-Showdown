@@ -383,7 +383,30 @@ exports.BattleMovedex = {
 			volatileStatus: 'confusion'
 		},
 		pp: 5
-	}
+	},
+	doublehit: {
+		inherit: true,
+		basePower: 45,
+		accuracy: 100
+	},
+	doublekick: {
+		inherit: true,
+		pp: 10,
+		basePower: 45
+	},
+	doubleslap: {
+		inherit: true,
+		accuracy: 100,
+		basePower: 45,
+		// Totally a Fairy-type move.
+		type: 'Fairy',
+		// That's not what double means... oh wait.
+		multihit: 2,
+		secondary: {
+			chance: 10,
+			volatileStatus: 'flinch'
+		}
+	},
 	// Bulletproof protects from blast moves
 	fireblast: {
 		inherit: true,
