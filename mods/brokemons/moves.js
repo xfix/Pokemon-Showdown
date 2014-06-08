@@ -416,6 +416,14 @@ exports.BattleMovedex = {
 		inherit: true,
 		basePower: 95
 	},
+	dragonrush: {
+		inherit: true,
+		basePower: 40,
+		accuracy: 100,
+		priority: 1,
+		pp: 25,
+		secondary: false
+	}
 	// Bulletproof protects from blast moves
 	fireblast: {
 		inherit: true,
