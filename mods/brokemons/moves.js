@@ -407,6 +407,11 @@ exports.BattleMovedex = {
 			volatileStatus: 'flinch'
 		}
 	},
+	dragonbreath: {
+		inherit: true,
+		basePower: 80,
+		pp: 15
+	}
 	// Bulletproof protects from blast moves
 	fireblast: {
 		inherit: true,
