@@ -374,6 +374,15 @@ exports.BattleMovedex = {
 		accuracy: 100,
 		priority: 1
 	},
+	dizzypunch: {
+		inherit: true,
+		basePower: 80,
+		secondary: {
+			chance: 60,
+			volatileStatus: 'confusion'
+		},
+		pp: 5
+	}
 	// Bulletproof protects from blast moves
 	fireblast: {
 		inherit: true,
