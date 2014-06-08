@@ -372,7 +372,8 @@ exports.BattleMovedex = {
 	disarmingvoice: {
 		inherit: true,
 		accuracy: 100,
-		priority: 1
+		priority: 1,
+		pp: 35
 	},
 	dizzypunch: {
 		inherit: true,
