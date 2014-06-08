@@ -368,6 +368,12 @@ exports.BattleMovedex = {
 			}
 		}
 	},
+	// Disarming Voice - 40 BP, 100 Acc, +1 priority (48 PP)
+	disarmingvoice: {
+		inherit: true,
+		accuracy: 100,
+		priority: 1
+	},
 	// Bulletproof protects from blast moves
 	fireblast: {
 		inherit: true,
