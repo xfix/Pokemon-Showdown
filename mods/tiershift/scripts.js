@@ -22,7 +22,7 @@ exports.BattleScripts = {
 
 			if (adjustment) {
 				for (var j in this.data.Pokedex[i].baseStats) {
-					this.modData('Pokedex', i).baseStats[j] += adjustment;
+					this.modData('Pokedex', i).baseStats[j] = this.clampIntRange(this.data.Pokedex[i].baseStats[j] + adjustment, 1, 255);
 				}
 			}
 		}
