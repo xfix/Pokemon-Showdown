@@ -3,7 +3,8 @@ exports.BattleScripts = {
 		for (var i in this.data.Pokedex) {
 			var tier = '';
 			var adjustment = 0;
-			if (this.data.FormatsData[i]) tier = this.data.FormatsData[i].tier;
+			// mega evolutions get the same stat boost as their base forme
+			if (this.data.FormatsData[i]) tier = this.data.FormatsData[i].tier || this.data.FormatsData[toId(this.getTemplate(i).baseSpecies)].tier;
 			switch (tier) {
 			case 'BL':
 			case 'UU':
