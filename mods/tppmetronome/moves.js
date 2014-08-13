@@ -120,5 +120,28 @@ exports.BattleMovedex = {
 				}
 			}
 		}
+	},
+	defog: {
+		inherit: true,
+		onHit: function (target, source) {
+			var success = false;
+			if (!target.volatiles['substitute']) this.boost({evasion:-1});
+			var sideConditions = {reflect:1, lightscreen:1, safeguard:1, mist:1, spikes:1, toxicspikes:1, stealthrock:1, stickyweb:1};
+			for (var i in sideConditions) {
+				if (target.side.removeSideCondition(i)) {
+					this.add('-sideend', target.side, this.getEffect(i).name, '[from] move: Defog', '[of] ' + target);
+					success = true;
+				}
+			}
+			for (var i in sideConditions) {
+				if (i === 'reflect' || i === 'lightscreen') continue;
+				if (source.side.removeSideCondition(i)) {
+					this.add('-sideend', source.side, this.getEffect(i).name, '[from] move: Defog', '[of] ' + source);
+				}
+			}
+			if (success) {
+				this.points(source.code, 'Rarely successful', 30);
+			}
+		}
 	}
 }
