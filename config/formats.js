@@ -859,7 +859,7 @@ exports.Formats = [
 				"Xerneas": true
 			};
 			if (!tppMons[set.species]) {
-				issues.push(set.species + " is not TPP-related");
+				issues.push(set.species + " is not TPP-related.");
 			}
 			if (set.item && set.item !== 'Leppa Berry') {
 				issues.push(set.species + " doesn't hold Leppa Berry.");
@@ -886,7 +886,7 @@ exports.Formats = [
 					recycleFound = true;
 					break;
 				default:
-					issues.push(set.species + " cannot have " + move);
+					issues.push(set.species + " cannot have " + move + ".");
 					break;
 				}
 			}
