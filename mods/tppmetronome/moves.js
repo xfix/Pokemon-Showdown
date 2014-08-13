@@ -172,5 +172,14 @@ exports.BattleMovedex = {
 			}
 			return 70;
 		}
+	},
+	brine: {
+		inherit: true,
+		onBasePower: function (basePower, pokemon, target) {
+			if (target.hp * 2 < target.maxhp) {
+				this.points(pokemon.side, 'Rarely successful', 30);
+				return this.chainModify(2);
+			}
+		}
 	}
 }
