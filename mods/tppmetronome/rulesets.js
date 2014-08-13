@@ -378,6 +378,25 @@ exports.BattleFormats = {
 				this.points(source.side, 'OHKO not using OHKO moves is an OHKO after all', 3);
 			}
 		},
-		onDamagePriority: -200
+		onDamagePriority: -200,
+		onBeforeTurn: function (pokemon) {
+			if (!pokemon.volatiles['turncount']) {
+				pokemon.volatiles['turncount'] = {count: 0};
+			}
+			pokemon.volatiles['turncount'].count++;
+			var count = pokemon.volatiles['turncount'].count;
+			this.add('-message', pokemon.name + ' is now on turn ' + count);
+			switch (count) {
+			case 20:
+				this.points(pokemon.side, 'Are you a TANK', 20);
+				break;
+			case 30:
+				this.points(pokemon.side, 'Are you a TANK', 40);
+				break;
+			case 40:
+				this.points(pokemon.side, 'Are you a TANK', 60);
+				break;
+			}
+		}
 	}
 };
