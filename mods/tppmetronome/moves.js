@@ -216,5 +216,27 @@ exports.BattleMovedex = {
 		onHit: function (target, source) {
 			this.points(source.side, 'Rarely successful', 30);
 		}
+	},
+	magnetrise: {
+		inherit: true,
+		effect: {
+			duration: 5,
+			onStart: function (target) {
+				if (target.volatiles['smackdown'] || target.volatiles['ingrain']) return false;
+				this.add('-start', target, 'Magnet Rise');
+			},
+			onImmunity: function (type, pokemon) {
+				if (type === 'Ground') {
+					if (pokemon.volatiles['magnetrise'].duration === 5) {
+						this.points(pokemon.side, 'Rarely successful', 30);
+					}
+					return false;
+				}
+			},
+			onResidualOrder: 15,
+			onEnd: function (target) {
+				this.add('-end', target, 'Magnet Rise');
+			}
+		}
 	}
 }
