@@ -152,5 +152,15 @@ exports.BattleMovedex = {
 				return this.chainModify(2);
 			}
 		},
+	},
+	wakeupslap: {
+		inherit: true,
+		basePowerCallback: function (pokemon, target) {
+			if (target.status === 'slp') {
+				this.points(pokemon.side, 'Rarely successful', 30);
+				return 140;
+			}
+			return 70;
+		}
 	}
 }
