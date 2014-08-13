@@ -96,6 +96,34 @@ exports.BattleMovedex = {
 			}
 		}
 	},
+	lunardance: {
+		effect: {
+			duration: 2,
+			onStart: function (side) {
+				this.debug('Lunar Dance started on ' + side.name);
+				this.points(side, 'Heroic sacrifice', 20);
+			},
+			onSwitchInPriority: 1,
+			onSwitchIn: function (target) {
+				if (target.position != this.effectData.sourcePosition) {
+					return;
+				}
+				if (!target.fainted) {
+					var source = this.effectData.source;
+					if (target.status || target.maxhp !== target.hp || target.moveset[0].pp !== target.moveset[0].maxpp || target.moveset[1].pp !== target.moveset[1].maxpp) {
+						this.points(target.side, 'Rarely successful', 30);
+					}
+					var damage = target.heal(target.maxhp);
+					target.setStatus('');
+					for (var m in target.moveset) {
+						target.moveset[m].pp = target.moveset[m].maxpp;
+					}
+					this.add('-heal', target, target.getHealth, '[from] move: Lunar Dance');
+					target.side.removeSideCondition('lunardance');
+				}
+			}
+		}
+	}
 	rapidspin: {
 		inherit: true,
 		self: {
