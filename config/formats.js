@@ -633,6 +633,14 @@ exports.Formats = [
 			if (totalEV > 510) {
 				issues.push(set.species + " has more than 510 total EVs.");
 			}
+			var template = Tools.getTemplate(set.species);
+			var totalBST = 0;
+			for (var k in template.baseStats) {
+				totalBST += template.baseStats[k];
+			}
+			if (totalBST > 300) {
+				issues.push(set.species + " has more than 300 BST.");
+			}
 			return issues;
 		}
 	},
