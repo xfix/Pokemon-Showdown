@@ -584,7 +584,15 @@ exports.Formats = [
 		section: "Other Metagames",
 
 		ruleset: ['Pokemon', 'HP Percentage Mod'],
-		banlist: ['Wonder Guard', 'Moody', 'Imposter', 'Pickpocket', 'Magician', 'Unnerve']
+		banlist: ['Wonder Guard', 'Moody', 'Imposter', 'Pickpocket', 'Magician', 'Unnerve'],
+		validateSet: function (set) {
+			var issues = [];
+			if (set.item && set.item !== 'Leppa Berry') {
+				issues.push(set.species + " doesn't hold Leppa Berry.");
+			}
+			// Make sure the item is Leppa Berry
+			set.item = 'Leppa Berry';
+		}
 	},
 
 	// BW2 Singles
