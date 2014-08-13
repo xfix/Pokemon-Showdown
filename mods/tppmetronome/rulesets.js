@@ -396,10 +396,10 @@ exports.BattleFormats = {
 				this.points(pokemon.side, 'Are you a TANK', 20);
 				break;
 			case 30:
-				this.points(pokemon.side, 'Are you a TANK', 40);
+				this.points(pokemon.side, 'Are you a TANK', 20);
 				break;
 			case 40:
-				this.points(pokemon.side, 'Are you a TANK', 60);
+				this.points(pokemon.side, 'Are you a TANK', 20);
 				break;
 			}
 		}
