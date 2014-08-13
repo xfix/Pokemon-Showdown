@@ -69,5 +69,30 @@ exports.BattleMovedex = {
 			if (!pokemon.volatiles['stockpile'] || !pokemon.volatiles['stockpile'].layers) return false;
 			this.points(pokemon.side, 'Rarely successful', 30);
 		}
+	},
+	healingwish: {
+		inherit: true,
+		effect: {
+			duration: 2,
+			onStart: function (side) {
+				this.debug('Healing Wish started on ' + side.name);
+			},
+			onSwitchInPriority: 1,
+			onSwitchIn: function (target) {
+				if (target.position != this.effectData.sourcePosition) {
+					return;
+				}
+				if (!target.fainted) {
+					var source = this.effectData.source;
+					if (target.status || target.maxhp !== target.hp) {
+						this.points(target.side, 'Rarely successful', 30);
+					}
+					var damage = target.heal(target.maxhp);
+					target.setStatus('');
+					this.add('-heal', target, target.getHealth, '[from] move: Healing Wish');
+					target.side.removeSideCondition('healingwish');
+				}
+			}
+		}
 	}
 }
