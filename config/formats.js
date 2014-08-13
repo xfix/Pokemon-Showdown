@@ -583,6 +583,7 @@ exports.Formats = [
 		name: "TPP Metronome Normal",
 		section: "Other Metagames",
 
+		mod: 'tppmetronome',
 		ruleset: ['Pokemon', 'HP Percentage Mod', 'Species Clause'],
 		banlist: ['Wonder Guard', 'Moody', 'Imposter', 'Pickpocket', 'Magician', 'Unnerve'],
 		allowNoMoves: true,
