@@ -584,7 +584,7 @@ exports.Formats = [
 		section: "Other Metagames",
 
 		mod: 'tppmetronome',
-		ruleset: ['Pokemon', 'TPP', 'HP Percentage Mod', 'Species Clause', 'No Switching Clause', 'No Recycle Clause'],
+		ruleset: ['Pokemon', 'TPP', 'HP Percentage Mod', 'Species Clause', 'No Switching Clause', 'No Recycle Clause', 'Points Clause'],
 		banlist: ['Wonder Guard', 'Moody', 'Imposter', 'Pickpocket', 'Magician', 'Unnerve'],
 		allowNoMoves: true
 	},

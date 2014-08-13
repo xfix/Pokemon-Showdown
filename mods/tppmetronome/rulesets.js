@@ -369,5 +369,15 @@ exports.BattleFormats = {
 				}
 			}
 		}
+	},
+
+	pointsclause: {
+		effectType: 'rule',
+		onDamage: function (damage, target, source, effect) {
+			if (target.hp === target.maxhp && damage >= target.hp && effect && effect.effectType === 'Move') {
+				this.points(source.side, 'OHKO not using OHKO moves is an OHKO after all', 3);
+			}
+		},
+		onDamagePriority: -200
 	}
 };
