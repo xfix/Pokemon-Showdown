@@ -140,8 +140,17 @@ exports.BattleMovedex = {
 				}
 			}
 			if (success) {
-				this.points(source.code, 'Rarely successful', 30);
+				this.points(source.side, 'Rarely successful', 30);
 			}
 		}
+	},
+	venoshock: {
+		inherit: true,
+		onBasePower: function (basePower, pokemon, target) {
+			if (target.status === 'psn' || target.status === 'tox') {
+				this.points(pokemon.side, 'Rarely successful', 30)
+				return this.chainModify(2);
+			}
+		},
 	}
 }
