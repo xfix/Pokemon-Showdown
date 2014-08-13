@@ -786,7 +786,8 @@ exports.Formats = [
 				// Croagunk Line (Cropatra)
 				"Croagunk": true, "Toxicroak": true,
 				// Rotom All Forms (Master Rotom)
-				"Rotom": true,
+				"Rotom": true, "Rotom-Heat": true, "Rotom-Wash": true, "Rotom-Frost": true,
+				"Rotom-Fan": true, "Rotom-Mow": true,
 				// Giratina (Master of Discord)
 				"Giratina": true,
 				// Phione (Z33k33's iPhone)
