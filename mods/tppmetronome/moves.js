@@ -228,7 +228,7 @@ exports.BattleMovedex = {
 			onImmunity: function (type, pokemon) {
 				if (type === 'Ground') {
 					if (pokemon.volatiles['magnetrise'].duration === 5) {
-						this.points(pokemon.side, 'Rarely successful', 30);
+						this.points(pokemon.side, 'Tactical dodge', 25);
 					}
 					return false;
 				}
