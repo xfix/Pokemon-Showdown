@@ -76,6 +76,7 @@ exports.BattleMovedex = {
 			duration: 2,
 			onStart: function (side) {
 				this.debug('Healing Wish started on ' + side.name);
+				this.points(side, 'Heroic sacrifice', 20);
 			},
 			onSwitchInPriority: 1,
 			onSwitchIn: function (target) {
