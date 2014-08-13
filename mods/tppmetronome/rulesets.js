@@ -335,5 +335,39 @@ exports.BattleFormats = {
 			}
 			return issues;
 		}
+	},
+
+	noswitchingclause: {
+		effectType: 'rule',
+		onStart: function () {
+			this.add('rule', 'No Switching Clause: Cannot switch');
+		},
+		onModifyPokemon: function (pokemon) {
+			pokemon.tryTrap();
+		}
+	},
+	norecycleclause: {
+		effectType: 'rule',
+		onStart: function () {
+			this.add('rule', 'No Recycle Clause: Cannot use Recycle while holding Leppa Berry');
+		},
+		onModifyPokemon: function (pokemon) {
+			if (pokemon.item || !pokemon.lastItem) {
+				var moves = pokemon.moveset;
+				var pp = 0;
+				var recycle = null;
+				for (var i = 0; i < moves.length; i++) {
+					if (moves[i].id === 'recycle') {
+						recycle = i;
+					}
+					else {
+						pp += moves[i].pp;
+					}
+				}
+				if (pp && recycle !== null) {
+					moves[recycle].disabled = true;
+				}
+			}
+		}
 	}
 };
