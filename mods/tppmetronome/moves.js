@@ -162,5 +162,15 @@ exports.BattleMovedex = {
 			}
 			return 70;
 		}
+	},
+	smellingsalts: {
+		inherit: true,
+		basePowerCallback: function (pokemon, target) {
+			if (target.status === 'par') {
+				this.points(pokemon.side, 'Rarely successful', 30);
+				return 140;
+			}
+			return 70;
+		}
 	}
 }
