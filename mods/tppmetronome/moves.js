@@ -42,5 +42,11 @@ exports.BattleMovedex = {
 			if (source.hasAbility('megalauncher')) this.heal(this.modify(target.maxhp, 0.75));
 			else this.heal(Math.ceil(target.maxhp * 0.5));
 		}
+	},
+	dreameater: {
+		inherit: true,
+		onHit: function (target, source) {
+			this.points(source.side, 'Rarely successful', 30);
+		}
 	}
 }
