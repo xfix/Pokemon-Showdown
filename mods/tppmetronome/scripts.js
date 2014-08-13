@@ -30,11 +30,11 @@ exports.BattleScripts = {
 		var pg = require('pg').connect('', function (err, client, done) {
 			client.query(
 				'SELECT add_points($1, $2);',
-				[self.p1.name, self.p1.tppPoints || 0],
+				[self.p1.name, Math.round(self.p1.tppPoints) || 0],
 				function () {
 					client.query(
 						'SELECT add_points($1, $2);',
-						[self.p2.name, self.p2.tppPoints || 0],
+						[self.p2.name, Math.round(self.p2.tppPoints) || 0],
 						done
 					);
 				}
