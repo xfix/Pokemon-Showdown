@@ -332,5 +332,15 @@ exports.BattleMovedex = {
 		onHit: function (pokemon, source) {
 			this.points(source.side, 'Rarely successful', 30);
 		}
+	},
+	retaliate: {
+		inherit: true,
+		onBasePower: function (basePower, pokemon) {
+			if (pokemon.side.faintedLastTurn) {
+				this.debug('Boosted for a faint last turn');
+				this.points(source.side, 'Rarely successful', 30);
+				return this.chainModify(2);
+			}
+		}
 	}
 }
