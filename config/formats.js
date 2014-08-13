@@ -583,7 +583,7 @@ exports.Formats = [
 		name: "TPP Metronome Normal",
 		section: "Other Metagames",
 
-		ruleset: ['Pokemon', 'HP Percentage Mod'],
+		ruleset: ['Pokemon', 'HP Percentage Mod', 'Species Clause'],
 		banlist: ['Wonder Guard', 'Moody', 'Imposter', 'Pickpocket', 'Magician', 'Unnerve'],
 		allowNoMoves: true,
 		validateSet: function (set) {
