@@ -581,12 +581,13 @@ exports.Formats = [
 	},
 	{
 		name: "TPP Metronome Normal",
-		section: "Other Metagames",
+		section: "Metronome",
 
 		mod: 'tppmetronome',
 		ruleset: ['Pokemon', 'Team Preview', 'TPP', 'HP Percentage Mod', 'Species Clause', 'No Switching Clause', 'No Recycle Clause', 'Points Clause'],
 		banlist: ['Wonder Guard', 'Moody', 'Imposter', 'Pickpocket', 'Magician', 'Unnerve'],
-		allowNoMoves: true
+		allowNoMoves: true,
+		baseStatLimit: true
 	},
 
 	// BW2 Singles
