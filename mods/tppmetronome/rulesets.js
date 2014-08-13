@@ -361,7 +361,7 @@ exports.BattleFormats = {
 						recycle = i;
 					}
 					else {
-						pp += moves[i].pp;
+						pp += moves[i].pp * !moves[i].disabled;
 					}
 				}
 				if (pp && recycle !== null) {
