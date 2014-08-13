@@ -191,5 +191,24 @@ exports.BattleMovedex = {
 			}
 			return 65;
 		},
+	},
+	smackdown: {
+		inherit: true,
+		onHit: function (pokemon, source) {
+			var applies = false;
+			if ((pokemon.hasType('Flying') && !pokemon.volatiles['roost']) || pokemon.hasAbility('levitate')) applies = true;
+			if (pokemon.volatiles['fly']) || pokemon.volatiles['bounce']) {
+				applies = true;
+			}
+			if (pokemon.volatiles['magnetrise']) {
+				applies = true;
+			}
+			if (pokemon.volatiles['telekinesis']) {
+				applies = true;
+			}
+			if (!applies) return false;
+			this.points(source.side, 'Rarely successful', 30);
+			this.add('-start', pokemon, 'Smack Down');
+		}
 	}
 }
