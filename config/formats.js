@@ -579,6 +579,13 @@ exports.Formats = [
 		ruleset: ['Pokemon', 'Standard NEXT', 'Team Preview'],
 		banlist: ['Uber']
 	},
+	{
+		name: "TPP Metronome Battle Normal",
+		section: "Other Metagames",
+
+		ruleset: ['Pokemon', 'HP Percentage Mod'],
+		banlist: ['Wonder Guard', 'Moody', 'Imposter', 'Pickpocket', 'Magician', 'Unnerve']
+	},
 
 	// BW2 Singles
 	///////////////////////////////////////////////////////////////////
