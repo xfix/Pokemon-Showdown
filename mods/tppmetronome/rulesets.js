@@ -343,7 +343,12 @@ exports.BattleFormats = {
 			this.add('rule', 'No Switching Clause: Cannot switch');
 		},
 		onModifyPokemon: function (pokemon) {
-			pokemon.tryTrap();
+			if (!pokemon.volatiles['imprison']) {
+				pokemon.tryTrap();
+			}
+			else {
+				pokemon.side.switchFlag = true;
+			}
 		}
 	},
 	norecycleclause: {

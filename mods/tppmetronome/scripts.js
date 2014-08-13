@@ -64,5 +64,16 @@ exports.BattleScripts = {
 			console.log(success);
 		})
 		return true;
+	},
+	checkFainted: function () {
+		function check(a) {
+			if (!a) return;
+			if (a.fainted || a.volatiles['imprison']) {
+				a.switchFlag = true;
+			}
+		}
+
+		this.p1.active.forEach(check);
+		this.p2.active.forEach(check);
 	}
 };
