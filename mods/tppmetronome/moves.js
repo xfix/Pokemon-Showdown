@@ -315,5 +315,15 @@ exports.BattleMovedex = {
 		onHit: function (target, pokemon) {
 			this.points(pokemon.side, 'I told you NOT to switch!', 4);
 		}
+	},
+	venomdrench: {
+		inherit: true,
+		onHit: function (target, source, move) {
+			if (target.status === 'psn' || target.status === 'tox') {
+				return this.boost({atk:-1, spa:-1, spe:-1}, target, source, move);
+				this.points(source.side, 'Rarely successful', 30);
+			}
+			return false;
+		}
 	}
 }
