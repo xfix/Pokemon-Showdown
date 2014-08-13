@@ -291,5 +291,29 @@ exports.BattleMovedex = {
 		onHit: function (target, pokemon) {
 			this.points(pokemon.side, 'Heroic sacrifice', 20);
 		}
+	},
+	uturn: {
+		inherit: true,
+		onHit: function (target, pokemon) {
+			this.points(pokemon.side, 'I told you NOT to switch!', 4);
+		}
+	},
+	voltswitch: {
+		inherit: true,
+		onHit: function (target, pokemon) {
+			this.points(pokemon.side, 'I told you NOT to switch!', 4);
+		}
+	},
+	batonpass: {
+		inherit: true,
+		onHit: function (target, pokemon) {
+			this.points(pokemon.side, 'I told you NOT to switch!', 4);
+		}
+	},
+	partingshot: {
+		inherit: true,
+		onHit: function (target, pokemon) {
+			this.points(pokemon.side, 'I told you NOT to switch!', 4);
+		}
 	}
 }
