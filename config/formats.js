@@ -585,6 +585,7 @@ exports.Formats = [
 
 		ruleset: ['Pokemon', 'HP Percentage Mod'],
 		banlist: ['Wonder Guard', 'Moody', 'Imposter', 'Pickpocket', 'Magician', 'Unnerve'],
+		allowNoMoves: true,
 		validateSet: function (set) {
 			var issues = [];
 			if (set.item && set.item !== 'Leppa Berry') {
@@ -592,6 +593,37 @@ exports.Formats = [
 			}
 			// Make sure the item is Leppa Berry
 			set.item = 'Leppa Berry';
+			var metronomeFound = false;
+			var recycleFound = false;
+			var i;
+			var movesLength = set.moves.length;
+			for (i = 0; i < movesLength; i++) {
+				var move = set.moves[i];
+				switch (move) {
+				case 'Metronome':
+					if (metronomeFound) {
+						issues.push(set.species + " cannot have more than one Metronome.");
+					}
+					metronomeFound = true;
+					break;
+				case 'Recycle':
+					if (recycleFound) {
+						issues.push(set.species + " cannot have more than one Recycle.");
+					}
+					recycleFound = true;
+					break;
+				default:
+					issues.push(set.species + " cannot have " + move);
+					break;
+				}
+			}
+			if (!metronomeFound) {
+				set.moves.push("Metronome");
+			}
+			if (!recycleFound) {
+				set.moves.push("Recycle");
+			}
+			return issues;
 		}
 	},
 

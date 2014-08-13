@@ -404,7 +404,7 @@ Validator = (function () {
 		if (set.moves && Array.isArray(set.moves)) {
 			set.moves = set.moves.filter(function (val){ return val; });
 		}
-		if (!set.moves || !set.moves.length) {
+		if ((!set.moves || !set.moves.length) && !format.allowNoMoves) {
 			problems.push(name + " has no moves.");
 		} else {
 			// A limit is imposed here to prevent too much engine strain or
