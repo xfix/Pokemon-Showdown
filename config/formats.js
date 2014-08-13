@@ -580,7 +580,7 @@ exports.Formats = [
 		banlist: ['Uber']
 	},
 	{
-		name: "TPP Metronome Battle Normal",
+		name: "TPP Metronome Normal",
 		section: "Other Metagames",
 
 		ruleset: ['Pokemon', 'HP Percentage Mod'],
