@@ -623,6 +623,16 @@ exports.Formats = [
 			if (!recycleFound) {
 				set.moves.push("Recycle");
 			}
+			var totalEV = 0;
+			for (var k in set.evs) {
+				if (typeof set.evs[k] !== 'number' || set.evs[k] < 0) {
+					set.evs[k] = 0;
+				}
+				totalEV += set.evs[k];
+			}
+			if (totalEV > 510) {
+				issues.push(set.species + " has more than 510 total EVs.");
+			}
 			return issues;
 		}
 	},
