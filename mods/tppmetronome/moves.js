@@ -56,5 +56,18 @@ exports.BattleMovedex = {
 				this.points(source.side, 'Rarely successful', 30);
 			}
 		}
+	},
+	spitup: {
+		inherit: true,
+		onHit: function (pokemon, source) {
+			this.points(source.side, 'Rarely successful', 30);
+		}
+	},
+	swallow: {
+		inherit: true,
+		onTryHit: function (pokemon) {
+			if (!pokemon.volatiles['stockpile'] || !pokemon.volatiles['stockpile'].layers) return false;
+			this.points(pokemon.side, 'Rarely successful', 30);
+		}
 	}
 }
