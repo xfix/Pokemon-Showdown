@@ -1,7 +1,7 @@
 exports.BattleFormats = {
 	tpp: {
 		effectType: 'Banlist',
-		validateSet: function (set) {
+		validateSet: function (set, format) {
 			var issues = [];
 			var tppMons = {
 				// List #1: No Brainers
@@ -330,8 +330,8 @@ exports.BattleFormats = {
 			for (var k in template.baseStats) {
 				totalBST += template.baseStats[k];
 			}
-			if (totalBST > this.baseStatLimit) {
-				issues.push(set.species + " has more than " + this.baseStatLimit + " BST.");
+			if (totalBST > format.baseStatLimit) {
+				issues.push(set.species + " has more than " + format.baseStatLimit + " BST.");
 			}
 			return issues;
 		}
