@@ -19,7 +19,7 @@ exports.BattleScripts = {
 		if (side) {
 			this.add('win', side.name);
 			var table = [1, 1, 1.1, 1.3, 1.5, 1.7, 2];
-			this.points(side, 'teh urn', 100 * table[side.pokemonLeft];
+			this.points(side, 'teh urn', 100 * table[side.pokemonLeft]);
 		} else {
 			this.add('tie');
 		}
