@@ -267,5 +267,29 @@ exports.BattleMovedex = {
 				this.add('-end', target, 'Magnet Rise');
 			}
 		}
+	},
+	selfdestruct: {
+		inherit: true,
+		onTryHit: function (target, pokemon) {
+			this.points(pokemon.side, 'Heroic sacrifice', 20);
+		}
+	},
+	explosion: {
+		inherit: true,
+		onTryHit: function (target, pokemon) {
+			this.points(pokemon.side, 'Heroic sacrifice', 20);
+		}
+	},
+	finalgambit: {
+		inherit: true,
+		onTryHit: function (target, pokemon) {
+			this.points(pokemon.side, 'Heroic sacrifice', 20);
+		}
+	},
+	memento: {
+		inherit: true,
+		onHit: function (target, pokemon) {
+			this.points(pokemon.side, 'Heroic sacrifice', 20);
+		}
 	}
 }
