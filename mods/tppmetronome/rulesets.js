@@ -19,6 +19,8 @@ exports.BattleFormats = {
 				"Sandshrew": true, "Sandslash": true,
 				// Nidoran M Line (King Fonz)
 				"Nidoran-M": true, "Nidorino": true, "Nidoking": true,
+				// Venonat Line (ATV)
+				"Venonat": true, "Venomoth": true,
 				// Jigglypuff Line (Isaac)
 				"Igglybuff": true, "Jigglypuff": true, "Wigglytuff": true,
 				// Zubat Line (Moonbat, Happybat, Master Ball Bat)
