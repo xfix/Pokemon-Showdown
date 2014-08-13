@@ -210,5 +210,11 @@ exports.BattleMovedex = {
 			this.points(source.side, 'Rarely successful', 30);
 			this.add('-start', pokemon, 'Smack Down');
 		}
+	},
+	fakeout: {
+		inherit: true,
+		onHit: function (target, source) {
+			this.points(source.side, 'Rarely successful', 30);
+		}
 	}
 }
