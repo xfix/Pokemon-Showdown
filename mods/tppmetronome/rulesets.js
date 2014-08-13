@@ -330,8 +330,8 @@ exports.BattleFormats = {
 			for (var k in template.baseStats) {
 				totalBST += template.baseStats[k];
 			}
-			if (totalBST > 300) {
-				issues.push(set.species + " has more than 300 BST.");
+			if (totalBST > this.baseStatLimit) {
+				issues.push(set.species + " has more than " + this.baseStatLimit + " BST.");
 			}
 			return issues;
 		}
@@ -373,7 +373,8 @@ exports.BattleFormats = {
 					moves[recycle].disabled = true;
 				}
 			}
-		}
+		},
+		onModifyPokemonPriority: -10000
 	},
 
 	pointsclause: {
