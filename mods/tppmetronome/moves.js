@@ -48,5 +48,13 @@ exports.BattleMovedex = {
 		onHit: function (target, source) {
 			this.points(source.side, 'Rarely successful', 30);
 		}
+	},
+	nightmare: {
+		inherit: true,
+		onHit: function (pokemon, source) {
+			if (pokemon.status === 'slp') {
+				this.points(source.side, 'Rarely successful', 30);
+			}
+		}
 	}
 }
