@@ -326,5 +326,11 @@ exports.BattleMovedex = {
 			}
 			return false;
 		}
+	},
+	synchronoise: {
+		inherit: true,
+		onHit: function (pokemon, source) {
+			this.points(source.side, 'Rarely successful', 30);
+		}
 	}
 }
