@@ -97,7 +97,7 @@ exports.BattleMovedex = {
 		}
 	},
 	lunardance: {
-		inherit; true,
+		inherit: true,
 		effect: {
 			duration: 2,
 			onStart: function (side) {
