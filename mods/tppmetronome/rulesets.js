@@ -301,6 +301,9 @@ exports.BattleFormats = {
 					}
 					recycleFound = true;
 					break;
+				// Allow empty move.
+				case '':
+					break;
 				default:
 					issues.push(set.species + " cannot have " + move + ".");
 					break;
