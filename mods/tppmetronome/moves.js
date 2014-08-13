@@ -181,5 +181,15 @@ exports.BattleMovedex = {
 				return this.chainModify(2);
 			}
 		}
+	},
+	hex: {
+		inherit: true,
+		basePowerCallback: function (pokemon, target) {
+			if (target.status) {
+				this.points(pokemon.side, 'Rarely successful', 30);
+				return 130;
+			}
+			return 65;
+		},
 	}
 }
