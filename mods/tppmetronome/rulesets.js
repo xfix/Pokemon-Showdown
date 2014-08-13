@@ -288,14 +288,14 @@ exports.BattleFormats = {
 			var movesLength = set.moves.length;
 			for (i = 0; i < movesLength; i++) {
 				var move = set.moves[i];
-				switch (move) {
-				case 'Metronome':
+				switch (move.toLowerCase()) {
+				case 'metronome':
 					if (metronomeFound) {
 						issues.push(set.species + " cannot have more than one Metronome.");
 					}
 					metronomeFound = true;
 					break;
-				case 'Recycle':
+				case 'recycle':
 					if (recycleFound) {
 						issues.push(set.species + " cannot have more than one Recycle.");
 					}
