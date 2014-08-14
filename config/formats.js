@@ -601,6 +601,17 @@ exports.Formats = [
 		baseStatLimit: 450,
 		victoryPoints: 200
 	},
+	{
+		name: "TPP Metronome Hyper",
+		section: "Metronome",
+
+		mod: 'tppmetronome',
+		ruleset: ['Pokemon', 'Team Preview', 'TPP', 'HP Percentage Mod', 'Species Clause', 'No Switching Clause', 'No Recycle Clause', 'Points Clause'],
+		banlist: ['Wonder Guard', 'Moody', 'Imposter', 'Pickpocket', 'Magician', 'Unnerve'],
+		allowNoMoves: true,
+		baseStatLimit: 600,
+		victoryPoints: 300
+	},
 
 	// BW2 Singles
 	///////////////////////////////////////////////////////////////////
