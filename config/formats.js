@@ -587,7 +587,8 @@ exports.Formats = [
 		ruleset: ['Pokemon', 'Team Preview', 'TPP', 'HP Percentage Mod', 'Species Clause', 'No Switching Clause', 'No Recycle Clause', 'Points Clause'],
 		banlist: ['Wonder Guard', 'Moody', 'Imposter', 'Pickpocket', 'Magician', 'Unnerve'],
 		allowNoMoves: true,
-		baseStatLimit: 300
+		baseStatLimit: 300,
+		victoryPoints: 100
 	},
 	{
 		name: "TPP Metronome Super",
@@ -597,7 +598,8 @@ exports.Formats = [
 		ruleset: ['Pokemon', 'Team Preview', 'TPP', 'HP Percentage Mod', 'Species Clause', 'No Switching Clause', 'No Recycle Clause', 'Points Clause'],
 		banlist: ['Wonder Guard', 'Moody', 'Imposter', 'Pickpocket', 'Magician', 'Unnerve'],
 		allowNoMoves: true,
-		baseStatLimit: 450
+		baseStatLimit: 450,
+		victoryPoints: 200
 	},
 
 	// BW2 Singles
