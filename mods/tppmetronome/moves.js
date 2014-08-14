@@ -247,6 +247,7 @@ exports.BattleMovedex = {
 			this.points(source.side, 'Rarely successful', 30);
 		}
 	},
+	/*
 	magnetrise: {
 		inherit: true,
 		effect: {
@@ -269,6 +270,7 @@ exports.BattleMovedex = {
 			}
 		}
 	},
+	*/
 	selfdestruct: {
 		inherit: true,
 		onTryHit: function (target, pokemon) {
