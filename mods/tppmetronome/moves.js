@@ -335,7 +335,7 @@ exports.BattleMovedex = {
 	},
 	retaliate: {
 		inherit: true,
-		onBasePower: function (basePower, pokemon) {
+		onBasePower: function (basePower, pokemon, source) {
 			if (pokemon.side.faintedLastTurn) {
 				this.debug('Boosted for a faint last turn');
 				this.points(source.side, 'Rarely successful', 30);
