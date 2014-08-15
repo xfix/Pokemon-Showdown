@@ -396,11 +396,7 @@ exports.BattleFormats = {
 			this.add('-message', pokemon.name + ' is now on turn ' + count);
 			switch (count) {
 			case 20:
-				this.points(pokemon.side, 'Are you a TANK', 20);
-				break;
 			case 30:
-				this.points(pokemon.side, 'Are you a TANK', 20);
-				break;
 			case 40:
 				this.points(pokemon.side, 'Are you a TANK', 20);
 				break;
