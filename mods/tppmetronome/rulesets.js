@@ -385,6 +385,9 @@ exports.BattleFormats = {
 			if (target.hp === target.maxhp && damage >= target.hp && effect && effect.effectType === 'Move' && !effect.ohko) {
 				this.points(source.side, 'OHKO not using OHKO moves is an OHKO after all', 20);
 			}
+			if (target.hp === 1 && target.maxhp !==  1) {
+				this.points(target.side, 'CLUTCH Kreygasm', 10);
+			}
 		},
 		onDamagePriority: -200,
 		onBeforeTurn: function (pokemon) {
