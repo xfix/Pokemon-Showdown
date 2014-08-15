@@ -387,5 +387,18 @@ exports.BattleMovedex = {
 				}
 			}
 		}
+	},
+	fellstinger: {
+		inherit: true,
+		effect: {
+			duration: 1,
+			onAfterMoveSecondarySelf: function (pokemon, target, move) {
+				this.points(pokemon.side, 'Rarely successful', 30);
+				if (!target || target.fainted || target.hp <= 0) {
+					this.boost({atk:2}, pokemon, pokemon, move);
+				}
+				pokemon.removeVolatile('fellstinger');
+			}
+		}
 	}
 }

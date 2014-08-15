@@ -383,7 +383,10 @@ exports.BattleFormats = {
 		effectType: 'rule',
 		onDamage: function (damage, target, source, effect) {
 			if (target.hp === target.maxhp && damage >= target.hp && effect && effect.effectType === 'Move' && !effect.ohko) {
-				this.points(source.side, 'OHKO not using OHKO moves is an OHKO after all', 20);
+				this.points(source.side, 'OHKO not using OHKO moves is an OHKO after all', 12);
+			}
+			if (target.hp === target.maxhp && damage >= target.hp && effect && effect.crit) {
+				this.points(source.side, 'Crit mattered', 6);
 			}
 			if (target.hp === 1 && target.maxhp !==  1) {
 				this.points(target.side, 'CLUTCH Kreygasm', 10);
