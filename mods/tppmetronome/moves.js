@@ -362,5 +362,30 @@ exports.BattleMovedex = {
 				return accuracy;
 			}
 		}
+	},
+	metronome: {
+		inherit: true,
+		effect: {
+			duration: 2,
+			onLockMove: 'rollout',
+			onStart: function () {
+				this.effectData.hitCount = 1;
+			},
+			onRestart: function (pokemon) {
+				this.effectData.hitCount++;
+				if (this.effectData.hitCount < 5) {
+					this.effectData.duration = 2;
+				}
+				else {
+					this.points(pokemon.side, 'M4 would be proud of you!', 50);
+				}
+			},
+			onResidual: function (target) {
+				if (target.lastMove === 'struggle') {
+					// don't lock
+					delete target.volatiles['rollout'];
+				}
+			}
+		}
 	}
 }

@@ -383,7 +383,7 @@ exports.BattleFormats = {
 		effectType: 'rule',
 		onDamage: function (damage, target, source, effect) {
 			if (target.hp === target.maxhp && damage >= target.hp && effect && effect.effectType === 'Move' && !effect.ohko) {
-				this.points(source.side, 'OHKO not using OHKO moves is an OHKO after all', 3);
+				this.points(source.side, 'OHKO not using OHKO moves is an OHKO after all', 20);
 			}
 		},
 		onDamagePriority: -200,
