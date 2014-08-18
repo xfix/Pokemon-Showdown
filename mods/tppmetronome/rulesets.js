@@ -359,7 +359,7 @@ exports.BattleFormats = {
 			this.add('rule', 'No Recycle Clause: Cannot use Recycle while holding Leppa Berry');
 		},
 		onModifyPokemon: function (pokemon) {
-			if (pokemon.item || !pokemon.lastItem) {
+			if ((pokemon.item || !pokemon.lastItem) && !(pokemon.volatiles.torment && pokemon.lastMove === 'metronome')) {
 				var moves = pokemon.moveset;
 				var pp = 0;
 				var recycle = null;
@@ -375,8 +375,7 @@ exports.BattleFormats = {
 					moves[recycle].disabled = true;
 				}
 			}
-		},
-		onModifyPokemonPriority: -10000
+		}
 	},
 
 	pointsclause: {
