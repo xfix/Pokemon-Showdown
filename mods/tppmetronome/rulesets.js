@@ -407,5 +407,26 @@ exports.BattleFormats = {
 				break;
 			}
 		}
+	},
+	abilityclause: {
+		effectType: 'Rule',
+		onStart: function () {
+			this.add('rule', 'Ability Clause: Limit one of each ability');
+		},
+		validateTeam: function (team, format) {
+			var abilityTable = {};
+			for (var i = 0; i < team.length; i++) {
+				var ability = toId(team[i].ability);
+				if (!ability) continue;
+				if (ability in abilityTable) {
+					if (abilityTable[ability] >= 1) {
+						return ["You are limited to one of each ability by the Ability Clause.", "(You have more than two " + this.getAbility(ability).name + ")"];
+					}
+					abilityTable[ability]++;
+				} else {
+					abilityTable[ability] = 1;
+				}
+			}
+		}
 	}
 };

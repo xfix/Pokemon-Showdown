@@ -584,7 +584,7 @@ exports.Formats = [
 		section: "Metronome",
 
 		mod: 'tppmetronome',
-		ruleset: ['Pokemon', 'Team Preview', 'TPP', 'HP Percentage Mod', 'Species Clause', 'No Switching Clause', 'No Recycle Clause', 'Points Clause'],
+		ruleset: ['Pokemon', 'Team Preview', 'TPP', 'HP Percentage Mod', 'Species Clause', 'No Switching Clause', 'No Recycle Clause', 'Points Clause', 'Ability Clause'],
 		banlist: ['Wonder Guard', 'Moody', 'Imposter', 'Pickpocket', 'Magician', 'Unnerve'],
 		allowNoMoves: true,
 		baseStatLimit: 300,
@@ -595,7 +595,7 @@ exports.Formats = [
 		section: "Metronome",
 
 		mod: 'tppmetronome',
-		ruleset: ['Pokemon', 'Team Preview', 'TPP', 'HP Percentage Mod', 'Species Clause', 'No Switching Clause', 'No Recycle Clause', 'Points Clause'],
+		ruleset: ['Pokemon', 'Team Preview', 'TPP', 'HP Percentage Mod', 'Species Clause', 'No Switching Clause', 'No Recycle Clause', 'Points Clause', 'Ability Clause'],
 		banlist: ['Wonder Guard', 'Moody', 'Imposter', 'Pickpocket', 'Magician', 'Unnerve'],
 		allowNoMoves: true,
 		baseStatLimit: 450,
@@ -606,7 +606,7 @@ exports.Formats = [
 		section: "Metronome",
 
 		mod: 'tppmetronome',
-		ruleset: ['Pokemon', 'Team Preview', 'TPP', 'HP Percentage Mod', 'Species Clause', 'No Switching Clause', 'No Recycle Clause', 'Points Clause'],
+		ruleset: ['Pokemon', 'Team Preview', 'TPP', 'HP Percentage Mod', 'Species Clause', 'No Switching Clause', 'No Recycle Clause', 'Points Clause', 'Ability Clause'],
 		banlist: ['Wonder Guard', 'Moody', 'Imposter', 'Pickpocket', 'Magician', 'Unnerve'],
 		allowNoMoves: true,
 		baseStatLimit: 600,
