@@ -44,26 +44,6 @@ exports.BattleScripts = {
 		this.ended = true;
 		this.active = false;
 		this.currentRequest = '';
-
-		var logidx = 2; // spectator log (no exact HP)
-		if (this.ended) {
-			// If the battle is finished when /savereplay is used, include
-			// exact HP in the replay log.
-			logidx = 3;
-		}
-		var data = this.log.join("\n");
-		var datahash = require('crypto').createHash('md5').update(data.replace(/[^(\x20-\x7F)]+/g, '')).digest('hex');
-
-		require('../../loginserver').request('prepreplay', {
-			id: this.roomid.substr(7),
-			loghash: datahash,
-			p1: this.p1.name,
-			p2: this.p2.name,
-			format: this.format
-		}, function (success) {
-			console.log(success);
-		})
-		return true;
 	},
 	checkFainted: function () {
 		function check(a) {
