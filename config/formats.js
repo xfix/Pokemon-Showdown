@@ -612,6 +612,13 @@ exports.Formats = [
 		baseStatLimit: 600,
 		victoryPoints: 300
 	},
+	{
+		name: "TPP Battle",
+		section: "Standard Battles",
+
+		mod: "tppbattle",
+		ruleset: ['Pokemon', 'Standard Ubers', 'Swagger Clause', 'Team Preview', 'TPP Clause']
+	},
 
 	// BW2 Singles
 	///////////////////////////////////////////////////////////////////
