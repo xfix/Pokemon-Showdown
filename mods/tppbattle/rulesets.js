@@ -279,6 +279,16 @@ exports.BattleFormats = {
 				// Xerneas (X-Deer)
 				"Xerneas": true
 			};
+			function isUber(set) {
+				var items = {
+					'Soul Dew': true,
+					'Gengarite': true,
+					'Kangaskhanite': true,
+					'Lucarionite': true
+				};
+				return items[set.item] || Tools.getTemplate(set.species).tier === "Uber";
+			}
+
 			var isLC = true;
 			var tRule = null;
 			var arceus = null;
@@ -292,7 +302,8 @@ exports.BattleFormats = {
 					magikarp = true;
 				}
 
-				if (!tppMons[set.species] && template.tier === "Uber") {
+				var uber = isUber(set);
+				if (!tppMons[set.species] && uber) {
 					issues.push(set.species + " is banned.");
 				}
 				else if (!tppMons[set.species]) {
@@ -303,7 +314,7 @@ exports.BattleFormats = {
 						tRule = set.species + " (by T Rule)";
 					}
 				}
-				else if (template.tier === "Uber") {
+				else if (uber) {
 					if (tRule) {
 						issues.push(set.species + " is Uber, but you already have " + tRule + ".");
 					}
