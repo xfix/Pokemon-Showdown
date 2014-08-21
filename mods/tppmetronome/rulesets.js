@@ -420,7 +420,7 @@ exports.BattleFormats = {
 				if (!ability) continue;
 				if (ability in abilityTable) {
 					if (abilityTable[ability] >= 1) {
-						return ["You are limited to one of each ability by the Ability Clause.", "(You have more than two " + this.getAbility(ability).name + ")"];
+						return ["You are limited to one of each ability by the Ability Clause.", "(You have more than one " + this.getAbility(ability).name + ")"];
 					}
 					abilityTable[ability]++;
 				} else {
