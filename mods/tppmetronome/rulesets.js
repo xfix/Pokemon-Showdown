@@ -206,7 +206,7 @@ exports.BattleFormats = {
 				"Rotom": true, "Rotom-Heat": true, "Rotom-Wash": true, "Rotom-Frost": true,
 				"Rotom-Fan": true, "Rotom-Mow": true,
 				// Giratina (Master of Discord)
-				"Giratina": true,
+				"Giratina": true, "Giratina-Origin": true,
 				// Phione (Z33k33's iPhone)
 				"Phione": true,
 				// Patrat Line
