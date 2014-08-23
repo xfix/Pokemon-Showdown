@@ -604,6 +604,17 @@ exports.Formats = [
 		victoryPoints: 300
 	},
 	{
+		name: "TPP Metronome Hyper",
+		section: "Metronome",
+
+		mod: 'tppmetronome',
+		ruleset: ['Pokemon', 'Team Preview', 'TPP', 'HP Percentage Mod', 'Species Clause', 'No Switching Clause', 'No Recycle Clause', 'Points Clause', 'Ability Clause'],
+		banlist: ['Wonder Guard', 'Moody', 'Imposter', 'Pickpocket', 'Magician', 'Unnerve'],
+		allowNoMoves: true,
+		baseStatLimit: Infinity,
+		victoryPoints: 400
+	},
+	{
 		name: "TPP Battle",
 		section: "Standard Battles",
 
