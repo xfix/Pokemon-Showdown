@@ -209,7 +209,7 @@ exports.BattleFormats = {
 				"Rotom": true, "Rotom-Heat": true, "Rotom-Wash": true, "Rotom-Frost": true,
 				"Rotom-Fan": true, "Rotom-Mow": true,
 				// Giratina (Master of Discord)
-				"Giratina": true,
+				"Giratina": true, "Giratina-Origin": true,
 				// Phione (Z33k33's iPhone)
 				"Phione": true,
 				// Patrat Line
@@ -275,7 +275,12 @@ exports.BattleFormats = {
 
 				// List #4: Arceus
 				// Arceus (Streamer-senpai)
-				"Arceus": true,
+				"Arceus": true, "Arceus-Bug": true, "Arceus-Dark": true,
+				"Arceus-Dragon": true, "Arceus-Electric": true, "Arceus-Fairy": true,
+				"Arceus-Fighting": true, "Arceus-Fire": true, "Arceus-Flying": true,
+				"Arceus-Ghost": true, "Arceus-Grass": true, "Arceus-Ground": true,
+				"Arceus-Ice": true, "Arceus Poison": true, "Arceus-Psychic": true,
+				"Arceus-Rock": true, "Arceus-Steel": true, "Arceus-Water": true,
 				// Xerneas (X-Deer)
 				"Xerneas": true
 			};
