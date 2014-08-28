@@ -615,6 +615,14 @@ exports.Formats = [
 		victoryPoints: 400
 	},
 	{
+		name: "TPP Random Battle",
+		section: "Standard Battles",
+
+		team: 'random',
+		mod: "tpprandom",
+		ruleset: ['PotD', 'Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod']
+	},
+	{
 		name: "TPP Battle",
 		section: "Standard Battles",
 
