@@ -623,6 +623,14 @@ exports.Formats = [
 		ruleset: ['PotD', 'Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod']
 	},
 	{
+		name: "TPP anarchy",
+		section: "Standard Battles",
+
+		team: 'random',
+		mod: "tppanarchy",
+		ruleset: ['PotD', 'Pokemon', 'HP Percentage Mod']
+	},
+	{
 		name: "TPP Battle",
 		section: "Standard Battles",
 
