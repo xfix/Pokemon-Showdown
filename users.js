@@ -1064,14 +1064,18 @@ User = (function () {
 		}
 		this.roomCount = {};
 	};
-	User.prototype.getAlts = function () {
+	User.prototype.getAlts = function (getAll) {
 		var alts = [];
 		for (var i in users) {
 			if (users[i] === this) continue;
-			if (Object.isEmpty(Object.select(this.ips, users[i].ips))) continue;
 			if (!users[i].named && !users[i].connected) continue;
-
-			alts.push(users[i].name);
+			if (!getAll && users[i].group !== ' ' && this.group === ' ') continue;
+			for (var myIp in this.ips) {
+				if (myIp in users[i].ips) {
+					alts.push(users[i].name);
+					break;
+				}
+			}
 		}
 		return alts;
 	};
@@ -1125,8 +1129,12 @@ User = (function () {
 		if (!noRecurse) {
 			for (var i in users) {
 				if (users[i] === this) continue;
-				if (Object.isEmpty(Object.select(this.ips, users[i].ips))) continue;
-				users[i].mute(roomid, time, force, true);
+				for (var myIp in this.ips) {
+					if (myIp in users[i].ips) {
+						users[i].mute(roomid, time, force, true);
+						break;
+					}
+				}
 			}
 		}
 
@@ -1153,8 +1161,12 @@ User = (function () {
 		if (!noRecurse) {
 			for (var i in users) {
 				if (users[i] === this) continue;
-				if (Object.isEmpty(Object.select(this.ips, users[i].ips))) continue;
-				users[i].ban(true, userid);
+				for (var myIp in this.ips) {
+					if (myIp in users[i].ips) {
+						users[i].ban(true, userid);
+						break;
+					}
+				}
 			}
 		}
 
@@ -1175,8 +1187,12 @@ User = (function () {
 		if (!noRecurse) {
 			for (var i in users) {
 				if (users[i] === this) continue;
-				if (Object.isEmpty(Object.select(this.ips, users[i].ips))) continue;
-				users[i].lock(true, userid);
+				for (var myIp in this.ips) {
+					if (myIp in users[i].ips) {
+						users[i].lock(true, userid);
+						break;
+					}
+				}
 			}
 		}
 
@@ -1192,13 +1208,18 @@ User = (function () {
 	User.prototype.joinRoom = function (room, connection) {
 		room = Rooms.get(room);
 		if (!room) return false;
-		if (room.staffRoom && !this.isStaff) return false;
-		if (room.bannedUsers) {
-			if (this.userid in room.bannedUsers || this.autoconfirmed in room.bannedUsers) return false;
-		}
-		if (this.ips && room.bannedIps) {
-			for (var ip in this.ips) {
-				if (ip in room.bannedIps) return false;
+		if (!this.can('bypassall')) {
+			// check if user has permission to join
+			if (room.staffRoom && !this.isStaff) return false;
+			if (room.bannedUsers) {
+				if (this.userid in room.bannedUsers || this.autoconfirmed in room.bannedUsers) {
+					return false;
+				}
+			}
+			if (this.ips && room.bannedIps) {
+				for (var ip in this.ips) {
+					if (ip in room.bannedIps) return false;
+				}
 			}
 		}
 		if (!connection) {
@@ -1212,7 +1233,6 @@ User = (function () {
 			return;
 		}
 		if (!connection.rooms[room.id]) {
-			connection.joinRoom(room);
 			if (!this.roomCount[room.id]) {
 				this.roomCount[room.id] = 1;
 				room.onJoin(this, connection);
@@ -1220,6 +1240,7 @@ User = (function () {
 				this.roomCount[room.id]++;
 				room.onJoinConnection(this, connection);
 			}
+			connection.joinRoom(room);
 		}
 		return true;
 	};
