@@ -635,6 +635,15 @@ exports.Formats = [
 		banlist: ['Uber']
 	},
 	{
+		name: "OU Metronome",
+		section: "Metronome",
+
+		mod: 'tppmetronome',
+		ruleset: ['Pokemon', 'Team Preview', 'OU Metronome'],
+		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Lucarionite', 'Mawilite'],
+		allowNoMoves: true
+	},
+	{
 		name: "TPP Metronome Normal",
 		section: "Metronome",
 
