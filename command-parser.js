@@ -163,10 +163,6 @@ var parse = exports.parse = function (message, room, user, connection, levelsDee
 	if (!message || !message.trim().length) return;
 	if (!levelsDeep) {
 		levelsDeep = 0;
-		// if (Config.emergencylog && (connection.ip === '62.195.195.62' || connection.ip === '86.141.154.222' || connection.ip === '189.134.175.221' || message.length > 2048 || message.length > 256 && message.substr(0, 5) !== '/utm ' && message.substr(0, 5) !== '/trn ')) {
-		if (Config.emergencylog && (user.userid === 'pindapinda' || connection.ip === '62.195.195.62' || connection.ip === '86.141.154.222' || connection.ip === '189.134.175.221')) {
-			Config.emergencylog.write('<' + user.name + '@' + connection.ip + '> ' + message + '\n');
-		}
 	} else {
 		if (levelsDeep > MAX_PARSE_RECURSION) {
 			return connection.sendTo(room, "Error: Too much recursion");
@@ -304,7 +300,7 @@ var parse = exports.parse = function (message, room, user, connection, levelsDee
 				return canTalk(user, innerRoom, connection, message);
 			},
 			canHTML: function (html) {
-				html = ''+(html||'');
+				html = '' + (html || '');
 				var images = html.match(/<img\b[^<>]*/ig);
 				if (!images) return true;
 				for (var i = 0; i < images.length; i++) {
@@ -353,9 +349,9 @@ var parse = exports.parse = function (message, room, user, connection, levelsDee
 		// Check for mod/demod/admin/deadmin/etc depending on the group ids
 		for (var g in Config.groups) {
 			var groupid = Config.groups[g].id;
-			if (cmd === groupid) {
+			if (cmd === groupid || cmd === 'global' + groupid) {
 				return parse('/promote ' + toId(target) + ', ' + g, room, user, connection);
-			} else if (cmd === 'de' + groupid || cmd === 'un' + groupid) {
+			} else if (cmd === 'de' + groupid || cmd === 'un' + groupid || cmd === 'globalde' + groupid || cmd === 'deglobal' + groupid) {
 				return parse('/demote ' + toId(target), room, user, connection);
 			} else if (cmd === 'room' + groupid) {
 				return parse('/roompromote ' + toId(target) + ', ' + g, room, user, connection);
@@ -371,7 +367,7 @@ var parse = exports.parse = function (message, room, user, connection, levelsDee
 	}
 
 	if (message.charAt(0) === '/' && message.charAt(1) !== '/') {
-		message = '/'+message;
+		message = '/' + message;
 	}
 	message = canTalk(user, room, connection, message);
 	if (!message) return false;

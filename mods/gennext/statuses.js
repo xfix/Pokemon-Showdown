@@ -67,13 +67,12 @@ exports.BattleStatuses = {
 		}
 	},
 
-
 	// weather!
 
 	raindance: {
 		inherit: true,
 		onBasePower: function (basePower, attacker, defender, move) {
-			if (move.id === 'scald') {
+			if (move.id === 'scald' || move.id === 'steameruption') {
 				return;
 			}
 			if (move.type === 'Water') {
@@ -89,7 +88,7 @@ exports.BattleStatuses = {
 	sunnyday: {
 		inherit: true,
 		onBasePower: function (basePower, attacker, defender, move) {
-			if (move.id === 'scald') {
+			if (move.id === 'scald' || move.id === 'steameruption') {
 				return;
 			}
 			if (move.type === 'Fire') {
