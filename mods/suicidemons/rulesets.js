@@ -32,7 +32,7 @@ exports.BattleFormats = {
 			}
 			return problems;
 		},
-		ruleset: ['Shedinja', 'Self-Destruct', 'Explosion', 'Memento',
+		banlist: ['Shedinja', 'Self-Destruct', 'Explosion', 'Memento',
 			'Final Gambit', 'Healing Wish', 'Heal Pulse', 'Lunar Dance', 'Dream Eater', 'Snore',
 			'Return', 'Frustration', 'Fake Out', 'Natural Gift']
 	}
