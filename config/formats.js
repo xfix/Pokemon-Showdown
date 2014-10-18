@@ -616,6 +616,12 @@ exports.Formats = [
 		banlist: ['Illegal', 'Unreleased']
 	},
 	{
+		name: "Suicidemons",
+		section: "Other Metagames",
+		mod: 'suicidemons',
+		ruleset: ['Pokemon', 'Standard', 'Team Preview', 'Species Clause', 'Suicidemons']
+	},
+	{
 		name: "Gen-NEXT OU",
 		section: "Other Metagames",
 
