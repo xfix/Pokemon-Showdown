@@ -619,7 +619,7 @@ exports.Formats = [
 		name: "Suicidemons",
 		section: "Other Metagames",
 		mod: 'suicidemons',
-		ruleset: ['Pokemon', 'Standard', 'Team Preview', 'Species Clause', 'Suicidemons']
+		ruleset: ['Pokemon', 'Sleep Clause Mod', 'Species Clause', 'HP Percentage Mod', 'Team Preview', 'Species Clause', 'Suicidemons']
 	},
 	{
 		name: "Gen-NEXT OU",
