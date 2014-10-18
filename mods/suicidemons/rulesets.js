@@ -6,6 +6,7 @@ exports.BattleFormats = {
 			if (team.length < 6) {
 				problems.push('You must have six Pokémon.');
 			}
+			return problems;
 		},
 		validateSet: function (set) {
 			var problems = [];
