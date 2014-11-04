@@ -98,14 +98,72 @@ module.exports = (function () {
 						// {inherit: true} can be used to modify only parts of the parent data,
 						// instead of overwriting entirely
 						delete data[dataType][i].inherit;
-						Object.merge(data[dataType][i], parentData[dataType][i], true, false);
+						Object.merge(data[dataType][i], parentData[dataType][i], false, false);
 					}
 				}
 			});
 		}
+		data['Natures'] = {
+			adamant: {name:"Adamant", plus:'atk', minus:'spa'},
+			bashful: {name:"Bashful"},
+			bold: {name:"Bold", plus:'def', minus:'atk'},
+			brave: {name:"Brave", plus:'atk', minus:'spe'},
+			calm: {name:"Calm", plus:'spd', minus:'atk'},
+			careful: {name:"Careful", plus:'spd', minus:'spa'},
+			docile: {name:"Docile"},
+			gentle: {name:"Gentle", plus:'spd', minus:'def'},
+			hardy: {name:"Hardy"},
+			hasty: {name:"Hasty", plus:'spe', minus:'def'},
+			impish: {name:"Impish", plus:'def', minus:'spa'},
+			jolly: {name:"Jolly", plus:'spe', minus:'spa'},
+			lax: {name:"Lax", plus:'def', minus:'spd'},
+			lonely: {name:"Lonely", plus:'atk', minus:'def'},
+			mild: {name:"Mild", plus:'spa', minus:'def'},
+			modest: {name:"Modest", plus:'spa', minus:'atk'},
+			naive: {name:"Naive", plus:'spe', minus:'spd'},
+			naughty: {name:"Naughty", plus:'atk', minus:'spd'},
+			quiet: {name:"Quiet", plus:'spa', minus:'spe'},
+			quirky: {name:"Quirky"},
+			rash: {name:"Rash", plus:'spa', minus:'spd'},
+			relaxed: {name:"Relaxed", plus:'def', minus:'spe'},
+			sassy: {name:"Sassy", plus:'spd', minus:'spe'},
+			serious: {name:"Serious"},
+			timid: {name:"Timid", plus:'spe', minus:'atk'}
+		};
 	}
+	Tools.loadMods = function () {
+		if (Tools.modsLoaded) return;
+		var parentMods = {};
+
+		try {
+			var mods = fs.readdirSync('./mods/');
+
+			mods.forEach(function (mod) {
+				if (fs.existsSync('./mods/' + mod + '/scripts.js')) {
+					parentMods[mod] = require('./mods/' + mod + '/scripts.js').BattleScripts.inherit || 'base';
+				} else {
+					parentMods[mod] = 'base';
+				}
+			});
+
+			var didSomething = false;
+			do {
+				didSomething = false;
+				for (var i in parentMods) {
+					if (!moddedTools[i] && moddedTools[parentMods[i]]) {
+						moddedTools[i] = Tools.construct(i, parentMods[i]);
+						didSomething = true;
+					}
+				}
+			} while (didSomething);
+		} catch (e) {
+			console.log("Error while loading mods: " + e);
+		}
+		Tools.modsLoaded = true;
+	};
 
 	Tools.prototype.mod = function (mod) {
+		Tools.loadMods();
 		if (!moddedTools[mod]) {
 			mod = this.getFormat(mod).mod;
 		}
@@ -117,41 +175,46 @@ module.exports = (function () {
 		var parentMod = this.data.Scripts.inherit;
 		if (!parentMod) parentMod = 'base';
 		if (this.data[dataType][id] !== moddedTools[parentMod].data[dataType][id]) return this.data[dataType][id];
-		return this.data[dataType][id] = Object.clone(this.data[dataType][id], true);
+		return (this.data[dataType][id] = Object.clone(this.data[dataType][id], true));
 	};
 
 	Tools.prototype.effectToString = function () {
 		return this.name;
 	};
-	Tools.prototype.getImmunity = function (type, target) {
-		var types = target.getTypes && target.getTypes() || target.types;
-		for (var i = 0; i < types.length; i++) {
-			if (this.data.TypeChart[types[i]] && this.data.TypeChart[types[i]].damageTaken && this.data.TypeChart[types[i]].damageTaken[type] === 3) {
-				return false;
+	Tools.prototype.getImmunity = function (source, target) {
+		// returns false if the target is immune; true otherwise
+		// also checks immunity to some statuses
+		var sourceType = source.type || source;
+		var targetTyping = target.getTypes && target.getTypes() || target.types || target;
+		if (Array.isArray(targetTyping)) {
+			for (var i = 0; i < targetTyping.length; i++) {
+				if (!this.getImmunity(sourceType, targetTyping[i])) return false;
 			}
+			return true;
 		}
+		var typeData = this.data.TypeChart[targetTyping];
+		if (typeData && typeData.damageTaken[sourceType] === 3) return false;
 		return true;
 	};
-	Tools.prototype.getEffectiveness = function (source, target, pokemon) {
-		if (source.getEffectiveness) {
-			return source.getEffectiveness.call(this, source, target, pokemon);
-		}
-		var type = source.type || source;
+	Tools.prototype.getEffectiveness = function (source, target) {
+		var sourceType = source.type || source;
 		var totalTypeMod = 0;
-		var targetTypes = target.getTypes && target.getTypes() || target.types;
-		for (var i = 0; i < targetTypes.length; i++) {
-			if (!this.data.TypeChart[targetTypes[i]]) continue;
-			var typeMod = this.data.TypeChart[targetTypes[i]].damageTaken[type];
-			if (typeMod === 1) { // super-effective
-				totalTypeMod++;
+		var targetTyping = target.getTypes && target.getTypes() || target.types || target;
+		if (Array.isArray(targetTyping)) {
+			for (var i = 0; i < targetTyping.length; i++) {
+				totalTypeMod += this.getEffectiveness(sourceType, targetTyping[i]);
 			}
-			if (typeMod === 2) { // resist
-				totalTypeMod--;
-			}
+			return totalTypeMod;
+		}
+		var typeData = this.data.TypeChart[targetTyping];
+		if (!typeData) return 0;
+		switch (typeData.damageTaken[sourceType]) {
+			case 1: return 1; // super-effective
+			case 2: return -1; // resist
 			// in case of weird situations like Gravity, immunity is
 			// handled elsewhere
+			default: return 0;
 		}
-		return totalTypeMod;
 	};
 	Tools.prototype.getTemplate = function (template) {
 		if (!template || typeof template === 'string') {
@@ -197,6 +260,9 @@ module.exports = (function () {
 				if (template.forme && template.forme in {'Mega':1, 'Mega-X':1, 'Mega-Y':1}) {
 					template.gen = 6;
 					template.isMega = true;
+				} else if (template.forme === 'Primal') {
+					template.gen = 6;
+					template.isPrimal = true;
 				} else if (template.num >= 650) template.gen = 6;
 				else if (template.num >= 494) template.gen = 5;
 				else if (template.num >= 387) template.gen = 4;
@@ -330,7 +396,6 @@ module.exports = (function () {
 			effect.toString = this.effectToString;
 			if (!effect.category) effect.category = 'Effect';
 			if (!effect.effectType) effect.effectType = 'Effect';
-			this.getBanlistTable(effect);
 		}
 		return effect;
 	};
@@ -355,7 +420,7 @@ module.exports = (function () {
 			item.toString = this.effectToString;
 			if (!item.category) item.category = 'Effect';
 			if (!item.effectType) item.effectType = 'Item';
-			if (item.isBerry) item.fling = { basePower: 10 };
+			if (item.isBerry) item.fling = {basePower: 10};
 			if (!item.gen) {
 				if (item.num >= 577) item.gen = 6;
 				else if (item.num >= 537) item.gen = 5;
@@ -414,41 +479,26 @@ module.exports = (function () {
 		}
 		return type;
 	};
-	var BattleNatures = {
-		Adamant: {plus:'atk', minus:'spa'},
-		Bashful: {},
-		Bold: {plus:'def', minus:'atk'},
-		Brave: {plus:'atk', minus:'spe'},
-		Calm: {plus:'spd', minus:'atk'},
-		Careful: {plus:'spd', minus:'spa'},
-		Docile: {},
-		Gentle: {plus:'spd', minus:'def'},
-		Hardy: {},
-		Hasty: {plus:'spe', minus:'def'},
-		Impish: {plus:'def', minus:'spa'},
-		Jolly: {plus:'spe', minus:'spa'},
-		Lax: {plus:'def', minus:'spd'},
-		Lonely: {plus:'atk', minus:'def'},
-		Mild: {plus:'spa', minus:'def'},
-		Modest: {plus:'spa', minus:'atk'},
-		Naive: {plus:'spe', minus:'spd'},
-		Naughty: {plus:'atk', minus:'spd'},
-		Quiet: {plus:'spa', minus:'spe'},
-		Quirky: {},
-		Rash: {plus:'spa', minus:'spd'},
-		Relaxed: {plus:'def', minus:'spe'},
-		Sassy: {plus:'spd', minus:'spe'},
-		Serious: {},
-		Timid: {plus:'spe', minus:'atk'}
-	};
 	Tools.prototype.getNature = function (nature) {
-		if (typeof nature === 'string') nature = BattleNatures[nature];
-		if (!nature) nature = {};
+		if (!nature || typeof nature === 'string') {
+			var name = (nature || '').trim();
+			var id = toId(name);
+			nature = {};
+			if (id && this.data.Natures[id]) {
+				nature = this.data.Natures[id];
+				if (nature.cached) return nature;
+				nature.cached = true;
+				nature.exists = true;
+			}
+			if (!nature.id) nature.id = id;
+			if (!nature.name) nature.name = name;
+			nature.toString = this.effectToString;
+			if (!nature.effectType) nature.effectType = 'Nature';
+		}
 		return nature;
 	};
 	Tools.prototype.natureModify = function (stats, nature) {
-		if (typeof nature === 'string') nature = BattleNatures[nature];
-		if (!nature) return stats;
+		nature = this.getNature(nature);
 		if (nature.plus) stats[nature.plus] *= 1.1;
 		if (nature.minus) stats[nature.minus] *= 0.9;
 		return stats;
@@ -578,18 +628,16 @@ module.exports = (function () {
 			return false;
 		}
 
-		searchIn = searchIn || ['Pokedex', 'Movedex', 'Abilities', 'Items'];
+		searchIn = searchIn || ['Pokedex', 'Movedex', 'Abilities', 'Items', 'Natures'];
 
-		var searchFunctions = { Pokedex: 'getTemplate', Movedex: 'getMove', Abilities: 'getAbility', Items: 'getItem' };
-		var searchTypes = { Pokedex: 'pokemon', Movedex: 'move', Abilities: 'ability', Items: 'item' };
+		var searchFunctions = {Pokedex: 'getTemplate', Movedex: 'getMove', Abilities: 'getAbility', Items: 'getItem', Natures: 'getNature'};
+		var searchTypes = {Pokedex: 'pokemon', Movedex: 'move', Abilities: 'ability', Items: 'item', Natures: 'nature'};
 		var searchResults = [];
 		for (var i = 0; i < searchIn.length; i++) {
-			if (typeof this[searchFunctions[searchIn[i]]] === "function") {
-				var res = this[searchFunctions[searchIn[i]]](target);
-				if (res.exists) {
-					res.searchType = searchTypes[searchIn[i]];
-					searchResults.push(res);
-				}
+			var res = this[searchFunctions[searchIn[i]]](target);
+			if (res.exists) {
+				res.searchType = searchTypes[searchIn[i]];
+				searchResults.push(res);
 			}
 		}
 		if (searchResults.length) {
@@ -622,7 +670,7 @@ module.exports = (function () {
 
 				var ld = this.levenshtein(cmpTarget, word.toLowerCase(), maxLd);
 				if (ld <= maxLd) {
-					searchResults.push({ word: word, ld: ld });
+					searchResults.push({word: word, ld: ld});
 				}
 			}
 		}
@@ -726,7 +774,7 @@ module.exports = (function () {
 			}
 
 			// level
-			if (set.level && set.level != 100) {
+			if (set.level && set.level !== 100) {
 				buf += '|' + set.level;
 			} else {
 				buf += '|';
@@ -887,34 +935,7 @@ module.exports = (function () {
 	// "gen6" is an alias for the current base data
 	moddedTools.gen6 = moddedTools.base;
 
-	var parentMods = {};
-
-	try {
-		var mods = fs.readdirSync('./mods/');
-
-		mods.forEach(function (mod) {
-			if (fs.existsSync('./mods/' + mod + '/scripts.js')) {
-				parentMods[mod] = require('./mods/' + mod + '/scripts.js').BattleScripts.inherit || 'base';
-			} else {
-				parentMods[mod] = 'base';
-			}
-		});
-
-		var didSomething = false;
-		do {
-			didSomething = false;
-			for (var i in parentMods) {
-				if (!moddedTools[i] && moddedTools[parentMods[i]]) {
-					moddedTools[i] = Tools.construct(i, parentMods[i]);
-					didSomething = true;
-				}
-			}
-		} while (didSomething);
-	} catch (e) {
-		console.log("Error while loading mods: " + e);
-	}
-
-	moddedTools.base.__proto__.moddedTools = moddedTools;
+	Object.getPrototypeOf(moddedTools.base).moddedTools = moddedTools;
 
 	return moddedTools.base;
 })();

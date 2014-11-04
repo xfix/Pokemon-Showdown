@@ -38,19 +38,25 @@ exports.BattleAbilities = {
 		}
 	},
 	"thickfat": {
-		inherit:true,
+		inherit: true,
 		onImmunity: function (type, pokemon) {
 			if (type === 'hail') return false;
 		},
-		onSourceBasePower: function (basePower, attacker, defender, move) {
+		onSourceModifyAtk: function (atk, attacker, defender, move) {
 			if (move.type === 'Ice' || move.type === 'Fire' || move.type === 'Fighting') {
 				this.add('-message', "The attack was weakened by Thick Fat!");
-				return basePower / 2;
+				return this.chainModify(0.5);
+			}
+		},
+		onSourceModifySpA: function (atk, attacker, defender, move) {
+			if (move.type === 'Ice' || move.type === 'Fire' || move.type === 'Fighting') {
+				this.add('-message', "The attack was weakened by Thick Fat!");
+				return this.chainModify(0.5);
 			}
 		}
 	},
 	"marvelscale": {
-		inherit:true,
+		inherit: true,
 		onImmunity: function (type, pokemon) {
 			if (type === 'hail') return false;
 		}
@@ -83,7 +89,7 @@ exports.BattleAbilities = {
 	"waterveil": {
 		inherit: true,
 		onSourceBasePower: function (basePower) {
-			if (this.isWeather('raindance')) {
+			if (this.isWeather(['raindance', 'primordialsea'])) {
 				return basePower * 3 / 4;
 			}
 			return basePower * 7 / 8;
@@ -120,13 +126,21 @@ exports.BattleAbilities = {
 			}
 		}
 	},
+	"cutecharm": {
+		inherit: true,
+		onAfterDamage: function (damage, target, source, move) {
+			if (move && move.isContact) {
+				source.addVolatile('Attract', target);
+			}
+		}
+	},
 	"poisonpoint": {
 		inherit: true,
 		onAfterDamage: function (damage, target, source, move) {
 			if (move && move.isContact) {
 				source.trySetStatus('psn', target, move);
 			}
-		},
+		}
 	},
 	"flowergift": {
 		inherit: true,
@@ -143,17 +157,15 @@ exports.BattleAbilities = {
 			}
 		},
 		onUpdate: function (pokemon) {
-			if (this.isWeather('sunnyday')) {
+			if (this.isWeather(['sunnyday', 'desolateland'])) {
 				if (pokemon.isActive && pokemon.speciesid === 'cherrim' && this.effectData.forme !== 'Sunshine') {
 					this.effectData.forme = 'Sunshine';
-					this.add('-formechange', pokemon, 'Cherrim-Sunshine');
-					this.add('-message', pokemon.name + ' transformed!');
+					this.add('-formechange', pokemon, 'Cherrim-Sunshine', '[msg]');
 					this.boost({spd:1});
 				}
 			} else if (pokemon.isActive && pokemon.speciesid === 'cherrim' && this.effectData.forme) {
 				delete this.effectData.forme;
-				this.add('-formechange', pokemon, 'Cherrim');
-				this.add('-message', pokemon.name + ' transformed!');
+				this.add('-formechange', pokemon, 'Cherrim', '[msg]');
 			}
 		},
 		effect: {
@@ -221,7 +233,7 @@ exports.BattleAbilities = {
 	"solidrock": {
 		inherit: true,
 		onFoeBasePower: function (basePower, attacker, defender, move) {
-			if (this.getEffectiveness(move.type, defender) > 0) {
+			if (defender.runEffectiveness(move) > 0) {
 				this.add('-message', "The attack was weakened by Solid Rock!");
 				return basePower * 1 / 2;
 			}
@@ -230,7 +242,7 @@ exports.BattleAbilities = {
 	"filter": {
 		inherit: true,
 		onFoeBasePower: function (basePower, attacker, defender, move) {
-			if (this.getEffectiveness(move.type, defender) > 0) {
+			if (defender.runEffectiveness(move) > 0) {
 				this.add('-message', "The attack was weakened by Filter!");
 				return basePower * 1 / 2;
 			}
@@ -243,7 +255,7 @@ exports.BattleAbilities = {
 				this.add('-message', "The attack was weakened by Heatproof!");
 				return basePower / 2;
 			}
-		},
+		}
 	},
 	"reckless": {
 		inherit: true,
@@ -288,7 +300,7 @@ exports.BattleAbilities = {
 	"download": {
 		inherit: true,
 		onStart: function (pokemon) {
-			if (pokemon.template.id === 'genesect') {
+			if (pokemon.template.baseSpecies === 'Genesect') {
 				if (!pokemon.getItem().onDrive) return;
 			}
 			var foeactive = pokemon.side.foe.active;
@@ -319,7 +331,7 @@ exports.BattleAbilities = {
 		onDamage: function (damage, target, source, effect) {
 			if (effect && effect.effectType === 'Move') {
 				this.add('-message', "Its damage was reduced by Shell Armor!");
-				damage -= target.maxhp / 8;
+				damage -= target.maxhp / 10;
 				if (damage < 0) damage = 0;
 				return damage;
 			}
@@ -335,7 +347,7 @@ exports.BattleAbilities = {
 		onDamage: function (damage, target, source, effect) {
 			if (effect && effect.effectType === 'Move') {
 				this.add('-message', "Its damage was reduced by Battle Armor!");
-				damage -= target.maxhp / 8;
+				damage -= target.maxhp / 10;
 				if (damage < 0) damage = 0;
 				return damage;
 			}
@@ -345,7 +357,7 @@ exports.BattleAbilities = {
 		onDamage: function (damage, target, source, effect) {
 			if (effect && effect.effectType === 'Move') {
 				this.add('-message', "Its damage was reduced by Weak Armor!");
-				damage -= target.maxhp / 8;
+				damage -= target.maxhp / 10;
 				if (damage < 0) damage = 0;
 				target.setAbility('');
 				this.boost({spe: 1});
@@ -362,7 +374,7 @@ exports.BattleAbilities = {
 		},
 		onDamage: function (damage, target, source, effect) {
 			if (effect && effect.effectType === 'Move') {
-				damage -= target.maxhp / 8;
+				damage -= target.maxhp / 10;
 				if (damage < 0) damage = 0;
 				if (effect.type === 'Ice' || effect.type === 'Water') {
 					this.add('-activate', target, 'ability: Magma Armor');
@@ -410,9 +422,9 @@ exports.BattleAbilities = {
 	},
 	"aftermath": {
 		inherit: true,
-		onFaint: function (target, source, effect) {
-			if (effect && effect.effectType === 'Move' && source) {
-				this.damage(source.maxhp / 3, source, target);
+		onAfterDamage: function (damage, target, source, move) {
+			if (source && source !== target && move && !target.hp) {
+				this.damage(source.maxhp / 3, source, target, null, true);
 			}
 		}
 	},
@@ -475,6 +487,7 @@ exports.BattleAbilities = {
 			onStart: function (pokemon) {
 				this.add('-start', pokemon, 'Truant');
 			},
+			onBeforeMovePriority: 99,
 			onBeforeMove: function (pokemon, target, move) {
 				if (pokemon.removeVolatile('truant')) {
 					this.add('cant', pokemon, 'ability: Truant');
@@ -532,12 +545,7 @@ exports.BattleAbilities = {
 			duration: 1,
 			onBasePowerPriority: 8,
 			onBasePower: function (basePower) {
-				if (this.effectData.hit) {
-					return this.chainModify(0.5);
-				} else {
-					return this.chainModify(0.5);
-					this.effectData.hit = true;
-				}
+				return this.chainModify(0.5);
 			}
 		},
 		id: "parentalbond",
@@ -560,15 +568,18 @@ exports.BattleAbilities = {
 			pokemon.addVolatile('shadowtag');
 		},
 		effect: {
-			duration: 1,
 			onFoeModifyPokemon: function (pokemon) {
 				if (pokemon.ability !== 'shadowtag') {
-					pokemon.tryTrap();
+					pokemon.tryTrap(true);
 				}
 			}
 		},
-		onFoeMaybeTrapPokemon: function (pokemon) {
-			if (pokemon.ability !== 'shadowtag') {
+		onBeforeMove: function (pokemon) {
+			pokemon.removeVolatile('shadowtag');
+		},
+		onFoeMaybeTrapPokemon: function (pokemon, source) {
+			if (!source) source = this.effectData.target;
+			if (pokemon.ability !== 'shadowtag' && !source.lastMove) {
 				pokemon.maybeTrapped = true;
 			}
 		}

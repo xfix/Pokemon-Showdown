@@ -124,28 +124,34 @@ exports.BattleMovedex = {
 	},
 	roar: {
 		inherit: true,
+		onTryHit: function () {
+			for (var i = 0; i < this.queue.length; i++) {
+				// Roar only works if it is the last action in a turn, including when it's called by Sleep Talk
+				if (this.queue[i].choice === 'move' || this.queue[i].choice === 'switch') return false;
+			}
+		},
 		priority: -1
 	},
 	sleeptalk: {
 		inherit: true,
-			onHit: function (pokemon) {
-				var moves = [];
-				for (var i = 0; i < pokemon.moveset.length; i++) {
-					var move = pokemon.moveset[i].id;
-					var NoSleepTalk = {
-						bide:1, dig:1, fly:1, metronome:1, mirrormove:1,
-						skullbash:1, skyattack:1, sleeptalk:1, solarbeam:1, razorwind:1
-					};
-					if (move && !NoSleepTalk[move]) {
-						moves.push(move);
-					}
+		onHit: function (pokemon) {
+			var moves = [];
+			for (var i = 0; i < pokemon.moveset.length; i++) {
+				var move = pokemon.moveset[i].id;
+				var NoSleepTalk = {
+					bide:1, dig:1, fly:1, metronome:1, mirrormove:1,
+					skullbash:1, skyattack:1, sleeptalk:1, solarbeam:1, razorwind:1
+				};
+				if (move && !NoSleepTalk[move]) {
+					moves.push(move);
 				}
-				var move = '';
-				if (moves.length) move = moves[this.random(moves.length)];
-				if (!move) return false;
-				move.isSleepTalk = true;
-				this.useMove(move, pokemon);
 			}
+			var move = '';
+			if (moves.length) move = moves[this.random(moves.length)];
+			if (!move) return false;
+			move.isSleepTalk = true;
+			this.useMove(move, pokemon);
+		}
 	},
 	spikes: {
 		inherit: true,
@@ -183,10 +189,15 @@ exports.BattleMovedex = {
 				}
 				if (move.category === 'Status') {
 					var SubBlocked = {
-						leechseed:1, lockon:1, mindreader:1, nightmare:1, painsplit:1
+						leechseed:1, lockon:1, mindreader:1, nightmare:1, painsplit:1, sketch:1
 					};
-					if (move.status || move.boosts || move.volatileStatus === 'confusion' || SubBlocked[move.id]) {
-						return false;
+					if (move.id === 'swagger') {
+						// this is safe, move is a copy
+						delete move.volatileStatus;
+					}
+					if (move.status || (move.boosts && move.id !== 'swagger') || move.volatileStatus === 'confusion' || SubBlocked[move.id] || move.drain) {
+						this.add('-activate', target, 'Substitute', '[block] ' + move.name);
+						return null;
 					}
 					return;
 				}
@@ -224,6 +235,12 @@ exports.BattleMovedex = {
 	},
 	whirlwind: {
 		inherit: true,
+		onTryHit: function () {
+			for (var i = 0; i < this.queue.length; i++) {
+				// Whirlwind only works if it is the last action in a turn, including when it's called by Sleep Talk
+				if (this.queue[i].choice === 'move' || this.queue[i].choice === 'switch') return false;
+			}
+		},
 		priority: -1
 	}
 };

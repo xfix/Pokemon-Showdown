@@ -86,7 +86,7 @@ exports.BattleStatuses = {
 			return false;
 		},
 		onHit: function (target, source, move) {
-			if (move.type === 'Fire' && move.category !== 'Status') {
+			if (move.thawsTarget || move.type === 'Fire' && move.category !== 'Status') {
 				target.cureStatus();
 			}
 		}
@@ -161,15 +161,14 @@ exports.BattleStatuses = {
 	trapped: {
 		noCopy: true,
 		onModifyPokemon: function (pokemon) {
-			if (!this.effectData.source || !this.effectData.source.isActive) {
-				delete pokemon.volatiles['trapped'];
-				return;
-			}
 			pokemon.tryTrap();
 		},
 		onStart: function (target) {
 			this.add('-activate', target, 'trapped');
 		}
+	},
+	trapper: {
+		noCopy: true
 	},
 	partiallytrapped: {
 		duration: 5,
@@ -178,7 +177,7 @@ exports.BattleStatuses = {
 			return this.random(5, 7);
 		},
 		onStart: function (pokemon, source) {
-			this.add('-activate', pokemon, 'move: ' +this.effectData.sourceEffect, '[of] ' + source);
+			this.add('-activate', pokemon, 'move: ' + this.effectData.sourceEffect, '[of] ' + source);
 		},
 		onResidualOrder: 11,
 		onResidual: function (pokemon) {
@@ -249,8 +248,8 @@ exports.BattleStatuses = {
 	},
 	choicelock: {
 		onStart: function (pokemon) {
+			if (!this.activeMove.id || this.activeMove.sourceEffect && this.activeMove.sourceEffect !== this.activeMove.id) return false;
 			this.effectData.move = this.activeMove.id;
-			if (!this.effectData.move) return false;
 		},
 		onModifyPokemon: function (pokemon) {
 			if (!pokemon.getItem().isChoice || !pokemon.hasMove(this.effectData.move)) {
@@ -316,6 +315,15 @@ exports.BattleStatuses = {
 					posData.moveData.affectedByImmunities = true;
 				}
 
+				if (target.hasAbility('wonderguard') && this.gen > 5) {
+					this.debug('Wonder Guard immunity: ' + move.id);
+					if (target.runEffectiveness(move) <= 0) {
+						this.add('-activate', target, 'ability: Wonder Guard');
+						this.effectData.positions[i] = null;
+						return null;
+					}
+				}
+
 				this.moveHit(target, posData.source, move, posData.moveData);
 
 				this.effectData.positions[i] = null;
@@ -352,6 +360,19 @@ exports.BattleStatuses = {
 		onBasePower: function (basePower, user, target, move) {
 			this.debug('Gem Boost');
 			return this.chainModify([0x14CD, 0x1000]);
+		}
+	},
+	aura: {
+		duration: 1,
+		onBasePowerPriority: 8,
+		onBasePower: function (basePower, user, target, move) {
+			var modifier = 4 / 3;
+			this.debug('Aura Boost');
+			if (user.volatiles['aurabreak']) {
+				modifier = 0.75;
+				this.debug('Aura Boost reverted by Aura Break');
+			}
+			return this.chainModify(modifier);
 		}
 	},
 
@@ -395,6 +416,51 @@ exports.BattleStatuses = {
 			this.add('-weather', 'none');
 		}
 	},
+	primordialsea: {
+		effectType: 'Weather',
+		duration: 0,
+		onTryMove: function (target, source, effect) {
+			if (effect.type === 'Fire') {
+				this.debug('Primordial Sea fire suppress');
+				this.add('-fail', source, effect, '[from] Primordial Sea');
+				return null;
+			}
+		},
+		onBasePower: function (basePower, attacker, defender, move) {
+			if (move.type === 'Water') {
+				this.debug('Rain water boost');
+				return this.chainModify(1.5);
+			}
+		},
+		onStart: function () {
+			this.add('-weather', 'PrimordialSea');
+		},
+		onResidualOrder: 1,
+		onResidual: function () {
+			this.add('-weather', 'PrimordialSea', '[upkeep]');
+			this.eachEvent('Weather');
+		},
+		onEndAbility: function (pokemon, oldability) {
+			if (this.weatherData.source !== pokemon) return;
+			if (oldability !== 'primordialsea') return;
+			this.clearWeather();
+		},
+		onFaint: function (pokemon) {
+			if (this.weatherData.source !== pokemon) return;
+			this.clearWeather();
+		},
+		onDragOut: function (pokemon) {
+			if (this.weatherData.source !== pokemon) return;
+			this.clearWeather();
+		},
+		onSwitchOut: function (pokemon) {
+			if (this.weatherData.source !== pokemon) return;
+			this.clearWeather();
+		},
+		onEnd: function () {
+			this.add('-weather', 'none');
+		}
+	},
 	sunnyday: {
 		effectType: 'Weather',
 		duration: 5,
@@ -429,6 +495,54 @@ exports.BattleStatuses = {
 		onResidual: function () {
 			this.add('-weather', 'SunnyDay', '[upkeep]');
 			this.eachEvent('Weather');
+		},
+		onEnd: function () {
+			this.add('-weather', 'none');
+		}
+	},
+	desolateland: {
+		effectType: 'Weather',
+		duration: 0,
+		onTryMove: function (target, source, effect) {
+			if (effect.type === 'Water') {
+				this.debug('Desolate Land water suppress');
+				this.add('-fail', source, effect, '[from] Desolate Land');
+				return null;
+			}
+		},
+		onBasePower: function (basePower, attacker, defender, move) {
+			if (move.type === 'Fire') {
+				this.debug('Sunny Day fire boost');
+				return this.chainModify(1.5);
+			}
+		},
+		onStart: function () {
+			this.add('-weather', 'DesolateLand');
+		},
+		onImmunity: function (type) {
+			if (type === 'frz') return false;
+		},
+		onResidualOrder: 1,
+		onResidual: function () {
+			this.add('-weather', 'DesolateLand', '[upkeep]');
+			this.eachEvent('Weather');
+		},
+		onEndAbility: function (pokemon, oldability) {
+			if (this.weatherData.source !== pokemon) return;
+			if (oldability !== 'desolateland') return;
+			this.clearWeather();
+		},
+		onFaint: function (pokemon) {
+			if (this.weatherData.source !== pokemon) return;
+			this.clearWeather();
+		},
+		onDragOut: function (pokemon) {
+			if (this.weatherData.source !== pokemon) return;
+			this.clearWeather();
+		},
+		onSwitchOut: function (pokemon) {
+			if (this.weatherData.source !== pokemon) return;
+			this.clearWeather();
 		},
 		onEnd: function () {
 			this.add('-weather', 'none');
@@ -495,6 +609,44 @@ exports.BattleStatuses = {
 		},
 		onWeather: function (target) {
 			this.damage(target.maxhp / 16);
+		},
+		onEnd: function () {
+			this.add('-weather', 'none');
+		}
+	},
+	deltastream: {
+		effectType: 'Weather',
+		duration: 0,
+		onEffectiveness: function (typeMod, source, target) {
+			if (target === 'Flying' && typeMod > 0) {
+				this.add('-activate', '', 'deltastream');
+				return 0;
+			}
+		},
+		onStart: function () {
+			this.add('-weather', 'DeltaStream');
+		},
+		onResidualOrder: 1,
+		onResidual: function () {
+			this.add('-weather', 'DeltaStream', '[upkeep]');
+			this.eachEvent('Weather');
+		},
+		onEndAbility: function (pokemon, oldability) {
+			if (this.weatherData.source !== pokemon) return;
+			if (oldability !== 'deltastream') return;
+			this.clearWeather();
+		},
+		onFaint: function (pokemon) {
+			if (this.weatherData.source !== pokemon) return;
+			this.clearWeather();
+		},
+		onDragOut: function (pokemon) {
+			if (this.weatherData.source !== pokemon) return;
+			this.clearWeather();
+		},
+		onSwitchOut: function (pokemon) {
+			if (this.weatherData.source !== pokemon) return;
+			this.clearWeather();
 		},
 		onEnd: function () {
 			this.add('-weather', 'none');

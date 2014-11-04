@@ -6,14 +6,6 @@ exports.BattleItems = {
 		fling: {
 			basePower: 70
 		},
-		onStart: function (pokemon) {
-			if (pokemon.species === 'Genesect') {
-				this.add('-item', pokemon, 'Burn Drive');
-				if (pokemon.formeChange('Genesect-Burn')) {
-					this.add('-formechange', pokemon, 'Genesect-Burn');
-				}
-			}
-		},
 		onBasePower: function (basePower, user, target, move) {
 		},
 		onDrive: 'Fire',
@@ -25,14 +17,6 @@ exports.BattleItems = {
 		spritenum: 103,
 		fling: {
 			basePower: 70
-		},
-		onStart: function (pokemon) {
-			if (pokemon.species === 'Genesect') {
-				this.add('-item', pokemon, 'Chill Drive');
-				if (pokemon.formeChange('Genesect-Chill')) {
-					this.add('-formechange', pokemon, 'Genesect-Chill');
-				}
-			}
 		},
 		onBasePower: function (basePower, user, target, move) {
 		},
@@ -46,14 +30,6 @@ exports.BattleItems = {
 		fling: {
 			basePower: 70
 		},
-		onStart: function (pokemon) {
-			if (pokemon.species === 'Genesect') {
-				this.add('-item', pokemon, 'Douse Drive');
-				if (pokemon.formeChange('Genesect-Douse')) {
-					this.add('-formechange', pokemon, 'Genesect-Douse');
-				}
-			}
-		},
 		onBasePower: function (basePower, user, target, move) {
 		},
 		onDrive: 'Water',
@@ -66,18 +42,22 @@ exports.BattleItems = {
 		fling: {
 			basePower: 70
 		},
-		onStart: function (pokemon) {
-			if (pokemon.species === 'Genesect') {
-				this.add('-item', pokemon, 'Shock Drive');
-				if (pokemon.formeChange('Genesect-Shock')) {
-					this.add('-formechange', pokemon, 'Genesect-Shock');
-				}
-			}
-		},
 		onBasePower: function (basePower, user, target, move) {
 		},
 		onDrive: 'Electric',
 		desc: "Changes Genesect to Genesect-Shock."
+	},
+	"lifeorb": {
+		inherit: true,
+		effect: {
+			duration: 1,
+			onAfterMoveSecondarySelf: function (source, target, move) {
+				if (move && move.effectType === 'Move' && move.category !== "Status" && source && source.volatiles['lifeorb']) {
+					this.damage(source.maxhp / 10, source, source, this.getItem('lifeorb'));
+					source.removeVolatile('lifeorb');
+				}
+			}
+		}
 	},
 	"widelens": {
 		inherit: true,
@@ -98,7 +78,7 @@ exports.BattleItems = {
 	},
 	"bigroot": {
 		inherit: true,
-		onAfterMoveSelf: function (source, target) {
+		onAfterMoveSecondarySelf: function (source, target) {
 			if (source.hasType('Grass')) {
 				if (source.lastDamage > 0) {
 					this.heal(source.lastDamage / 8, source);
@@ -171,7 +151,7 @@ exports.BattleItems = {
 				}
 				return basePower * 1.1;
 			}
-		},
+		}
 	},
 	"stick": {
 		id: "stick",
@@ -211,7 +191,7 @@ exports.BattleItems = {
 			}
 		},
 		onFoeBasePower: function (basePower, attacker, defender, move) {
-			var GossamerWingUsers = {"Butterfree":1, "Masquerain":1, "Beautifly":1, "Mothim":1, "Lilligant":1, "Vivillon":1};
+			var GossamerWingUsers = {"Butterfree":1, "Masquerain":1, "Beautifly":1, "Mothim":1, "Vivillon":1};
 			if (GossamerWingUsers[defender.template.species]) {
 				if (move.type === 'Rock' || move.type === 'Electric' || move.type === 'Ice') {
 					this.add('-message', "The attack was weakened by GoassamerWing!");
@@ -227,11 +207,17 @@ exports.BattleItems = {
 				}
 			}
 		},
+		onAfterMoveSecondarySelf: function (source, target, move) {
+			var GossamerWingUsers = {"Butterfree":1, "Masquerain":1, "Beautifly":1, "Mothim":1, "Vivillon":1, "Venomoth":1, "Volcarona":1};
+			if (move && move.effectType === 'Move' && move.category === 'Status' && GossamerWingUsers[source.template.species]) {
+				this.heal(source.maxhp / 16);
+			}
+		},
 		// onResidual: function (pokemon) {
 		// 	if (pokemon.template.species === 'Shuckle') {
 		// 		this.heal(this.clampIntRange(pokemon.maxhp / 16, 1));
 		// 	}
 		// },
 		desc: "Raises Farfetch'd's critical hit rate two stages."
-	},
+	}
 };
