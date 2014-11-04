@@ -22,7 +22,7 @@ exports.BattleAbilities = {
 		shortDesc: "This Pokemon draws Electric moves to itself.",
 		// drawing not implemented
 		id: "lightningrod",
-		name: "Lightningrod",
+		name: "Lightning Rod",
 		rating: 0,
 		num: 32
 	},
@@ -54,7 +54,7 @@ exports.BattleAbilities = {
 			}
 			for (var i = 0; i < allyActive.length; i++) {
 				if (allyActive[i] && allyActive[i].position !== pokemon.position && !allyActive[i].fainted && allyActive[i].ability === 'plus') {
-					return spa * 1.5
+					return spa * 1.5;
 				}
 			}
 		},
@@ -81,7 +81,7 @@ exports.BattleAbilities = {
 			}
 			for (var i = 0; i < allyActive.length; i++) {
 				if (allyActive[i] && allyActive[i].position !== pokemon.position && !allyActive[i].fainted && allyActive[i].ability === 'minus') {
-					return spa * 1.5
+					return spa * 1.5;
 				}
 			}
 		},
@@ -126,10 +126,10 @@ exports.BattleAbilities = {
 		inherit: true,
 		onAfterSetStatus: function (status, target, source) {
 			if (!source || source === target) return;
-			var status = status.id;
-			if (status === 'slp' || status === 'frz') return;
-			if (status === 'tox') status = 'psn';
-			source.trySetStatus(status);
+			var id = status.id;
+			if (id === 'slp' || id === 'frz') return;
+			if (id === 'tox') id = 'psn';
+			source.trySetStatus(id);
 		}
 	},
 	"trace": {
@@ -152,7 +152,7 @@ exports.BattleAbilities = {
 		onTryHit: function (target, source, move) {
 			if (target === source || move.category === 'Status' || move.type === '???' || move.id === 'struggle' || move.id === 'firefang') return;
 			this.debug('Wonder Guard immunity: ' + move.id);
-			if (this.getEffectiveness(move.type, target) <= 0) {
+			if (target.runEffectiveness(move) <= 0) {
 				this.add('-activate', target, 'ability: Wonder Guard');
 				return null;
 			}

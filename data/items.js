@@ -157,6 +157,21 @@ exports.BattleItems = {
 		gen: 6,
 		desc: "Mega-evolves Alakazam."
 	},
+	"altarite": {
+		id: "altarite",
+		name: "Altarite",
+		spritenum: 0,
+		megaStone: "Altaria-Mega",
+		megaEvolves: "Altaria",
+		isUnreleased: true,
+		onTakeItem: function (item, source) {
+			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
+			return true;
+		},
+		num: -6,
+		gen: 6,
+		desc: "Mega-evolves Altaria."
+	},
 	"ampharosite": {
 		id: "ampharosite",
 		name: "Ampharosite",
@@ -181,7 +196,7 @@ exports.BattleItems = {
 			type: "Ground"
 		},
 		onUpdate: function (pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4|| (pokemon.hp <= pokemon.maxhp / 2 && pokemon.hasAbility('gluttony'))) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && pokemon.hasAbility('gluttony'))) {
 				pokemon.eatItem();
 			}
 		},
@@ -249,6 +264,21 @@ exports.BattleItems = {
 		gen: 6,
 		desc: "Holder's Sp. Def is 1.5x, but it can only use damaging moves."
 	},
+	"audinite": {
+		id: "audinite",
+		name: "Audinite",
+		spritenum: 0,
+		megaStone: "Audino-Mega",
+		megaEvolves: "Audino",
+		isUnreleased: true,
+		onTakeItem: function (item, source) {
+			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
+			return true;
+		},
+		num: -6,
+		gen: 6,
+		desc: "Mega-evolves Audino."
+	},
 	"babiriberry": {
 		id: "babiriberry",
 		name: "Babiri Berry",
@@ -259,7 +289,7 @@ exports.BattleItems = {
 			type: "Steel"
 		},
 		onSourceModifyDamage: function (damage, source, target, move) {
-			if (move.type === 'Steel' && this.getEffectiveness(move, target) > 0 && !target.volatiles['substitute']) {
+			if (move.type === 'Steel' && target.runEffectiveness(move) > 0 && !target.volatiles['substitute']) {
 				if (target.eatItem()) {
 					this.debug('-50% reduction');
 					return this.chainModify(0.5);
@@ -284,6 +314,21 @@ exports.BattleItems = {
 		num: 668,
 		gen: 6,
 		desc: "Mega-evolves Banette."
+	},
+	"beedrillite": {
+		id: "beedrillite",
+		name: "Beedrillite",
+		spritenum: 0,
+		megaStone: "Beedrill-Mega",
+		megaEvolves: "Beedrill",
+		isUnreleased: true,
+		onTakeItem: function (item, source) {
+			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
+			return true;
+		},
+		num: -6,
+		gen: 6,
+		desc: "Mega-evolves Beedrill."
 	},
 	"belueberry": {
 		id: "belueberry",
@@ -428,6 +473,31 @@ exports.BattleItems = {
 		gen: 6,
 		desc: "Mega-evolves Blaziken."
 	},
+	"blueorb": {
+		id: "blueorb",
+		name: "Blue Orb",
+		spritenum: 0,
+		isUnreleased: true,
+		onStart: function (pokemon) {
+			if (pokemon.isActive && pokemon.baseTemplate.species === 'Kyogre') {
+				var template = this.getTemplate('Kyogre-Primal');
+				pokemon.formeChange(template);
+				pokemon.baseTemplate = template;
+				pokemon.details = template.species + (pokemon.level === 100 ? '' : ', L' + pokemon.level) + (pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
+				this.add('detailschange', pokemon, pokemon.details);
+				this.add('message', pokemon.name + "'s Primal Reversion! It reverted to its primal form!");
+				pokemon.setAbility(template.abilities['0']);
+				pokemon.baseAbility = pokemon.ability;
+			}
+		},
+		onTakeItem: function (item, source) {
+			if (source.baseTemplate.baseSpecies === 'Kyogre') return false;
+			return true;
+		},
+		num: -6,
+		gen: 6,
+		desc: "Reverts Kyogre to its Primal form."
+	},
 	"blukberry": {
 		id: "blukberry",
 		name: "Bluk Berry",
@@ -493,6 +563,21 @@ exports.BattleItems = {
 		num: 118,
 		gen: 5,
 		desc: "Holder's Techno Blast is Fire-type."
+	},
+	"cameruptite": {
+		id: "cameruptite",
+		name: "Cameruptite",
+		spritenum: 0,
+		megaStone: "Camerupt-Mega",
+		megaEvolves: "Camerupt",
+		isUnreleased: true,
+		onTakeItem: function (item, source) {
+			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
+			return true;
+		},
+		num: 767,
+		gen: 6,
+		desc: "Mega-evolves Camerupt."
 	},
 	"cellbattery": {
 		id: "cellbattery",
@@ -565,7 +650,7 @@ exports.BattleItems = {
 			type: "Rock"
 		},
 		onSourceModifyDamage: function (damage, source, target, move) {
-			if (move.type === 'Rock' && this.getEffectiveness(move, target) > 0 && !target.volatiles['substitute']) {
+			if (move.type === 'Rock' && target.runEffectiveness(move) > 0 && !target.volatiles['substitute']) {
 				if (target.eatItem()) {
 					this.debug('-50% reduction');
 					return this.chainModify(0.5);
@@ -755,7 +840,7 @@ exports.BattleItems = {
 			type: "Fighting"
 		},
 		onSourceModifyDamage: function (damage, source, target, move) {
-			if (move.type === 'Fighting' && this.getEffectiveness(move, target) > 0 && !target.volatiles['substitute']) {
+			if (move.type === 'Fighting' && target.runEffectiveness(move) > 0 && !target.volatiles['substitute']) {
 				if (target.eatItem()) {
 					this.debug('-50% reduction');
 					return this.chainModify(0.5);
@@ -788,7 +873,7 @@ exports.BattleItems = {
 			type: "Flying"
 		},
 		onSourceModifyDamage: function (damage, source, target, move) {
-			if (move.type === 'Flying' && this.getEffectiveness(move, target) > 0 && !target.volatiles['substitute']) {
+			if (move.type === 'Flying' && target.runEffectiveness(move) > 0 && !target.volatiles['substitute']) {
 				if (target.eatItem()) {
 					this.debug('-50% reduction');
 					return this.chainModify(0.5);
@@ -810,7 +895,7 @@ exports.BattleItems = {
 			type: "Dark"
 		},
 		onSourceModifyDamage: function (damage, source, target, move) {
-			if (move.type === 'Dark' && this.getEffectiveness(move, target) > 0 && !target.volatiles['substitute']) {
+			if (move.type === 'Dark' && target.runEffectiveness(move) > 0 && !target.volatiles['substitute']) {
 				if (target.eatItem()) {
 					this.debug('-50% reduction');
 					return this.chainModify(0.5);
@@ -949,6 +1034,21 @@ exports.BattleItems = {
 		num: 280,
 		gen: 4,
 		desc: "If holder becomes infatuated, the other Pokemon also becomes infatuated."
+	},
+	"diancite": {
+		id: "diancite",
+		name: "Diancite",
+		spritenum: 0,
+		megaStone: "Diancie-Mega",
+		megaEvolves: "Diancie",
+		isUnreleased: true,
+		onTakeItem: function (item, source) {
+			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
+			return true;
+		},
+		num: -6,
+		gen: 6,
+		desc: "Mega-evolves Diancie."
 	},
 	"diveball": {
 		id: "diveball",
@@ -1180,7 +1280,7 @@ exports.BattleItems = {
 			type: "Bug"
 		},
 		onSourceBasePower: function (basePower, user, target, move) {
-			if (move && this.getEffectiveness(move, target) > 0) {
+			if (move && target.runEffectiveness(move) > 0) {
 				target.addVolatile('enigmaberry');
 			}
 		},
@@ -1230,7 +1330,7 @@ exports.BattleItems = {
 			basePower: 10
 		},
 		onModifyDamage: function (damage, source, target, move) {
-			if (move && this.getEffectiveness(move, target) > 0) {
+			if (move && target.runEffectiveness(move) > 0) {
 				return this.chainModify(1.2);
 			}
 		},
@@ -1422,7 +1522,7 @@ exports.BattleItems = {
 		},
 		onDamage: function (damage, target, source, effect) {
 			if (this.random(10) === 0 && damage >= target.hp && effect && effect.effectType === 'Move') {
-				this.add("-message", target.name + " held on using its Focus Band! (placeholder)");
+				this.add("-activate", target, "item: Focus Band");
 				return target.hp - 1;
 			}
 		},
@@ -1448,6 +1548,14 @@ exports.BattleItems = {
 		gen: 4,
 		desc: "If holder's HP is full, will survive an attack that would KO it with 1HP. Single use."
 	},
+	"friendball": {
+		id: "friendball",
+		name: "Friend Ball",
+		spritenum: 153,
+		num: 497,
+		gen: 2,
+		desc: "A Poke Ball that makes caught Pokemon more friendly."
+	},
 	"fullincense": {
 		id: "fullincense",
 		name: "Full Incense",
@@ -1463,6 +1571,21 @@ exports.BattleItems = {
 		num: 316,
 		gen: 4,
 		desc: "Holder moves last in its priority bracket."
+	},
+	"galladite": {
+		id: "galladite",
+		name: "Galladite",
+		spritenum: 0,
+		megaStone: "Gallade-Mega",
+		megaEvolves: "Gallade",
+		isUnreleased: true,
+		onTakeItem: function (item, source) {
+			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
+			return true;
+		},
+		num: -6,
+		gen: 6,
+		desc: "Mega-evolves Gallade."
 	},
 	"ganlonberry": {
 		id: "ganlonberry",
@@ -1545,6 +1668,21 @@ exports.BattleItems = {
 		num: 560,
 		gen: 5,
 		desc: "Holder's first successful Ghost-type attack will have 1.3x power. Single use."
+	},
+	"glalitite": {
+		id: "glalitite",
+		name: "Glalitite",
+		spritenum: 0,
+		megaStone: "Glalie-Mega",
+		megaEvolves: "Glalie",
+		isUnreleased: true,
+		onTakeItem: function (item, source) {
+			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
+			return true;
+		},
+		num: 763,
+		gen: 6,
+		desc: "Mega-evolves Glalie."
 	},
 	"grassgem": {
 		id: "grassgem",
@@ -1664,7 +1802,7 @@ exports.BattleItems = {
 			type: "Dragon"
 		},
 		onSourceModifyDamage: function (damage, source, target, move) {
-			if (move.type === 'Dragon' && this.getEffectiveness(move, target) > 0 && !target.volatiles['substitute']) {
+			if (move.type === 'Dragon' && target.runEffectiveness(move) > 0 && !target.volatiles['substitute']) {
 				if (target.eatItem()) {
 					this.debug('-50% reduction');
 					return this.chainModify(0.5);
@@ -1910,7 +2048,7 @@ exports.BattleItems = {
 		onAfterMoveSecondary: function (target, source, move) {
 			if (source && source !== target && move && move.category === 'Physical') {
 				if (target.eatItem()) {
-					this.damage(source.maxhp / 8, source, target);
+					this.damage(source.maxhp / 8, source, target, null, true);
 				}
 			}
 		},
@@ -1929,7 +2067,7 @@ exports.BattleItems = {
 			type: "Ghost"
 		},
 		onSourceModifyDamage: function (damage, source, target, move) {
-			if (move.type === 'Ghost' && this.getEffectiveness(move, target) > 0 && !target.volatiles['substitute']) {
+			if (move.type === 'Ghost' && target.runEffectiveness(move) > 0 && !target.volatiles['substitute']) {
 				if (target.eatItem()) {
 					this.debug('-50% reduction');
 					return this.chainModify(0.5);
@@ -1951,7 +2089,7 @@ exports.BattleItems = {
 			type: "Poison"
 		},
 		onSourceModifyDamage: function (damage, source, target, move) {
-			if (move.type === 'Poison' && this.getEffectiveness(move, target) > 0 && !target.volatiles['substitute']) {
+			if (move.type === 'Poison' && target.runEffectiveness(move) > 0 && !target.volatiles['substitute']) {
 				if (target.eatItem()) {
 					this.debug('-50% reduction');
 					return this.chainModify(0.5);
@@ -2075,7 +2213,7 @@ exports.BattleItems = {
 	"latiasite": {
 		id: "latiasite",
 		name: "Latiasite",
-		spritenum: -6,
+		spritenum: 0,
 		megaStone: "Latias-Mega",
 		megaEvolves: "Latias",
 		isUnreleased: true,
@@ -2090,7 +2228,7 @@ exports.BattleItems = {
 	"latiosite": {
 		id: "latiosite",
 		name: "Latiosite",
-		spritenum: -6,
+		spritenum: 0,
 		megaStone: "Latios-Mega",
 		megaEvolves: "Latios",
 		isUnreleased: true,
@@ -2238,13 +2376,13 @@ exports.BattleItems = {
 		},
 		onModifyAtkPriority: 1,
 		onModifyAtk: function (atk, pokemon) {
-			if (pokemon.baseTemplate.species === 'Pikachu') {
+			if (pokemon.baseTemplate.baseSpecies === 'Pikachu') {
 				return this.chainModify(2);
 			}
 		},
 		onModifySpAPriority: 1,
 		onModifySpA: function (spa, pokemon) {
-			if (pokemon.baseTemplate.species === 'Pikachu') {
+			if (pokemon.baseTemplate.baseSpecies === 'Pikachu') {
 				return this.chainModify(2);
 			}
 		},
@@ -2263,6 +2401,21 @@ exports.BattleItems = {
 		num: 269,
 		gen: 4,
 		desc: "Holder's use of Light Screen or Reflect lasts 8 turns instead of 5."
+	},
+	"lopunnite": {
+		id: "lopunnite",
+		name: "Lopunnite",
+		spritenum: 0,
+		megaStone: "Lopunny-Mega",
+		megaEvolves: "Lopunny",
+		isUnreleased: true,
+		onTakeItem: function (item, source) {
+			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
+			return true;
+		},
+		num: -6,
+		gen: 6,
+		desc: "Mega-evolves Lopunny."
 	},
 	"loveball": {
 		id: "loveball",
@@ -2573,6 +2726,21 @@ exports.BattleItems = {
 		gen: 3,
 		desc: "Cures holder if affected by Attract, Disable, Encore, Taunt, Torment. Single use."
 	},
+	"metagrossite": {
+		id: "metagrossite",
+		name: "Metagrossite",
+		spritenum: 0,
+		megaStone: "Metagross-Mega",
+		megaEvolves: "Metagross",
+		isUnreleased: true,
+		onTakeItem: function (item, source) {
+			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
+			return true;
+		},
+		num: 758,
+		gen: 6,
+		desc: "Mega-evolves Metagross."
+	},
 	"metalcoat": {
 		id: "metalcoat",
 		name: "Metal Coat",
@@ -2864,7 +3032,7 @@ exports.BattleItems = {
 			type: "Fire"
 		},
 		onSourceModifyDamage: function (damage, source, target, move) {
-			if (move.type === 'Fire' && this.getEffectiveness(move, target) > 0 && !target.volatiles['substitute']) {
+			if (move.type === 'Fire' && target.runEffectiveness(move) > 0 && !target.volatiles['substitute']) {
 				if (target.eatItem()) {
 					this.debug('-50% reduction');
 					return this.chainModify(0.5);
@@ -2956,7 +3124,7 @@ exports.BattleItems = {
 			type: "Water"
 		},
 		onSourceModifyDamage: function (damage, source, target, move) {
-			if (move.type === 'Water' && this.getEffectiveness(move, target) > 0 && !target.volatiles['substitute']) {
+			if (move.type === 'Water' && target.runEffectiveness(move) > 0 && !target.volatiles['substitute']) {
 				if (target.eatItem()) {
 					this.debug('-50% reduction');
 					return this.chainModify(0.5);
@@ -2978,7 +3146,7 @@ exports.BattleItems = {
 			type: "Psychic"
 		},
 		onSourceModifyDamage: function (damage, source, target, move) {
-			if (move.type === 'Psychic' && this.getEffectiveness(move, target) > 0 && !target.volatiles['substitute']) {
+			if (move.type === 'Psychic' && target.runEffectiveness(move) > 0 && !target.volatiles['substitute']) {
 				if (target.eatItem()) {
 					this.debug('-50% reduction');
 					return this.chainModify(0.5);
@@ -3054,6 +3222,21 @@ exports.BattleItems = {
 		num: 204,
 		gen: 3,
 		desc: "Raises Sp. Atk by 1 when at 1/4 max HP or less. Single use."
+	},
+	"pidgeotite": {
+		id: "pidgeotite",
+		name: "Pidgeotite",
+		spritenum: 0,
+		megaStone: "Pidgeot-Mega",
+		megaEvolves: "Pidgeot",
+		isUnreleased: true,
+		onTakeItem: function (item, source) {
+			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
+			return true;
+		},
+		num: -6,
+		gen: 6,
+		desc: "Mega-evolves Pidgeot."
 	},
 	"pinapberry": {
 		id: "pinapberry",
@@ -3314,6 +3497,21 @@ exports.BattleItems = {
 		gen: 3,
 		desc: "Holder is cured if it is burned. Single use."
 	},
+	"rayquazite": {
+		id: "rayquazite",
+		name: "Rayquazite",
+		spritenum: 0,
+		megaStone: "Rayquaza-Mega",
+		megaEvolves: "Rayquaza",
+		isUnreleased: true,
+		onTakeItem: function (item, source) {
+			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
+			return true;
+		},
+		num: 754,
+		gen: 6,
+		desc: "Mega-evolves Rayquaza."
+	},
 	"razorclaw": {
 		id: "razorclaw",
 		name: "Razor Claw",
@@ -3386,6 +3584,31 @@ exports.BattleItems = {
 		gen: 5,
 		desc: "If holder is hit, it forces the attacker to switch to a random ally. Single use."
 	},
+	"redorb": {
+		id: "redorb",
+		name: "Red Orb",
+		spritenum: 0,
+		isUnreleased: true,
+		onStart: function (pokemon) {
+			if (pokemon.isActive && pokemon.baseTemplate.species === 'Groudon') {
+				var template = this.getTemplate('Groudon-Primal');
+				pokemon.formeChange(template);
+				pokemon.baseTemplate = template;
+				pokemon.details = template.species + (pokemon.level === 100 ? '' : ', L' + pokemon.level) + (pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
+				this.add('detailschange', pokemon, pokemon.details);
+				this.add('message', pokemon.name + "'s Primal Reversion! It reverted to its primal form!");
+				pokemon.setAbility(template.abilities['0']);
+				pokemon.baseAbility = pokemon.ability;
+			}
+		},
+		onTakeItem: function (item, source) {
+			if (source.baseTemplate.baseSpecies === 'Groudon') return false;
+			return true;
+		},
+		num: -6,
+		gen: 6,
+		desc: "Reverts Groudon to its Primal form."
+	},
 	"repeatball": {
 		id: "repeatball",
 		name: "Repeat Ball",
@@ -3404,7 +3627,7 @@ exports.BattleItems = {
 			type: "Grass"
 		},
 		onSourceModifyDamage: function (damage, source, target, move) {
-			if (move.type === 'Grass' && this.getEffectiveness(move, target) > 0 && !target.volatiles['substitute']) {
+			if (move.type === 'Grass' && target.runEffectiveness(move) > 0 && !target.volatiles['substitute']) {
 				if (target.eatItem()) {
 					this.debug('-50% reduction');
 					return this.chainModify(0.5);
@@ -3476,7 +3699,7 @@ exports.BattleItems = {
 		onAfterDamageOrder: 2,
 		onAfterDamage: function (damage, target, source, move) {
 			if (source && source !== target && move && move.isContact) {
-				this.damage(source.maxhp / 6, source, target);
+				this.damage(source.maxhp / 6, source, target, null, true);
 			}
 		},
 		num: 540,
@@ -3521,7 +3744,7 @@ exports.BattleItems = {
 			type: "Fairy"
 		},
 		onSourceModifyDamage: function (damage, source, target, move) {
-			if (move.type === 'Fairy' && this.getEffectiveness(move, target) > 0 && !target.volatiles['substitute']) {
+			if (move.type === 'Fairy' && target.runEffectiveness(move) > 0 && !target.volatiles['substitute']) {
 				if (target.eatItem()) {
 					this.debug('-50% reduction');
 					return this.chainModify(0.5);
@@ -3545,7 +3768,7 @@ exports.BattleItems = {
 		onAfterMoveSecondary: function (target, source, move) {
 			if (source && source !== target && move && move.category === 'Special') {
 				if (target.eatItem()) {
-					this.damage(source.maxhp / 8, source, target);
+					this.damage(source.maxhp / 8, source, target, null, true);
 				}
 			}
 		},
@@ -3553,6 +3776,21 @@ exports.BattleItems = {
 		num: 212,
 		gen: 4,
 		desc: "If holder is hit by a special move, attacker loses 1/8 of its max HP. Single use."
+	},
+	"sableite": {
+		id: "sableite",
+		name: "Sableite",
+		spritenum: 0,
+		megaStone: "Sableye-Mega",
+		megaEvolves: "Sableye",
+		isUnreleased: true,
+		onTakeItem: function (item, source) {
+			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
+			return true;
+		},
+		num: 754,
+		gen: 6,
+		desc: "Mega-evolves Sableye."
 	},
 	"safariball": {
 		id: "safariball",
@@ -3593,6 +3831,36 @@ exports.BattleItems = {
 		num: 203,
 		gen: 3,
 		desc: "Raises Speed by 1 when at 1/4 max HP or less. Single use."
+	},
+	"salamencite": {
+		id: "salamencite",
+		name: "Salamencite",
+		spritenum: 0,
+		megaStone: "Salamence-Mega",
+		megaEvolves: "Salamence",
+		isUnreleased: true,
+		onTakeItem: function (item, source) {
+			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
+			return true;
+		},
+		num: -6,
+		gen: 6,
+		desc: "Mega-evolves Salamence."
+	},
+	"sceptilite": {
+		id: "sceptilite",
+		name: "Sceptilite",
+		spritenum: 0,
+		megaStone: "Sceptile-Mega",
+		megaEvolves: "Sceptile",
+		isUnreleased: true,
+		onTakeItem: function (item, source) {
+			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
+			return true;
+		},
+		num: 753,
+		gen: 6,
+		desc: "Mega-evolves Sceptile."
 	},
 	"scizorite": {
 		id: "scizorite",
@@ -3656,6 +3924,21 @@ exports.BattleItems = {
 		gen: 2,
 		desc: "Holder's Flying-type attacks have 1.2x power."
 	},
+	"sharpedite": {
+		id: "sharpedite",
+		name: "Sharpedite",
+		spritenum: 0,
+		megaStone: "Sharpedo-Mega",
+		megaEvolves: "Sharpedo",
+		isUnreleased: true,
+		onTakeItem: function (item, source) {
+			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
+			return true;
+		},
+		num: 759,
+		gen: 6,
+		desc: "Mega-evolves Sharpedo."
+	},
 	"shedshell": {
 		id: "shedshell",
 		name: "Shed Shell",
@@ -3678,9 +3961,10 @@ exports.BattleItems = {
 		fling: {
 			basePower: 30
 		},
-		onAfterMoveSelf: function (source, target) {
-			if (source.lastDamage > 0) {
-				this.heal(source.lastDamage / 8, source);
+		onAfterMoveSecondarySelfPriority: -1,
+		onAfterMoveSecondarySelf: function (pokemon, target, move) {
+			if (move.category !== 'Status' && pokemon.lastDamage > 0) {
+				this.heal(pokemon.lastDamage / 8, pokemon);
 			}
 		},
 		num: 253,
@@ -3715,7 +3999,7 @@ exports.BattleItems = {
 			type: "Ground"
 		},
 		onSourceModifyDamage: function (damage, source, target, move) {
-			if (move.type === 'Ground' && this.getEffectiveness(move, target) > 0 && !target.volatiles['substitute']) {
+			if (move.type === 'Ground' && target.runEffectiveness(move) > 0 && !target.volatiles['substitute']) {
 				if (target.eatItem()) {
 					this.debug('-50% reduction');
 					return this.chainModify(0.5);
@@ -3810,6 +4094,21 @@ exports.BattleItems = {
 		num: 306,
 		gen: 4,
 		desc: "Holder's Flying-type attacks have 1.2x power. Judgment is Flying-type."
+	},
+	"slowbronite": {
+		id: "slowbronite",
+		name: "Slowbronite",
+		spritenum: 0,
+		megaStone: "Slowbro-Mega",
+		megaEvolves: "Slowbro",
+		isUnreleased: true,
+		onTakeItem: function (item, source) {
+			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
+			return true;
+		},
+		num: -6,
+		gen: 6,
+		desc: "Mega-evolves Slowbro."
 	},
 	"smoothrock": {
 		id: "smoothrock",
@@ -3985,6 +4284,21 @@ exports.BattleItems = {
 		gen: 3,
 		desc: "Raises a random stat by 2 when at 1/4 max HP or less (not acc/eva). Single use."
 	},
+	"steelixite": {
+		id: "steelixite",
+		name: "Steelixite",
+		spritenum: 0,
+		megaStone: "Steelix-Mega",
+		megaEvolves: "Steelix",
+		isUnreleased: true,
+		onTakeItem: function (item, source) {
+			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
+			return true;
+		},
+		num: 761,
+		gen: 6,
+		desc: "Mega-evolves Steelix."
+	},
 	"steelgem": {
 		id: "steelgem",
 		name: "Steel Gem",
@@ -4061,6 +4375,21 @@ exports.BattleItems = {
 		gen: 4,
 		desc: "Holder's Rock-type attacks have 1.2x power. Judgment is Rock-type."
 	},
+	"swampertite": {
+		id: "swampertite",
+		name: "Swampertite",
+		spritenum: 0,
+		megaStone: "Swampert-Mega",
+		megaEvolves: "Swampert",
+		isUnreleased: true,
+		onTakeItem: function (item, source) {
+			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
+			return true;
+		},
+		num: 752,
+		gen: 6,
+		desc: "Mega-evolves Swampert."
+	},
 	"tamatoberry": {
 		id: "tamatoberry",
 		name: "Tamato Berry",
@@ -4084,7 +4413,7 @@ exports.BattleItems = {
 			type: "Bug"
 		},
 		onSourceModifyDamage: function (damage, source, target, move) {
-			if (move.type === 'Bug' && this.getEffectiveness(move, target) > 0 && !target.volatiles['substitute']) {
+			if (move.type === 'Bug' && target.runEffectiveness(move) > 0 && !target.volatiles['substitute']) {
 				if (target.eatItem()) {
 					this.debug('-50% reduction');
 					return this.chainModify(0.5);
@@ -4219,7 +4548,7 @@ exports.BattleItems = {
 			type: "Electric"
 		},
 		onSourceModifyDamage: function (damage, source, target, move) {
-			if (move.type === 'Electric' && this.getEffectiveness(move, target) > 0 && !target.volatiles['substitute']) {
+			if (move.type === 'Electric' && target.runEffectiveness(move) > 0 && !target.volatiles['substitute']) {
 				if (target.eatItem()) {
 					this.debug('-50% reduction');
 					return this.chainModify(0.5);
@@ -4288,7 +4617,7 @@ exports.BattleItems = {
 			basePower: 80
 		},
 		onHit: function (target, source, move) {
-			if (target.hp && move.category !== 'Status' && !move.damage && !move.damageCallback && this.getEffectiveness(move, target) > 0 && target.useItem()) {
+			if (target.hp && move.category !== 'Status' && !move.damage && !move.damageCallback && target.runEffectiveness(move) > 0 && target.useItem()) {
 				this.boost({atk: 2, spa: 2});
 			}
 		},
@@ -4414,7 +4743,7 @@ exports.BattleItems = {
 			type: "Ice"
 		},
 		onSourceModifyDamage: function (damage, source, target, move) {
-			if (move.type === 'Ice' && this.getEffectiveness(move, target) > 0 && !target.volatiles['substitute']) {
+			if (move.type === 'Ice' && target.runEffectiveness(move) > 0 && !target.volatiles['substitute']) {
 				if (target.eatItem()) {
 					this.debug('-50% reduction');
 					return this.chainModify(0.5);
@@ -4459,6 +4788,6 @@ exports.BattleItems = {
 		},
 		num: 276,
 		gen: 4,
-		desc: "The accuracy of attacks by the holder is 1.2x if it moves after the target."
+		desc: "The accuracy of attacks by the holder is 1.2x if it is the last to move in a turn."
 	}
 };

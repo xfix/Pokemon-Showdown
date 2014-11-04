@@ -7,6 +7,8 @@
  * @license MIT license
  */
 
+var Validator;
+
 if (!process.send) {
 	var validationCount = 0;
 	var pendingValidations = {};
@@ -153,9 +155,9 @@ if (!process.send) {
 
 	var validators = {};
 
-	function respond(id, success, details) {
+	var respond = function respond(id, success, details) {
 		process.send(id + (success ? '|1' : '|0') + details);
-	}
+	};
 
 	process.on('message', function (message) {
 		// protocol:
@@ -180,7 +182,7 @@ if (!process.send) {
 	});
 }
 
-var Validator = (function () {
+Validator = (function () {
 	function Validator(format) {
 		this.format = Tools.getFormat(format);
 		this.tools = Tools.mod(this.format);
@@ -201,11 +203,21 @@ var Validator = (function () {
 			}
 			return ["You sent invalid team data. If you're not using a custom client, please report this as a bug."];
 		}
-		if (!team.length) {
-			return ["Your team has no pokemon."];
-		}
 		if (team.length > 6) {
 			return ["Your team has more than 6 pokemon."];
+		}
+		switch (format.gameType) {
+			case 'doubles':
+				if (team.length < 2) return ["Your Doubles team needs at least 2 pokemon."];
+				break;
+			case 'triples':
+				if (team.length < 3) return ["Your Triples team needs at least 3 pokemon."];
+				break;
+			case 'rotation':
+				if (team.length < 3) return ["Your Rotation team needs at least 3 pokemon."];
+				break;
+			default:
+				if (team.length < 1) return ["Your team has no pokemon."];
 		}
 		var teamHas = {};
 		for (var i = 0; i < team.length; i++) {
@@ -234,12 +246,12 @@ var Validator = (function () {
 			for (var i = 0; i < format.ruleset.length; i++) {
 				var subformat = tools.getFormat(format.ruleset[i]);
 				if (subformat.validateTeam) {
-					problems = problems.concat(subformat.validateTeam.call(tools, team, format) || []);
+					problems = problems.concat(subformat.validateTeam.call(tools, team, format, teamHas) || []);
 				}
 			}
 		}
 		if (format.validateTeam) {
-			problems = problems.concat(format.validateTeam.call(tools, team, format) || []);
+			problems = problems.concat(format.validateTeam.call(tools, team, format, teamHas) || []);
 		}
 
 		if (!problems.length) return false;
@@ -319,12 +331,12 @@ var Validator = (function () {
 		var clause = '';
 		setHas[check] = true;
 		if (banlistTable[check]) {
-			clause = typeof banlistTable[check] === 'string' ? " by "+ banlistTable[check] : '';
+			clause = typeof banlistTable[check] === 'string' ? " by " + banlistTable[check] : '';
 			problems.push(set.species + ' is banned' + clause + '.');
 		} else if (!tools.data.FormatsData[check] || !tools.data.FormatsData[check].tier) {
 			check = toId(template.baseSpecies);
 			if (banlistTable[check]) {
-				clause = typeof banlistTable[check] === 'string' ? " by "+ banlistTable[check] : '';
+				clause = typeof banlistTable[check] === 'string' ? " by " + banlistTable[check] : '';
 				problems.push(template.baseSpecies + ' is banned' + clause + '.');
 			}
 		}
@@ -332,16 +344,16 @@ var Validator = (function () {
 		check = toId(set.ability);
 		setHas[check] = true;
 		if (banlistTable[check]) {
-			clause = typeof banlistTable[check] === 'string' ? " by "+ banlistTable[check] : '';
+			clause = typeof banlistTable[check] === 'string' ? " by " + banlistTable[check] : '';
 			problems.push(name + "'s ability " + set.ability + " is banned" + clause + ".");
 		}
 		check = toId(set.item);
 		setHas[check] = true;
 		if (banlistTable[check]) {
-			clause = typeof banlistTable[check] === 'string' ? " by "+ banlistTable[check] : '';
+			clause = typeof banlistTable[check] === 'string' ? " by " + banlistTable[check] : '';
 			problems.push(name + "'s item " + set.item + " is banned" + clause + ".");
 		}
-		if (banlistTable['illegal'] && item.isUnreleased) {
+		if (banlistTable['Unreleased'] && item.isUnreleased) {
 			problems.push(name + "'s item " + set.item + " is unreleased.");
 		}
 		if (banlistTable['Unreleased'] && template.isUnreleased) {
@@ -351,18 +363,6 @@ var Validator = (function () {
 		}
 		setHas[toId(set.ability)] = true;
 		if (banlistTable['illegal']) {
-			var totalEV = 0;
-			for (var k in set.evs) {
-				if (typeof set.evs[k] !== 'number' || set.evs[k] < 0) {
-					set.evs[k] = 0;
-				}
-				totalEV += set.evs[k];
-			}
-			// In gen 1 and 2, it was possible to max out all EVs
-			if (tools.gen >= 3 && totalEV > 510) {
-				problems.push(name + " has more than 510 total EVs.");
-			}
-
 			// Don't check abilities for metagames with All Abilities
 			if (tools.gen <= 2) {
 				set.ability = 'None';
@@ -390,7 +390,7 @@ var Validator = (function () {
 			}
 		}
 		if (set.moves && Array.isArray(set.moves)) {
-			set.moves = set.moves.filter(function (val){ return val; });
+			set.moves = set.moves.filter(function (val) { return val; });
 		}
 		if (!set.moves || !set.moves.length) {
 			problems.push(name + " has no moves.");
@@ -409,10 +409,10 @@ var Validator = (function () {
 				check = move.id;
 				setHas[check] = true;
 				if (banlistTable[check]) {
-					clause = typeof banlistTable[check] === 'string' ? " by "+ banlistTable[check] : '';
+					clause = typeof banlistTable[check] === 'string' ? " by " + banlistTable[check] : '';
 					problems.push(name + "'s move " + set.moves[i] + " is banned" + clause + ".");
 				}
-				
+
 				if (banlistTable['Unreleased']) {
 					if (move.isUnreleased) problems.push(name + "'s move " + set.moves[i] + " is unreleased.");
 				}
@@ -450,32 +450,32 @@ var Validator = (function () {
 					if (eventTemplate.eventPokemon) eventData = eventTemplate.eventPokemon[parseInt(splitSource[0], 10)];
 					if (eventData) {
 						if (eventData.nature && eventData.nature !== set.nature) {
-							problems.push(name + " must have a " + eventData.nature + " nature because it comes from a specific event.");
+							problems.push(name + " must have a " + eventData.nature + " nature because it has a move only available from a specific event.");
 						}
 						if (eventData.shiny) {
 							set.shiny = true;
 						}
 						if (eventData.generation < 5) eventData.isHidden = false;
 						if (eventData.isHidden !== undefined && eventData.isHidden !== isHidden) {
-							problems.push(name + (isHidden ? " can't have" : " must have") + " its hidden ability because it comes from a specific event.");
+							problems.push(name + (isHidden ? " can't have" : " must have") + " its hidden ability because it has a move only available from a specific event.");
 						}
 						if (tools.gen <= 5 && eventData.abilities && eventData.abilities.indexOf(ability.id) < 0) {
-							problems.push(name + " must have " + eventData.abilities.join(" or ") + " because it comes from a specific event.");
+							problems.push(name + " must have " + eventData.abilities.join(" or ") + " because it has a move only available from a specific event.");
 						}
 						if (eventData.gender) {
 							set.gender = eventData.gender;
 						}
 						if (eventData.level && set.level < eventData.level) {
-							problems.push(name + " must be at least level " + eventData.level + " because it comes from a specific event.");
+							problems.push(name + " must be at least level " + eventData.level + " because it has a move only available from a specific event.");
 						}
 					}
 					isHidden = false;
 				}
 			}
-			if (isHidden && lsetData.sourcesBefore < 5) {
-				if (!lsetData.sources) {
+			if (isHidden && lsetData.sourcesBefore) {
+				if (!lsetData.sources && lsetData.sourcesBefore < 5) {
 					problems.push(name + " has a hidden ability - it can't have moves only learned before gen 5.");
-				} else if (template.gender) {
+				} else if (lsetData.sources && template.gender && template.gender !== 'F' && !{'Nidoran-M':1, 'Nidorino':1, 'Nidoking':1, 'Volbeat':1}[template.species]) {
 					var compatibleSource = false;
 					for (var i = 0, len = lsetData.sources.length; i < len; i++) {
 						if (lsetData.sources[i].charAt(1) === 'E' || (lsetData.sources[i].substr(0, 2) === '5D' && set.level >= 10)) {
@@ -490,7 +490,7 @@ var Validator = (function () {
 			}
 			if (banlistTable['illegal'] && set.level < template.evoLevel) {
 				// FIXME: Event pokemon given at a level under what it normally can be attained at gives a false positive
-				problems.push(name + " must be at least level " + template.evoLevel + ".");
+				problems.push(name + " must be at least level " + template.evoLevel + " to be evolved.");
 			}
 			if (!lsetData.sources && lsetData.sourcesBefore <= 3 && tools.getAbility(set.ability).gen === 4 && !template.prevo && tools.gen <= 5) {
 				problems.push(name + " has a gen 4 ability and isn't evolved - it can't use anything from gen 3.");
@@ -548,7 +548,6 @@ var Validator = (function () {
 		var format = (lsetData.format || (lsetData.format = {}));
 		var alreadyChecked = {};
 		var level = set.level || 100;
-		if (format.id === 'alphabetcup') var alphabetCupLetter = template.speciesid.charAt(0);
 
 		var isHidden = false;
 		if (set.ability && tools.getAbility(set.ability).name === template.abilities['H']) isHidden = true;
@@ -578,13 +577,13 @@ var Validator = (function () {
 		// the equivalent of adding "every source at or before this gen" to sources
 		var sourcesBefore = 0;
 		var noPastGen = format.requirePentagon;
+		// since Gen 3, Pokemon cannot be traded to past generations
+		var noFutureGen = tools.gen >= 3 ? true : format.banlistTable && format.banlistTable['tradeback'];
 
 		do {
 			alreadyChecked[template.speciesid] = true;
-			// Stabmons hack to avoid copying all of validateSet to formats.
-			if (format.id === 'stabmons' && template.types.indexOf(tools.getMove(move).type) > -1) return false;
-			// Alphabet Cup hack to do the same
-			if (alphabetCupLetter && alphabetCupLetter === Tools.getMove(move).id.slice(0, 1) && Tools.getMove(move).id !== 'sketch') return false;
+			// STABmons hack to avoid copying all of validateSet to formats
+			if (format.banlistTable && format.banlistTable['ignorestabmoves'] && template.types.indexOf(tools.getMove(move).type) > -1) return false;
 			if (template.learnset) {
 				if (template.learnset[move] || template.learnset['sketch']) {
 					sometimesPossible = true;
@@ -600,8 +599,8 @@ var Validator = (function () {
 					for (var i = 0, len = lset.length; i < len; i++) {
 						var learned = lset[i];
 						if (noPastGen && learned.charAt(0) !== '6') continue;
-						if (parseInt(learned.charAt(0), 10) > tools.gen) continue;
-						if (isHidden && !tools.mod('gen' + learned.charAt(0)).getTemplate(template.species).abilities['H']) {
+						if (noFutureGen && parseInt(learned.charAt(0), 10) > tools.gen) continue;
+						if (learned.charAt(0) !== '6' && isHidden && !tools.mod('gen' + learned.charAt(0)).getTemplate(template.species).abilities['H']) {
 							// check if the Pokemon's hidden ability was available
 							incompatibleHidden = true;
 							continue;
@@ -641,8 +640,9 @@ var Validator = (function () {
 							if (learned.charAt(1) === 'E') {
 								// it's an egg move, so we add each pokemon that can be bred with to its sources
 								if (learned.charAt(0) === '6') {
-									// gen 6 doesn't have egg move incompatibilities
-									sources.push('6E');
+									// gen 6 doesn't have egg move incompatibilities except for certain cases with baby Pokemon
+									learned = '6E' + (template.prevo ? template.id : '');
+									sources.push(learned);
 									continue;
 								}
 								var eggGroups = template.eggGroups;
@@ -659,7 +659,7 @@ var Validator = (function () {
 										// can't breed mons from future gens
 										dexEntry.gen <= parseInt(learned.charAt(0), 10) &&
 										// genderless pokemon can't pass egg moves
-										dexEntry.gender !== 'N') {
+										(dexEntry.gender !== 'N' || tools.gen <= 1 && dexEntry.gen <= 1)) {
 										if (
 											// chainbreeding
 											fromSelf ||
@@ -678,6 +678,9 @@ var Validator = (function () {
 							} else if (learned.charAt(1) === 'S') {
 								sources.push(learned + ' ' + template.id);
 							} else {
+								// DW Pokemon are at level 10 or at the evolution level
+								var minLevel = (template.evoLevel && template.evoLevel > 10) ? template.evoLevel : 10;
+								if (set.level < minLevel) continue;
 								sources.push(learned);
 							}
 						}
@@ -689,9 +692,7 @@ var Validator = (function () {
 					var getGlitch = false;
 					for (var i in glitchMoves) {
 						if (template.learnset[i]) {
-							if (i === 'mimic' && tools.getAbility(set.ability).gen === 4 && !template.prevo) {
-								// doesn't get the glitch
-							} else {
+							if (!(i === 'mimic' && tools.getAbility(set.ability).gen === 4 && !template.prevo)) {
 								getGlitch = true;
 								break;
 							}
@@ -711,6 +712,7 @@ var Validator = (function () {
 				template = tools.getTemplate(template.baseSpecies);
 			} else if (template.prevo) {
 				template = tools.getTemplate(template.prevo);
+				if (template.gen > Math.max(2, tools.gen)) template = null;
 			} else if (template.speciesid === 'shaymin') {
 				template = tools.getTemplate('shayminsky');
 			} else if (template.baseSpecies !== template.species && template.baseSpecies !== 'Kyurem') {

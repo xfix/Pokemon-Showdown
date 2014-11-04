@@ -95,6 +95,26 @@ exports.BattleMovedex = {
 		inherit: true,
 		desc: "Deals damage to one adjacent target and prevents it from switching for four or five turns; seven turns if the user is holding Grip Claw. Causes damage to the target equal to 1/16 of its maximum HP (1/8 if the user is holding Binding Band), rounded down, at the end of each turn during effect. The target can still switch out if it is holding Shed Shell or uses Baton Pass, U-turn, or Volt Switch. The effect ends if either the user or the target leaves the field, or if the target uses Rapid Spin. This effect is not stackable or reset by using this or another partial-trapping move. Makes contact."
 	},
+	conversion: {
+		inherit: true,
+		desc: "The user's type changes to match the original type of one of its four moves besides this move, at random, but not either of its current types. Fails if the user cannot change its type, or if this move would only be able to select one of the user's current types.",
+		shortDesc: "Changes user's type to match a known move.",
+		onHit: function (target) {
+			var possibleTypes = target.moveset.map(function (val) {
+				var move = this.getMove(val.id);
+				if (move.id !== 'conversion' && !target.hasType(move.type)) {
+					return move.type;
+				}
+			}, this).compact();
+			if (!possibleTypes.length) {
+				return false;
+			}
+			var type = possibleTypes[this.random(possibleTypes.length)];
+
+			if (!target.setType(type)) return false;
+			this.add('-start', target, 'typechange', type);
+		}
+	},
 	copycat: {
 		inherit: true,
 		desc: "The user uses the last move used by any Pokemon, including itself. Fails if no move has been used, or if the last move used was Assist, Bestow, Chatter, Circle Throw, Copycat, Counter, Covet, Destiny Bond, Detect, Dragon Tail, Endure, Feint, Focus Punch, Follow Me, Helping Hand, Me First, Metronome, Mimic, Mirror Coat, Mirror Move, Nature Power, Protect, Rage Powder, Sketch, Sleep Talk, Snatch, Struggle, Switcheroo, Thief, Transform, or Trick.",
@@ -105,7 +125,7 @@ exports.BattleMovedex = {
 				return false;
 			}
 			this.useMove(this.lastMove, pokemon);
-		},
+		}
 	},
 	cottonspore: {
 		inherit: true,
@@ -253,6 +273,42 @@ exports.BattleMovedex = {
 	gunkshot: {
 		inherit: true,
 		accuracy: 70
+	},
+	healblock: {
+		inherit: true,
+		effect: {
+			duration: 5,
+			durationCallback: function (target, source, effect) {
+				if (source && source.hasAbility('persistent')) {
+					return 7;
+				}
+				return 5;
+			},
+			onStart: function (pokemon) {
+				this.add('-start', pokemon, 'move: Heal Block');
+			},
+			onModifyPokemon: function (pokemon) {
+				var disabledMoves = {healingwish:1, lunardance:1, rest:1, swallow:1, wish:1};
+				var moves = pokemon.moveset;
+				for (var i = 0; i < moves.length; i++) {
+					if (disabledMoves[moves[i].id] || this.getMove(moves[i].id).heal) {
+						pokemon.disabledMoves[moves[i].id] = true;
+					}
+				}
+			},
+			onBeforeMove: function (pokemon, target, move) {
+				var disabledMoves = {healingwish:1, lunardance:1, rest:1, swallow:1, wish:1};
+				if (disabledMoves[move.id] || move.heal) {
+					this.add('cant', pokemon, 'move: Heal Block', move);
+					return false;
+				}
+			},
+			onResidualOrder: 17,
+			onEnd: function (pokemon) {
+				this.add('-end', pokemon, 'move: Heal Block');
+			},
+			onTryHeal: false
+		}
 	},
 	healpulse: {
 		inherit: true,
@@ -498,7 +554,7 @@ exports.BattleMovedex = {
 		secondary: {
 			chance: 30,
 			status: 'tox'
-		},
+		}
 	},
 	poisongas: {
 		inherit: true,
@@ -552,7 +608,7 @@ exports.BattleMovedex = {
 				}
 				return null;
 			}
-		},
+		}
 	},
 	ragepowder: {
 		num: 476,
@@ -588,6 +644,10 @@ exports.BattleMovedex = {
 	sacredsword: {
 		inherit: true,
 		pp: 20
+	},
+	scald: {
+		inherit: true,
+		thawsTarget: false
 	},
 	secretpower: {
 		inherit: true,
@@ -791,7 +851,7 @@ exports.BattleMovedex = {
 		},
 		onHitSide: function (side, source) {
 			source.addVolatile('stall');
-		},
+		}
 	},
 	whirlpool: {
 		inherit: true,
