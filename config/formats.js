@@ -1477,6 +1477,7 @@ exports.Formats = [
 			'Scraggy', 'Snubbull', 'Spritzee', 'Staryu', 'Timburr', 'Tirtouga', 'Trubbish', 'Vullaby', 'Vulpix', 'Zigzagoon',
 			'Omanyte'
 		]
+	},
 	{
 		name: "Averagemons",
 		section: "Other Metagames",
