@@ -534,14 +534,24 @@ exports.BattleScripts = {
 	},
 
 	runMegaEvo: function (pokemon) {
-		var side = pokemon.side;
-		var item = this.getItem(pokemon.item);
-		if (!item.megaStone) return false;
-		if (side.megaEvo) return false;
-		var template = this.getTemplate(item.megaStone);
+		if (!pokemon.canMegaEvo) return false;
+
+		var otherForme;
+		var template;
+		if (pokemon.baseTemplate.otherFormes) otherForme = this.getTemplate(pokemon.baseTemplate.otherFormes[0]);
+		if (otherForme && otherForme.isMega && otherForme.requiredMove) {
+			if (pokemon.moves.indexOf(toId(otherForme.requiredMove)) < 0) return false;
+			template = otherForme;
+		} else {
+			var item = this.getItem(pokemon.item);
+			if (!item.megaStone) return false;
+			template = this.getTemplate(item.megaStone);
+			if (pokemon.baseTemplate.baseSpecies !== template.baseSpecies) return false;
+		}
 		if (!template.isMega) return false;
 		if (pokemon.baseTemplate.baseSpecies !== template.baseSpecies) return false;
 
+		var side = pokemon.side;
 		var foeActive = side.foe.active;
 		for (var i = 0; i < foeActive.length; i++) {
 			if (foeActive[i].volatiles['skydrop'] && foeActive[i].volatiles['skydrop'].source === pokemon) {
@@ -558,7 +568,6 @@ exports.BattleScripts = {
 		pokemon.setAbility(template.abilities['0']);
 		pokemon.baseAbility = pokemon.ability;
 
-		side.megaEvo = 1;
 		for (var i = 0; i < side.pokemon.length; i++) side.pokemon[i].canMegaEvo = false;
 		return true;
 	},
