@@ -33,7 +33,6 @@ exports.Formats = [
 		name: "Ubers",
 		section: "XY Singles",
 
-		searchShow: false,
 		ruleset: ['Pokemon', 'Standard Ubers', 'Swagger Clause', 'Team Preview', 'Mega Rayquaza Ban Mod'],
 		banlist: []
 	},
