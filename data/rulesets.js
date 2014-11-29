@@ -680,5 +680,16 @@ exports.BattleFormats = {
 			if (set.moves && set.moves.length > 6) problems.push((set.name||set.species) + ' has more than six moves.');
 			return problems;
 		}
+	},
+	megarayquazabanmod: {
+		effectType: 'Rule',
+		onStart: function () {
+			this.add('rule', 'Mega Rayquaza Ban Mod: You cannot mega evolve Rayquaza');
+		},
+		onStart: function () {
+			for (var i = 0; i < this.sides[0].pokemon.length; i++) {
+				if (this.sides[0].pokemon[i].speciesid === 'rayquaza') this.sides[0].pokemon[i].canMegaEvo = false;
+			}
+		}
 	}
 };

@@ -34,15 +34,7 @@ exports.Formats = [
 		section: "XY Singles",
 
 		searchShow: false,
-		ruleset: ['Pokemon', 'Standard Ubers', 'Swagger Clause', 'Team Preview'],
-		banlist: []
-	},
-	{
-		name: "Ubers (suspect test)",
-		section: "XY Singles",
-
-		challengeShow: false,
-		ruleset: ['Pokemon', 'Standard Ubers', 'Swagger Clause', 'Team Preview'],
+		ruleset: ['Pokemon', 'Standard Ubers', 'Swagger Clause', 'Team Preview', 'Mega Rayquaza Ban Mod'],
 		banlist: []
 	},
 	{
@@ -65,6 +57,13 @@ exports.Formats = [
 
 		ruleset: ['RU'],
 		banlist: ['RU', 'BL3']
+	},
+	{
+		name: "Anything Goes",
+		section: "XY Singles",
+
+		ruleset: ['Pokemon', 'Endless Battle Clause', 'HP Percentage Mod'],
+		banlist: ['Unreleased', 'Illegal']
 	},
 	{
 		name: "LC",
