@@ -701,6 +701,9 @@ exports.BattleFormats = {
 			for (var i = 0; i < this.sides[0].pokemon.length; i++) {
 				if (this.sides[0].pokemon[i].speciesid === 'rayquaza') this.sides[0].pokemon[i].canMegaEvo = false;
 			}
+			for (var i = 0; i < this.sides[1].pokemon.length; i++) {
+				if (this.sides[1].pokemon[i].speciesid === 'rayquaza') this.sides[1].pokemon[i].canMegaEvo = false;
+			}
 		}
 	}
 };
