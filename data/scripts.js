@@ -535,12 +535,21 @@ exports.BattleScripts = {
 
 	runMegaEvo: function (pokemon) {
 		var side = pokemon.side;
-		var item = this.getItem(pokemon.item);
-		if (!item.megaStone) return false;
 		if (side.megaEvo) return false;
-		var template = this.getTemplate(item.megaStone);
+
+		var otherForme;
+		var template;
+		if (pokemon.baseTemplate.otherFormes) otherForme = this.getTemplate(pokemon.baseTemplate.otherFormes[0]);
+		if (otherForme && otherForme.isMega && otherForme.requiredMove) {
+			if (pokemon.moves.indexOf(toId(otherForme.requiredMove)) < 0) return false;
+			template = otherForme;
+		} else {
+			var item = this.getItem(pokemon.item);
+			if (!item.megaStone) return false;
+			template = this.getTemplate(item.megaStone);
+			if (pokemon.baseTemplate.baseSpecies !== template.baseSpecies) return false;
+		}
 		if (!template.isMega) return false;
-		if (pokemon.baseTemplate.baseSpecies !== template.baseSpecies) return false;
 
 		var foeActive = side.foe.active;
 		for (var i = 0; i < foeActive.length; i++) {
@@ -555,8 +564,10 @@ exports.BattleScripts = {
 		pokemon.details = template.species + (pokemon.level === 100 ? '' : ', L' + pokemon.level) + (pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
 		this.add('detailschange', pokemon, pokemon.details);
 		this.add('message', template.baseSpecies + " has Mega Evolved into Mega " + template.baseSpecies + "!");
+		var oldAbility = pokemon.ability;
 		pokemon.setAbility(template.abilities['0']);
 		pokemon.baseAbility = pokemon.ability;
+		this.runEvent('EndAbility', pokemon, oldAbility);
 
 		side.megaEvo = 1;
 		for (var i = 0; i < side.pokemon.length; i++) side.pokemon[i].canMegaEvo = false;
@@ -591,6 +602,8 @@ exports.BattleScripts = {
 			if (forme.requiredItem) {
 				var item = this.getItem(forme.requiredItem);
 				if (item.megaStone) return true;
+			} else if (forme.requiredMove && forme.isMega) {
+				return true;
 			}
 		}
 		return false;
@@ -1009,6 +1022,9 @@ exports.BattleScripts = {
 				case 'overheat':
 					if (setupType === 'Special' || hasMove['fireblast']) rejected = true;
 					break;
+				case 'flamecharge':
+					if (hasMove['tailwind']) rejected = true;
+					break;
 				case 'icebeam':
 					if (hasMove['blizzard']) rejected = true;
 					break;
@@ -1264,6 +1280,11 @@ exports.BattleScripts = {
 			delete hasMove[toId(moves[3])];
 			moves[3] = 'Techno Blast';
 			hasMove['technoblast'] = true;
+		}
+		if (template.requiredMove && !hasMove[toId(template.requiredMove)]) {
+			delete hasMove[toId(moves[3])];
+			moves[3] = template.requiredMove;
+			hasMove[toId(template.requiredMove)] = true;
 		}
 
 		var abilities = Object.values(baseTemplate.abilities).sort(function (a, b) {
@@ -1534,13 +1555,10 @@ exports.BattleScripts = {
 			Dusclops: 84, Porygon2: 82, Chansey: 78,
 
 			// Banned Mega
-			"Gengar-Mega": 68, "Kangaskhan-Mega": 72, "Lucario-Mega": 72, "Mawile-Mega": 72,
+			"Kangaskhan-Mega": 72, "Lucario-Mega": 72, "Mawile-Mega": 72,
 
 			// Holistic judgment
-			Articuno: 86, Genesect: 72, Sigilyph: 76, Xerneas: 66,
-
-			// ORAS
-			"Groudon-Primal": 70, "Kyogre-Primal": 70, "Rayquaza-Mega": 70
+			Articuno: 86, Genesect: 72, "Gengar-Mega": 68, "Rayquaza-Mega": 68, Sigilyph: 76, Xerneas: 66
 		};
 		var level = levelScale[template.tier] || 90;
 		if (customScale[template.name]) level = customScale[template.name];
@@ -2507,6 +2525,7 @@ exports.BattleScripts = {
 			shiny: (Math.random() * (template.id === 'missingno' ? 4 : 1024) <= 1)
 		};
 	},
+<<<<<<< HEAD
 	randomSeasonalTeam: function(side) {
 		var seasonalPokemonList = ['alakazam', 'machamp', 'hypno', 'hitmonlee', 'hitmonchan', 'mrmime', 'jynx', 'hitmontop', 'hariyama', 'sableye', 'medicham', 'toxicroak', 'electivire', 'magmortar', 'conkeldurr', 'throh', 'sawk', 'gothitelle', 'beheeyem', 'bisharp', 'volbeat', 'illumise', 'spinda', 'cacturne', 'infernape', 'lopunny', 'lucario', 'mienshao', 'pidgeot', 'fearow', 'dodrio', 'aerodactyl', 'noctowl', 'crobat', 'xatu', 'skarmory', 'swellow', 'staraptor', 'honchkrow', 'chatot', 'unfezant', 'sigilyph', 'braviary', 'mandibuzz', 'farfetchd', 'pelipper', 'altaria', 'togekiss', 'swoobat', 'archeops', 'swanna', 'weavile', 'gallade', 'gardevoir', 'ludicolo', 'snorlax', 'wobbuffet', 'meloetta', 'blissey', 'landorus', 'tornadus', 'golurk', 'bellossom', 'lilligant', 'probopass', 'roserade', 'leavanny', 'zapdos', 'moltres', 'articuno', 'delibird'];
 
@@ -3113,6 +3132,8 @@ exports.BattleScripts = {
 		}
 		return team;
 	},
+=======
+>>>>>>> b287fa7cc1bac99fbca043a80ebb13076e109098
 	randomSeasonalSBTeam: function (side) {
 		var crypto = require('crypto');
 		var date = new Date();
@@ -3126,7 +3147,7 @@ exports.BattleScripts = {
 			(5 * hash + 192) % 721
 		];
 		var randoms = {};
-		for (var i=0; i<6; i++) {
+		for (var i = 0; i < 6; i++) {
 			if (randNums[i] < 1) randNums[i] = 1;
 			randoms[randNums[i]] = true;
 		}
@@ -3140,6 +3161,15 @@ exports.BattleScripts = {
 				delete randoms[this.data.Pokedex[p].num];
 				mons++;
 			}
+		}
+
+		// There is a very improbable chance in which two hashes collide, leaving the player with five Pokémon. Fix that.
+		var defaults = ['zapdos', 'venusaur', 'aegislash', 'heatran', 'unown', 'liepard'].randomize();
+		while (mons < 6) {
+			var set = this.randomSet(this.getTemplate(defaults[mons]), mons);
+			set.moves[3] = 'Present';
+			team.push(set);
+			mons++;
 		}
 
 		return team;
