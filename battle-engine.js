@@ -450,7 +450,7 @@ BattlePokemon = (function () {
 			stat = this.battle.modify(stat, statMod);
 		}
 		if (this.battle.getStatCallback) {
-			stat = this.battle.getStatCallback(stat, statName, this);
+			stat = this.battle.getStatCallback(stat, statName, this, unboosted);
 		}
 		return stat;
 	};
