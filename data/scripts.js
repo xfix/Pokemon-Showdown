@@ -1013,7 +1013,7 @@ exports.BattleScripts = {
 				case 'fireblast':
 					if (hasMove['lavaplume']) rejected = true;
 					break;
-				case 'overheat':
+				case 'overheat': case 'flareblitz':
 					if (setupType === 'Special' || hasMove['fireblast']) rejected = true;
 					break;
 				case 'icebeam':
