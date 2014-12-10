@@ -390,9 +390,7 @@ exports.Formats = [
 		},
 		onModifyMove: function(move) {
 			if (move.id === 'present') {
-				move.category = 'Status';
-				move.basePower = 0;
-				delete move.heal;
+				move.name = 'Throw sack present';
 				move.accuracy = 100;
 				switch (this.random(20)) {
 				case 0:
@@ -793,6 +791,21 @@ exports.Formats = [
 			this.add('-message', haikus[0]);
 		},
 		ruleset: ['PotD', 'Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod']
+	},
+	{
+		name: "CAP",
+		section: "Other Metagames",
+		column: 2,
+
+		ruleset: ['OU'],
+		banlist: ['Allow CAP']
+	},
+	{
+		name: "Challenge Cup",
+		section: "Other Metagames",
+
+		team: 'randomCC',
+		ruleset: ['Pokemon', 'HP Percentage Mod']
 	},
 	{
 		name: "May Mayhem",

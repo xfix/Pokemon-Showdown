@@ -3141,26 +3141,15 @@ exports.BattleScripts = {
 			randoms[randNums[i]] = true;
 		}
 		var team = [];
-		var mons = 0;
-		for (var p in this.data.Pokedex) {
-			if (this.data.Pokedex[p].num in randoms) {
-				var set = this.randomSet(this.getTemplate(p), mons);
-				set.moves[3] = 'Present';
-				team.push(set);
-				delete randoms[this.data.Pokedex[p].num];
-				mons++;
-			}
-		}
-
-		// There is a very improbable chance in which two hashes collide, leaving the player with five Pokémon. Fix that.
-		var defaults = ['zapdos', 'venusaur', 'aegislash', 'heatran', 'unown', 'liepard'].randomize();
-		while (mons < 6) {
-			var set = this.randomSet(this.getTemplate(defaults[mons]), mons);
+		for (var i = 0; i < 6; i++) {
+			var pokemon = seasonalPokemonList[i];
+			var template = this.getTemplate(pokemon);
+			var set = this.randomSet(template, i);
 			set.moves[3] = 'Present';
 			team.push(set);
-			mons++;
 		}
 
+		// Done, return the result.
 		return team;
 	},
 	randomSeasonalSSTeam: function (side) {
