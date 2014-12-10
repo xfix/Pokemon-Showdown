@@ -1565,6 +1565,161 @@ exports.Formats = [
 			this.add('-message', haikus[0]);
 		}
 	},
+	// Sleigh Showdown, December 2014
+	{
+		name: "[Seasonal] Sleigh Showdown",
+		section: "OM of the Month",
+
+		team: 'randomSeasonalSS',
+		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod'],
+		onBegin: function () {
+			this.add('-message', "Yikes! You are a grinch in a reckless, regretless sleigh race, running for Showdownville to ruin christmas. But, to achieve that, you must first defeat your opponent. Fight hard and take care with the obstacles!");
+			this.seasonal = {position: {}};
+			this.seasonal.position[this.p1.name] = 0;
+			this.seasonal.position[this.p2.name] = 0;
+		},
+		onModifyMove: function (move) {
+			if (move.type === 'Fire') {
+				move.onHit = function (pokemon, source) {
+					this.add('-message', 'The fire melts down the snow, slowing down the sleigh!');
+					this.boost({spe: -1}, pokemon, source);
+				};
+			}
+			if (move.type === 'Water') {
+				if (this.random(100) < 25) {
+					this.add('-message', 'The cold froze your Water-type attack, making it Ice-type instead!');
+					move.type = 'Ice';
+				}
+			}
+			if (move.type === 'Ice') {
+				move.onHit = function (pokemon, source) {
+					this.add('-message', 'The ice makes the surface more slippery, fastening the sleigh!');
+					this.boost({spe: 1}, pokemon, source);
+				};
+			}
+			if (move.id === 'present') {
+				move.name = 'Throw sack present';
+				move.accuracy = 100;
+				move.basePower = 0;
+				move.category = 'Status';
+				move.heal = null;
+				move.boosts = null;
+				move.target = 'normal';
+				move.status = null;
+				switch (this.random(9)) {
+					case 0:
+						move.onTryHit = function () {
+							this.add('-message', 'You got an Excadreydle from the sack!');
+						};
+						move.boosts = {spe: -1};
+						break;
+					case 1:
+						move.onTryHit = function () {
+							this.add('-message', 'You got a Chandelnukkiyah from the sack!');
+						};
+						move.status = 'brn';
+						break;
+					case 2:
+						move.onTryHit = function () {
+							this.add('-message', 'You got a Glalie from the sack! Ka-boom!');
+						};
+						move.category = 'Special';
+						move.basePower = 300;
+						break;
+					case 3:
+						move.onTryHit = function () {
+							this.add('-message', 'You got a tree Starmie from the sack!');
+						};
+						move.category = 'Special';
+						move.type = 'Water';
+						move.basePower = 150;
+						break;
+					case 4:
+						move.onTryHit = function () {
+							this.add('-message', 'You got an Abomaxmas tree from the sack!');
+						};
+						move.category = 'Physical';
+						move.type = 'Ice';
+						move.basePower = 150;
+						break;
+					case 5:
+						move.onTryHit = function () {
+							this.add('-message', 'You got a Chansey egg nog from the sack!');
+						};
+						move.target = 'self';
+						move.heal = [3, 4];
+						break;
+					case 6:
+						move.onTryHit = function () {
+							this.add('-message', 'You got Cryogonal snowflakes from the sack!');
+						};
+						move.category = 'Special';
+						move.type = 'Ice';
+						move.basePower = 200;
+						break;
+					case 7:
+						move.onTryHit = function () {
+							this.add('-message', 'You got Pikachu-powered christmas lights from the sack!');
+						};
+						move.category = 'Special';
+						move.type = 'Electric';
+						move.basePower = 250;
+						break;
+					case 8:
+						move.onTryHit = function () {
+							this.add('-message', 'You got Shaymin-Sky mistletoe from the sack!');
+						};
+						move.category = 'Special';
+						move.type = 'Grass';
+						move.basePower = 200;
+						break;
+				}
+			}
+		},
+		onBeforeMove: function (pokemon, target, move) {
+			// Before every move, trainers advance on their sleighs. There might be obstacles.
+			if (this.random(100) < Math.ceil(pokemon.speed / 10) + 15) {
+				// If an obstacle is found, the trainer won't advance this turn.
+				switch (this.random(6)) {
+				case 0:
+				case 1:
+				case 2:
+					this.add('-message', pokemon.name + ' hit into a tree and some snow felt on him!');
+					pokemon.cureStatus();
+					pokemon.hp -= Math.ceil(pokemon.maxhp / 10);
+					break;
+				case 3:
+					this.add('-message', pokemon.name + ' hit a snowball and froze!');
+					pokemon.setStatus('frz', pokemon, null, true);
+					break;
+				case 4:
+					this.add('-message', pokemon.name + ' felt into a traphole!');
+					this.boost({spe: -1}, pokemon, pokemon);
+					break;
+				case 5:
+					this.add('-message', pokemon.name + ' hit a heavy wall!');
+					pokemon.setStatus('par', pokemon, null, true);
+					break;
+				}
+			} else {
+				// If no obstacles, the trainer advances as much meters as speed its Pokémon has.
+				this.add('-message', pokemon.side.name + ' has advanced down the mountain ' + pokemon.speed + ' meters!');
+				this.seasonal.position[pokemon.side.name] += pokemon.speed;
+			}
+
+			// Showdownville is about 4000 meters away from the mountaintop.
+			if (this.seasonal.position[pokemon.side.name] >= 4000) {
+				this.add('-message', pokemon.side.name + ' has arrived to Showdownville first and ruined christmas! The race is won!');
+				this.win(pokemon.side.id);
+			}
+		},
+		onHit: function (target, source) {
+			// Getting frozen by chance only lasts one turn.
+			if (target.status === 'frz') {
+				target.cureStatus();
+			}
+		}
+	},
 
 	// Other Metagames
 	///////////////////////////////////////////////////////////////////
