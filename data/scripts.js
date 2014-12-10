@@ -1670,7 +1670,9 @@ exports.BattleScripts = {
 			if (typeCombo in typeComboCount) continue;
 
 			// Limit the number of Megas to one, just like in-game
-			if (this.getItem(set.item).megaStone && megaCount > 0) continue;
+			var forme = template.otherFormes ? this.getTemplate(template.otherFormes[0]) : 0;
+			var isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
+			if (isMegaSet && megaCount > 0) continue;
 
 			// Limit to one of each species (Species Clause)
 			if (baseFormes[template.baseSpecies]) continue;
@@ -1696,7 +1698,7 @@ exports.BattleScripts = {
 			} else if (tier === 'NU' || tier === 'NFE' || tier === 'LC') {
 				nuCount++;
 			}
-			if (this.getItem(set.item).megaStone) megaCount++;
+			if (isMegaSet) megaCount++;
 		}
 		return pokemon;
 	},
@@ -1768,7 +1770,9 @@ exports.BattleScripts = {
 			if (typeCombo in typeComboCount) continue;
 
 			// Limit the number of Megas to one, just like in-game
-			if (this.getItem(set.item).megaStone && megaCount > 0) continue;
+			var forme = template.otherFormes ? this.getTemplate(template.otherFormes[0]) : 0;
+			var isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
+			if (isMegaSet && megaCount > 0) continue;
 
 			// Limit to one of each species (Species Clause)
 			if (baseFormes[template.baseSpecies]) continue;
@@ -1789,7 +1793,7 @@ exports.BattleScripts = {
 			typeComboCount[typeCombo] = 1;
 
 			// Increment mega counter
-			if (this.getItem(set.item).megaStone) megaCount++;
+			if (isMegaSet) megaCount++;
 		}
 		return pokemon;
 	},
