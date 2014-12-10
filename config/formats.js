@@ -352,7 +352,7 @@ exports.Formats = [
 
 	// Seasoning Greetings, November 2012
 	{
-		name: "[Seasonal] Seasoning's Greetings",
+		name: "Seasoning's Greetings",
 		team: 'randomSeasonal',
 		mod: 'gen5',
 		section: 'Seasonal',
@@ -360,7 +360,7 @@ exports.Formats = [
 	},
 	// Winter Wonderland, December 2012 and January 2013
 	{
-		name: "[Seasonal] Winter Wonderland",
+		name: "Winter Wonderland",
 		team: 'randomSeasonalWW',
 		mod: 'gen5',
 		section: 'Seasonal',
@@ -478,7 +478,7 @@ exports.Formats = [
 	},
 	// Valentine Venture, February 2013
 	{
-		name: "[Seasonal] Valentine Venture",
+		name: "Valentine Venture",
 		team: 'randomSeasonalVV',
 		mod: 'gen5',
 		section: 'Seasonal',
@@ -487,7 +487,7 @@ exports.Formats = [
 	},
 	// Spring Forward, March 2013
 	{
-		name: "[Seasonal] Spring Forward",
+		name: "Spring Forward",
 		team: 'randomSeasonalSF',
 		mod: 'gen5',
 		section: 'Seasonal',
@@ -566,7 +566,7 @@ exports.Formats = [
 	},
 	// Fools Festival, April 2013
 	{
-		name: "[Seasonal] Fools Festival",
+		name: "Fools Festival",
 		section: 'Seasonal',
 		mod: 'gen5',
 		team: 'randomSeasonalFF',
@@ -775,7 +775,7 @@ exports.Formats = [
 		ruleset: ['PotD', 'Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod']
 	},
 	{
-		name: "[Seasonal] May Mayhem",
+		name: "May Mayhem",
 		section: "Seasonal",
 		mod: 'gen5',
 		team: 'randomSeasonalMM',
@@ -800,7 +800,7 @@ exports.Formats = [
 	},
 	// June Jubilee, June 2013
 	{
-		name: "[Seasonal] June Jubilee",
+		name: "June Jubilee",
 		section: "Seasonal",
 		mod: 'gen5',
 		team: 'randomSeasonalJJ',
@@ -868,7 +868,7 @@ exports.Formats = [
 	},
 	// Jolly July, July 2013
 	{
-		name: "[Seasonal] Jolly July",
+		name: "Jolly July",
 		section: 'Seasonal',
 		mod: 'gen5',
 		team: 'randomSeasonalJuly',
@@ -987,7 +987,7 @@ exports.Formats = [
 	},
 	// Average August, August 2013
 	{
-		name: "[Seasonal] Average August",
+		name: "Average August",
 		section: 'Seasonal',
 		mod: 'gen5',
 		team: 'randomSeasonalAA',
@@ -1038,7 +1038,7 @@ exports.Formats = [
 	},
 	// School Schemes, September 2013
 	{
-		name: "[Seasonal] School Schemes",
+		name: "School Schemes",
 		section: 'Seasonal',
 		mod: 'gen5',
 		team: 'randomSeasonalSS',
@@ -1046,7 +1046,7 @@ exports.Formats = [
 	},
 	// Octoberfest, October 2013
 	{
-		name: "[Seasonal] Octoberfest",
+		name: "Octoberfest",
 		section: 'Seasonal',
 		mod: 'gen5',
 		team: 'randomSeasonalOF',
@@ -1198,14 +1198,14 @@ exports.Formats = [
 	},
 	// Thankless Thanksgiving, November 2013
 	{
-		name: "[Seasonal] Thankless Thanksgiving",
+		name: "Thankless Thanksgiving",
 		section: 'Seasonal',
 		team: 'randomSeasonalTT',
 		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod']
 	},
 	// Christmas Charade, December 2013
 	{
-		name: "[Seasonal] Christmas Charade",
+		name: "Christmas Charade",
 		section: 'Seasonal',
 		team: 'randomSeasonalCC',
 		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod'],
@@ -1342,7 +1342,7 @@ exports.Formats = [
 	},
 	// Winter's Wont, January 2014
 	{
-		name: "[Seasonal] Winter's Wont",
+		name: "Winter's Wont",
 		section: 'Seasonal',
 		mod: 'inverse',
 		gameType: 'doubles',
@@ -1358,7 +1358,7 @@ exports.Formats = [
 	},
 	// Seasonal Strikes Back, November 2014
 	{
-		name: "[Seasonal] Strikes Back",
+		name: "Strikes Back",
 		section: 'Seasonal',
 
 		gameType: 'triples',
@@ -1567,8 +1567,8 @@ exports.Formats = [
 	},
 	// Sleigh Showdown, December 2014
 	{
-		name: "[Seasonal] Sleigh Showdown",
-		section: "OM of the Month",
+		name: "Sleigh Showdown",
+		section: "Seasonal",
 
 		team: 'randomSeasonalSS',
 		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod'],
@@ -1738,201 +1738,6 @@ exports.Formats = [
 			if (item.name === 'Eviolite' && Object.values(template.baseStats).sum() <= 350) {
 				return ['Eviolite is banned on Pokémon with 350 or lower BST.'];
 			}
-		}
-	},
-	{
-		name: "[Seasonal] Strikes Back",
-		section: "OM of the Month",
-
-		gameType: 'triples',
-		team: 'randomSeasonalSB',
-		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod'],
-		onBegin: function () {
-			this.add('-message', "V4 is a big poo-poo!");
-		},
-		onModifyMove: function (move) {
-			// Change present mechanics
-			if (move.id === 'present') {
-				move.category = 'Status';
-				move.basePower = 0;
-				delete move.heal;
-				move.accuracy = 100;
-				switch (this.random(16)) {
-				case 0:
-					move.onTryHit = function () {
-						this.add('-message', "The present was a bomb!");
-					};
-					move.category = 'Physical';
-					move.basePower = 250;
-					break;
-				case 1:
-					move.onTryHit = function () {
-						this.add('-message', "The present was confusion!");
-					};
-					move.volatileStatus = 'confusion';
-					break;
-				case 2:
-					move.onTryHit = function () {
-						this.add('-message', "The present was Disable!");
-					};
-					move.volatileStatus = 'disable';
-					break;
-				case 3:
-					move.onTryHit = function () {
-						this.add('-message', "The present was a taunt!");
-					};
-					move.volatileStatus = 'taunt';
-					break;
-				case 4:
-					move.onTryHit = function () {
-						this.add('-message', "The present was some seeds!");
-					};
-					move.volatileStatus = 'leechseed';
-					break;
-				case 5:
-					move.onTryHit = function () {
-						this.add('-message', "The present was an embargo!");
-					};
-					move.volatileStatus = 'embargo';
-					break;
-				case 6:
-					move.onTryHit = function () {
-						this.add('-message', "The present was a music box!");
-					};
-					move.volatileStatus = 'perishsong';
-					break;
-				case 7:
-					move.onTryHit = function () {
-						this.add('-message', "The present was a curse!");
-					};
-					move.volatileStatus = 'curse';
-					break;
-				case 8:
-					move.onTryHit = function () {
-						this.add('-message', "The present was Torment!");
-					};
-					move.volatileStatus = 'torment';
-					break;
-				case 9:
-					move.onTryHit = function () {
-						this.add('-message', "The present was a trap!");
-					};
-					move.volatileStatus = 'partiallytrapped';
-					break;
-				case 10:
-					move.onTryHit = function () {
-						this.add('-message', "The present was a root!");
-					};
-					move.volatileStatus = 'ingrain';
-					break;
-				case 11:
-					move.onTryHit = function () {
-						this.add('-message', "The present was a makeover!");
-					};
-					var boosts = {};
-					var possibleBoosts = ['atk', 'def', 'spa', 'spd', 'spe', 'accuracy', 'evasion'].randomize();
-					boosts[possibleBoosts[0]] = 1;
-					boosts[possibleBoosts[1]] = -1;
-					boosts[possibleBoosts[2]] = -1;
-					move.boosts = boosts;
-					break;
-				case 12:
-					move.onTryHit = function () {
-						this.add('-message', "The present was psychic powers!");
-					};
-					move.volatileStatus = 'telekinesis';
-					break;
-				case 13:
-					move.onTryHit = function () {
-						this.add('-message', "The present was fatigue!");
-					};
-					move.volatileStatus = 'mustrecharge';
-					break;
-				case 14:
-				case 15:
-					move.onTryHit = function () {
-						this.add('-message', "The present was a snowball hit!");
-					};
-					move.category = 'Ice';
-					move.basePower = 250;
-					break;
-				}
-			} else {
-				// Change move type time to time only when the move is not present.
-				if (this.random(100) < 35 && move.target !== 'self') {
-					var type = '';
-					switch (move.type.toLowerCase()){
-					case 'rock':
-					case 'ground':
-						type = 'Grass';
-						break;
-					case 'fire':
-					case 'bug':
-						type = 'Water';
-						break;
-					case 'water':
-					case 'grass':
-						type = 'Fire';
-						break;
-					case 'flying':
-						type = 'Fighting';
-						break;
-					case 'fighting':
-						type = 'Flying';
-						break;
-					case 'dark':
-						type = 'Bug';
-						break;
-					case 'dragon':
-					case 'poison':
-						type = 'Fairy';
-						break;
-					case 'electric':
-						type = 'Ice';
-						break;
-					case 'ghost':
-						type = 'Normal';
-						break;
-					case 'ice':
-						type = 'Electric';
-						break;
-					case 'normal':
-						type = 'Ghost';
-						break;
-					case 'psychic':
-						type = 'Dark';
-						break;
-					case 'steel':
-						type = 'Poison';
-						break;
-					case 'fairy':
-						type = 'Dragon';
-						break;
-					}
-
-					move.type = type;
-					this.add('-message', 'LOL trolled I changed yer move type hahaha');
-				}
-			}
-		},
-		onSwitchIn: function (pokemon) {
-			if (this.random(100) < 25) {
-				this.add('-message', pokemon.name + " drank way too much!");
-				pokemon.addVolatile('confusion');
-				pokemon.statusData.time = 0;
-			}
-		},
-		onFaint: function (pokemon) {
-			// A poem every time a Pokemon faints
-			var haikus = ["You suck a lot / You are a bad trainer / let a mon faint", "they see me driving / round town with the girl i love / and I'm like, haikou",
-			"Ain't no Pokemon tough enough / ain't no bulk decent enough / ain't no recovery good enough / to keep me from fainting you, babe",
-			"Roses are red / violets are blue / you must be on some med / 'coz as a trainer you suck",
-			"You're gonna be the very worst / like no one ever was / to lose all the battles is your test / to faint them all is your cause",
-			'Twinkle twinkle little star / screw you that was my best sweeper', "I'm wheezy and I'm sleezy / but as a trainer you're measly",
-			"You're sharp as a rock / you're bright as a hole / you're one to mock / you could be beaten by a maimed mole",
-			"Alas, poor trainer! I knew him, your Pokémon, a fellow of infinite jest, of most excellent fancy."];
-			haikus = haikus.randomize();
-			this.add('-message', haikus[0]);
 		}
 	},
 	{
