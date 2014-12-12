@@ -571,7 +571,10 @@ var GlobalRoom = (function () {
 		this.cancelSearch(p1, true);
 		this.cancelSearch(p2, true);
 		if (Config.reportbattles && rooms.lobby) {
-			rooms.lobby.add('|b|' + newRoom.id + '|' + p1.getIdentity() + '|' + p2.getIdentity());
+			var p1identity = p1.getIdentity();
+			var p2identity = p2.getIdentity();
+			rooms.lobby.add('|b|' + newRoom.id + '|' + p1identity + '|' + p2identity);
+			Bot.say(Tools.getFormat(format) + ' battle started between between ' + p1identity + ' and ' + p2identity + ' -- http://metronome.psim.us/' + newRoom.id);
 		}
 		if (Config.logladderip && options.rated) {
 			if (!this.ladderIpLog) {
