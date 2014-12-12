@@ -744,13 +744,15 @@ var BattleRoom = (function () {
 							self.addRaw('There was an error calculating rating changes.');
 							self.update();
 						}
-
-						if (!Tools.getFormat(self.format).noLog) {
-							self.logBattle(p1score, p1rating, p2rating);
-						}
+					}
+					if (!Tools.getFormat(self.format).noLog) {
+						self.logBattle(p1score, p1rating, p2rating);
 					}
 				});
 			}
+		}
+		else {
+			this.logBattle(p1score, 0, 0);
 		}
 		if (this.tour) {
 			var winnerid = toId(winner);

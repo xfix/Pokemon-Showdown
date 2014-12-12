@@ -4071,17 +4071,15 @@ Battle = (function () {
 
 		if (this.log.length > logPos) {
 			if (alreadyEnded !== undefined && this.ended && !alreadyEnded) {
-				if (this.rated) {
-					var log = {
-						turns: this.turn,
-						p1: this.p1.name,
-						p2: this.p2.name,
-						p1team: this.p1.team,
-						p2team: this.p2.team,
-						log: this.log
-					};
-					this.send('log', JSON.stringify(log));
-				}
+				var log = {
+					turns: this.turn,
+					p1: this.p1.name,
+					p2: this.p2.name,
+					p1team: this.p1.team,
+					p2team: this.p2.team,
+					log: this.log
+				};
+				this.send('log', JSON.stringify(log));
 				this.send('score', [this.p1.pokemonLeft, this.p2.pokemonLeft]);
 				this.send('winupdate', [this.winner].concat(this.log.slice(logPos)));
 			} else {
