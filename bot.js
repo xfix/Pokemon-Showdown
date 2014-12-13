@@ -56,10 +56,10 @@ client.addListener('message', function parseMessage(from, to, message) {
 			for (i = 0; i < abilityOrderLength; i++) {
 				var abilityPosition = abilityOrder[i];
 				var ability = abilityData[abilityPosition];
-				if (abilityPosition === 'H') {
-					ability = '\x1D' + ability + '\x1D';
-				}
 				if (ability) {
+					if (abilityPosition === 'H') {
+						ability = '\x1D' + ability + '\x1D';
+					}
 					abilities.push(ability);
 				}
 			}
@@ -192,7 +192,8 @@ client.addListener('message', function parseMessage(from, to, message) {
 				leaveRoom: function () {
 
 				},
-				name: from
+				name: from,
+				group: ' '
 			},
 			{
 				send: function () {}
