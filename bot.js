@@ -1,9 +1,9 @@
 // Avoid V8 lack of optimizations for try {} catch (e) {}
 function ignoreErrors(callback, self, arguments) {
-	//try {
+	try {
 		return callback.apply(self, arguments);
-	//}
-	//catch (e) {}
+	}
+	catch (e) {}
 }
 
 var config = Config.ircconfig;
@@ -20,7 +20,7 @@ Client.prototype.addListener = function () {
 };
 
 Client.prototype.say = function (message) {
-	this.connection.say(config.channel, message.replace(/\s+/g, " "));
+	this.connection.say(config.channel, message.replace(/ +/g, " "));
 };
 
 var client = new Client(config);
@@ -43,9 +43,9 @@ client.addListener('message', function parseMessage(from, to, message) {
 				var stat = stats[i];
 				var statValue = specieData.baseStats[toId(stat)];
 				bst += statValue;
-				baseStats.push(stat + ': ' + statValue);
+				baseStats.push('\x0314' + stat + ':\x0F ' + statValue);
 			}
-			baseStats.push('BST: ' + bst);
+			baseStats.push('\x0314BST:\x0F ' + bst);
 			result.push(baseStats.join(', '));
 
 			var abilityData = specieData.abilities;
@@ -55,15 +55,15 @@ client.addListener('message', function parseMessage(from, to, message) {
 
 			for (i = 0; i < abilityOrderLength; i++) {
 				var abilityPosition = abilityOrder[i];
-				var note = '';
+				var ability = abilityData[abilityPosition];
 				if (abilityPosition === 'H') {
-					note = ' (Hidden Ability)';
+					ability = '\x1D' + ability + '\x1D';
 				}
-				if (abilityData[abilityPosition]) {
-					abilities.push(abilityData[abilityPosition] + note);
+				if (ability) {
+					abilities.push(ability);
 				}
 			}
-			result.push('Abilities: ' + abilities.join(', '));
+			result.push('\x0314Abilities:\x0F ' + abilities.join(', '));
 
 			return result.join(' | ');
 		},
@@ -85,21 +85,21 @@ client.addListener('message', function parseMessage(from, to, message) {
 
 			if (moveData.category !== 'Status') {
 				if (moveData.basePower) {
-					result.push('Power: ' + moveData.basePower + ' PP');
+					result.push('\x0314Power:\x0F ' + moveData.basePower + ' PP');
 				}
 				else {
-					result.push('Power: —');
+					result.push('\x0314Power:\x0F —');
 				}
 			}
 
 			if (moveData.accuracy === true) {
-				result.push('Accuracy: —');
+				result.push('\x0314Accuracy:\x0F —');
 			}
 			else {
-				result.push('Accuracy: ' + moveData.accuracy + '%');
+				result.push('\x0314Accuracy:\x0F ' + moveData.accuracy + '%');
 			}
 
-			result.push('PP: ' + moveData.pp * 8 / 5);
+			result.push('\x0314PP:\x0F ' + moveData.pp * 8 / 5);
 			result.push(moveData.shortDesc);
 
 			return result.join(' | ');
@@ -131,10 +131,18 @@ client.addListener('message', function parseMessage(from, to, message) {
 		else {
 			message = message.replace(/<br\s*\/?>/g, "\n")
 				.replace(/<a href="(.+?)">(.*?)<\/a>/g, "[$2]($1)")
-				.replace(/<li>/g, "\n* ")
-				.replace(/<\/?(?:span|ul|font|em).*?>/g, "")
-				.replace(/<\/?b>/g, "**")
-				.replace(/&nbsp;|&ThickSpace;|\s+/g, " ")
+				.replace(/<li>/g, "\n  • ")
+				.replace(/<\/?(?:ul|font size).*?>/g, "")
+				.replace(/<\/?b>/g, "\x02")
+				.replace(/<\/?em>/g, "\x1D")
+				.replace(/<(?:\/span|\/font|font color=black)>/g, "\x0F")
+				.replace(/<span class="message-effect-weak">/g, "\x02\x034")
+				.replace(/<span class="message-effect-resist">/g, "\x02\x0312")
+				.replace(/<span class="message-effect-immune">/g, "\x02\x0314")
+				.replace(/<span class="message-learn-canlearn">/g, "\x02\x1F\x033")
+				.replace(/<span class="message-learn-cannotlearn">/g, "\x02\x1F\x034")
+				.replace(/<font color=#585858>/g, "\x0314")
+				.replace(/&nbsp;|&ThickSpace;| +/g, " ")
 				.replace(/&#10003;/g, "✓");
 		}
 		self.say(to, message);
@@ -167,7 +175,8 @@ client.addListener('message', function parseMessage(from, to, message) {
 				return parseMessage(from, to, message);
 			},
 			sendReply: reply,
-			sendReplyBox: reply
+			sendReplyBox: reply,
+			broadcasting: to.charAt(0) === '#'
 		}, [
 			commandArguments,
 			{
