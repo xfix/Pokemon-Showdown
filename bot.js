@@ -149,6 +149,9 @@ client.addListener('message', function parseMessage(from, to, message) {
 	}
 
 	var self = this;
+	if (to.charAt(0) !== '#') {
+		to = from;
+	}
 	var messageParts = /^[!/](\w+)\s*(.*)/.exec(message);
 	if (messageParts) {
 		var command = messageParts[1].toLowerCase();
