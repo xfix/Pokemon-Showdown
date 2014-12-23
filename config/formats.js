@@ -2311,7 +2311,7 @@ exports.Formats = [
 		banlist: ['Uber']
 	},
 	{
-		name: "[Gen 1] OU (Tradeback)",
+		name: "[Gen 1] OU (tradeback)",
 		section: "Past Generations",
 
 		mod: 'gen1',
