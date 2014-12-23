@@ -1150,7 +1150,7 @@ exports.BattleScripts = {
 					if (hasMove['rest'] && hasMove['sleeptalk']) rejected = true;
 					if (hasMove['whirlwind'] || hasMove['dragontail'] || hasMove['roar'] || hasMove['circlethrow']) rejected = true;
 					break;
-				case 'suckerpunch':
+				case 'suckerpunch': case 'lunardance':
 					if (hasMove['rest'] && hasMove['sleeptalk']) rejected = true;
 					break;
 				case 'cottonguard':
