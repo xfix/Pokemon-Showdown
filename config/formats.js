@@ -2232,7 +2232,7 @@ exports.Formats = [
 		banlist: ['Uber', 'Smeargle + Ingrain']
 	},
 	{
-		name: "[Gen 3] Ubers (beta)",
+		name: "[Gen 3] Ubers",
 		section: "Past Generations",
 
 		mod: 'gen3',
@@ -2255,6 +2255,14 @@ exports.Formats = [
 		mod: 'gen2',
 		ruleset: ['Pokemon', 'Standard'],
 		banlist: ['Uber']
+	},
+	{
+		name: "[Gen 2] Ubers",
+		section: "Past Generations",
+
+		mod: 'gen2',
+		ruleset: ['Pokemon', 'Standard'],
+		banlist: []
 	},
 	{
 		name: "[Gen 2] Custom Game",
@@ -2283,6 +2291,23 @@ exports.Formats = [
 		banlist: ['Uber', 'Unreleased', 'Illegal',
 			'Nidoking + Fury Attack + Thrash', 'Exeggutor + Poison Powder + Stomp', 'Exeggutor + Sleep Powder + Stomp',
 			'Exeggutor + Stun Spore + Stomp', 'Jolteon + Focus Energy + Thunder Shock', 'Flareon + Tackle + Growl'
+		]
+	},
+	{
+		name: "[Gen 1] Ubers",
+		section: "Past Generations",
+
+		mod: 'gen1',
+		ruleset: ['Pokemon', 'Species Clause', 'HP Percentage Mod'],
+		banlist: ['Unreleased', 'Illegal', 'Tradeback',
+			'Kakuna + Poison Sting + Harden', 'Kakuna + String Shot + Harden',
+			'Beedrill + Poison Sting + Harden', 'Beedrill + String Shot + Harden',
+			'Nidoking + Fury Attack + Thrash',
+			'Exeggutor + Poison Powder + Stomp', 'Exeggutor + Sleep Powder + Stomp', 'Exeggutor + Stun Spore + Stomp',
+			'Eevee + Tackle + Growl',
+			'Vaporeon + Tackle + Growl',
+			'Jolteon + Tackle + Growl', 'Jolteon + Focus Energy + Thunder Shock',
+			'Flareon + Tackle + Growl', 'Flareon + Focus Energy + Ember'
 		]
 	},
 	{
