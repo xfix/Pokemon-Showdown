@@ -1714,7 +1714,7 @@ exports.Formats = [
 
 	{
 		name: "350 Cup",
-		section: "OM of the Month",
+		section: "Other Metagames",
 		column: 2,
 
 		mod: '350cup',
@@ -1739,6 +1739,7 @@ exports.Formats = [
 	{
 		name: "Challenge Cup",
 		section: "Other Metagames",
+		column: 2,
 
 		team: 'randomCC',
 		ruleset: ['Pokemon', 'HP Percentage Mod']
@@ -1746,6 +1747,7 @@ exports.Formats = [
 	{
 		name: "Challenge Cup 1-vs-1",
 		section: "Other Metagames",
+		column: 2,
 
 		team: 'randomCC',
 		ruleset: ['Pokemon', 'Team Preview 1v1', 'HP Percentage Mod'],
@@ -1760,6 +1762,7 @@ exports.Formats = [
 	{
 		name: "Balanced Hackmons",
 		section: "Other Metagames",
+		column: 2,
 
 		ruleset: ['Pokemon', 'Ability Clause', '-ate Clause', 'OHKO Clause', 'Evasion Moves Clause', 'Team Preview', 'HP Percentage Mod'],
 		banlist: ['Arena Trap', 'Huge Power', 'Parental Bond', 'Pure Power', 'Shadow Tag', 'Wonder Guard']
@@ -1767,6 +1770,7 @@ exports.Formats = [
 	{
 		name: "1v1",
 		section: 'Other Metagames',
+		column: 2,
 
 		ruleset: ['Pokemon', 'Moody Clause', 'OHKO Clause', 'Evasion Moves Clause', 'Swagger Clause', 'Endless Battle Clause', 'HP Percentage Mod', 'Team Preview 1v1'],
 		banlist: ['Illegal', 'Unreleased', 'Arceus', 'Blaziken', 'Darkrai', 'Deoxys', 'Deoxys-Attack', 'Dialga', 'Giratina', 'Giratina-Origin',
@@ -1796,6 +1800,7 @@ exports.Formats = [
 	{
 		name: "Tier Shift",
 		section: "Other Metagames",
+		column: 2,
 
 		mod: 'tiershift',
 		ruleset: ['OU']
@@ -1803,6 +1808,7 @@ exports.Formats = [
 	{
 		name: "PU",
 		section: "Other Metagames",
+		column: 2,
 
 		ruleset: ['NU'],
 		banlist: ['NU', 'BL4', 'Altarianite', 'Beedrillite', 'Lopunnite']
@@ -1810,6 +1816,7 @@ exports.Formats = [
 	{
 		name: "Inverse Battle",
 		section: "Other Metagames",
+		column: 2,
 
 		ruleset: ['Pokemon', 'Standard', 'Baton Pass Clause', 'Swagger Clause', 'Team Preview'],
 		banlist: ['Arceus', 'Blaziken', 'Darkrai', 'Deoxys', 'Deoxys-Attack', 'Deoxys-Defense', 'Deoxys-Speed', 'Giratina-Origin', 'Groudon', 'Ho-Oh',
@@ -1851,6 +1858,7 @@ exports.Formats = [
 	{
 		name: "STABmons",
 		section: "Other Metagames",
+		column: 2,
 
 		ruleset: ['Pokemon', 'Standard', 'Baton Pass Clause', 'Swagger Clause', 'Team Preview'],
 		banlist: ['Ignore STAB Moves', 'Arceus', 'Blaziken', 'Deoxys', 'Deoxys-Attack', 'Dialga', 'Genesect', 'Giratina', 'Giratina-Origin', 'Groudon',
@@ -1862,6 +1870,7 @@ exports.Formats = [
 	{
 		name: "LC UU",
 		section: "Other Metagames",
+		column: 2,
 
 		maxLevel: 5,
 		ruleset: ['LC'],
@@ -1875,6 +1884,7 @@ exports.Formats = [
 	{
 		name: "350 Cup",
 		section: "Other Metagames",
+		column: 2,
 
 		mod: '350cup',
 		searchShow: false,
@@ -1900,6 +1910,7 @@ exports.Formats = [
 	{
 		name: "Classic Hackmons",
 		section: "Other Metagames",
+		column: 2,
 
 		searchShow: false,
 		ruleset: ['HP Percentage Mod'],
@@ -1940,6 +1951,7 @@ exports.Formats = [
 	{
 		name: "Hidden Type",
 		section: "Other Metagames",
+		column: 2,
 
 		searchShow: false,
 		mod: 'hiddentype',
@@ -1963,6 +1975,7 @@ exports.Formats = [
 	{
 		name: "Sky Battle",
 		section: "Other Metagames",
+		column: 2,
 
 		searchShow: false,
 		validateSet: function (set) {
@@ -1984,6 +1997,7 @@ exports.Formats = [
 	{
 		name: "Gen-NEXT OU",
 		section: "Other Metagames",
+		column: 2,
 
 		mod: 'gennext',
 		searchShow: false,
@@ -1992,7 +2006,7 @@ exports.Formats = [
 	},
 	{
 		name: "FU",
-		section: "OM of the Month",
+		section: "Other Metagames",
 		column: 2,
 
 		ruleset: ['PU'],
