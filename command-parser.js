@@ -83,7 +83,7 @@ function canTalk(user, room, connection, message) {
 			if (room.auth) {
 				if (room.auth[user.userid]) {
 					userGroup = room.auth[user.userid];
-				} else if (room.isPrivate) {
+				} else if (room.isPrivate === true) {
 					userGroup = ' ';
 				}
 			}
@@ -113,7 +113,7 @@ function canTalk(user, room, connection, message) {
 		}
 
 		// remove zalgo
-		message = message.replace(/[\u0300-\u036f\u0483-\u0489\u0E31\u0E34-\u0E3A\u0E47-\u0E4E]{3,}/g, '');
+		message = message.replace(/[\u0300-\u036f\u0483-\u0489\u064b-\u065f\u0670\u0E31\u0E34-\u0E3A\u0E47-\u0E4E]{3,}/g, '');
 
 		if (room && room.id === 'lobby') {
 			var normalized = message.trim();
@@ -127,7 +127,7 @@ function canTalk(user, room, connection, message) {
 		}
 
 		if (Config.chatfilter) {
-			return Config.chatfilter(user, room, connection, message);
+			return Config.chatfilter(message, user, room, connection);
 		}
 		return message;
 	}
@@ -203,11 +203,43 @@ var parse = exports.parse = function (message, room, user, connection, levelsDee
 		cmd = cmd.substr(1);
 	}
 
-	var commandHandler = commands[cmd];
-	if (typeof commandHandler === 'string') {
-		// in case someone messed up, don't loop
-		commandHandler = commands[commandHandler];
+	var namespaces = [];
+	var currentCommands = commands;
+	var originalMessage = message;
+	var commandHandler;
+	do {
+		commandHandler = currentCommands[cmd];
+		if (typeof commandHandler === 'string') {
+			// in case someone messed up, don't loop
+			commandHandler = currentCommands[commandHandler];
+		}
+		if (commandHandler && typeof commandHandler === 'object') {
+			namespaces.push(cmd);
+
+			var newCmd = target;
+			var newTarget = '';
+			var spaceIndex = target.indexOf(' ');
+			if (spaceIndex > 0) {
+				newCmd = target.substr(0, spaceIndex);
+				newTarget = target.substr(spaceIndex + 1);
+			}
+			newCmd = newCmd.toLowerCase();
+			var newMessage = message.replace(cmd + (target ? ' ' : ''), '');
+
+			cmd = newCmd;
+			target = newTarget;
+			message = newMessage;
+			currentCommands = commandHandler;
+		}
+	} while (commandHandler && typeof commandHandler === 'object');
+	if (!commandHandler && currentCommands.default) {
+		commandHandler = currentCommands.default;
+		if (typeof commandHandler === 'string') {
+			commandHandler = currentCommands[commandHandler];
+		}
 	}
+	var fullCmd = namespaces.concat(cmd).join(' ');
+
 	if (commandHandler) {
 		var context = {
 			sendReply: function (data) {
@@ -262,14 +294,14 @@ var parse = exports.parse = function (message, room, user, connection, levelsDee
 			},
 			can: function (permission, target, room) {
 				if (!user.can(permission, target, room)) {
-					this.sendReply("/" + cmd + " - Access denied.");
+					this.sendReply("/" + fullCmd + " - Access denied.");
 					return false;
 				}
 				return true;
 			},
 			canBroadcast: function (suppressMessage) {
 				if (broadcast) {
-					message = this.canTalk(message);
+					var message = this.canTalk(originalMessage);
 					if (!message) return false;
 					if (!user.can('broadcast', null, room)) {
 						connection.sendTo(room, "You need to be voiced to broadcast this command's information.");
@@ -292,7 +324,10 @@ var parse = exports.parse = function (message, room, user, connection, levelsDee
 				}
 				return true;
 			},
-			parse: function (message) {
+			parse: function (message, inNamespace) {
+				if (inNamespace && (message[0] === '/' || message[0] === '!')) {
+					message = message[0] + namespaces.concat(message.slice(1)).join(" ");
+				}
 				return parse(message, room, user, connection, levelsDeep + 1);
 			},
 			canTalk: function (message, relevantRoom) {
@@ -377,9 +412,9 @@ var parse = exports.parse = function (message, room, user, connection, levelsDee
 			}
 		}
 
-		if (message.substr(0, 1) === '/' && cmd) {
+		if (message.substr(0, 1) === '/' && fullCmd) {
 			// To guard against command typos, we now emit an error message
-			return connection.sendTo(room.id, "The command '/" + cmd + "' was unrecognized. To send a message starting with '/" + cmd + "', type '//" + cmd + "'.");
+			return connection.sendTo(room.id, "The command '/" + fullCmd + "' was unrecognized. To send a message starting with '/" + fullCmd + "', type '//" + fullCmd + "'.");
 		}
 	}
 
