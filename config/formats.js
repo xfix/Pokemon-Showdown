@@ -781,8 +781,7 @@ exports.Formats = [
 				this.add('-message', "Reshiram caused " + weatherMsg + " with its tail!");
 				delete this.weatherData.duration;
 			}
-		},
-		onBeforeMove: function(pokemon) {
+
 			if (!pokemon.side.battle.seasonal) pokemon.side.battle.seasonal = {'none':false, 'drizzle':false, 'hail':false};
 			if (pokemon.side.battle.turn >= 4 && pokemon.side.battle.seasonal.none === false) {
 				this.add('-message', "You are travelling north and you have arrived to North Dakota! There's a clear sky and the temperature is lower here.");
@@ -1520,7 +1519,7 @@ exports.Formats = [
 		name: "Sleigh Showdown",
 		section: "Seasonal",
 
-		team: 'randomSeasonalSS',
+		team: 'randomSeasonalSleigh',
 		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod'],
 		onBegin: function () {
 			this.add('-message', "Yikes! You are a grinch in a reckless, regretless sleigh race, running for Showdownville to ruin christmas. But, to achieve that, you must first defeat your opponent. Fight hard and take care with the obstacles!");

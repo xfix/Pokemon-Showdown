@@ -3168,7 +3168,7 @@ exports.BattleScripts = {
 		// Done, return the result.
 		return team;
 	},
-	randomSeasonalSSTeam: function (side) {
+	randomSeasonalSleighTeam: function (side) {
 		// All Pokémon in this Seasonal. They are meant to pull the sleigh.
 		var seasonalPokemonList = [
 			'abomasnow', 'accelgor', 'aggron', 'arbok', 'arcanine', 'arceus', 'ariados', 'armaldo', 'audino', 'aurorus', 'avalugg',
