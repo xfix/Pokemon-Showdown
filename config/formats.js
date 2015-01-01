@@ -2003,7 +2003,7 @@ exports.Formats = [
 			'Raichu', 'Rampardos', 'Rapidash', 'Regice', 'Rotom-Frost', 'Scyther', 'Serperior', 'Slaking', 'Sneasel', 'Stoutland',
 			'Tangela', 'Tauros', 'Throh', 'Togetic', 'Torterra', 'Ursaring', 'Vigoroth', 'Wartortle', 'Zebstrika'
 		]
-	}
+	},
 
 	// Tournament Rules
 	///////////////////////////////////////////////////////////////////
