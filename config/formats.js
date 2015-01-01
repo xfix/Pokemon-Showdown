@@ -2224,7 +2224,7 @@ exports.Formats = [
 		ruleset: []
 	},
 	{
-		name: "[Gen 3] OU (beta)",
+		name: "[Gen 3] OU",
 		section: "Past Generations",
 
 		mod: 'gen3',
