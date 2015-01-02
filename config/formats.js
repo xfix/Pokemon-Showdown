@@ -1681,6 +1681,39 @@ exports.Formats = [
 			if (target.status === 'frz') target.cureStatus();
 		}
 	},
+	// Spacetime Funtimes, January 2015
+	{
+		name: "Spacetime Funtimes",
+		section: "Seasonal",
+
+		team: 'randomSeasonalSFT',
+		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod'],
+		onBegin: function () {
+			this.add('-message', "Dialga and Palkia have distorted space and time!");
+			// Let's see what
+
+			/**
+			var p1Where = 'boat';
+			var p2Where = 'boat';
+			if (this.p1.pokemon[0].name === 'Kyogre') p1Where = 'pirates';
+			if (this.p2.pokemon[0].name === 'Kyogre') p2Where = 'pirates';
+			var shipNames = [
+				'Zarelrules', 'Joimawesome', 'Treeckonoob', 'MJailBait', 'mikelpuns', 'TTTtttttt', 'Frazzle Dazzle',
+				'TIbot', 'CDXCIV', 'Srs Bsns Trts', 'Leemz', 'Eggymad', 'Snoffles', 'bmelted', 'Poopes', 'Hugonedugen',
+				'Il Haunter', 'chaospwns', 'WaterBro', 'niggie', 'DOOM', 'qhore', 'Jizzmine', 'Aldarown'
+			].randomize();
+			var whereAreThey = (p1Where === 'boat' && p2Where === 'boat')? 'You both were aboard the fantastic ship S. S. ' + shipNames[0] :
+			((p1Where === 'pirates' && p2Where === 'pirates')? 'You are two pirate gangs on a summer sea storm about to raze the ship S. S. ' +  shipNames[0] :
+			((p1Where === 'pirates')? this.p1.name : this.p2.name) + ' leads a pirate boat to raze the ship S. S. ' + shipNames[0]
+			+ ' where ' + ((p1Where === 'pirates')? this.p2.name : this.p1.name)) + ' is enjoying a sea travel,';
+
+			this.add('-message',
+				'Alas, poor trainers! ' + whereAreThey + " when a sudden summer Hurricane made a Wailord hit your transport, and now it's sinking! "
+				+ "There are not enough life boats for everyone nor trainers ain't sharing their Water-type friends, "
+				+ "so you'll have to fight to access a life boat! Good luck! You have to be fast to not to be hit by the Hurricane!"
+			);*/
+		}
+	},
 
 	// Other Metagames
 	///////////////////////////////////////////////////////////////////

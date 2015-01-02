@@ -3209,5 +3209,424 @@ exports.BattleScripts = {
 
 		// Done, return the result.
 		return team;
+	},
+	randomSeasonalSFTTeam: function (side) {
+		// Let's get started!
+		var lead = 'unown';
+		var team = [];
+		var set = {};
+
+		// If the other team has been chosen, we get its opposing force.
+		if (this.seasonal && this.seasonal.scenario) {
+			lead = {'lotr':'reshiram', 'redblue':'pidgeot', 'terminator':'alakazam', 'gen1':'gengar', 'desert':'probopass', 'shipwreck':'machamp'}[this.seasonal.scenario];
+		} else {
+			// First team being generated, let's get one of the possibilities.
+			// We need a fix lead for obvious reasons.
+			lead = ['gallade', 'pikachu', 'genesect', 'gengar', 'groudon', 'kyogre'][this.random(6)];
+			this.seasonal = {'scenario': {'gallade':'lotr', 'pikachu':'redblue', 'genesect':'terminator', 'gengar':'gen1', 'groudon':'desert', 'kyogre':'shipwreck'}[lead]};
+		}
+
+		// Gen 1 mons and blue/red teams have their own set maker.
+		if (lead === 'pikachu') {
+			// Add Red's team
+			team = [
+				{
+					name: 'Pika',
+					species: 'pikachu',
+					moves: ['volttackle', 'quickattack', 'irontail', 'thunderbolt'],
+					evs: {hp:0, atk:200, def:0, spa:56, spd:0, spe:252},
+					ivs: {hp:31, atk:31, def:31, spa:31, spd:31, spe:31},
+					item: 'lightball',
+					level: 81,
+					shiny: false,
+					nature: 'Hasty'
+				},
+				{
+					name: 'Lapras',
+					moves: ['confuseray', 'brine', 'blizzard', 'psychic'],
+					evs: {hp:252, atk:0, def:4, spa:252, spd:0, spe:0},
+					ivs: {hp:31, atk:0, def:31, spa:31, spd:31, spe:31},
+					item: 'leftovers',
+					level: 80,
+					shiny: false,
+					nature: 'Modest'
+				},
+				{
+					name: 'Snorlax',
+					moves: ['shadowball', 'crunch', 'blizzard', 'gigaimpact'],
+					evs: {hp:252, atk:252, def:4, spa:0, spd:0, spe:0},
+					ivs: {hp:31, atk:31, def:31, spa:31, spd:31, spe:31},
+					item: 'chestoberry',
+					level: 82,
+					shiny: false,
+					nature: 'Naive'
+				},
+				{
+					name: 'Venusaur',
+					moves: ['frenzyplant', 'gigadrain', 'sludgebomb', 'sleeppowder'],
+					evs: {hp:252, atk:0, def:0, spa:252, spd:4, spe:0},
+					ivs: {hp:31, atk:0, def:31, spa:31, spd:31, spe:31},
+					item: 'grassgem',
+					level: 84,
+					shiny: false,
+					nature: 'Modest'
+				},
+				{
+					name: 'Charizard',
+					moves: ['blastburn', 'overheat', 'airslash', 'dragonpulse'],
+					evs: {hp:4, atk:0, def:0, spa:252, spd:0, spe:252},
+					ivs: {hp:31, atk:0, def:31, spa:31, spd:31, spe:31},
+					item: 'whiteherb',
+					level: 84,
+					shiny: false,
+					nature: 'Timid'
+				},
+				{
+					name: 'Blastoise',
+					moves: ['hydrocannon', 'blizzard', 'flashcannon', 'focusblast'],
+					evs: {hp:252, atk:0, def:4, spa:252, spd:0, spe:0},
+					ivs: {hp:31, atk:0, def:31, spa:31, spd:31, spe:31},
+					item: 'leftovers',
+					level: 84,
+					shiny: false,
+					nature: 'Modest'
+				}
+			];
+		} else if (lead === 'pidgeot') {
+			// Add Blue's team
+			team = [
+				{
+					name: 'Pidgeot',
+					moves: ['hurricane', 'heatwave', 'roost', 'hiddenpowerground'],
+					evs: {hp:4, atk:0, def:0, spa:252, spd:0, spe:252},
+					ivs: {hp:31, atk:31, def:31, spa:30, spd:30, spe:31},
+					item: 'pidgeotite',
+					level: 86,
+					shiny: false,
+					nature: 'Timid'
+				},
+				{
+					name: 'Exeggutor',
+					moves: ['gigadrain', 'sunnyday', 'leechseed', 'substitute'],
+					evs: {hp:252, atk:0, def:4, spa:252, spd:0, spe:0},
+					ivs: {hp:31, atk:0, def:31, spa:31, spd:31, spe:31},
+					item: 'sitrusberry',
+					level: 88,
+					shiny: false,
+					nature: 'Modest',
+					ability: 'Harvest'
+				},
+				{
+					name: 'Gyarados',
+					moves: ['waterfall', 'earthquake', 'icefang', 'dragondance'],
+					evs: {hp:4, atk:252, def:0, spa:0, spd:0, spe:252},
+					ivs: {hp:31, atk:31, def:31, spa:31, spd:31, spe:31},
+					item: 'leftovers',
+					level: 88,
+					shiny: false,
+					nature: 'Adamant',
+					ability: 'Intimidate'
+				},
+				{
+					name: 'Alakazam',
+					moves: ['psychic', 'focusblast', 'shadowball', 'reflect'],
+					evs: {hp:4, atk:0, def:0, spa:252, spd:0, spe:252},
+					ivs: {hp:31, atk:0, def:31, spa:31, spd:31, spe:31},
+					item: 'focussash',
+					level: 84,
+					shiny: false,
+					nature: 'Modest'
+				},
+				{
+					name: 'Arcanine',
+					moves: ['flareblitz', 'closecombat', 'wildcharge', 'extremespeed'],
+					evs: {hp:4, atk:252, def:0, spa:0, spd:0, spe:252},
+					ivs: {hp:31, atk:31, def:31, spa:31, spd:31, spe:31},
+					item: 'expertbelt',
+					level: 88,
+					shiny: false,
+					nature: 'Jolly'
+				},
+				{
+					name: 'Machamp',
+					moves: ['superpower', 'stoneedge', 'firepunch', 'bulletpunch'],
+					evs: {hp:252, atk:252, def:4, spa:0, spd:0, spe:0},
+					ivs: {hp:31, atk:31, def:31, spa:31, spd:31, spe:31},
+					item: 'whiteherb',
+					level: 86,
+					shiny: false,
+					nature: 'Adamant'
+				}
+			];
+		} else if (lead === 'gengar') {
+			// Add gen 1 team.
+			this.gen = 1;
+
+			// Pre-prepare sets.
+			var sets = {
+				gengar: {
+					name: 'GENGAR',
+					moves: ['bodyslam', 'hyperbeam', 'blizzard', 'earthquake']
+				},
+				tauros: {
+					name: 'TAUROS',
+					moves: ['bodyslam', 'hyperbeam', 'blizzard', 'earthquake']
+				},
+				alakazam: {
+					name: 'ALAKAZAM',
+					moves: ['psychic', 'recover', 'thunderwave', ['reflect', 'seismictoss'][this.random(2)]]
+				},
+				chansey: {
+					name: 'CHANSEY',
+					moves: ['softboiled', 'thunderwave', 'icebeam', ['thunderbolt', 'counter'][this.random(2)]]
+				},
+				exeggutor: {
+					name: 'EXEGGUTOR',
+					moves: ['sleeppowder', 'psychic', 'explosion', ['doubleedge', 'megadrain', 'stunspore'][this.random(3)]]
+				},
+				rhydon: {
+					name: 'RHYDON',
+					moves: ['earthquake', 'rockslide', 'substitute', 'bodyslam']
+				},
+				golem: {
+					name: 'GOLEM',
+					moves: ['bodyslam', 'earthquake', 'rockslide', 'explosion']
+				},
+				jynx: {
+					name: 'JYNX',
+					moves: ['psychic', 'lovelykiss', 'blizzard', 'mimic']
+				},
+				lapras: {
+					name: 'LAPRAS',
+					moves: ['confuseray', ['thunderbolt', 'rest'][this.random(2)], ['blizzard', 'icebeam'][this.random(2)], 'bodyslam']
+				},
+				zapdos: {
+					name: 'ZAPDOS',
+					moves: ['thunderbolt', 'thunderwave', 'drillpeck', 'agility']
+				},
+				slowbro: {
+					name: 'SLOWBRO',
+					moves: ['amnesia', 'rest', 'surf', 'thunderwave']
+				},
+				persian: {
+					name: 'PERSIAN',
+					moves: ['slash', 'bubblebeam', 'hyperbeam', ['bodyslam', 'screech', 'thunderbolt'][this.random(3)]]
+				},
+				cloyster: {
+					name: 'CLOYSTER',
+					moves: ['clamp', 'blizzard', 'hyperbeam', 'explosion']
+				},
+				starmie: {
+					name: 'STARMIE',
+					moves: ['blizzard', 'thunderbolt', 'recover', 'thunderwave']
+				},
+				snorlax: {
+					name: 'SNORLAX',
+					moves: [
+						['amnesia', ['blizzard', 'icebeam'][this.random(2)], ['bodyslam', 'thunderbolt'][this.random(2)], ['rest', 'selfdestruct'][this.random(2)]],
+						['bodyslam', 'hyperbeam', ['earthquake', 'surf'][this.random(2)], 'selfdestruct']
+					][this.random(2)]
+				},
+				dragonite: {
+					name: 'DRAGONITE',
+					moves: ['agility', 'hyperbeam', 'wrap', ['blizzard', 'surf'][this.random(2)]]
+				}
+			};
+			var setsIndex = ['tauros', 'alakazam', 'chansey', 'exeggutor', 'rhydon', 'golem', 'jynx', 'lapras', 'zapdos', 'slowbro', 'persian', 'cloyster', 'starmie', 'snorlax', 'dragonite'].randomize();
+			for (var i = 0; i < 6; i++) {
+				set = sets[setsIndex[i]];
+				set.ability = 'None';
+				set.evs = {hp:255, atk:255, def:255, spa:255, spd:255, spe:255};
+				set.ivs = {hp:30, atk:30, def:30, spa:30, spd:30, spe:30};
+				set.item = '';
+				set.level = 100;
+				set.shiny = false;
+				set.species = toId(set.name);
+				team.push(set);
+			}
+		} else if (lead === 'gallade') {
+			// This is the Aragorn team from the LOTR battle. Special set for Aragorn.
+			set = this.randomSet(this.getTemplate(lead));
+			set.species = toId(set.name);
+			set.name = 'Aragorn';
+			set.item = 'Galladite';
+			set.moves = ['psychocut', 'swordsdance', ['drainpunch', 'closecombat'][this.random(2)], ['nightslash', 'leafblade', 'xscissor', 'stoneedge', 'doubleedge', 'knockoff'][this.random(5)]];
+			team.push(set);
+
+			// We get one elf.
+			var elf = ['jynx', 'azelf', 'celebi', 'victini'][this.random(4)];
+			set = this.randomSet(this.getTemplate(elf));
+			set.species = toId(set.name);
+			set.name = {'jynx':'Galadriel', 'azelf':'Legolas', 'celebi':'Celeborn', 'victini':'Elrond'}[elf];
+			team.push(set);
+			delete elf;
+
+			// Now we add some other characters from the fellowship.
+			var fellowship = {'hoopa':'Gandalf', 'baltoy':'Frodo', 'munchlax':'Samwise'};
+			for (var p in fellowship) {
+				set = this.randomSet(this.getTemplate(p));
+				set.species = toId(set.name);
+				set.name = fellowship[p];
+				team.push(set);
+			}
+			delete fellowship;
+
+			// And now an extra good guy.
+			var goodguy = [
+				'primeape', 'aegislash', 'mimejr', 'timburr', 'lucario',
+				['sudowoodo', 'trevenant', 'abomasnow', 'shiftry', 'cacturne', 'nuzleaf'][this.random(6)],
+				['pidgeot', 'staraptor', 'braviary', 'aerodactyl', 'noivern', 'lugia', 'hooh', 'moltres', 'articuno', 'zapdos'][this.random(10)],
+			][this.random(7)];
+			set = this.randomSet(this.getTemplate(goodguy));
+			set.species = toId(set.name);
+			set.name = {
+				'primeape':'Gimli', 'aegislash':'Faramir', 'mimejr':'Pippin', 'timburr':'Merry', 'lucario':'Boromir', 'trevenant':'Barbol',
+				'sudowoodo':'An ent', 'abomasnow':'An ent', 'shiftry':'An ent', 'cacturne':'An ent', 'nuzleaf':'An ent',
+				'pidgeot':'Great Eagle', 'staraptor':'Great Eagle', 'braviary':'Great Eagle', 'aerodactyl':'Great Eagle',
+				'noivern':'Great Eagle', 'lugia':'Great Eagle', 'hooh':'Great Eagle', 'moltres':'Great Eagle',
+				'articuno':'Great Eagle', 'zapdos':'Great Eagle'
+			}[goodguy];
+			team.push(set);
+			delete goodguy;
+		} else if (lead === 'reshiram') {
+			// This is the Mordor team from the LOTR battle.
+			var mordor = {'reshiram':'Smaug', 'yveltal':'Nazgûl', 'hoopaunbound':'Saruman'};
+			for (var p in mordor) {
+				set = this.randomSet(this.getTemplate(p));
+				set.species = toId(set.name);
+				set.name = mordor[p];
+				team.push(set);
+			}
+			delete mordor;
+
+			// This army has an orc, a troll, and a bad-guy human.
+			var orc = ['quilladin', 'chesnaught', 'granbull', 'drapion', 'pangoro', 'feraligatr', 'haxorus', 'garchomp'][this.random(8)];
+			set = this.randomSet(this.getTemplate(orc));
+			set.species = toId(set.name);
+			set.name = 'An orc';
+			team.push(set);
+			delete orc;
+			var troll = ['conkeldurr', 'drowzee', 'hypno', 'seismitoad', 'weavile', 'bisharp', 'machamp'][this.random(7)];
+			set = this.randomSet(this.getTemplate(troll));
+			set.species = toId(set.name);
+			set.name = 'A troll';
+			team.push(set);
+			delete troll;
+			var badhuman = ['bisharp', 'alakazam', 'medicham', 'mrmime', 'gardevoir', 'hitmonlee', 'hitmonchan', 'hitmontop', 'meloetta', 'sawk', 'throh', 'scrafty'][this.random(12)];
+			set = this.randomSet(this.getTemplate(badhuman));
+			set.species = toId(set.name);
+			set.name = 'Mordor man';
+			team.push(set);
+			delete badhuman;
+		} else if (lead === 'genesect') {
+			// Terminator team.
+			set = this.randomSet(this.getTemplate(lead));
+			set.species = toId(set.name);
+			set.name = 'Terminator T-1000';
+			set.item = 'Choice Scarf';
+			team.push(set);
+
+			// The rest are just random botmons
+			var bots = [
+				'golurk', 'porygon', 'porygon2', 'porygonz', 'rotom', 'rotomheat', 'rotomwash', 'rotommow', 'rotomfan',
+				'rotomfrost', 'regice', 'regirock', 'registeel', 'magnezone', 'magneton', 'magnemite', 'heatran', 'klinklang',
+				'klang', 'klink', 'nosepass', 'probopass', 'electivire', 'metagross', 'armaldo', 'aggron', 'bronzong'
+			].randomize();
+			for (var i = 0; i < 5; i++) {
+				var pokemon = bots[i];
+				var template = this.getTemplate(pokemon);
+				set = this.randomSet(template, i);
+				set.species = toId(set.name);
+				set.name = 'Skynet Robot #' + (i + 1);
+				team.push(set);
+			}
+			delete bots;
+		} else if (lead === 'alakazam') {
+			// Human survival team.
+			var humans = [
+				'medicham', 'mrmime', 'gallade', 'gardevoir', 'lucario', 'hitmonlee', 'hitmonchan', 'hitmontop', 'tyrogue',
+				'chansey', 'blissey', 'meloetta', 'sawk', 'throh', 'scrafty'
+			].randomize();
+			humans.unshift(lead);
+			var names = ['John Connor', 'Sarah Connor', 'Terminator T-800', 'Kyle Reese', 'Miles Bennett Dyson', 'Dr. Silberman'];
+
+			for (var i = 0; i < 6; i++) {
+				var pokemon = humans[i];
+				var template = this.getTemplate(pokemon);
+				set = this.randomSet(template, i);
+				set.species = toId(set.name);
+				set.name = names[i];
+				team.push(set);
+			}
+			delete humans, names;
+		} else if (lead === 'groudon') {
+			// Egyptians from the exodus battle.
+			var egyptians = [
+				'krookodile', 'tyranitar', 'rapidash', 'hippowdon', 'claydol', 'flygon', 'sandslash', 'torterra', 'darmanitan',
+				'volcarona', 'arcanine', 'entei', 'aggron', 'armaldo', 'cradily', 'cacturne', 'exeggutor', 'tropius', 'yanmega',
+				'muk', 'numel', 'camerupt', 'yamask', 'cofagrigus', 'glameow', 'purugly', 'skitty', 'delcatty', 'liepard',
+				'solrock', 'lunatone', 'shinx', 'luxio', 'luxray', 'pidgeot', 'ampharos', 'unown', 'altaria', 'garchomp',
+				'heliolisk', 'maractus', 'dugtrio', 'steelix', 'meowth', 'persian', 'gliscor', 'drapion'
+			].randomize();
+			var template = this.getTemplate(lead);
+			set = this.randomSet(template, i);
+			set.species = toId(set.name);
+			set.name = 'Ramesses II';
+			team.push(set);
+
+			for (var i = 1; i < 6; i++) {
+				var pokemon = egyptians[i];
+				template = this.getTemplate(pokemon);
+				set = this.randomSet(template, i);
+				set.species = toId(set.name);
+				set.name = 'Egyptian ' + pokemon;
+				team.push(set);
+			}
+			delete egyptians;
+		} else if (lead === 'probopass') {
+			// Jews from the exodus battle.
+			var jews = [
+				'nosepass', 'arceus', 'arceusfire', 'mareep', 'flaffy', 'tauros', 'miltank', 'gogoat', 'excadrill', 'seismitoad',
+				'toxicroak', 'yanmega'
+			].randomize();
+			var template = this.getTemplate(lead);
+			set = this.randomSet(template, i);
+			set.species = toId(set.name);
+			set.name = 'Moses';
+			team.push(set);
+
+			for (var i = 1; i < 6; i++) {
+				var pokemon = jews[i];
+				template = this.getTemplate(pokemon);
+				set = this.randomSet(template, i);
+				set.species = toId(set.name);
+				set.name = 'Jew ' + pokemon;
+				team.push(set);
+			}
+			delete jews;
+		} else {
+			// Now the shipwreck battle, pretty straightforward.
+			if (lead === 'kyogre') {
+				var	seasonalPokemonList = [
+					'carvanha', 'sharpedo', 'inkay', 'malamar', 'octillery', 'gyarados', 'clawitzer', 'whiscash', 'relicanth',
+					'thundurus', 'thundurustherian', 'tornadus', 'tornadustherian', 'wingull', 'pelipper', 'wailmer', 'wailord',
+					'avalugg', 'milotic'
+				].randomize();
+			} else if (lead === 'machamp') {
+				var	seasonalPokemonList = [
+					'chatot', 'feraligatr', 'poliwrath', 'swampert', 'barbaracle', 'carracosta', 'lucario', 'ursaring', 'vigoroth',
+					'machoke', 'machop', 'conkeldurr', 'timburr', 'gurdurr'
+				].randomize();
+			}
+			seasonalPokemonList.unshift(lead);
+			for (var i = 0; i < 6; i++) {
+				var pokemon = seasonalPokemonList[i];
+				var template = this.getTemplate(pokemon);
+				var set = this.randomSet(template, i);
+				team.push(set);
+			}
+		} 
+
+		return team;
 	}
 };
