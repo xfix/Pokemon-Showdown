@@ -3223,7 +3223,6 @@ exports.BattleScripts = {
 			// First team being generated, let's get one of the possibilities.
 			// We need a fix lead for obvious reasons.
 			lead = ['gallade', 'pikachu', 'genesect', 'gengar', 'groudon', 'kyogre'][this.random(6)];
-			lead = 'gengar';
 			this.seasonal = {'scenario': {'gallade':'lotr', 'pikachu':'redblue', 'genesect':'terminator', 'gengar':'gen1', 'groudon':'desert', 'kyogre':'shipwreck'}[lead]};
 		}
 
