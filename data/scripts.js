@@ -3477,6 +3477,13 @@ exports.BattleScripts = {
 				set = this.randomSet(this.getTemplate(p));
 				set.species = toId(set.name);
 				set.name = fellowship[p];
+				// Add a way to go around dark-types.
+				set.level = 100;
+				set.moves[3] = 'aurasphere';
+				if (p !== 'hoopa') {
+					set.item = 'Eviolite';
+					set.evs = {hp:4, atk:252, def:126, spa:252, spd:126, spe:0};
+				}
 				team.push(set);
 			}
 			delete fellowship;
@@ -3568,6 +3575,8 @@ exports.BattleScripts = {
 				set = this.randomSet(template, i);
 				set.species = toId(set.name);
 				set.name = names[i];
+				// Give humans a way around robots
+				if (this.random(2) === 1) set.moves[3] = 'flamethrower';
 				team.push(set);
 			}
 			delete humans, names;
@@ -3636,7 +3645,8 @@ exports.BattleScripts = {
 				var pokemon = seasonalPokemonList[i];
 				var template = this.getTemplate(pokemon);
 				var set = this.randomSet(template, i);
-				set.level = (lead === 'kyogre')? set.level - 15 : 100;
+				// Sailor team is made of pretty bad mons, boost them a little.
+				if (lead === 'machamp') set.level = 95;
 				team.push(set);
 			}
 		} 
