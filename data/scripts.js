@@ -3626,6 +3626,7 @@ exports.BattleScripts = {
 				var pokemon = seasonalPokemonList[i];
 				var template = this.getTemplate(pokemon);
 				var set = this.randomSet(template, i);
+				set.level = (lead === 'kyogre')? set.level - 15 : set.level + 5;
 				team.push(set);
 			}
 		} 
