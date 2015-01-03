@@ -3223,6 +3223,7 @@ exports.BattleScripts = {
 			// First team being generated, let's get one of the possibilities.
 			// We need a fix lead for obvious reasons.
 			lead = ['gallade', 'pikachu', 'genesect', 'gengar', 'groudon', 'kyogre'][this.random(6)];
+			lead = 'gengar';
 			this.seasonal = {'scenario': {'gallade':'lotr', 'pikachu':'redblue', 'genesect':'terminator', 'gengar':'gen1', 'groudon':'desert', 'kyogre':'shipwreck'}[lead]};
 		}
 
@@ -3258,7 +3259,7 @@ exports.BattleScripts = {
 					moves: ['shadowball', 'crunch', 'blizzard', 'gigaimpact'],
 					evs: {hp:252, atk:252, def:4, spa:0, spd:0, spe:0},
 					ivs: {hp:31, atk:31, def:31, spa:31, spd:31, spe:31},
-					item: 'chestoberry',
+					item: 'leftovers',
 					level: 82,
 					shiny: false,
 					nature: 'Naive',
@@ -3291,7 +3292,7 @@ exports.BattleScripts = {
 					moves: ['hydrocannon', 'blizzard', 'flashcannon', 'focusblast'],
 					evs: {hp:252, atk:0, def:4, spa:252, spd:0, spe:0},
 					ivs: {hp:31, atk:0, def:31, spa:31, spd:31, spe:31},
-					item: 'leftovers',
+					item: 'Blastoisinite',
 					level: 84,
 					shiny: false,
 					nature: 'Modest',
@@ -3376,7 +3377,7 @@ exports.BattleScripts = {
 			var sets = {
 				gengar: {
 					name: 'GENGAR',
-					moves: ['bodyslam', 'hyperbeam', 'blizzard', 'earthquake']
+					moves: ['hypnosis', 'explosion', 'thunderbolt', ['megadrain', 'psychic'][this.random(2)]]
 				},
 				tauros: {
 					name: 'TAUROS',
@@ -3442,7 +3443,13 @@ exports.BattleScripts = {
 					moves: ['agility', 'hyperbeam', 'wrap', ['blizzard', 'surf'][this.random(2)]]
 				}
 			};
-			var setsIndex = ['tauros', 'alakazam', 'chansey', 'exeggutor', 'rhydon', 'golem', 'jynx', 'lapras', 'zapdos', 'slowbro', 'persian', 'cloyster', 'starmie', 'snorlax', 'dragonite'].randomize();
+			var leads = ['alakazam', 'jynx', 'gengar', 'exeggutor'].randomize();
+			lead = leads.shift();
+			var setsIndex = ['tauros', 'chansey', 'rhydon', 'golem', 'lapras', 'zapdos', 'slowbro', 'persian', 'cloyster', 'starmie', 'snorlax', 'dragonite'];
+			setsIndex = setsIndex.concat(leads);
+			setsIndex = setsIndex.randomize();
+			setsIndex.unshift(lead);
+
 			for (var i = 0; i < 6; i++) {
 				set = sets[setsIndex[i]];
 				set.ability = 'None';

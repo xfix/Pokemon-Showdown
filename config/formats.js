@@ -1724,6 +1724,7 @@ exports.Formats = [
 		onFaint: function (source, target) {
 			if (this.seasonal.scenario === 'gen1') {
 				source.removeVolatile('mustrecharge');
+				source.removeVolatile('twoturnmove');
 				this.queue = [];
 			}
 		},
@@ -1734,6 +1735,9 @@ exports.Formats = [
 				}
 				if (move.id === 'psychic') {
 					move.secondary = {chance: 33, boosts: {spd: -1, spa: -1}};
+				}
+				if (move.id === 'amnesia') {
+					move.boosts = {spa:2, spd:2};
 				}
 			}
 		}
