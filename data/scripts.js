@@ -3307,7 +3307,7 @@ exports.BattleScripts = {
 					evs: {hp:4, atk:0, def:0, spa:252, spd:0, spe:252},
 					ivs: {hp:31, atk:31, def:31, spa:30, spd:30, spe:31},
 					item: 'pidgeotite',
-					level: 86,
+					level: 76,
 					shiny: false,
 					nature: 'Timid',
 					ability: 'Keen Eye'
@@ -3318,7 +3318,7 @@ exports.BattleScripts = {
 					evs: {hp:252, atk:0, def:4, spa:252, spd:0, spe:0},
 					ivs: {hp:31, atk:0, def:31, spa:31, spd:31, spe:31},
 					item: 'sitrusberry',
-					level: 88,
+					level: 85,
 					shiny: false,
 					nature: 'Modest',
 					ability: 'Harvest'
@@ -3329,7 +3329,7 @@ exports.BattleScripts = {
 					evs: {hp:4, atk:252, def:0, spa:0, spd:0, spe:252},
 					ivs: {hp:31, atk:31, def:31, spa:31, spd:31, spe:31},
 					item: 'leftovers',
-					level: 88,
+					level: 80,
 					shiny: false,
 					nature: 'Adamant',
 					ability: 'Intimidate'
@@ -3340,7 +3340,7 @@ exports.BattleScripts = {
 					evs: {hp:4, atk:0, def:0, spa:252, spd:0, spe:252},
 					ivs: {hp:31, atk:0, def:31, spa:31, spd:31, spe:31},
 					item: 'focussash',
-					level: 84,
+					level: 80,
 					shiny: false,
 					nature: 'Modest',
 					ability: 'Magic Guard'
@@ -3351,7 +3351,7 @@ exports.BattleScripts = {
 					evs: {hp:4, atk:252, def:0, spa:0, spd:0, spe:252},
 					ivs: {hp:31, atk:31, def:31, spa:31, spd:31, spe:31},
 					item: 'expertbelt',
-					level: 88,
+					level: 80,
 					shiny: false,
 					nature: 'Jolly',
 					ability: 'Flash Fire'
