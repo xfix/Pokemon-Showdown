@@ -3212,7 +3212,7 @@ exports.BattleScripts = {
 	},
 	randomSeasonalSFTTeam: function (side) {
 		// Let's get started!
-		var lead = 'unown';
+		var lead = 'gallade';
 		var team = [];
 		var set = {};
 
@@ -3480,11 +3480,11 @@ exports.BattleScripts = {
 			set = this.randomSet(this.getTemplate(goodguy));
 			set.species = toId(set.name);
 			set.name = {
-				'primeape':'Gimli', 'aegislash':'Faramir', 'mimejr':'Pippin', 'timburr':'Merry', 'lucario':'Boromir', 'trevenant':'Barbol',
-				'sudowoodo':'An ent', 'abomasnow':'An ent', 'shiftry':'An ent', 'cacturne':'An ent', 'nuzleaf':'An ent',
-				'pidgeot':'Great Eagle', 'staraptor':'Great Eagle', 'braviary':'Great Eagle', 'aerodactyl':'Great Eagle',
-				'noivern':'Great Eagle', 'lugia':'Great Eagle', 'hooh':'Great Eagle', 'moltres':'Great Eagle',
-				'articuno':'Great Eagle', 'zapdos':'Great Eagle'
+				'primeape':'Gimli', 'aegislash':'Faramir', 'mimejr':'Pippin', 'timburr':'Merry', 'lucario':'Boromir',
+				'trevenant':'Treebeard', 'sudowoodo':'An ent', 'abomasnow':'An ent', 'shiftry':'An ent', 'cacturne':'An ent',
+				'nuzleaf':'An ent', 'pidgeot':'Great Eagle', 'staraptor':'Great Eagle', 'braviary':'Great Eagle',
+				'aerodactyl':'Great Eagle', 'noivern':'Great Eagle', 'lugia':'Great Eagle', 'hooh':'Great Eagle',
+				'moltres':'Great Eagle', 'articuno':'Great Eagle', 'zapdos':'Great Eagle'
 			}[goodguy];
 			team.push(set);
 			delete goodguy;
@@ -3503,13 +3503,13 @@ exports.BattleScripts = {
 			var orc = ['quilladin', 'chesnaught', 'granbull', 'drapion', 'pangoro', 'feraligatr', 'haxorus', 'garchomp'][this.random(8)];
 			set = this.randomSet(this.getTemplate(orc));
 			set.species = toId(set.name);
-			set.name = 'An orc';
+			set.name = 'Orc';
 			team.push(set);
 			delete orc;
 			var troll = ['conkeldurr', 'drowzee', 'hypno', 'seismitoad', 'weavile', 'bisharp', 'machamp'][this.random(7)];
 			set = this.randomSet(this.getTemplate(troll));
 			set.species = toId(set.name);
-			set.name = 'A troll';
+			set.name = 'Troll';
 			team.push(set);
 			delete troll;
 			var badhuman = ['bisharp', 'alakazam', 'medicham', 'mrmime', 'gardevoir', 'hitmonlee', 'hitmonchan', 'hitmontop', 'meloetta', 'sawk', 'throh', 'scrafty'][this.random(12)];
@@ -3523,7 +3523,8 @@ exports.BattleScripts = {
 			set = this.randomSet(this.getTemplate(lead));
 			set.species = toId(set.name);
 			set.name = 'Terminator T-1000';
-			set.item = 'Choice Scarf';
+			set.item = 'Choice Band';
+			set.moves = ['extremespeed', 'ironhead', 'blazekick', 'trickroom'];
 			team.push(set);
 
 			// The rest are just random botmons
@@ -3532,15 +3533,16 @@ exports.BattleScripts = {
 				'rotomfrost', 'regice', 'regirock', 'registeel', 'magnezone', 'magneton', 'magnemite', 'heatran', 'klinklang',
 				'klang', 'klink', 'nosepass', 'probopass', 'electivire', 'metagross', 'armaldo', 'aggron', 'bronzong'
 			].randomize();
+			var names = ['T-850', 'E-3000', 'T-700', 'ISO-9001', 'WinME'];
 			for (var i = 0; i < 5; i++) {
 				var pokemon = bots[i];
 				var template = this.getTemplate(pokemon);
 				set = this.randomSet(template, i);
 				set.species = toId(set.name);
-				set.name = 'Skynet Robot #' + (i + 1);
+				set.name = 'Skynet Robot ' + names[i];
 				team.push(set);
 			}
-			delete bots;
+			delete bots, names;
 		} else if (lead === 'alakazam') {
 			// Human survival team.
 			var humans = [
@@ -3572,6 +3574,7 @@ exports.BattleScripts = {
 			set = this.randomSet(template, i);
 			set.species = toId(set.name);
 			set.name = 'Ramesses II';
+			set.ability = 'Water Absorb';
 			team.push(set);
 
 			for (var i = 1; i < 6; i++) {
@@ -3586,11 +3589,11 @@ exports.BattleScripts = {
 		} else if (lead === 'probopass') {
 			// Jews from the exodus battle.
 			var jews = [
-				'nosepass', 'arceus', 'arceusfire', 'mareep', 'flaffy', 'tauros', 'miltank', 'gogoat', 'excadrill', 'seismitoad',
+				'nosepass', 'arceus', 'arceusfire', 'mareep', 'flaaffy', 'tauros', 'miltank', 'gogoat', 'excadrill', 'seismitoad',
 				'toxicroak', 'yanmega'
 			].randomize();
 			var template = this.getTemplate(lead);
-			set = this.randomSet(template, i);
+			set = this.randomSet(template, 0);
 			set.species = toId(set.name);
 			set.name = 'Moses';
 			team.push(set);
@@ -3600,7 +3603,7 @@ exports.BattleScripts = {
 				template = this.getTemplate(pokemon);
 				set = this.randomSet(template, i);
 				set.species = toId(set.name);
-				set.name = 'Jew ' + pokemon;
+				set.name = 'Hebrew ' + pokemon;
 				team.push(set);
 			}
 			delete jews;

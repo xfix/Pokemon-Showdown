@@ -1690,28 +1690,41 @@ exports.Formats = [
 		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod'],
 		onBegin: function () {
 			this.add('-message', "Dialga and Palkia have distorted space and time!");
-			// Let's see what
 
-			/**
-			var p1Where = 'boat';
-			var p2Where = 'boat';
-			if (this.p1.pokemon[0].name === 'Kyogre') p1Where = 'pirates';
-			if (this.p2.pokemon[0].name === 'Kyogre') p2Where = 'pirates';
-			var shipNames = [
-				'Zarelrules', 'Joimawesome', 'Treeckonoob', 'MJailBait', 'mikelpuns', 'TTTtttttt', 'Frazzle Dazzle',
-				'TIbot', 'CDXCIV', 'Srs Bsns Trts', 'Leemz', 'Eggymad', 'Snoffles', 'bmelted', 'Poopes', 'Hugonedugen',
-				'Il Haunter', 'chaospwns', 'WaterBro', 'niggie', 'DOOM', 'qhore', 'Jizzmine', 'Aldarown'
-			].randomize();
-			var whereAreThey = (p1Where === 'boat' && p2Where === 'boat')? 'You both were aboard the fantastic ship S. S. ' + shipNames[0] :
-			((p1Where === 'pirates' && p2Where === 'pirates')? 'You are two pirate gangs on a summer sea storm about to raze the ship S. S. ' +  shipNames[0] :
-			((p1Where === 'pirates')? this.p1.name : this.p2.name) + ' leads a pirate boat to raze the ship S. S. ' + shipNames[0]
-			+ ' where ' + ((p1Where === 'pirates')? this.p2.name : this.p1.name)) + ' is enjoying a sea travel,';
+			// Let's see what's the scenario and change space and time.
+			if (this.seasonal.scenario === 'lotr') {
+				this.addPseudoWeather('wonderroom', this.p1.pokemon[0], null, '[of] Seasonal');
+				delete this.pseudoWeather.wonderroom.duration;
+			} else if (this.seasonal.scenario === 'terminator') {
+				this.addPseudoWeather('trickroom', this.p1.pokemon[0], null, '[of] Seasonal');
+				delete this.pseudoWeather.trickroom.duration;
+			} else if (this.seasonal.scenario === 'gen1') {
+				this.addPseudoWeather('magicroom', this.p1.pokemon[0], null, '[of] Seasonal');
+				delete this.pseudoWeather.magicroom.duration;
+			} else if (this.seasonal.scenario === 'desert') {
+				this.setWeather(['Sandstorm', 'Sunnyday'][this.random(2)]);
+				delete this.weatherData.duration;
+			} else if (this.seasonal.scenario === 'shipwreck') {
+				this.setWeather('raindance');
+				this.addPseudoWeather('watersport', this.p1.pokemon[0], null, '[of] Seasonal');
+				delete this.pseudoWeather.watersport.duration;
+				delete this.weatherData.duration;
+			}
 
-			this.add('-message',
-				'Alas, poor trainers! ' + whereAreThey + " when a sudden summer Hurricane made a Wailord hit your transport, and now it's sinking! "
-				+ "There are not enough life boats for everyone nor trainers ain't sharing their Water-type friends, "
-				+ "so you'll have to fight to access a life boat! Good luck! You have to be fast to not to be hit by the Hurricane!"
-			);*/
+			// Add the message for the scenario.
+			this.add('-message', {
+				'gen1': 'It appears that you have travelled to the past! This looks like... 1997!',
+				'lotr': 'You find yourselves in middle of an epic battle for the Middle Earth!',
+				'redblue': 'Wow! You are taking part in the most epic Pokémon fight ever!',
+				'terminator': 'You are caught up in the epic apocalyptic battle of the machines against the humans!',
+				'desert': "It's no less than the exodus itself!",
+				'shipwreck': "Wow, that giant ship has just been rekt by an iceberg. And you're on it now. And the fish Pokémon want to eat the sailors!"
+			}[this.seasonal.scenario]);
+		},
+		onFaint: function (source, target) {
+			if (this.seasonal.scenario === 'gen1') {
+				source.removeVolatile('mustrecharge');
+			}
 		}
 	},
 
