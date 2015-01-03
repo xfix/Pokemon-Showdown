@@ -3239,7 +3239,8 @@ exports.BattleScripts = {
 					item: 'lightball',
 					level: 81,
 					shiny: false,
-					nature: 'Hasty'
+					nature: 'Hasty',
+					ability: 'Lightning Rod'
 				},
 				{
 					name: 'Lapras',
@@ -3249,7 +3250,8 @@ exports.BattleScripts = {
 					item: 'leftovers',
 					level: 80,
 					shiny: false,
-					nature: 'Modest'
+					nature: 'Modest',
+					ability: 'Water Absorb'
 				},
 				{
 					name: 'Snorlax',
@@ -3259,7 +3261,8 @@ exports.BattleScripts = {
 					item: 'chestoberry',
 					level: 82,
 					shiny: false,
-					nature: 'Naive'
+					nature: 'Naive',
+					ability: 'Thick Fat'
 				},
 				{
 					name: 'Venusaur',
@@ -3269,7 +3272,8 @@ exports.BattleScripts = {
 					item: 'grassgem',
 					level: 84,
 					shiny: false,
-					nature: 'Modest'
+					nature: 'Modest',
+					ability: 'Chlorophyll'
 				},
 				{
 					name: 'Charizard',
@@ -3279,7 +3283,8 @@ exports.BattleScripts = {
 					item: 'whiteherb',
 					level: 84,
 					shiny: false,
-					nature: 'Timid'
+					nature: 'Timid',
+					ability: 'Blaze'
 				},
 				{
 					name: 'Blastoise',
@@ -3289,7 +3294,8 @@ exports.BattleScripts = {
 					item: 'leftovers',
 					level: 84,
 					shiny: false,
-					nature: 'Modest'
+					nature: 'Modest',
+					ability: 'Torrent'
 				}
 			];
 		} else if (lead === 'pidgeot') {
@@ -3303,7 +3309,8 @@ exports.BattleScripts = {
 					item: 'pidgeotite',
 					level: 86,
 					shiny: false,
-					nature: 'Timid'
+					nature: 'Timid',
+					ability: 'Keen Eye'
 				},
 				{
 					name: 'Exeggutor',
@@ -3335,7 +3342,8 @@ exports.BattleScripts = {
 					item: 'focussash',
 					level: 84,
 					shiny: false,
-					nature: 'Modest'
+					nature: 'Modest',
+					ability: 'Magic Guard'
 				},
 				{
 					name: 'Arcanine',
@@ -3345,7 +3353,8 @@ exports.BattleScripts = {
 					item: 'expertbelt',
 					level: 88,
 					shiny: false,
-					nature: 'Jolly'
+					nature: 'Jolly',
+					ability: 'Flash Fire'
 				},
 				{
 					name: 'Machamp',
@@ -3355,7 +3364,8 @@ exports.BattleScripts = {
 					item: 'whiteherb',
 					level: 86,
 					shiny: false,
-					nature: 'Adamant'
+					nature: 'Adamant',
+					ability: 'No Guard'
 				}
 			];
 		} else if (lead === 'gengar') {
