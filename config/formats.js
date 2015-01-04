@@ -1744,23 +1744,62 @@ exports.Formats = [
 					move.category = 'Physical';
 				}
 			}
+			if (this.seasonal.scenario === 'lotr') {
+				if (move.id === 'growl') {
+					move.name = 'Throw ring to lava';
+					move.category = 'Special';
+					move.basePower = 160;
+					move.type = 'Fire';
+					move.accuracy = true;
+					move.self = {volatileStatus: 'mustrecharge'};
+					move.onTryHit = function () {
+						this.add('-message', 'Frodo throws the one ring into the lava!');
+					};
+				}
+			}
 		},
 		onSwitchIn: function (pokemon) {
-			if (pokemon.name === 'Frodo') {
-				this.add('-message', 'The One Ring gives power to Frodo!');
-				this.boost({def:2, spd:2}, pokemon);
-			}
-			if (pokemon.name === 'Gandalf') {
-				this.add('-message', 'Fly, you fools!');
-			}
-			if (pokemon.name === 'Saruman') {
-				this.add('-message', 'Against the power of Mordor there can be no victory.');
-			}
-			if (pokemon.name === 'Legolas') {
-				this.add('-message', "They're taking the hobbits to Isengard!");
-			}
-			if (pokemon.name === 'Boromir') {
-				this.add('-message', 'One does not simply walk into Mordor.');
+			if (this.seasonal.scenario === 'lotr') {
+				if (pokemon.name === 'Frodo') {
+					this.add('-message', 'The One Ring gives power to Frodo!');
+					this.boost({def:2, spd:2}, pokemon);
+				}
+				if (pokemon.name === 'Gandalf') {
+					this.add('-message', 'Fly, you fools!');
+					this.boost({spd:1}, pokemon);
+				}
+				if (pokemon.name === 'Saruman') {
+					this.add('-message', 'Against the power of Mordor there can be no victory.');
+					this.boost({spe:1}, pokemon);
+				}
+				if (pokemon.name === 'Legolas') {
+					this.add('-message', "They're taking the hobbits to Isengard!");
+					this.boost({atk:1, spa:1}, pokemon);
+				}
+				if (pokemon.name === 'Boromir') {
+					this.add('-message', 'One does not simply walk into Mordor.');
+					pokemon.addVolatile('confusion');
+				}
+				if (pokemon.name === 'Aragorn') {
+					this.add('-message', 'Aragorn, son of Arathor, king of Gondor.');
+					this.boost({spd:1}, pokemon);
+				}
+				if (pokemon.name === 'Pippin') {
+					this.add('-message', 'How about second breakfast?');
+					this.boost({def:1, spd:1}, pokemon);
+				}
+				if (pokemon.name === 'Merry') {
+					this.add('-message', "I don't think he knows about second breakfast, Pippin.");
+					this.boost({def:1, spd:1}, pokemon);
+				}
+				if (pokemon.name === 'Samwise') {
+					this.add('-message', 'Mr. Frodo!!');
+					this.boost({spe:3}, pokemon);
+				}
+				if (pokemon.name === 'Nazgûl') {
+					this.add('-message', 'One ring to rule them all.');
+					this.boost({spe:6}, pokemon);
+				}
 			}
 		}
 	},

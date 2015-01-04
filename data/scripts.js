@@ -3223,7 +3223,6 @@ exports.BattleScripts = {
 			// First team being generated, let's get one of the possibilities.
 			// We need a fix lead for obvious reasons.
 			lead = ['gallade', 'pikachu', 'genesect', 'gengar', 'groudon', 'kyogre'][this.random(6)];
-			lead = 'gallade';
 			this.seasonal = {'scenario': {'gallade':'lotr', 'pikachu':'redblue', 'genesect':'terminator', 'gengar':'gen1', 'groudon':'desert', 'kyogre':'shipwreck'}[lead]};
 		}
 
@@ -3499,6 +3498,7 @@ exports.BattleScripts = {
 					set.item = 'Eviolite';
 					set.level = 90;
 					set.evs = {hp:4, atk:126, def:126, spa:126, spd:126, spe:0};
+					if (p === 'baltoy') set.moves[0] = 'Growl';
 				}
 				team.push(set);
 			}
@@ -3527,7 +3527,7 @@ exports.BattleScripts = {
 				set.species = toId(set.name);
 				set.name = mordor[p];
 				if (p === 'yveltal') {
-					set.item = 'Choice Scarf';
+					set.item = 'Life Orb';
 					set.moves = ['oblivionwing', 'darkpulse', 'hurricane', 'uturn'];
 					set.nature = 'Modest';
 					set.evs = {hp:0, atk:4, def:0, spa:252, spd:0, spe:252};
@@ -3542,7 +3542,7 @@ exports.BattleScripts = {
 			set.species = toId(set.name);
 			set.name = 'Orc';
 			team.push(set);
-			var troll = ['conkeldurr', 'drowzee', 'hypno', 'seismitoad', 'weavile', 'machamp'][this.random(7)];
+			var troll = ['conkeldurr', 'drowzee', 'hypno', 'seismitoad', 'weavile', 'machamp'][this.random(6)];
 			set = this.randomSet(this.getTemplate(troll));
 			set.species = toId(set.name);
 			set.name = 'Troll';
