@@ -3467,6 +3467,7 @@ exports.BattleScripts = {
 			set.name = 'Aragorn';
 			set.item = 'Galladite';
 			set.moves = ['psychocut', 'swordsdance', ['drainpunch', 'closecombat'][this.random(2)], ['nightslash', 'leafblade', 'xscissor', 'stoneedge', 'doubleedge', 'knockoff'][this.random(6)]];
+			set.level = 72;
 			team.push(set);
 
 			// We get one elf.
@@ -3542,6 +3543,7 @@ exports.BattleScripts = {
 			set = this.randomSet(this.getTemplate(badhuman));
 			set.species = toId(set.name);
 			set.name = 'Mordor man';
+			if (set.level < 80) set.level = 80;
 			team.push(set);
 		} else if (lead === 'genesect') {
 			// Terminator team.
