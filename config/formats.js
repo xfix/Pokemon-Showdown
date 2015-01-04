@@ -1690,6 +1690,8 @@ exports.Formats = [
 		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod'],
 		onBegin: function () {
 			this.add('-message', "Dialga and Palkia have distorted space and time!");
+			// This shouldn't happen.
+			if (!this.seasonal) this.seasonal = {scenario: 'lotr'};
 
 			// Let's see what's the scenario and change space and time.
 			if (this.seasonal.scenario === 'lotr') {
@@ -1746,7 +1748,7 @@ exports.Formats = [
 		onSwitchIn: function (pokemon) {
 			if (pokemon.name === 'Frodo') {
 				this.add('-message', 'The One Ring gives power to Frodo!');
-				this.boost({def:2, spd:2, spe:2}, pokemon);
+				this.boost({def:1, spd:1}, pokemon);
 			}
 		}
 	},

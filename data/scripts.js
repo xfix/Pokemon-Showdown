@@ -3484,7 +3484,6 @@ exports.BattleScripts = {
 				set.species = toId(set.name);
 				set.name = fellowship[p];
 				// Add a way to go around dark-types.
-				set.level = 100;
 				for (var n=0; n<4; n++) {
 					var hasOrcKilling = false;
 					var move = this.getMove(set.moves[n]);
@@ -3496,7 +3495,8 @@ exports.BattleScripts = {
 				if (!hasOrcKilling) set.moves[3] = (template.baseStats.atk > template.baseStats.spa)? 'closecombat' : 'aurasphere';
 				if (p !== 'hoopa') {
 					set.item = 'Eviolite';
-					set.evs = {hp:4, atk:252, def:126, spa:252, spd:126, spe:0};
+					set.level = 90;
+					set.evs = {hp:4, atk:126, def:126, spa:126, spd:126, spe:0};
 				}
 				team.push(set);
 			}
