@@ -1723,7 +1723,7 @@ exports.Formats = [
 		},
 		onFaint: function (target, source) {
 			if (this.seasonal.scenario === 'gen1') {
-				source.removeVolatile('mustrecharge');
+				if (source && source.removeVolatile) source.removeVolatile('mustrecharge');
 				this.queue = [];
 			}
 		},
