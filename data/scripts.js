@@ -3237,7 +3237,7 @@ exports.BattleScripts = {
 					evs: {hp:0, atk:252, def:0, spa:0, spd:0, spe:252},
 					ivs: {hp:31, atk:31, def:31, spa:31, spd:31, spe:31},
 					item: 'lightball',
-					level: 100,
+					level: 90,
 					shiny: false,
 					nature: 'Jolly',
 					ability: 'Lightning Rod'
@@ -3339,7 +3339,7 @@ exports.BattleScripts = {
 					moves: ['psychic', 'focusblast', 'shadowball', 'reflect'],
 					evs: {hp:4, atk:0, def:0, spa:252, spd:0, spe:252},
 					ivs: {hp:31, atk:0, def:31, spa:31, spd:31, spe:31},
-					item: 'focussash',
+					item: 'lifeorb',
 					level: 80,
 					shiny: false,
 					nature: 'Modest',
@@ -3577,6 +3577,7 @@ exports.BattleScripts = {
 			humans.unshift(lead);
 			var names = ['John Connor', 'Sarah Connor', 'Terminator T-800', 'Kyle Reese', 'Miles Bennett Dyson', 'Dr. Silberman'];
 			var hasMega = false;
+			var makeZamSet = false;
 
 			for (var i = 0; i < 6; i++) {
 				var pokemon = humans[i];
@@ -3598,18 +3599,31 @@ exports.BattleScripts = {
 					set.level += 2;
 				}
 				// If we have Gardevoir, make it the mega. Then, Gallade.
-				if (humans[i] === 'gardevoir' && !hasMega) {
-					team[0].item = 'Focus Sash';
-					team[0].level = 90;
-					set.item = 'Gardevoirite';
-					hasMega = true;
+				if (humans[i] === 'gardevoir') {
+					if (!hasMega) {
+						set.item = 'Gardevoirite';
+						hasMega = true;
+						makeZamSet = true;
+					} else {
+						set.item = 'Life Orb';
+					}
 				}
-				if (humans[i] === 'gallade' && !hasMega) {
-					team[0].item = 'Focus Sash';
-					team[0].level = 90;
-					set.item = 'Galladite';
+				if (humans[i] === 'gallade') {
+					if (!hasMega) {
+						set.item = 'Galladite';
+						hasMega = true;
+						makeZamSet = true;
+					} else {
+						set.item = 'Life Orb';
+					}
 				}
 				team.push(set);
+			}
+			if (makeZamSet) {
+				team[0].item = 'Focus Sash';
+				team[0].level = 90;
+				team[0].moves = ['psychic', 'hiddenpowerground', 'shadowball', 'flamethrower'];
+				team[0].ivs = {hp:31, atk:31, def:31, spa:30, spd:30, spe:31};
 			}
 		} else if (lead === 'groudon') {
 			// Egyptians from the exodus battle.
@@ -3685,15 +3699,15 @@ exports.BattleScripts = {
 							break;
 						}
 					}
-					set.evs = {hp:252, atk:0, def:0, spa:0, spd:4, spe:0};
 					var isAtk = (template.baseStats.atk > template.baseStats.spa);
+					if (!hasFishKilling) {
+						set.moves[3] = isAtk? 'boltstrike' : 'thunder';
+					}
+					set.evs = {hp:252, atk:0, def:0, spa:0, spd:4, spe:0};
 					if (isAtk) {
 						set.evs.atk = 252;
 					} else {
 						set.evs.spa = 252;
-					}
-					if (!hasFishKilling) {
-						set.moves[3] = isAtk? 'boltstrike' : 'thunder';
 					}
 				}
 				team.push(set);
