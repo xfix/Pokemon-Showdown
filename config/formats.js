@@ -1714,17 +1714,16 @@ exports.Formats = [
 			// Add the message for the scenario.
 			this.add('-message', {
 				'gen1': 'It appears that you have travelled to the past! This looks like... 1997!',
-				'lotr': 'You find yourselves in middle of an epic battle for the Middle Earth!',
+				'lotr': 'You find yourselves in middle of an epic battle for Middle Earth!',
 				'redblue': 'Wow! You are taking part in the most epic Pokémon fight ever!',
 				'terminator': 'You are caught up in the epic apocalyptic battle of the machines against the humans!',
 				'desert': "It's no less than the exodus itself!",
 				'shipwreck': "Wow, that giant ship has just been rekt by an iceberg. And you're on it now. And the fish Pokémon want to eat the sailors!"
 			}[this.seasonal.scenario]);
 		},
-		onFaint: function (source, target) {
+		onFaint: function (target, source) {
 			if (this.seasonal.scenario === 'gen1') {
 				source.removeVolatile('mustrecharge');
-				source.removeVolatile('twoturnmove');
 				this.queue = [];
 			}
 		},
@@ -1739,6 +1738,15 @@ exports.Formats = [
 				if (move.id === 'amnesia') {
 					move.boosts = {spa:2, spd:2};
 				}
+				if (move.id === 'hyperbeam') {
+					move.category = 'Physical';
+				}
+			}
+		},
+		onSwitchIn: function (pokemon) {
+			if (pokemon.name === 'Frodo') {
+				this.add('-message', 'The One Ring gives power to Frodo!');
+				this.boost({def:2, spd:2, spe:2}, pokemon);
 			}
 		}
 	},

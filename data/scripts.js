@@ -3233,65 +3233,65 @@ exports.BattleScripts = {
 				{
 					name: 'Pika',
 					species: 'pikachu',
-					moves: ['volttackle', 'quickattack', 'irontail', 'thunderbolt'],
-					evs: {hp:0, atk:200, def:0, spa:56, spd:0, spe:252},
+					moves: ['volttackle', 'brickbreak', 'irontail', 'fakeout'],
+					evs: {hp:0, atk:252, def:0, spa:0, spd:0, spe:252},
 					ivs: {hp:31, atk:31, def:31, spa:31, spd:31, spe:31},
 					item: 'lightball',
-					level: 81,
+					level: 100,
 					shiny: false,
-					nature: 'Hasty',
+					nature: 'Jolly',
 					ability: 'Lightning Rod'
 				},
 				{
 					name: 'Lapras',
-					moves: ['confuseray', 'brine', 'blizzard', 'psychic'],
-					evs: {hp:252, atk:0, def:4, spa:252, spd:0, spe:0},
+					moves: ['hydropump', 'icebeam', 'thunderbolt', 'iceshard'],
+					evs: {hp:252, atk:4, def:0, spa:252, spd:0, spe:0},
 					ivs: {hp:31, atk:0, def:31, spa:31, spd:31, spe:31},
 					item: 'leftovers',
 					level: 80,
 					shiny: false,
-					nature: 'Modest',
+					nature: 'Quiet',
 					ability: 'Water Absorb'
 				},
 				{
 					name: 'Snorlax',
-					moves: ['shadowball', 'crunch', 'blizzard', 'gigaimpact'],
+					moves: ['bodyslam', 'crunch', 'earthquake', 'seedbomb'],
 					evs: {hp:252, atk:252, def:4, spa:0, spd:0, spe:0},
 					ivs: {hp:31, atk:31, def:31, spa:31, spd:31, spe:31},
 					item: 'leftovers',
 					level: 82,
 					shiny: false,
-					nature: 'Naive',
+					nature: 'Adamant',
 					ability: 'Thick Fat'
 				},
 				{
 					name: 'Venusaur',
-					moves: ['frenzyplant', 'gigadrain', 'sludgebomb', 'sleeppowder'],
-					evs: {hp:252, atk:0, def:0, spa:252, spd:4, spe:0},
-					ivs: {hp:31, atk:0, def:31, spa:31, spd:31, spe:31},
-					item: 'grassgem',
-					level: 84,
-					shiny: false,
-					nature: 'Modest',
-					ability: 'Chlorophyll'
-				},
-				{
-					name: 'Charizard',
-					moves: ['blastburn', 'overheat', 'airslash', 'dragonpulse'],
-					evs: {hp:4, atk:0, def:0, spa:252, spd:0, spe:252},
+					moves: ['leafstorm', 'earthquake', 'sludgebomb', 'sleeppowder'],
+					evs: {hp:252, atk:4, def:0, spa:252, spd:0, spe:0},
 					ivs: {hp:31, atk:0, def:31, spa:31, spd:31, spe:31},
 					item: 'whiteherb',
 					level: 84,
 					shiny: false,
+					nature: 'Quiet',
+					ability: 'Overgrow'
+				},
+				{
+					name: 'Charizard',
+					moves: ['fireblast', 'focusblast', 'airslash', 'dragonpulse'],
+					evs: {hp:4, atk:0, def:0, spa:252, spd:0, spe:252},
+					ivs: {hp:31, atk:0, def:31, spa:31, spd:31, spe:31},
+					item: 'charizarditey',
+					level: 80,
+					shiny: false,
 					nature: 'Timid',
-					ability: 'Blaze'
+					ability: 'Solar Power'
 				},
 				{
 					name: 'Blastoise',
-					moves: ['hydrocannon', 'blizzard', 'flashcannon', 'focusblast'],
+					moves: ['waterspout', 'hydropump', 'flashcannon', 'focusblast'],
 					evs: {hp:252, atk:0, def:4, spa:252, spd:0, spe:0},
 					ivs: {hp:31, atk:0, def:31, spa:31, spd:31, spe:31},
-					item: 'Blastoisinite',
+					item: 'choicescarf',
 					level: 84,
 					shiny: false,
 					nature: 'Modest',
@@ -3466,7 +3466,7 @@ exports.BattleScripts = {
 			set.species = toId(set.name);
 			set.name = 'Aragorn';
 			set.item = 'Galladite';
-			set.moves = ['psychocut', 'swordsdance', ['drainpunch', 'closecombat'][this.random(2)], ['nightslash', 'leafblade', 'xscissor', 'stoneedge', 'doubleedge', 'knockoff'][this.random(5)]];
+			set.moves = ['psychocut', 'swordsdance', ['drainpunch', 'closecombat'][this.random(2)], ['nightslash', 'leafblade', 'xscissor', 'stoneedge', 'doubleedge', 'knockoff'][this.random(6)]];
 			team.push(set);
 
 			// We get one elf.
@@ -3475,7 +3475,6 @@ exports.BattleScripts = {
 			set.species = toId(set.name);
 			set.name = {'jynx':'Galadriel', 'azelf':'Legolas', 'celebi':'Celeborn', 'victini':'Elrond'}[elf];
 			team.push(set);
-			delete elf;
 
 			// Now we add some other characters from the fellowship.
 			var fellowship = {'hoopa':'Gandalf', 'baltoy':'Frodo', 'munchlax':'Samwise'};
@@ -3485,14 +3484,21 @@ exports.BattleScripts = {
 				set.name = fellowship[p];
 				// Add a way to go around dark-types.
 				set.level = 100;
-				set.moves[3] = 'aurasphere';
+				for (var n=0; n<4; n++) {
+					var hasOrcKilling = false;
+					var move = this.getMove(set.moves[n]);
+					if (move.type in {'Bug':1, 'Fighting':1}) {
+						hasOrcKilling = true;
+						break;
+					}
+				}
+				if (!hasOrcKilling) set.moves[3] = (template.baseStats.atk > template.baseStats.spa)? 'closecombat' : 'aurasphere';
 				if (p !== 'hoopa') {
 					set.item = 'Eviolite';
 					set.evs = {hp:4, atk:252, def:126, spa:252, spd:126, spe:0};
 				}
 				team.push(set);
 			}
-			delete fellowship;
 
 			// And now an extra good guy.
 			var goodguy = [
@@ -3510,7 +3516,6 @@ exports.BattleScripts = {
 				'moltres':'Great Eagle', 'articuno':'Great Eagle', 'zapdos':'Great Eagle'
 			}[goodguy];
 			team.push(set);
-			delete goodguy;
 		} else if (lead === 'reshiram') {
 			// This is the Mordor team from the LOTR battle.
 			var mordor = {'reshiram':'Smaug', 'yveltal':'Nazgûl', 'hoopaunbound':'Saruman'};
@@ -3520,7 +3525,6 @@ exports.BattleScripts = {
 				set.name = mordor[p];
 				team.push(set);
 			}
-			delete mordor;
 
 			// This army has an orc, a troll, and a bad-guy human.
 			var orc = ['quilladin', 'chesnaught', 'granbull', 'drapion', 'pangoro', 'feraligatr', 'haxorus', 'garchomp'][this.random(8)];
@@ -3528,26 +3532,23 @@ exports.BattleScripts = {
 			set.species = toId(set.name);
 			set.name = 'Orc';
 			team.push(set);
-			delete orc;
 			var troll = ['conkeldurr', 'drowzee', 'hypno', 'seismitoad', 'weavile', 'bisharp', 'machamp'][this.random(7)];
 			set = this.randomSet(this.getTemplate(troll));
 			set.species = toId(set.name);
 			set.name = 'Troll';
 			team.push(set);
-			delete troll;
 			var badhuman = ['bisharp', 'alakazam', 'medicham', 'mrmime', 'gardevoir', 'hitmonlee', 'hitmonchan', 'hitmontop', 'meloetta', 'sawk', 'throh', 'scrafty'][this.random(12)];
 			set = this.randomSet(this.getTemplate(badhuman));
 			set.species = toId(set.name);
 			set.name = 'Mordor man';
 			team.push(set);
-			delete badhuman;
 		} else if (lead === 'genesect') {
 			// Terminator team.
 			set = this.randomSet(this.getTemplate(lead));
 			set.species = toId(set.name);
 			set.name = 'Terminator T-1000';
 			set.item = 'Choice Band';
-			set.moves = ['extremespeed', 'ironhead', 'blazekick', 'trickroom'];
+			set.moves = ['extremespeed', 'ironhead', 'blazekick', 'uturn'];
 			team.push(set);
 
 			// The rest are just random botmons
@@ -3562,10 +3563,10 @@ exports.BattleScripts = {
 				var template = this.getTemplate(pokemon);
 				set = this.randomSet(template, i);
 				set.species = toId(set.name);
-				set.name = 'Skynet Robot ' + names[i];
+				set.name = 'SkynetBot ' + names[i];
+				if (bots[i] === 'rotomfan') set.item = 'Life Orb';
 				team.push(set);
 			}
-			delete bots, names;
 		} else if (lead === 'alakazam') {
 			// Human survival team.
 			var humans = [
@@ -3582,10 +3583,22 @@ exports.BattleScripts = {
 				set.species = toId(set.name);
 				set.name = names[i];
 				// Give humans a way around robots
-				if (this.random(2) === 1) set.moves[3] = 'flamethrower';
+				for (var n=0; n<4; n++) {
+					var hasBotKilling = false;
+					var move = this.getMove(set.moves[n]);
+					if (move.type in {'Fire':1, 'Fighting':1, 'Ground':1}) {
+						hasBotKilling = true;
+						break;
+					}
+				}
+				if (!hasBotKilling) set.moves[3] = (template.baseStats.atk > template.baseStats.spa)? 'flareblitz' : 'flamethrower';
+				// If we have Gardevoir, make it the mega.
+				if (humans[i] === 'gardevoir') {
+					team[0].item = 'Focus Sash';
+					set.item = 'Gardevoirite';
+				}
 				team.push(set);
 			}
-			delete humans, names;
 		} else if (lead === 'groudon') {
 			// Egyptians from the exodus battle.
 			var egyptians = [
@@ -3607,10 +3620,9 @@ exports.BattleScripts = {
 				template = this.getTemplate(pokemon);
 				set = this.randomSet(template, i);
 				set.species = toId(set.name);
-				set.name = 'Egyptian ' + pokemon;
+				set.name = 'Egyptian ' + template.species;
 				team.push(set);
 			}
-			delete egyptians;
 		} else if (lead === 'probopass') {
 			// Jews from the exodus battle.
 			var jews = [
@@ -3628,10 +3640,9 @@ exports.BattleScripts = {
 				template = this.getTemplate(pokemon);
 				set = this.randomSet(template, i);
 				set.species = toId(set.name);
-				set.name = 'Hebrew ' + pokemon;
+				set.name = 'Hebrew ' + template.species;
 				team.push(set);
 			}
-			delete jews;
 		} else {
 			// Now the shipwreck battle, pretty straightforward.
 			if (lead === 'kyogre') {
@@ -3652,7 +3663,7 @@ exports.BattleScripts = {
 				var template = this.getTemplate(pokemon);
 				var set = this.randomSet(template, i);
 				// Sailor team is made of pretty bad mons, boost them a little.
-				if (lead === 'machamp') set.level = 95;
+				if (lead === 'machamp') set.level = 91;
 				team.push(set);
 			}
 		} 
