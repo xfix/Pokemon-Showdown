@@ -1748,7 +1748,19 @@ exports.Formats = [
 		onSwitchIn: function (pokemon) {
 			if (pokemon.name === 'Frodo') {
 				this.add('-message', 'The One Ring gives power to Frodo!');
-				this.boost({def:1, spd:1}, pokemon);
+				this.boost({def:2, spd:2}, pokemon);
+			}
+			if (pokemon.name === 'Gandalf') {
+				this.add('-message', 'Fly, you fools!');
+			}
+			if (pokemon.name === 'Saruman') {
+				this.add('-message', 'Against the power of Mordor there can be no victory.');
+			}
+			if (pokemon.name === 'Legolas') {
+				this.add('-message', "They're taking the hobbits to Isengard!");
+			}
+			if (pokemon.name === 'Boromir') {
+				this.add('-message', 'One does not simply walk into Mordor.');
 			}
 		}
 	},
