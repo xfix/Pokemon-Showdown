@@ -3576,6 +3576,7 @@ exports.BattleScripts = {
 			].randomize();
 			humans.unshift(lead);
 			var names = ['John Connor', 'Sarah Connor', 'Terminator T-800', 'Kyle Reese', 'Miles Bennett Dyson', 'Dr. Silberman'];
+			var hasMega = false;
 
 			for (var i = 0; i < 6; i++) {
 				var pokemon = humans[i];
@@ -3592,11 +3593,21 @@ exports.BattleScripts = {
 						break;
 					}
 				}
-				if (!hasBotKilling) set.moves[3] = (template.baseStats.atk > template.baseStats.spa)? 'flareblitz' : 'flamethrower';
-				// If we have Gardevoir, make it the mega.
-				if (humans[i] === 'gardevoir') {
+				if (!hasBotKilling) {
+					set.moves[3] = (template.baseStats.atk > template.baseStats.spa)? ['flareblitz', 'closecombat'][this.random(2)] : ['flamethrower', 'aurasphere'][this.random(2)];
+					set.level += 2;
+				}
+				// If we have Gardevoir, make it the mega. Then, Gallade.
+				if (humans[i] === 'gardevoir' && !hasMega) {
 					team[0].item = 'Focus Sash';
+					team[0].level = 90;
 					set.item = 'Gardevoirite';
+					hasMega = true;
+				}
+				if (humans[i] === 'gallade' && !hasMega) {
+					team[0].item = 'Focus Sash';
+					team[0].level = 90;
+					set.item = 'Galladite';
 				}
 				team.push(set);
 			}
@@ -3664,7 +3675,27 @@ exports.BattleScripts = {
 				var template = this.getTemplate(pokemon);
 				var set = this.randomSet(template, i);
 				// Sailor team is made of pretty bad mons, boost them a little.
-				if (lead === 'machamp') set.level = 91;
+				if (lead === 'machamp') {
+					set.level = 91;
+					for (var n=0; n<4; n++) {
+						var hasFishKilling = false;
+						var move = this.getMove(set.moves[n]);
+						if (move.type in {'Electric':1}) {
+							hasFishKilling = true;
+							break;
+						}
+					}
+					set.evs = {hp:252, atk:0, def:0, spa:0, spd:4, spe:0};
+					var isAtk = (template.baseStats.atk > template.baseStats.spa);
+					if (isAtk) {
+						set.evs.atk = 252;
+					} else {
+						set.evs.spa = 252;
+					}
+					if (!hasFishKilling) {
+						set.moves[3] = isAtk? 'boltstrike' : 'thunder';
+					}
+				}
 				team.push(set);
 			}
 		} 
