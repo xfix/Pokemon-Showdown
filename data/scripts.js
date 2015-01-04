@@ -3479,7 +3479,8 @@ exports.BattleScripts = {
 			// Now we add some other characters from the fellowship.
 			var fellowship = {'hoopa':'Gandalf', 'baltoy':'Frodo', 'munchlax':'Samwise'};
 			for (var p in fellowship) {
-				set = this.randomSet(this.getTemplate(p));
+				var template = this.getTemplate(p);
+				set = this.randomSet(template);
 				set.species = toId(set.name);
 				set.name = fellowship[p];
 				// Add a way to go around dark-types.
