@@ -3485,8 +3485,8 @@ exports.BattleScripts = {
 				set.species = toId(set.name);
 				set.name = fellowship[p];
 				// Add a way to go around dark-types.
-				for (var n=0; n<4; n++) {
-					var hasOrcKilling = false;
+				var hasOrcKilling = false;
+				for (var n = 0; n < 4; n++) {
 					var move = this.getMove(set.moves[n]);
 					if (move.type in {'Bug':1, 'Fighting':1}) {
 						hasOrcKilling = true;
@@ -3507,7 +3507,7 @@ exports.BattleScripts = {
 			var goodguy = [
 				'primeape', 'aegislash', 'mimejr', 'timburr', 'lucario',
 				['sudowoodo', 'trevenant', 'abomasnow', 'shiftry', 'cacturne', 'nuzleaf'][this.random(6)],
-				['pidgeot', 'staraptor', 'braviary', 'aerodactyl', 'noivern', 'lugia', 'hooh', 'moltres', 'articuno', 'zapdos'][this.random(10)],
+				['pidgeot', 'staraptor', 'braviary', 'aerodactyl', 'noivern', 'lugia', 'hooh', 'moltres', 'articuno', 'zapdos'][this.random(10)]
 			][this.random(7)];
 			set = this.randomSet(this.getTemplate(goodguy));
 			set.species = toId(set.name);
@@ -3599,9 +3599,9 @@ exports.BattleScripts = {
 				set = this.randomSet(template, i);
 				set.species = toId(set.name);
 				set.name = names[i];
+				var hasBotKilling = false;
 				// Give humans a way around robots
-				for (var n=0; n<4; n++) {
-					var hasBotKilling = false;
+				for (var n = 0; n < 4; n++) {
 					var move = this.getMove(set.moves[n]);
 					if (move.type in {'Fire':1, 'Fighting':1, 'Ground':1}) {
 						hasBotKilling = true;
@@ -3649,7 +3649,7 @@ exports.BattleScripts = {
 				'heliolisk', 'maractus', 'dugtrio', 'steelix', 'meowth', 'persian', 'gliscor', 'drapion'
 			].randomize();
 			var template = this.getTemplate(lead);
-			set = this.randomSet(template, i);
+			set = this.randomSet(template, 0);
 			set.species = toId(set.name);
 			set.name = 'Ramesses II';
 			set.ability = 'Water Absorb';
@@ -3686,14 +3686,15 @@ exports.BattleScripts = {
 			}
 		} else {
 			// Now the shipwreck battle, pretty straightforward.
+			var	seasonalPokemonList = [];
 			if (lead === 'kyogre') {
-				var	seasonalPokemonList = [
+				seasonalPokemonList = [
 					'carvanha', 'sharpedo', 'inkay', 'malamar', 'octillery', 'gyarados', 'clawitzer', 'whiscash', 'relicanth',
 					'thundurus', 'thundurustherian', 'tornadus', 'tornadustherian', 'wingull', 'pelipper', 'wailmer', 'wailord',
 					'avalugg', 'milotic'
 				].randomize();
 			} else if (lead === 'machamp') {
-				var	seasonalPokemonList = [
+				seasonalPokemonList = [
 					'chatot', 'feraligatr', 'poliwrath', 'swampert', 'barbaracle', 'carracosta', 'lucario', 'ursaring', 'vigoroth',
 					'machoke', 'machop', 'conkeldurr', 'timburr', 'gurdurr'
 				].randomize();
@@ -3706,8 +3707,8 @@ exports.BattleScripts = {
 				// Sailor team is made of pretty bad mons, boost them a little.
 				if (lead === 'machamp') {
 					set.level = 91;
-					for (var n=0; n<4; n++) {
-						var hasFishKilling = false;
+					var hasFishKilling = false;
+					for (var n = 0; n < 4; n++) {
 						var move = this.getMove(set.moves[n]);
 						if (move.type in {'Electric':1}) {
 							hasFishKilling = true;
@@ -3716,7 +3717,7 @@ exports.BattleScripts = {
 					}
 					var isAtk = (template.baseStats.atk > template.baseStats.spa);
 					if (!hasFishKilling) {
-						set.moves[3] = isAtk? 'boltstrike' : 'thunder';
+						set.moves[3] = isAtk ? 'boltstrike' : 'thunder';
 					}
 					set.evs = {hp:252, atk:0, def:0, spa:0, spd:4, spe:0};
 					if (isAtk) {
@@ -3729,7 +3730,7 @@ exports.BattleScripts = {
 				}
 				team.push(set);
 			}
-		} 
+		}
 
 		return team;
 	}
