@@ -1800,6 +1800,13 @@ exports.Formats = [
 					this.add('-message', 'One ring to rule them all.');
 					this.boost({spe:6}, pokemon);
 				}
+				if (pokemon.name === 'Smaug') {
+					this.add('-message', 'I am fire. I am death.');
+				}
+				if (pokemon.name === 'Treebeard') {
+					this.add('-message', 'Come, my friends. The ents are going to war!');
+					this.boost({spe:2}, pokemon);
+				}
 			}
 		}
 	},

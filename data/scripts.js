@@ -3513,10 +3513,10 @@ exports.BattleScripts = {
 			set.species = toId(set.name);
 			set.name = {
 				'primeape':'Gimli', 'aegislash':'Faramir', 'mimejr':'Pippin', 'timburr':'Merry', 'lucario':'Boromir',
-				'trevenant':'Treebeard', 'sudowoodo':'An ent', 'abomasnow':'An ent', 'shiftry':'An ent', 'cacturne':'An ent',
-				'nuzleaf':'An ent', 'pidgeot':'Great Eagle', 'staraptor':'Great Eagle', 'braviary':'Great Eagle',
-				'aerodactyl':'Great Eagle', 'noivern':'Great Eagle', 'lugia':'Great Eagle', 'hooh':'Great Eagle',
-				'moltres':'Great Eagle', 'articuno':'Great Eagle', 'zapdos':'Great Eagle'
+				'trevenant':'Treebeard', 'sudowoodo':'Birchseed', 'abomasnow':'Fimbrethil', 'shiftry':'Quickbeam',
+				'cacturne':'Finglas', 'nuzleaf':'Lindenroot', 'pidgeot':'Great Eagle', 'staraptor':'Great Eagle',
+				'braviary':'Great Eagle', 'aerodactyl':'Great Eagle', 'noivern':'Great Eagle', 'lugia':'Great Eagle',
+				'hooh':'Great Eagle', 'moltres':'Great Eagle', 'articuno':'Great Eagle', 'zapdos':'Great Eagle'
 			}[goodguy];
 			team.push(set);
 		} else if (lead === 'reshiram') {
@@ -3653,6 +3653,7 @@ exports.BattleScripts = {
 			set.species = toId(set.name);
 			set.name = 'Ramesses II';
 			set.ability = 'Water Absorb';
+			set.item = 'Life Orb';
 			team.push(set);
 
 			for (var i = 1; i < 6; i++) {
@@ -3723,6 +3724,8 @@ exports.BattleScripts = {
 					} else {
 						set.evs.spa = 252;
 					}
+				} else if (pokemon === 'kyogre') {
+					set.item = 'Choice Scarf';
 				}
 				team.push(set);
 			}
