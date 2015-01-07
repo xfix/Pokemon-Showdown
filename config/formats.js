@@ -1691,9 +1691,19 @@ exports.Formats = [
 		team: 'randomSeasonalSFT',
 		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod'],
 		onBegin: function () {
-			this.add('-message', "Dialga and Palkia have distorted space and time!");
+			this.add('message', "Dialga and Palkia have distorted space and time!");
 			// This shouldn't happen.
 			if (!this.seasonal) this.seasonal = {scenario: 'lotr'};
+
+			// Add the message for the scenario.
+			this.add('-message', {
+				'gen1': "It appears that you have travelled to the past! This looks like... 1997!",
+				'lotr': "You find yourselves in middle of an epic battle for Middle Earth!",
+				'redblue': "Wow! You are taking part in the most epic Pokémon fight ever!",
+				'terminator': "You are caught up in the epic apocalyptic battle of the machines against the humans!",
+				'desert': "It's no less than the exodus itself!",
+				'shipwreck': "You're on a giant ship that was rekt by an iceberg. And the fish Pokémon want to eat the sailors!"
+			}[this.seasonal.scenario]);
 
 			// Let's see what's the scenario and change space and time.
 			if (this.seasonal.scenario === 'lotr') {
@@ -1714,20 +1724,11 @@ exports.Formats = [
 				delete this.pseudoWeather.watersport.duration;
 				delete this.weatherData.duration;
 			}
-
-			// Add the message for the scenario.
-			this.add('-message', {
-				'gen1': 'It appears that you have travelled to the past! This looks like... 1997!',
-				'lotr': 'You find yourselves in middle of an epic battle for Middle Earth!',
-				'redblue': 'Wow! You are taking part in the most epic Pokémon fight ever!',
-				'terminator': 'You are caught up in the epic apocalyptic battle of the machines against the humans!',
-				'desert': "It's no less than the exodus itself!",
-				'shipwreck': "Wow, that giant ship has just been rekt by an iceberg. And you're on it now. And the fish Pokémon want to eat the sailors!"
-			}[this.seasonal.scenario]);
 		},
 		onFaint: function (target, source) {
 			if (this.seasonal.scenario === 'gen1') {
 				if (source && source.removeVolatile) source.removeVolatile('mustrecharge');
+				if (target && target.side) target.side.removeSideCondition('reflect');
 				this.queue = [];
 			}
 		},
@@ -1758,21 +1759,34 @@ exports.Formats = [
 						this.add('-message', 'Frodo throws the one ring into the lava!');
 					};
 				}
+				if (move.id === 'thousandarrows') {
+					move.onBasePower = function (basePower, pokemon, target) {
+						if (target.name === 'Smaug') {
+							this.add('-message', "Bard's arrow pierces through Smaug's diamond-tough skin!");
+							return this.chainModify(3);
+						}
+					};
+				}
 			}
 		},
 		onSwitchIn: function (pokemon) {
 			if (this.seasonal.scenario === 'lotr') {
 				if (pokemon.name === 'Frodo') {
 					this.add('-message', 'The One Ring gives power to Frodo!');
-					this.boost({def:2, spd:2}, pokemon);
+					this.add('-start', pokemon, 'typechange', 'Ground/Fairy');
+					this.boost({def:2, spd:2, evasion:2}, pokemon);
+					pokemon.typesData = [
+						{type: 'Ground', suppressed: false,  isAdded: false},
+						{type: 'Fairy', suppressed: false,  isAdded: true}
+					];
 				}
 				if (pokemon.name === 'Gandalf') {
 					this.add('-message', 'Fly, you fools!');
-					this.boost({spd:1}, pokemon);
+					this.boost({spe:1}, pokemon);
 				}
 				if (pokemon.name === 'Saruman') {
 					this.add('-message', 'Against the power of Mordor there can be no victory.');
-					this.boost({spe:1}, pokemon);
+					this.boost({spd:1}, pokemon);
 				}
 				if (pokemon.name === 'Legolas') {
 					this.add('-message', "They're taking the hobbits to Isengard!");
@@ -1796,11 +1810,15 @@ exports.Formats = [
 				}
 				if (pokemon.name === 'Samwise') {
 					this.add('-message', 'Mr. Frodo!!');
+					this.add('-start', pokemon, 'typechange', 'Normal/Fairy');
 					this.boost({spe:3}, pokemon);
+					pokemon.typesData = [
+						{type: 'Normal', suppressed: false,  isAdded: false},
+						{type: 'Fairy', suppressed: false,  isAdded: true}
+					];
 				}
 				if (pokemon.name === 'Nazgûl') {
 					this.add('-message', 'One ring to rule them all.');
-					this.boost({spe:6}, pokemon);
 				}
 				if (pokemon.name === 'Smaug') {
 					this.add('-message', 'I am fire. I am death.');
@@ -1809,6 +1827,21 @@ exports.Formats = [
 					this.add('-message', 'Come, my friends. The ents are going to war!');
 					this.boost({spe:2}, pokemon);
 				}
+				if (pokemon.name === 'Bard') {
+					this.add('-message', 'Black arrow! Go now and speed well!');
+					this.boost({accuracy:1, evasion:1}, pokemon);
+				}
+				if (pokemon.name === 'Gollum') {
+					this.add('-message', 'My preciousssss!');
+					this.boost({accuracy:6, evasion:1}, pokemon);
+				}
+				if (pokemon.name === 'Moses') {
+					this.add('-message', 'Let my people go!');
+					this.boost({spd:1}, pokemon);
+				}
+			}
+			if (this.seasonal.scenario === 'gen1') {
+				pokemon.side.removeSideCondition('reflect');
 			}
 		}
 	},
