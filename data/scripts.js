@@ -3834,5 +3834,90 @@ exports.BattleScripts = {
 		}
 
 		return team;
+	},
+	randomSeasonalMulanTeam: function (side) {
+		var side = 'china';
+		var team = [];
+		var pokemon = '';
+		var template = {};
+		var set = {};
+		var megaCount = 0;
+
+		// If the other team has been chosen, we get its opposing force.
+		if (this.seasonal && this.seasonal.side) {
+			side = (this.seasonal.side === 'hun' ? 'china' : 'hun');
+		} else {
+			// First team being generated, pick a side at random.
+			side = (Math.random() > 0.5 ? 'china' : 'hun');
+			this.seasonal = {'side': side};
+		}
+
+		if (side === 'china') {
+			var chinese = [
+				'bisharp', 'gallade', 'hitmonchan', 'hitmonlee', 'hitmontop', 'infernape', 'machoke', 'medicham', 'mienshao',
+				'pangoro', 'sawk', 'scrafty', 'scizor', 'throh', 'ursaring', 'vigoroth', 'weavile', 'zangoose'
+			].randomize();
+
+			// General Shang is a Lucario
+			chinese.unshift('lucario');
+			// Chien-Po is really, um, "round", so he samples from a different pool of Pokemon
+			chinese[4] = ['blastoise', 'snorlax', 'golem', 'lickilicky', 'poliwrath'][this.random(5)];
+
+			// Add the members of the army.
+			var names = ["Li Shang", "Mulan", "Yao", "Ling", "Chien-Po"];
+			for (var i = 0; i < 5; i++) {
+				pokemon = chinese[i];
+				template = this.getTemplate(pokemon);
+				set = this.randomSet(template, i, !!megaCount);
+				if (this.getItem(set.item).megaStone) megaCount++;
+				set.species = toId(set.name);
+				set.name = names[i];
+				set.gender = (set.name === "Mulan" ? 'F' : 'M');
+				set.moves[4] = 'sing';
+				set.moves[5] = 'flameburst';
+				team.push(set);
+			}
+
+			// Add Eddie Murphy-- I mean, Mushu, to the team as a Dragonair.
+			template = this.getTemplate('dragonair');
+			set = this.randomSet(template, 5);
+			set.species = toId(set.name);
+			set.name = "Mushu";
+			set.gender = 'M';
+			set.moves[4] = 'sing';
+			set.moves[5] = 'flamethrower';
+			team.push(set);
+		} else {
+			var huns = [
+				'aggron', 'chesnaught', 'conkeldurr', 'electivire', 'emboar', 'excadrill', 'exploud', 'feraligatr', 'granbull',
+				'haxorus', 'machamp', 'nidoking', 'rhyperior', 'swampert', 'tyranitar'
+			].randomize();
+
+			// The hun army has five huns.
+			for (var i = 0; i < 5; i++) {
+				pokemon = huns[i];
+				template = this.getTemplate(pokemon);
+				set = this.randomSet(template, i, !!megaCount);
+				if (this.getItem(set.item).megaStone) megaCount++;
+				if (i === 0) {
+					set.species = toId(set.name);
+					set.name = "Shan Yu";
+				} else {
+					set.species = toId(set.name);
+					set.name = "Hun " + template.species;
+				}
+				set.gender = 'M';
+				team.push(set);
+			}
+
+			// Now add Shan Yu's falcon. Might remove or nerf if it proves too OP against the fighting-heavy China team.
+			pokemon = ['aerodactyl', 'braviary', 'fearow', 'honchkrow', 'mandibuzz', 'pidgeot', 'staraptor'][this.random(7)];
+			template = this.getTemplate(pokemon);
+			set = this.randomSet(template, i, !!megaCount);
+			set.species = toId(set.name);
+			set.name = "Shan Yu's Falcon";
+			team.push(set);
+		}
+		return team;
 	}
 };
