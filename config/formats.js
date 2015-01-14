@@ -1920,6 +1920,12 @@ exports.Formats = [
 				var offense = Math.floor(this.seasonal.morale / 2) - 1;
 				var defense = Math.ceil(this.seasonal.morale / 2) - 1;
 				this.boost({atk: offense, spa: offense, def: defense, spd: defense}, pokemon, pokemon, this.getMove('sing'));
+
+				// Make Mushu Dragon/Fire type.
+				if (pokemon.name === 'Mushu') {
+					pokemon.addType('Fire');
+					this.add('-start', pokemon, 'typeadd', 'Fire', '[from] ' + pokemon);
+				}
 			}
 		},
 		onResidual: function () {

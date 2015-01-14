@@ -3860,8 +3860,8 @@ exports.BattleScripts = {
 
 			// General Shang is a Lucario
 			chinese.unshift('lucario');
-			// Chien-Po is really, um, "round", so he samples from a different pool of Pokemon
-			chinese[4] = ['blastoise', 'snorlax', 'golem', 'lickilicky', 'poliwrath'][this.random(5)];
+			// Chien-Po is really, um, "round", so he samples from a different pool of Pokémon.
+			chinese[4] = ['blastoise', 'snorlax', 'golem', 'lickilicky', 'poliwrath', 'hariyama'][this.random(6)];
 
 			// Add the members of the army.
 			var names = ["Li Shang", "Mulan", "Yao", "Ling", "Chien-Po"];
