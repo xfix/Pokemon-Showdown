@@ -1966,6 +1966,14 @@ exports.Formats = [
 		ruleset: ['OU']
 	},
 	{
+		name: "Skillmons OU",
+		section: "Other Metagames",
+
+		mod: 'skillmons',
+		ruleset: ['Pokemon', 'Standard'],
+		banlist: ['Uber']
+	},
+	{
 		name: "350 Cup",
 		section: "Other Metagames",
 
