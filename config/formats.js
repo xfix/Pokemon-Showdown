@@ -1958,9 +1958,16 @@ exports.Formats = [
 	///////////////////////////////////////////////////////////////////
 
 	{
-		name: "350 Cup",
+		name: "[Gen 5] Joimmons OU",
 		section: "Other Metagames",
 		column: 3,
+
+		mod: 'joimmons',
+		ruleset: ['OU']
+	},
+	{
+		name: "350 Cup",
+		section: "Other Metagames",
 
 		mod: '350cup',
 		ruleset: ['Ubers', 'Evasion Moves Clause'],

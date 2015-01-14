@@ -1,4 +1,6 @@
 exports.BattleScripts = {
+	inherit: 'gen5',
+	gen: 5,
 	getDamage: function(pokemon, target, move, suppressMessages) {
 		if (typeof move === 'string') move = this.getMove(move);
 
