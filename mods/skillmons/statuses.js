@@ -13,10 +13,35 @@ exports.BattleStatuses = {
 	},
 	frz: {
 		inherit: true,
+		onStart: function (target) {
+			this.add('-status', target, 'frz');
+			if (target.species === 'Shaymin-Sky' && target.baseTemplate.species === target.species) {
+				var template = this.getTemplate('Shaymin');
+				target.formeChange(template);
+				target.baseTemplate = template;
+				target.setAbility(template.abilities['0']);
+				target.baseAbility = target.ability;
+				target.details = template.species + (target.level === 100 ? '' : ', L' + target.level) + (target.gender === '' ? '' : ', ' + target.gender) + (target.set.shiny ? ', shiny' : '');
+				this.add('detailschange', target, target.details);
+				this.add('message', target.species + " has reverted to Land Forme! (placeholder)");
+			}
+			this.effectData.startTime = 4;
+			this.effectData.time = this.effectData.startTime;
+		},
 		onHit: function (target, source, move) {
 			if (move.thawsTarget || move.type in {'Fire':1, 'Rock':1, 'Fighting':1, 'Normal':1, 'Ground':1}) {
 				target.cureStatus();
 			}
+		},
+		onBeforeMovePriority: 2,
+		onBeforeMove: function (pokemon, target, move) {
+			pokemon.statusData.time--;
+			if (pokemon.statusData.time <= 0) {
+				pokemon.cureStatus();
+				return;
+			}
+			this.add('cant', pokemon, 'frz');
+			return false;
 		}
 	},
 	confusion: {
