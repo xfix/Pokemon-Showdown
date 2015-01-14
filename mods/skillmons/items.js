@@ -76,7 +76,7 @@ exports.BattleItems = {
 			var toBoost = 'atk';
 			var previousMax = pokemon.baseStats.atk;
 			for (var i in pokemon.baseStats) {
-				if (pokemon.baseStats[i] > previousMax) {
+				if (pokemon.baseStats[i] > previousMax && pokemon.boosts[i] < 6) {
 					toBoost = i;
 					previousMax = pokemon.baseStats[i];
 				}
