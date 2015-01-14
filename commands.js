@@ -130,7 +130,21 @@ var commands = exports.commands = {
 			switch (targetCmd) {
 			case 'me':
 			case 'announce':
+				break;
 			case 'invite':
+				var targetRoomid = toId(target.substr(8));
+				if (targetRoomid === 'global') return false;
+
+				var targetRoom = Rooms.search(targetRoomid);
+				if (!targetRoom) return connection.send('|pm|' + user.getIdentity() + '|' + targetUser.getIdentity() + '|/text The room "' + targetRoomid + '" does not exist.');
+				if (targetRoom.staffRoom && !targetUser.isStaff) return connection.send('|pm|' + user.getIdentity() + '|' + targetUser.getIdentity() + '|/text User "' + this.targetUsername + '" requires global auth to join room "' + targetRoom.id + '".');
+				if (targetRoom.isPrivate && targetRoom.modjoin && targetRoom.auth) {
+					if (Config.groupsranking.indexOf(targetRoom.auth[targetUser.userid] || ' ') < Config.groupsranking.indexOf(targetRoom.modjoin) || !targetUser.can('bypassall')) {
+						return connection.send('|pm|' + user.getIdentity() + '|' + targetUser.getIdentity() + '|/text The room "' + targetRoomid + '" does not exist.');
+					}
+				}
+
+				target = '/invite ' + targetRoom.id;
 				break;
 			default:
 				return connection.send('|pm|' + user.getIdentity() + '|' + targetUser.getIdentity() + "|/text The command '/" + targetCmd + "' was unrecognized or unavailable in private messages. To send a message starting with '/" + targetCmd + "', type '//" + targetCmd + "'.");
@@ -236,12 +250,12 @@ var commands = exports.commands = {
 				Rooms.global.writeChatRoomData();
 			}
 		} else {
-			if (target in Config.groups) {
-				room.modjoin = target;
-				this.addModCommand("" + user.name + " set modjoin to " + target + ".");
-			} else if (target === 'on' || target === 'true' || !target) {
+			if ((target === 'on' || target === 'true' || !target) || !user.can('privateroom')) {
 				room.modjoin = true;
 				this.addModCommand("" + user.name + " turned on modjoin.");
+			} else if (target in Config.groups) {
+				room.modjoin = target;
+				this.addModCommand("" + user.name + " set modjoin to " + target + ".");
 			} else {
 				this.sendReply("Unrecognized modjoin setting.");
 				return false;
@@ -827,7 +841,7 @@ var commands = exports.commands = {
 		} else if (acAccount) {
 			this.privateModCommand("(" + targetUser.name + "'s ac account: " + acAccount + ")");
 		}
-		this.add('|unlink|' + this.getLastIdOf(targetUser));
+		this.add('|unlink|hide|' + this.getLastIdOf(targetUser));
 
 		targetUser.lock();
 	},
@@ -881,7 +895,7 @@ var commands = exports.commands = {
 			this.privateModCommand("(" + targetUser.name + "'s ac account: " + acAccount + ")");
 		}
 
-		this.add('|unlink|' + this.getLastIdOf(targetUser));
+		this.add('|unlink|hide|' + this.getLastIdOf(targetUser));
 		targetUser.ban();
 	},
 
