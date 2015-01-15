@@ -91,22 +91,30 @@ exports.BattleStatuses = {
 	stall: {
 		// Protect, Detect, Endure counter
 		duration: 2,
-		counterMax: 256,
 		onStart: function () {
-			this.effectData.counter = 3;
+			this.effectData.counter = 1;
+			this.effectData.move = this.activeMove.id;
 		},
 		onStallMove: function () {
-			// this.effectData.counter should never be undefined here.
-			// However, just in case, use 1 if it is undefined.
-			var counter = this.effectData.counter || 1;
-			this.debug("Success chance: " + Math.round(100 / counter) + "%");
-			return (this.random(counter) === 0);
+			// Don't allow pointless Endure stall
+			var move = this.activeMove.id;
+			var endure = (move === 'endure' || move === 'craftyshield');
+			return this.effectData.counter < (endure ? 1 : 5);
+		},
+		onFoeModifyMove: function (move) {
+			if (this.effectData.counter !== 1) {
+				move.isNotProtectable = true;
+			}
+		},
+		onSourceModifyDamage: function (damage, source, target, move) {
+			var move = this.effectData.move;
+			if (move === 'endure' || move === 'craftyshield' || this.effectData.duration === 1) return;
+			return this.chainModify(1 - Math.pow(2, 1 - this.effectData.counter));
 		},
 		onRestart: function () {
-			if (this.effectData.counter < this.effect.counterMax) {
-				this.effectData.counter *= 3;
-			}
+			this.effectData.counter += 1;
 			this.effectData.duration = 2;
+			this.effectData.move = this.activeMove.id;
 		}
 	}
 };
