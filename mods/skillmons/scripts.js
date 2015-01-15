@@ -4,6 +4,13 @@ exports.BattleScripts = {
 	// It makes all moves to have true accuracy.
 	init: function() {
 		for (var i in this.data.Movedex) {
+			if (typeof this.data.Movedex[i].basePower === 'number' && this.data.Movedex[i].basePower > 0) {
+				var accuracy = (this.data.Movedex[i].accuracy === true) ? 100 : this.data.Movedex[i].accuracy;
+				var basePower = Math.floor(this.data.Movedex[i].basePower * accuracy / 100);
+				if (this.data.Movedex[i].critRatio === 2) basePower *= 1.125;
+				if (this.data.Movedex[i].critRatio === 3) basePower *= 1.25;
+				this.modData('Movedex', i).basePower = basePower;
+			}
 			this.modData('Movedex', i).accuracy = true;
 		}
 	},
