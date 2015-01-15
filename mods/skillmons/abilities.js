@@ -86,7 +86,7 @@ exports.BattleAbilities = {
 			}
 			var boost = {};
 			boost[toBoost] = 2;
-			boost[toLower] = -2;
+			boost[toLower] = -1;
 			this.boost(boost);
 		}
 	},
