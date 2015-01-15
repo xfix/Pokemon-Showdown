@@ -188,5 +188,6 @@ exports.BattleAbilities = {
 		onSetStatus: function (status, target, source) {
 			this.add('-message', 'Wonder Skin blocks status change.');
 			return false;
+		}
 	}
 };
