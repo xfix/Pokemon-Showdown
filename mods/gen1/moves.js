@@ -232,7 +232,7 @@ exports.BattleMovedex = {
 					this.add('-message', 'The foe ' + target.name + ' can\'t be hit underground!');
 					return null;
 				}
-			}
+			},
 			this.add('-prepare', attacker, move.name, defender);
 			if (!this.runEvent('ChargeMove', attacker, defender, move)) {
 				this.add('-anim', attacker, move.name, defender);
