@@ -1991,8 +1991,8 @@ exports.Formats = [
 		section: "Other Metagames",
 
 		mod: 'skillmons',
-		ruleset: ['Pokemon', 'Standard'],
-		banlist: ['Uber']
+		ruleset: ['Pokemon', 'Standard', 'Team Preview'],
+		banlist: ['Uber', 'Soul Dew']
 	},
 	{
 		name: "350 Cup",
