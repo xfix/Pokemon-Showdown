@@ -7,7 +7,7 @@ exports.BattleStatuses = {
 		inherit: true,
 		onStart: function (target) {
 			this.add('-status', target, 'slp');
-			this.effectData.startTime = 2;
+			this.effectData.startTime = 3;
 			this.effectData.time = this.effectData.startTime;
 		}
 	},
@@ -25,7 +25,7 @@ exports.BattleStatuses = {
 				this.add('detailschange', target, target.details);
 				this.add('message', target.species + " has reverted to Land Forme! (placeholder)");
 			}
-			this.effectData.startTime = 4;
+			this.effectData.startTime = 5;
 			this.effectData.time = this.effectData.startTime;
 		},
 		onHit: function (target, source, move) {
