@@ -52,6 +52,10 @@ exports.BattleAbilities = {
 		onModifyAtkPriority: 5,
 		onModifyAtk: function (atk) {
 			return this.modify(atk, 1.3);
+		},
+		onModifySpAPriority: 5,
+		onModifySpA: function (spa) {
+			return this.modify(spa, 0.8);
 		}
 	},
 	keeneye: {
