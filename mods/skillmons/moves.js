@@ -184,7 +184,7 @@ exports.BattleMovedex = {
 	glaciate: {
 		inherit: true,
 		basePower: 61,
-		secondary: {chance: 100, {boosts: {spe: -1}}}
+		secondary: {chance: 100, boosts: {spe: -1}}
 	},
 	gravity: {
 		effect: {
@@ -249,7 +249,10 @@ exports.BattleMovedex = {
 	},
 	honeclaws: {
 		inherit: true,
-		secondary: {chance: 100, {boosts: {atk: 2, spa: 1}}}
+		boosts: {
+			atk: 2,
+			spa: 1
+		}
 	},
 	horndrill: {
 		inherit: true,
