@@ -3,7 +3,7 @@ exports.BattleAbilities = {
 		inherit: true,
 		onCriticalHit: function () {},
 		onHit: function (target, source, move) {
-			if (target.hp && move.category !== 'Status' && !move.damage && !move.damageCallback && target.runEffectiveness(move) > 0 && target.useItem()) {
+			if (target.hp && move.category !== 'Status' && !move.damage && !move.damageCallback && target.runEffectiveness(move) > 0) {
 				this.boost({atk: 6});
 			}
 		}
