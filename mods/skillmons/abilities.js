@@ -117,6 +117,17 @@ exports.BattleAbilities = {
 			return damage * 93.75 / 100;
 		}
 	},
+	shedskin: {
+		inherit: true,
+		onResidual: function (pokemon) {
+			if (!pokemon.lastShedSkin) pokemon.lastShedSkin = pokemon.battle.turn;
+			if (pokemon.hp && pokemon.status && pokemon.battle.turn - pokemon.lastShedSkin >= 3) {
+				this.add('-activate', pokemon, 'ability: Shed Skin');
+				pokemon.cureStatus();
+				pokemon.lastShedSkin = pokemon.battle.turn;
+			}
+		}
+	},
 	skilllink: {
 		inherit: true,
 		onModifyMove: function (move) {
