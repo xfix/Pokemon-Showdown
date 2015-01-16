@@ -152,5 +152,92 @@ exports.BattleScripts = {
 		baseDamage = this.runEvent('ModifyDamage', pokemon, target, move, baseDamage);
 
 		return Math.floor(baseDamage);
+	},
+	tryMoveHit: function (target, pokemon, move, spreadHit) {
+		if (move.selfdestruct && spreadHit) pokemon.hp = 0;
+
+		this.setActiveMove(move, pokemon, target);
+		var hitResult = true;
+
+		hitResult = this.singleEvent('PrepareHit', move, {}, target, pokemon, move);
+		if (!hitResult) {
+			if (hitResult === false) this.add('-fail', target);
+			return false;
+		}
+		this.runEvent('PrepareHit', pokemon, target, move);
+
+		if (move.target === 'all' || move.target === 'foeSide' || move.target === 'allySide' || move.target === 'allyTeam') {
+			if (move.target === 'all') {
+				hitResult = this.runEvent('TryHitField', target, pokemon, move);
+			} else {
+				hitResult = this.runEvent('TryHitSide', target, pokemon, move);
+			}
+			if (!hitResult) {
+				if (hitResult === false) this.add('-fail', target);
+				return true;
+			}
+			return this.moveHit(target, pokemon, move);
+		}
+
+		if ((move.affectedByImmunities && !target.runImmunity(move.type, true)) || (move.isSoundBased && (pokemon !== target || this.gen <= 4) && !target.runImmunity('sound', true))) {
+			return false;
+		}
+
+		if (typeof move.affectedByImmunities === 'undefined') {
+			move.affectedByImmunities = (move.category !== 'Status');
+		}
+
+		hitResult = this.runEvent('TryHit', target, pokemon, move);
+		if (!hitResult) {
+			if (hitResult === false) this.add('-fail', target);
+			return false;
+		}
+
+		var totalDamage = 0;
+		var damage = 0;
+		pokemon.lastDamage = 0;
+		if (move.multihit) {
+			var hits = move.multihit;
+			hits = Math.floor(hits);
+			var nullDamage = true;
+			var moveDamage;
+			// There is no need to recursively check the ´sleepUsable´ flag as Sleep Talk can only be used while asleep.
+			var isSleepUsable = move.sleepUsable || this.getMove(move.sourceEffect).sleepUsable;
+			var i;
+			for (i = 0; i < hits && target.hp && pokemon.hp; i++) {
+				if (pokemon.status === 'slp' && !isSleepUsable) break;
+
+				moveDamage = this.moveHit(target, pokemon, move);
+				if (moveDamage === false) break;
+				if (nullDamage && (moveDamage || moveDamage === 0)) nullDamage = false;
+				// Damage from each hit is individually counted for the
+				// purposes of Counter, Metal Burst, and Mirror Coat.
+				damage = (moveDamage || 0);
+				// Total damage dealt is accumulated for the purposes of recoil (Parental Bond).
+				totalDamage += damage;
+				this.eachEvent('Update');
+			}
+			if (i === 0) return true;
+			if (nullDamage) damage = false;
+			this.add('-hitcount', target, i);
+		} else {
+			damage = this.moveHit(target, pokemon, move);
+			totalDamage = damage;
+		}
+
+		if (move.recoil) {
+			this.damage(this.clampIntRange(Math.round(totalDamage * move.recoil[0] / move.recoil[1]), 1), pokemon, target, 'recoil');
+		}
+
+		if (target && move.category !== 'Status') target.gotAttacked(move, damage, pokemon);
+
+		if (!damage && damage !== 0) return damage;
+
+		if (target && !move.negateSecondary) {
+			this.singleEvent('AfterMoveSecondary', move, null, target, pokemon, move);
+			this.runEvent('AfterMoveSecondary', target, pokemon, move);
+		}
+
+		return damage;
 	}
 };
