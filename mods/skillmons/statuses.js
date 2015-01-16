@@ -56,12 +56,12 @@ exports.BattleStatuses = {
 			this.add('-end', target, 'confusion');
 		},
 		onModifyDamage: function (damage, source, target, move) {
-			pokemon.volatiles.confusion.time--;
-			if (!pokemon.volatiles.confusion.time) {
-				pokemon.removeVolatile('confusion');
+			source.volatiles.confusion.time--;
+			if (!source.volatiles.confusion.time) {
+				source.removeVolatile('confusion');
 				return;
 			}
-			this.add('-activate', pokemon, 'confusion');
+			this.add('-activate', source, 'confusion');
 			this.directDamage(Math.ceil(damage / 2));
 			return this.chainModify(0.5);
 		}
