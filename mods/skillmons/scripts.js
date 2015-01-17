@@ -14,6 +14,28 @@ exports.BattleScripts = {
 			this.modData('Movedex', i).accuracy = true;
 		}
 	},
+	side: {
+		points: {
+			atk: 0,
+			minusatk: 0,
+			def: 0,
+			minusdef: 0,
+			spa: 0,
+			minusspa: 0,
+			spd: 0,
+			minusspd: 0,
+			spe: 0,
+			minusspe: 0,
+			brn: 0,
+			par: 0,
+			psn: 0,
+			tox: 0,
+			slp: 0,
+			frz: 0,
+			flinch: 0,
+			confusion: 0
+		}
+	},
 	// Edit getDamage so there is no crits and no random damage.
 	getDamage: function (pokemon, target, move, suppressMessages) {
 		if (typeof move === 'string') move = this.getMove(move);
@@ -164,6 +186,7 @@ exports.BattleScripts = {
 			if (hitResult === false) this.add('-fail', target);
 			return false;
 		}
+
 		this.runEvent('PrepareHit', pokemon, target, move);
 
 		if (move.target === 'all' || move.target === 'foeSide' || move.target === 'allySide' || move.target === 'allyTeam') {
@@ -237,7 +260,201 @@ exports.BattleScripts = {
 			this.singleEvent('AfterMoveSecondary', move, null, target, pokemon, move);
 			this.runEvent('AfterMoveSecondary', target, pokemon, move);
 		}
-
 		return damage;
+	},
+	moveHit: function (target, pokemon, move, moveData, isSecondary, isSelf) {
+		var damage;
+		move = this.getMoveCopy(move);
+
+		if (!moveData) moveData = move;
+		var hitResult = true;
+
+		if (move.target === 'all' && !isSelf) {
+			hitResult = this.singleEvent('TryHitField', moveData, {}, target, pokemon, move);
+		} else if ((move.target === 'foeSide' || move.target === 'allySide') && !isSelf) {
+			hitResult = this.singleEvent('TryHitSide', moveData, {}, target.side, pokemon, move);
+		} else if (target) {
+			hitResult = this.singleEvent('TryHit', moveData, {}, target, pokemon, move);
+		}
+
+		if (target && !isSecondary && !isSelf) {
+			hitResult = this.runEvent('TryPrimaryHit', target, pokemon, moveData);
+			if (hitResult === 0) {
+				// special Substitute flag
+				hitResult = true;
+				target = null;
+			}
+		}
+		if (target && isSecondary && !moveData.self) {
+			hitResult = true;
+		}
+		if (!hitResult) {
+			return false;
+		}
+
+		if (target) {
+			var didSomething = false;
+
+			damage = this.getDamage(pokemon, target, moveData);
+
+			if ((damage || damage === 0) && !target.fainted) {
+				if (move.noFaint && damage >= target.hp) {
+					damage = target.hp - 1;
+				}
+				damage = this.damage(damage, target, pokemon, move);
+				if (!(damage || damage === 0)) {
+					this.debug('damage interrupted');
+					return false;
+				}
+				didSomething = true;
+			}
+			if (damage === false || damage === null) {
+				if (damage === false) {
+					this.add('-fail', target);
+				}
+				this.debug('damage calculation interrupted');
+				return false;
+			}
+
+			if (moveData.boosts && !target.fainted) {
+				hitResult = this.boost(moveData.boosts, target, pokemon, move);
+				didSomething = didSomething || hitResult;
+			}
+			if (moveData.heal && !target.fainted) {
+				var d = target.heal(Math.round(target.maxhp * moveData.heal[0] / moveData.heal[1]));
+				if (!d && d !== 0) {
+					this.add('-fail', target);
+					this.debug('heal interrupted');
+					return false;
+				}
+				this.add('-heal', target, target.getHealth);
+				didSomething = true;
+			}
+			if (moveData.status) {
+				if (!target.status) {
+					hitResult = target.setStatus(moveData.status, pokemon, move);
+					didSomething = didSomething || hitResult;
+				} else if (!isSecondary) {
+					if (target.status === moveData.status) {
+						this.add('-fail', target, target.status);
+					} else {
+						this.add('-fail', target);
+					}
+					return false;
+				}
+			}
+			if (moveData.forceStatus) {
+				hitResult = target.setStatus(moveData.forceStatus, pokemon, move);
+				didSomething = didSomething || hitResult;
+			}
+			if (moveData.volatileStatus) {
+				hitResult = target.addVolatile(moveData.volatileStatus, pokemon, move);
+				didSomething = didSomething || hitResult;
+			}
+			if (moveData.sideCondition) {
+				hitResult = target.side.addSideCondition(moveData.sideCondition, pokemon, move);
+				didSomething = didSomething || hitResult;
+			}
+			if (moveData.weather) {
+				hitResult = this.setWeather(moveData.weather, pokemon, move);
+				didSomething = didSomething || hitResult;
+			}
+			if (moveData.terrain) {
+				hitResult = this.setTerrain(moveData.terrain, pokemon, move);
+				didSomething = didSomething || hitResult;
+			}
+			if (moveData.pseudoWeather) {
+				hitResult = this.addPseudoWeather(moveData.pseudoWeather, pokemon, move);
+				didSomething = didSomething || hitResult;
+			}
+			if (moveData.forceSwitch) {
+				if (this.canSwitch(target.side)) didSomething = true; // at least defer the fail message to later
+			}
+			if (moveData.selfSwitch) {
+				if (this.canSwitch(pokemon.side)) didSomething = true; // at least defer the fail message to later
+			}
+			// Hit events
+			//   These are like the TryHit events, except we don't need a FieldHit event.
+			//   Scroll up for the TryHit event documentation, and just ignore the "Try" part. ;)
+			hitResult = null;
+			if (move.target === 'all' && !isSelf) {
+				if (moveData.onHitField) hitResult = this.singleEvent('HitField', moveData, {}, target, pokemon, move);
+			} else if ((move.target === 'foeSide' || move.target === 'allySide') && !isSelf) {
+				if (moveData.onHitSide) hitResult = this.singleEvent('HitSide', moveData, {}, target.side, pokemon, move);
+			} else {
+				if (moveData.onHit) hitResult = this.singleEvent('Hit', moveData, {}, target, pokemon, move);
+				if (!isSelf && !isSecondary) {
+					this.runEvent('Hit', target, pokemon, move);
+				}
+				if (moveData.onAfterHit) hitResult = this.singleEvent('AfterHit', moveData, {}, target, pokemon, move);
+			}
+
+			if (!hitResult && !didSomething && !moveData.self && !moveData.selfdestruct) {
+				if (!isSelf && !isSecondary) {
+					if (hitResult === false || didSomething === false) this.add('-fail', target);
+				}
+				this.debug('move failed because it did nothing');
+				return false;
+			}
+		}
+		if (moveData.self) {
+			var selfRoll;
+			if (!isSecondary && moveData.self.boosts) selfRoll = this.random(100);
+			// This is done solely to mimic in-game RNG behaviour. All self drops have a 100% chance of happening but still grab a random number.
+			if (typeof moveData.self.chance === 'undefined' || selfRoll < moveData.self.chance) {
+				this.moveHit(pokemon, pokemon, move, moveData.self, isSecondary, true);
+			}
+		}
+		if (moveData.secondaries && this.runEvent('TrySecondaryHit', target, pokemon, moveData)) {
+			for (var i = 0; i < moveData.secondaries.length; i++) {
+				var buffDebuff = '';
+				if (moveData.secondaries[i].boosts) {
+					for (var b in buffDebuff.boosts) {
+						if (b === 'atk') {
+							buffDebuff = b;
+							if (buffDebuff.boosts[b] < 0) buffDebuff = 'minusatk';
+						}
+						if (b === 'def') {
+							buffDebuff = b;
+							if (buffDebuff.boosts[b] < 0) buffDebuff = 'minusdef';
+						}
+						if (b === 'spa') {
+							buffDebuff = b;
+							if (buffDebuff.boosts[b] < 0) buffDebuff = 'minusspa';
+						}
+						if (b === 'spd') {
+							buffDebuff = b;
+							if (buffDebuff.boosts[b] < 0) buffDebuff = 'minusspd';
+						}
+						if (b === 'spe') {
+							buffDebuff = b;
+							if (buffDebuff.boosts[b] < 0) buffDebuff = 'minusspe';
+						}
+					}
+				} else if (moveData.secondaries[i].status) {
+					buffDebuff = moveData.secondaries[i].status;
+				} else if (moveData.secondaries[i].volatileStatus) {
+					buffDebuff = moveData.secondaries[i].volatileStatus;
+				}
+				target.side.points[buffDebuff] += moveData.secondaries[i].chance;
+				this.add('-message', target.side.name + ' acquired ' + moveData.secondaries[i].chance + ' points in ' + buffDebuff + ' [Total: ' + target.side.points[buffDebuff] + ']!');
+				if (target.side.points[buffDebuff] >= 100) {
+					target.side.points[buffDebuff] -= 100;
+					this.add('-message', 'A secondary effect on ' + buffDebuff + ' triggered!');
+					this.moveHit(target, pokemon, move, moveData.secondaries[i], true, isSelf);
+				}
+			}
+		}
+		if (target && target.hp > 0 && pokemon.hp > 0 && moveData.forceSwitch && this.canSwitch(target.side)) {
+			hitResult = this.runEvent('DragOut', target, pokemon, move);
+			if (hitResult) {
+				target.forceSwitchFlag = true;
+			} else if (hitResult === false) {
+				this.add('-fail', target);
+			}
+		}
+		if (move.selfSwitch && pokemon.hp) {
+			pokemon.switchFlag = move.selfSwitch;
+		}
 	}
 };
