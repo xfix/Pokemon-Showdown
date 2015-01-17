@@ -492,6 +492,7 @@ exports.BattleScripts = {
 		if (move.selfSwitch && pokemon.hp) {
 			pokemon.switchFlag = move.selfSwitch;
 		}
+		return damage;
 	},
 	comparePriority: function (a, b) {
 		a.priority = a.priority || 0;
