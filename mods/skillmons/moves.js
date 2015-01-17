@@ -493,6 +493,15 @@ exports.BattleMovedex = {
 			spa: -1
 		}
 	},
+	seedflare: {
+		inherit: true,
+		secondary: {
+			chance: 80,
+			boosts: {
+				spd: -1
+			}
+		},
+	},
 	shadowpunch: {
 		inherit: true,
 		ignoreDefensive: true
