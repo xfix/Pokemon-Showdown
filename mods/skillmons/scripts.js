@@ -15,26 +15,6 @@ exports.BattleScripts = {
 		}
 	},
 	side: {
-		points: {
-			atk: 50,
-			minusatk: 50,
-			def: 50,
-			minusdef: 50,
-			spa: 50,
-			minusspa: 50,
-			spd: 50,
-			minusspd: 50,
-			spe: 50,
-			minusspe: 50,
-			brn: 50,
-			par: 50,
-			psn: 50,
-			tox: 50,
-			slp: 50,
-			frz: 50,
-			flinch: 50,
-			confusion: 50
-		},
 		pnames: {
 			atk: 'Attack boost',
 			minusatk: 'Attack debuff',
@@ -430,59 +410,51 @@ exports.BattleScripts = {
 			for (var i = 0; i < moveData.secondaries.length; i++) {
 				var buffDebuff = 'none';
 				var points = moveData.secondaries[i].chance;
-				var side = moveData.secondaries[i].self ? pokemon.side : target.side;
-				var boosts = moveData.secondaries[i].self ? moveData.secondaries[i].self.boosts : moveData.secondaries[i].boosts;
-				var status = moveData.secondaries[i].self ? moveData.secondaries[i].self.status : moveData.secondaries[i].status;
-				var volatileStatus = moveData.secondaries[i].self ? moveData.secondaries[i].self.volatileStatus : moveData.secondaries[i].volatileStatus;
-				var secTarget = moveData.secondaries[i].self ? pokemon : target;
 				var messages = [];
-				var buffDebuff = 'nothing';
+				var buffing = 'nothing';
+				var boosts = false;
+				var status = false;
+				var volatileStatus = false;
+				var secTarget = false;
+				if (moveData.secondaries[i].self) {
+					boosts = moveData.secondaries[i].self.boosts;
+					status = moveData.secondaries[i].self.status;
+					volatileStatus = moveData.secondaries[i].self.volatileStatus;
+					secTarget = pokemon;
+				} else if (target) {
+					boosts = moveData.secondaries[i].boosts;
+					status = moveData.secondaries[i].status;
+					volatileStatus = moveData.secondaries[i].volatileStatus;
+					secTarget = target;
+				}
+				
 				// If boosts, go through all of them.
 				if (boosts) {
 					for (var b in boosts) {
-						if (b === 'atk') {
-							buffDebuff = b;
-							if (boosts[b] < 0) buffDebuff = 'minusatk';
-							messages.push([points, buffDebuff]);
-						}
-						if (b === 'def') {
-							buffDebuff = b;
-							if (boosts[b] < 0) buffDebuff = 'minusdef';
-							messages.push([points, buffDebuff]);
-						}
-						if (b === 'spa') {
-							buffDebuff = b;
-							if (boosts[b] < 0) buffDebuff = 'minusspa';
-							messages.push([points, buffDebuff]);
-						}
-						if (b === 'spd') {
-							buffDebuff = b;
-							if (boosts[b] < 0) buffDebuff = 'minusspd';
-							messages.push([points, buffDebuff]);
-						}
-						if (b === 'spe') {
-							buffDebuff = b;
-							if (boosts[b] < 0) buffDebuff = 'minusspe';
-							messages.push([points, buffDebuff]);
-						}
+						buffDebuff = (boosts[b] > 0) ? b : 'minus' + b;
+						messages.push([points, buffDebuff, secTarget]);
 					}
 				} else if (status) {
-					messages.push([points, status]);
+					messages.push([points, status, secTarget]);
 				} else if (volatileStatus) {
-					messages.push([points, volatileStatus]);
+					messages.push([points, volatileStatus, secTarget]);
 				}
-
-				// After having gathered the effects, add points and trigger them.
-				for (var i = 0; i < messages.length; i++) {
-					var buffing = messages[i][1];
-					var pointsBuff = messages[i][0];
+			}
+			// After having gathered the effects, add points and trigger them.
+			for (var i = 0; i < messages.length; i++) {
+				var buffing = messages[i][1];
+				var pointsBuff = messages[i][0];
+				var secTarget = messages[i][2];
+				if (!!buffing && !!pointsBuff && !!secTarget) {
 					if (!(buffing in {'par':1, 'brn':1, 'psn':1, 'tox':1, 'slp':1, 'frz':1}) || !secTarget.status) {
-						side.points[buffing] += pointsBuff;
-						this.add('-message', side.name + ' acquired ' + pointsBuff + ' points in ' + side.pnames[buffing] + ' [Total: ' + side.points[buffing] + ']!');
+						if (!secTarget.side.points) secTarget.side.points = {};
+						if (!secTarget.side.points[buffing]) secTarget.side.points[buffing] = 50;
+						secTarget.side.points[buffing] += pointsBuff;
+						this.add('-message', secTarget.side.name + ' acquired ' + pointsBuff + ' points in ' + secTarget.side.pnames[buffing] + ' [Total: ' + secTarget.side.points[buffing] + ']!');
 					}
-					if (side.points[buffing] >= 100) {
-						side.points[buffing] -= 100;
-						this.add('-message', 'A secondary effect on ' + side.pnames[buffing] + ' triggered! [-100 points]');
+					if (secTarget.side.points[buffing] >= 100) {
+						secTarget.side.points[buffing] -= 100;
+						this.add('-message', 'A secondary effect on ' + secTarget.side.pnames[buffing] + ' triggered! [-100 points]');
 						this.moveHit(target, pokemon, move, moveData.secondaries[i], true, isSelf);
 					}
 				}
@@ -498,6 +470,140 @@ exports.BattleScripts = {
 		}
 		if (move.selfSwitch && pokemon.hp) {
 			pokemon.switchFlag = move.selfSwitch;
+		}
+	},
+	comparePriority: function (a, b) {
+		a.priority = a.priority || 0;
+		a.subPriority = a.subPriority || 0;
+		a.speed = a.speed || 0;
+		a.hp = a.hp || 0;
+		a.weight = a.weight || 0;
+		a.height = a.height || 0;
+		a.pokemonLeft = a.pokemonLeft || 0;
+		a.totalSpeed = a.totalSpeed || 0;
+		b.priority = b.priority || 0;
+		b.subPriority = b.subPriority || 0;
+		b.speed = b.speed || 0;
+		b.hp = b.hp || 0;
+		b.weight = b.weight || 0;
+		b.height = b.height || 0;
+		b.pokemonLeft = b.pokemonLeft || 0;
+		b.totalSpeed = b.totalSpeed || 0;
+		if ((typeof a.order === 'number' || typeof b.order === 'number') && a.order !== b.order) {
+			if (typeof a.order !== 'number') {
+				return -1;
+			}
+			if (typeof b.order !== 'number') {
+				return 1;
+			}
+			if (b.order - a.order) {
+				return -(b.order - a.order);
+			}
+		}
+		if (b.priority - a.priority) {
+			return b.priority - a.priority;
+		}
+		if (b.speed - a.speed) {
+			return b.speed - a.speed;
+		}
+		if (b.subOrder - a.subOrder) {
+			return -(b.subOrder - a.subOrder);
+		}
+		if (b.hp - a.hp) {
+			return b.hp - a.hp;
+		}
+		if (b.speed - a.speed) {
+			return b.speed - a.speed;
+		}
+		if (b.weight - a.weight) {
+			return -(b.weight - a.weight);
+		}
+		if (b.height - a.height) {
+			return -(b.height - a.height);
+		}
+		if (b.totalSpeed - a.totalSpeed) {
+			return b.totalSpeed - a.totalSpeed;
+		}
+		return Math.random() - 0.5;
+	},
+	addQueue: function (decision, noSort, side) {
+		if (decision) {
+			if (Array.isArray(decision)) {
+				for (var i = 0; i < decision.length; i++) {
+					this.addQueue(decision[i], noSort);
+				}
+				return;
+			}
+			if (!decision.side && side) decision.side = side;
+			if (!decision.side && decision.pokemon) decision.side = decision.pokemon.side;
+			if (!decision.choice && decision.move) decision.choice = 'move';
+			if (!decision.priority) {
+				var priorities = {
+					'beforeTurn': 100,
+					'beforeTurnMove': 99,
+					'switch': 6,
+					'runSwitch': 6.1,
+					'megaEvo': 5.9,
+					'residual': -100,
+					'team': 102,
+					'start': 101
+				};
+				if (priorities[decision.choice]) {
+					decision.priority = priorities[decision.choice];
+				}
+			}
+			if (decision.choice === 'move') {
+				if (this.getMove(decision.move).beforeTurnCallback) {
+					this.addQueue({choice: 'beforeTurnMove', pokemon: decision.pokemon, move: decision.move, targetLoc: decision.targetLoc}, true);
+				}
+			} else if (decision.choice === 'switch') {
+				if (decision.pokemon.switchFlag && decision.pokemon.switchFlag !== true) {
+					decision.pokemon.switchCopyFlag = decision.pokemon.switchFlag;
+				}
+				decision.pokemon.switchFlag = false;
+				if (!decision.speed && decision.pokemon && decision.pokemon.isActive) decision.speed = decision.pokemon.speed;
+			}
+			if (decision.move) {
+				var target;
+
+				if (!decision.targetPosition) {
+					target = this.resolveTarget(decision.pokemon, decision.move);
+					decision.targetSide = target.side;
+					decision.targetPosition = target.position;
+				}
+
+				decision.move = this.getMoveCopy(decision.move);
+				if (!decision.priority) {
+					var priority = decision.move.priority;
+					priority = this.runEvent('ModifyPriority', decision.pokemon, target, decision.move, priority);
+					decision.priority = priority;
+					// In Gen 6, Quick Guard blocks moves with artificially enhanced priority.
+					if (this.gen > 5) decision.move.priority = priority;
+				}
+			}
+			if (!decision.pokemon && !decision.speed) decision.speed = 1;
+			if (!decision.speed && decision.choice === 'switch' && decision.target) decision.speed = decision.target.speed;
+			if (!decision.speed) decision.speed = decision.pokemon.speed;
+			if (!decision.hp && decision.pokemon) decision.hp = decision.pokemon.hp;
+			if (!decision.weight && decision.pokemon) decision.weight = decision.pokemon.weightkg;
+			if (!decision.height && decision.pokemon) decision.height = decision.pokemon.height;
+			if (!decision.pokemonLeft && decision.side) decision.pokemonLeft = decision.side.pokemonLeft;
+			if (!decision.totalSpeed && decision.side) {
+				decision.totalSpeed = 0;
+				for (var i = 0; i < decision.side.pokemon.length; i++) {
+					decision.totalSpeed += decision.side.pokemon[i].speed;
+				}
+			}
+
+			if (decision.choice === 'switch' && !decision.side.pokemon[0].isActive) {
+				// if there's no actives, switches happen before activations
+				decision.priority = 6.2;
+			}
+
+			this.queue.push(decision);
+		}
+		if (!noSort) {
+			this.queue.sort(this.comparePriority);
 		}
 	}
 };

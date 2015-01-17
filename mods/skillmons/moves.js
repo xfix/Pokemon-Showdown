@@ -187,6 +187,7 @@ exports.BattleMovedex = {
 		secondary: {chance: 100, boosts: {spe: -1}}
 	},
 	gravity: {
+		inherit: true,
 		effect: {
 			duration: 5,
 			onStart: function () {
