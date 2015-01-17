@@ -102,6 +102,12 @@ exports.BattleMovedex = {
 		basePower: 36,
 		secondary: {chance: 100, boosts: {def: -1}}
 	},
+	darkvoid: {
+		inherit: true,
+		status: false,
+		volatileStatus: 'slp',
+		secondary: {chance: 80, status: 'slp'}
+	},
 	defog: {
 		inherit: true,
 		onHit: function (target, source) {
@@ -185,6 +191,12 @@ exports.BattleMovedex = {
 		inherit: true,
 		basePower: 61,
 		secondary: {chance: 100, boosts: {spe: -1}}
+	},
+	grasswhistle: {
+		inherit: true,
+		status: false,
+		volatileStatus: 'slp',
+		secondary: {chance: 55, status: 'slp'}
 	},
 	gravity: {
 		inherit: true,
@@ -270,6 +282,12 @@ exports.BattleMovedex = {
 			}
 		}
 	},
+	hypnosis: {
+		inherit: true,
+		status: false,
+		volatileStatus: 'slp',
+		secondary: {chance: 60, status: 'slp'}
+	},
 	inferno: {
 		inherit: true,
 		basePower: 50,
@@ -294,6 +312,12 @@ exports.BattleMovedex = {
 				}
 			}
 		}
+	},
+	lovelykiss: {
+		inherit: true,
+		status: false,
+		volatileStatus: 'slp',
+		secondary: {chance: 75, status: 'slp'}
 	},
 	luckychant: {
 		inherit: true,
@@ -516,6 +540,39 @@ exports.BattleMovedex = {
 		inherit: true,
 		ignoreDefensive: true
 	},
+	sing: {
+		inherit: true,
+		status: false,
+		volatileStatus: 'slp',
+		secondary: {chance: 55, status: 'slp'}
+	},
+	sleeptalk: {
+		inherit: true,
+		onHit: function (pokemon) {
+			var moves = [];
+			for (var i = 0; i < pokemon.moveset.length; i++) {
+				var move = pokemon.moveset[i].id;
+				var NoSleepTalk = {
+					assist:1, bide:1, chatter:1, copycat:1, focuspunch:1, mefirst:1, metronome:1, mimic:1, mirrormove:1, naturepower:1, rest:1, sketch:1, sleeptalk:1, uproar:1
+				};
+				if (move && !(NoSleepTalk[move] || this.getMove(move).isTwoTurnMove)) {
+					moves.push(move);
+				}
+			}
+			var move = '';
+			if (moves.length) move = moves[0];
+			if (!move) {
+				return false;
+			}
+			this.useMove(move, pokemon);
+		},
+	},
+	sleeppowder: {
+		inherit: true,
+		status: false,
+		volatileStatus: 'slp',
+		secondary: {chance: 75, status: 'slp'}
+	},
 	smokescreen: {
 		inherit: true,
 		boosts: {
@@ -590,5 +647,11 @@ exports.BattleMovedex = {
 		inherit: true,
 		basePower: 20,
 		multihit: 3
+	},
+	willowisp: {
+		inherit: true,
+		status: false,
+		volatileStatus: 'brn',
+		secondary: {chance: 85, status: 'brn'}
 	}
 };

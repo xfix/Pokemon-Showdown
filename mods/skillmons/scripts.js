@@ -445,9 +445,9 @@ exports.BattleScripts = {
 				var isSecSelf = messages[i][3];
 				var actualWhat = messages[i][4];
 				if (!!buffing && !!pointsBuff && !!secTarget) {
+					if (!secTarget.side.points) secTarget.side.points = {};
+					if (!secTarget.side.points[buffing] && secTarget.side.points[buffing] !== 0) secTarget.side.points[buffing] = 50;
 					if (!(buffing in {'par':1, 'brn':1, 'psn':1, 'tox':1, 'slp':1, 'frz':1}) || !secTarget.status) {
-						if (!secTarget.side.points) secTarget.side.points = {};
-						if (!secTarget.side.points[buffing] && secTarget.side.points[buffing] !== 0) secTarget.side.points[buffing] = 50;
 						secTarget.side.points[buffing] += pointsBuff;
 						this.add('-message', secTarget.side.name + ' acquired ' + pointsBuff + ' points in ' + secTarget.side.pnames[buffing] + ' [Total: ' + secTarget.side.points[buffing] + ']!');
 					}
@@ -464,6 +464,7 @@ exports.BattleScripts = {
 							if (!secTarget.status) {
 								secTarget.setStatus(buffing, pokemon, move);
 							}
+							secTarget.removeVolatile(buffing);
 						}
 						if (actualWhat === 'volatileStatus') {
 							secTarget.addVolatile(buffing, pokemon, move);
