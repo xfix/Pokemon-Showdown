@@ -1979,20 +1979,37 @@ exports.Formats = [
 	///////////////////////////////////////////////////////////////////
 
 	{
-		name: "[Gen 5] Joimmons OU",
-		section: "Other Metagames",
-		column: 3,
-
-		mod: 'joimmons',
-		ruleset: ['OU']
-	},
-	{
 		name: "Skillmons OU",
-		section: "Other Metagames",
+		section: "Skillmons",
+		column: 3,
 
 		mod: 'skillmons',
 		ruleset: ['Pokemon', 'Team Preview', 'Sleep Clause Mod', 'Species Clause', 'Endless Battle Clause', 'Exact HP Mod'],
 		banlist: ['Unreleased', 'Illegal', 'Uber', 'Soul Dew']
+	},
+	{
+		name: "Skillmons Ubers",
+		section: "Skillmons",
+
+		mod: 'skillmons',
+		ruleset: ['Pokemon', 'Team Preview', 'Species Clause', 'Endless Battle Clause', 'Exact HP Mod'],
+		banlist: ['Unreleased', 'Illegal']
+	},
+	{
+		name: "Skillmons Doubles",
+		section: "Skillmons",
+
+		mod: 'skillmons',
+		gameType: 'doubles',
+		ruleset: ['Pokemon', 'Team Preview', 'Sleep Clause Mod', 'Species Clause', 'Endless Battle Clause', 'Exact HP Mod'],
+		banlist: ['Unreleased', 'Illegal', 'Uber', 'Soul Dew']
+	},
+	{
+		name: "[Gen 5] Joimmons OU",
+		section: "Other Metagames",
+		
+		mod: 'joimmons',
+		ruleset: ['OU']
 	},
 	{
 		name: "350 Cup",
