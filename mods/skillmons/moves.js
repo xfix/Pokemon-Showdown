@@ -1,6 +1,7 @@
 exports.BattleMovedex = {
 	acupressure: {
 		inherit: true,
+		accuracy: true,
 		onHit: function (target) {
 			var toBoost = 'atk';
 			var previousMax = 0;
@@ -24,31 +25,38 @@ exports.BattleMovedex = {
 	},
 	aerialace: {
 		inherit: true,
+		accuracy: true,
 		basePower: 80,
 		ignoreDefensive: true
 	},
 	aurasphere: {
 		inherit: true,
+		basePower: 80,
 		ignoreDefensive: true
 	},
 	blizzard: {
 		inherit: true,
+		accuracy: true,
+		basePower: 77,
 		onModifyMove: function (move) {
 			if (this.isWeather('hail')) move.basePower = 110;
 		}
 	},
 	bonerush: {
 		inherit: true,
+		accuracy: true,
 		basePower: 30,
 		multihit: 3
 	},
 	bulletseed: {
 		inherit: true,
+		accuracy: true,
 		basePower: 30,
 		multihit: 3
 	},
 	chargebeam: {
 		inherit: true,
+		accuracy: true,
 		basePower: 31,
 		secondary: {
 			chance: 100,
@@ -57,11 +65,13 @@ exports.BattleMovedex = {
 	},
 	cometpunch: {
 		inherit: true,
+		accuracy: true,
 		basePower: 22,
 		multihit: 3
 	},
 	conversion2: {
 		inherit: true,
+		accuracy: true,
 		onHit: function (target, source) {
 			if (!target.lastMove) {
 				return false;
@@ -99,17 +109,20 @@ exports.BattleMovedex = {
 	},
 	crushclaw: {
 		inherit: true,
+		accuracy: true,
 		basePower: 36,
 		secondary: {chance: 100, boosts: {def: -1}}
 	},
 	darkvoid: {
 		inherit: true,
+		accuracy: true,
 		status: false,
 		volatileStatus: 'slp',
 		secondary: {chance: 80, status: 'slp'}
 	},
 	defog: {
 		inherit: true,
+		accuracy: true,
 		onHit: function (target, source) {
 			if (!target.volatiles['substitute']) this.boost({def:-1, spd:-1});
 			var sideConditions = {reflect:1, lightscreen:1, safeguard:1, mist:1, spikes:1, toxicspikes:1, stealthrock:1, stickyweb:1};
@@ -128,6 +141,7 @@ exports.BattleMovedex = {
 	},
 	diamondstorm: {
 		inherit: true,
+		accuracy: true,
 		basePower: 47,
 		secondary: {
 			chance: 100,
@@ -136,10 +150,12 @@ exports.BattleMovedex = {
 	},
 	disarmingvoice: {
 		inherit: true,
+		accuracy: true,
 		ignoreDefensive: true
 	},
 	doubleteam: {
 		inherit: true,
+		accuracy: true,
 		boosts: {
 			def: 1,
 			spd: 1
@@ -147,25 +163,30 @@ exports.BattleMovedex = {
 	},
 	dynamicpunch: {
 		inherit: true,
+		accuracy: true,
 		basePower: 50,
 		secondary: {chance: 100, volatileStatus: 'confusion'}
 	},
 	feintattack: {
 		inherit: true,
+		accuracy: true,
 		ignoreDefensive: true
 	},
 	fierydance: {
 		inherit: true,
+		accuracy: true,
 		basePower: 40,
 		secondary: {chance: 100, self: {boosts: {spa: 1}}}
 	},
 	fissure: {
 		inherit: true,
+		accuracy: true,
 		basePower: 90,
 		ignoreDefensive: true
 	},
 	flash: {
 		inherit: true,
+		accuracy: true,
 		boosts: {
 			atk: -1,
 			spa: -1
@@ -173,6 +194,7 @@ exports.BattleMovedex = {
 	},
 	focusenergy: {
 		inherit: true,
+		accuracy: true,
 		effect: {
 			onStart: function (pokemon) {
 				this.add('-start', pokemon, 'move: Focus Energy');
@@ -184,22 +206,26 @@ exports.BattleMovedex = {
 	},
 	frostbreath: {
 		inherit: true,
+		accuracy: true,
 		basePower: 81,
 		ignoreDefensive: true
 	},
 	glaciate: {
 		inherit: true,
+		accuracy: true,
 		basePower: 61,
 		secondary: {chance: 100, boosts: {spe: -1}}
 	},
 	grasswhistle: {
 		inherit: true,
+		accuracy: true,
 		status: false,
 		volatileStatus: 'slp',
 		secondary: {chance: 55, status: 'slp'}
 	},
 	gravity: {
 		inherit: true,
+		accuracy: true,
 		effect: {
 			duration: 5,
 			onStart: function () {
@@ -257,11 +283,13 @@ exports.BattleMovedex = {
 	},
 	guillotine: {
 		inherit: true,
+		accuracy: true,
 		basePower: 90,
 		ignoreDefensive: true
 	},
 	honeclaws: {
 		inherit: true,
+		accuracy: true,
 		boosts: {
 			atk: 2,
 			spa: 1
@@ -269,11 +297,14 @@ exports.BattleMovedex = {
 	},
 	horndrill: {
 		inherit: true,
+		accuracy: true,
 		basePower: 90,
 		ignoreDefensive: true
 	},
 	hurricane: {
 		inherit: true,
+		accuracy: true,
+		basePower: 77,
 		onModifyMove: function (move) {
 			if (this.isWeather(['raindance', 'primordialsea'])) {
 				move.basePower = 110;
@@ -284,26 +315,31 @@ exports.BattleMovedex = {
 	},
 	hypnosis: {
 		inherit: true,
+		accuracy: true,
 		status: false,
 		volatileStatus: 'slp',
 		secondary: {chance: 60, status: 'slp'}
 	},
 	inferno: {
 		inherit: true,
+		accuracy: true,
 		basePower: 50,
 		secondary: {chance: 100, status: 'brn'}
 	},
 	kinesis: {
 		inherit: true,
+		accuracy: true,
 		secondary: {chance: 100, boosts: {def: -1, spd: -1}}
 	},
 	leaftornado: {
 		inherit: true,
+		accuracy: true,
 		basePower: 29,
 		secondary: {chance: 100, boosts: {atk: -1, spa: -1}}
 	},
 	lockon: {
 		inherit: true,
+		accuracy: true,
 		effect: {
 			duration: 2,
 			onFoeModifyMove: function (move, source, target) {
@@ -315,12 +351,14 @@ exports.BattleMovedex = {
 	},
 	lovelykiss: {
 		inherit: true,
+		accuracy: true,
 		status: false,
 		volatileStatus: 'slp',
 		secondary: {chance: 75, status: 'slp'}
 	},
 	luckychant: {
 		inherit: true,
+		accuracy: true,
 		effect: {
 			duration: 5,
 			onStart: function (side) {
@@ -338,24 +376,29 @@ exports.BattleMovedex = {
 	},
 	lusterpurge: {
 		inherit: true,
+		accuracy: true,
 		basePower: 35,
 		secondary: {chance: 100, boosts: {spd: -1}}
 	},
 	magicalleaf: {
 		inherit: true,
+		accuracy: true,
 		ignoreDefensive: true
 	},
 	magnetbomb: {
 		inherit: true,
+		accuracy: true,
 		ignoreDefensive: true
 	},
 	magnitude: {
 		inherit: true,
+		accuracy: true,
 		basePower: 90,
 		onModifyMove: function () {}
 	},
 	metronome: {
 		inherit: true,
+		accuracy: true,
 		onHit: function (target, source) {
 			var moves = [];
 			for (var i in exports.BattleMovedex) {
@@ -386,6 +429,7 @@ exports.BattleMovedex = {
 	},
 	mindreader: {
 		inherit: true,
+		accuracy: true,
 		effect: {
 			duration: 2,
 			onFoeModifyMove: function (move, source, target) {
@@ -397,6 +441,7 @@ exports.BattleMovedex = {
 	},
 	minimize: {
 		inherit: true,
+		accuracy: true,
 		effect: {
 			noCopy: true,
 			onSourceModifyDamage: function (damage, source, target, move) {
@@ -412,6 +457,7 @@ exports.BattleMovedex = {
 	},
 	miracleeye: {
 		inherit: true,
+		accuracy: true,
 		effect: {
 			onStart: function (pokemon) {
 				this.add('-start', pokemon, 'Miracle Eye');
@@ -436,20 +482,24 @@ exports.BattleMovedex = {
 	},
 	mistball: {
 		inherit: true,
+		accuracy: true,
 		basePower: 35,
 		secondary: {chance: 100, boosts: {spa: -1}}
 	},
 	mudslap: {
 		inherit: true,
+		accuracy: true,
 		secondary: {chance: 100, boosts: {atk: -1, spa: -1}}
 	},
 	octazooka: {
 		inherit: true,
+		accuracy: true,
 		basePower: 28,
 		secondary: {chance: 100, boosts: {atk: -1, spa: -1}}
 	},
 	odorsleuth: {
 		inherit: true,
+		accuracy: true,
 		effect: {
 			onStart: function (pokemon) {
 				this.add('-start', pokemon, 'Odor Sleuth');
@@ -474,6 +524,7 @@ exports.BattleMovedex = {
 	},
 	poisonfang: {
 		inherit: true,
+		accuracy: true,
 		basePower: 25,
 		secondary: {
 			chance: 100,
@@ -482,6 +533,7 @@ exports.BattleMovedex = {
 	},
 	present: {
 		inherit: true,
+		accuracy: true,
 		basePower: 1,
 		onModifyMove: function () {},
 		onHit: function (target, source) {
@@ -502,17 +554,20 @@ exports.BattleMovedex = {
 	},
 	psywave: {
 		inherit: true,
+		accuracy: true,
 		damageCallback: function (pokemon) {
 			return pokemon.level + 50;
 		}
 	},
 	rocksmash: {
 		inherit: true,
+		accuracy: true,
 		basePower: 20,
 		secondary: {chance: 100, boosts: {def: -1}}
 	},
 	sandattack: {
 		inherit: true,
+		accuracy: true,
 		boosts: {
 			atk: -1,
 			spa: -1
@@ -520,6 +575,7 @@ exports.BattleMovedex = {
 	},
 	seedflare: {
 		inherit: true,
+		accuracy: true,
 		secondary: {
 			chance: 80,
 			boosts: {
@@ -529,25 +585,30 @@ exports.BattleMovedex = {
 	},
 	shadowpunch: {
 		inherit: true,
+		accuracy: true,
 		ignoreDefensive: true
 	},
 	sheercold: {
 		inherit: true,
+		accuracy: true,
 		basePower: 90,
 		ignoreDefensive: true
 	},
 	shockwave: {
 		inherit: true,
+		accuracy: true,
 		ignoreDefensive: true
 	},
 	sing: {
 		inherit: true,
+		accuracy: true,
 		status: false,
 		volatileStatus: 'slp',
 		secondary: {chance: 55, status: 'slp'}
 	},
 	sleeptalk: {
 		inherit: true,
+		accuracy: true,
 		onHit: function (pokemon) {
 			var moves = [];
 			for (var i = 0; i < pokemon.moveset.length; i++) {
@@ -569,12 +630,14 @@ exports.BattleMovedex = {
 	},
 	sleeppowder: {
 		inherit: true,
+		accuracy: true,
 		status: false,
 		volatileStatus: 'slp',
 		secondary: {chance: 75, status: 'slp'}
 	},
 	sleeptalk: {
 		inherit: true,
+		accuracy: true,
 		onHit: function (pokemon) {
 			if (pokemon.status !== 'slp') return false;
 			var moves = [];
@@ -597,6 +660,7 @@ exports.BattleMovedex = {
 	},
 	smokescreen: {
 		inherit: true,
+		accuracy: true,
 		boosts: {
 			atk: -1,
 			spa: -1
@@ -604,15 +668,18 @@ exports.BattleMovedex = {
 	},
 	spikecannon: {
 		inherit: true,
+		accuracy: true,
 		basePower: 25,
 		multihit: 3
 	},
 	stormthrow: {
 		inherit: true,
+		accuracy: true,
 		ignoreDefensive: true
 	},
 	sweetscent: {
 		inherit: true,
+		accuracy: true,
 		boosts: {
 			def: -2,
 			spd: -2
@@ -620,15 +687,18 @@ exports.BattleMovedex = {
 	},
 	swift: {
 		inherit: true,
+		accuracy: true,
 		ignoreDefensive: true
 	},
 	tailslap: {
 		inherit: true,
+		accuracy: true,
 		basePower: 30,
 		multihit: 3
 	},
 	telekinesis: {
 		inherit: true,
+		accuracy: true,
 		effect: {
 			onStart: function (pokemon) {
 				this.add('-start', pokemon, 'Telekinesis');
@@ -653,6 +723,7 @@ exports.BattleMovedex = {
 	},
 	thunder: {
 		inherit: true,
+		accuracy: true,
 		onModifyMove: function (move) {
 			if (this.isWeather(['raindance', 'primordialsea'])) {
 				move.basePower = 110;
@@ -663,15 +734,18 @@ exports.BattleMovedex = {
 	},
 	vitalthrow: {
 		inherit: true,
+		accuracy: true,
 		ignoreDefensive: true
 	},
 	watershuriken: {
 		inherit: true,
+		accuracy: true,
 		basePower: 20,
 		multihit: 3
 	},
 	willowisp: {
 		inherit: true,
+		accuracy: true,
 		status: false,
 		volatileStatus: 'brn',
 		secondary: {chance: 85, status: 'brn'}
