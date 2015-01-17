@@ -63,6 +63,14 @@ exports.BattleMovedex = {
 			self: {boosts: {spa: 1}}
 		}
 	},
+	coil: {
+		inherit: true,
+		boosts: {
+			atk: 2,
+			def: 1,
+			spa: 1
+		}
+	},
 	cometpunch: {
 		inherit: true,
 		accuracy: true,
