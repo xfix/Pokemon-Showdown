@@ -2007,6 +2007,7 @@ exports.Formats = [
 	{
 		name: "[Gen 5] Joimmons OU",
 		section: "Other Metagames",
+		column: 3,
 		
 		mod: 'joimmons',
 		ruleset: ['OU']

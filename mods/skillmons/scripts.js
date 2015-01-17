@@ -34,6 +34,26 @@ exports.BattleScripts = {
 			frz: 0,
 			flinch: 0,
 			confusion: 0
+		},
+		pnames: {
+			atk: 'Attack boost',
+			minusatk: 'Attack debuff',
+			def: 'Defense boost',
+			minusdef: 'Defense debuff',
+			spa: 'Special Attack boost',
+			minusspa: 'Special Attack debuff',
+			spd: 'Special Defense boost',
+			minusspd: 'Special Defense debuff',
+			spe: 'Speed boost',
+			minusspe: 'Speed debuff',
+			brn: 'Burn',
+			par: 'Paralyze',
+			psn: 'Poison',
+			tox: 'Badly poisoned',
+			slp: 'Sleep status',
+			frz: 'Frozen',
+			flinch: 'Flinch',
+			confusion: 'Confusion'
 		}
 	},
 	// Edit getDamage so there is no crits and no random damage.
@@ -406,42 +426,65 @@ exports.BattleScripts = {
 			}
 		}
 		if (moveData.secondaries && this.runEvent('TrySecondaryHit', target, pokemon, moveData)) {
+			// We gather the effects to apply them.
 			for (var i = 0; i < moveData.secondaries.length; i++) {
-				var buffDebuff = '';
-				if (moveData.secondaries[i].boosts) {
-					for (var b in buffDebuff.boosts) {
+				var buffDebuff = 'none';
+				var points = moveData.secondaries[i].chance;
+				var side = moveData.secondaries[i].self ? pokemon.side : target.side;
+				var boosts = moveData.secondaries[i].self ? moveData.secondaries[i].self.boosts : moveData.secondaries[i].boosts;
+				var status = moveData.secondaries[i].self ? moveData.secondaries[i].self.status : moveData.secondaries[i].status;
+				var volatileStatus = moveData.secondaries[i].self ? moveData.secondaries[i].self.volatileStatus : moveData.secondaries[i].volatileStatus;
+				var secTarget = moveData.secondaries[i].self ? pokemon : target;
+				var messages = [];
+				var buffDebuff = 'nothing';
+				// If boosts, go through all of them.
+				if (boosts) {
+					for (var b in boosts) {
 						if (b === 'atk') {
 							buffDebuff = b;
-							if (buffDebuff.boosts[b] < 0) buffDebuff = 'minusatk';
+							if (boosts[b] < 0) buffDebuff = 'minusatk';
+							messages.push([points, buffDebuff]);
 						}
 						if (b === 'def') {
 							buffDebuff = b;
-							if (buffDebuff.boosts[b] < 0) buffDebuff = 'minusdef';
+							if (boosts[b] < 0) buffDebuff = 'minusdef';
+							messages.push([points, buffDebuff]);
 						}
 						if (b === 'spa') {
 							buffDebuff = b;
-							if (buffDebuff.boosts[b] < 0) buffDebuff = 'minusspa';
+							if (boosts[b] < 0) buffDebuff = 'minusspa';
+							messages.push([points, buffDebuff]);
 						}
 						if (b === 'spd') {
 							buffDebuff = b;
-							if (buffDebuff.boosts[b] < 0) buffDebuff = 'minusspd';
+							if (boosts[b] < 0) buffDebuff = 'minusspd';
+							messages.push([points, buffDebuff]);
 						}
 						if (b === 'spe') {
 							buffDebuff = b;
-							if (buffDebuff.boosts[b] < 0) buffDebuff = 'minusspe';
+							if (boosts[b] < 0) buffDebuff = 'minusspe';
+							messages.push([points, buffDebuff]);
 						}
 					}
-				} else if (moveData.secondaries[i].status) {
-					buffDebuff = moveData.secondaries[i].status;
-				} else if (moveData.secondaries[i].volatileStatus) {
-					buffDebuff = moveData.secondaries[i].volatileStatus;
+				} else if (status) {
+					messages.push([points, status]);
+				} else if (volatileStatus) {
+					messages.push([points, volatileStatus]);
 				}
-				target.side.points[buffDebuff] += moveData.secondaries[i].chance;
-				this.add('-message', target.side.name + ' acquired ' + moveData.secondaries[i].chance + ' points in ' + buffDebuff + ' [Total: ' + target.side.points[buffDebuff] + ']!');
-				if (target.side.points[buffDebuff] >= 100) {
-					target.side.points[buffDebuff] -= 100;
-					this.add('-message', 'A secondary effect on ' + buffDebuff + ' triggered!');
-					this.moveHit(target, pokemon, move, moveData.secondaries[i], true, isSelf);
+
+				// After having gathered the effects, add points and trigger them.
+				for (var i = 0; i < messages.length; i++) {
+					var buffing = messages[i][1];
+					var pointsBuff = messages[i][0];
+					if (!(buffing in {'par':1, 'brn':1, 'psn':1, 'tox':1, 'slp':1, 'frz':1}) || !secTarget.status) {
+						side.points[buffing] += pointsBuff;
+						this.add('-message', side.name + ' acquired ' + pointsBuff + ' points in ' + side.pnames[buffing] + ' [Total: ' + side.points[buffing] + ']!');
+					}
+					if (side.points[buffing] >= 100) {
+						side.points[buffing] -= 100;
+						this.add('-message', 'A secondary effect on ' + side.pnames[buffing] + ' triggered! [-100 points]');
+						this.moveHit(target, pokemon, move, moveData.secondaries[i], true, isSelf);
+					}
 				}
 			}
 		}
