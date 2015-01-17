@@ -221,6 +221,9 @@ exports.BattleScripts = {
 		pokemon.lastDamage = 0;
 		if (move.multihit) {
 			var hits = move.multihit;
+			if (hits.length) {
+				hits = 3;
+			}
 			hits = Math.floor(hits);
 			var nullDamage = true;
 			var moveDamage;
@@ -397,14 +400,6 @@ exports.BattleScripts = {
 				return false;
 			}
 		}
-		if (moveData.self) {
-			var selfRoll;
-			if (!isSecondary && moveData.self.boosts) selfRoll = this.random(100);
-			// This is done solely to mimic in-game RNG behaviour. All self drops have a 100% chance of happening but still grab a random number.
-			if (typeof moveData.self.chance === 'undefined' || selfRoll < moveData.self.chance) {
-				this.moveHit(pokemon, pokemon, move, moveData.self, isSecondary, true);
-			}
-		}
 		if (moveData.secondaries && this.runEvent('TrySecondaryHit', target, pokemon, moveData)) {
 			// We gather the effects to apply them.
 			for (var i = 0; i < moveData.secondaries.length; i++) {
@@ -416,11 +411,13 @@ exports.BattleScripts = {
 				var status = false;
 				var volatileStatus = false;
 				var secTarget = false;
+				var isSecSelf = false;
 				if (moveData.secondaries[i].self) {
 					boosts = moveData.secondaries[i].self.boosts;
 					status = moveData.secondaries[i].self.status;
 					volatileStatus = moveData.secondaries[i].self.volatileStatus;
 					secTarget = pokemon;
+					isSecSelf = true;
 				} else if (target) {
 					boosts = moveData.secondaries[i].boosts;
 					status = moveData.secondaries[i].status;
@@ -432,30 +429,45 @@ exports.BattleScripts = {
 				if (boosts) {
 					for (var b in boosts) {
 						buffDebuff = (boosts[b] > 0) ? b : 'minus' + b;
-						messages.push([points, buffDebuff, secTarget]);
+						messages.push([points, buffDebuff, secTarget, isSecSelf, 'boosts', b, boosts[b]]);
 					}
 				} else if (status) {
-					messages.push([points, status, secTarget]);
+					messages.push([points, status, secTarget, isSecSelf, 'status']);
 				} else if (volatileStatus) {
-					messages.push([points, volatileStatus, secTarget]);
+					messages.push([points, volatileStatus, secTarget, isSecSelf, 'volatileStatus']);
 				}
 			}
 			// After having gathered the effects, add points and trigger them.
 			for (var i = 0; i < messages.length; i++) {
-				var buffing = messages[i][1];
 				var pointsBuff = messages[i][0];
+				var buffing = messages[i][1];
 				var secTarget = messages[i][2];
+				var isSecSelf = messages[i][3];
+				var actualWhat = messages[i][4];
 				if (!!buffing && !!pointsBuff && !!secTarget) {
 					if (!(buffing in {'par':1, 'brn':1, 'psn':1, 'tox':1, 'slp':1, 'frz':1}) || !secTarget.status) {
 						if (!secTarget.side.points) secTarget.side.points = {};
-						if (!secTarget.side.points[buffing]) secTarget.side.points[buffing] = 50;
+						if (!secTarget.side.points[buffing] && secTarget.side.points[buffing] !== 0) secTarget.side.points[buffing] = 50;
 						secTarget.side.points[buffing] += pointsBuff;
 						this.add('-message', secTarget.side.name + ' acquired ' + pointsBuff + ' points in ' + secTarget.side.pnames[buffing] + ' [Total: ' + secTarget.side.points[buffing] + ']!');
 					}
 					if (secTarget.side.points[buffing] >= 100) {
 						secTarget.side.points[buffing] -= 100;
 						this.add('-message', 'A secondary effect on ' + secTarget.side.pnames[buffing] + ' triggered! [-100 points]');
-						this.moveHit(target, pokemon, move, moveData.secondaries[i], true, isSelf);
+						// Actually trigger here the secondaries to avoid recursion.
+						if (actualWhat === 'boosts' && !secTarget.fainted) {
+							var boosting = {};
+							boosting[messages[i][5]] = messages[i][6];
+							this.boost(boosting, secTarget, pokemon, move);
+						}
+						if (actualWhat === 'status') {
+							if (!secTarget.status) {
+								secTarget.setStatus(buffing, pokemon, move);
+							}
+						}
+						if (actualWhat === 'volatileStatus') {
+							secTarget.addVolatile(buffing, pokemon, move);
+						}
 					}
 				}
 			}

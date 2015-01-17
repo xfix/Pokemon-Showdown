@@ -177,7 +177,7 @@ exports.BattleFormats = {
 				if (item.name !== template.requiredItem && !(template.isMega && format.id === 'megamons')) { // MegaMons hack - see above
 					problems.push((set.name||set.species) + ' needs to hold '+template.requiredItem+'.');
 				}
-				if (!niceAbility) set.ability = baseAbilities['0'];
+				if (!niceAbility && baseAbilities) set.ability = baseAbilities['0'];
 			} else if (template.isPrimal) {
 				// Primal Reversion happens in-battle
 				set.species = template.baseSpecies;
