@@ -1992,7 +1992,7 @@ exports.Formats = [
 		section: "Skillmons",
 
 		mod: 'skillmons',
-		ruleset: ['Pokemon', 'Team Preview', 'Species Clause', 'Endless Battle Clause', 'Exact HP Mod'],
+		ruleset: ['Pokemon', 'Team Preview', 'Species Clause', 'Endless Battle Clause', 'Exact HP Mod', 'Mega Rayquaza Ban Mod'],
 		banlist: ['Unreleased', 'Illegal']
 	},
 	{
