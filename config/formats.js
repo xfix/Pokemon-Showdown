@@ -1984,7 +1984,7 @@ exports.Formats = [
 		column: 3,
 
 		mod: 'skillmons',
-		ruleset: ['Pokemon', 'Team Preview', 'Sleep Clause Mod', 'Species Clause', 'Endless Battle Clause', 'Exact HP Mod'],
+		ruleset: ['Pokemon', 'Team Preview', 'Sleep Clause Mod', 'Species Clause', 'Endless Battle Clause', 'Exact HP Mod', 'Baton Pass Clause'],
 		banlist: ['Unreleased', 'Illegal', 'Uber', 'Soul Dew']
 	},
 	{
