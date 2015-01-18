@@ -463,11 +463,11 @@ exports.BattleScripts = {
 						secTarget.side.points[buffing] += pointsBuff;
 						this.add('-message', secTarget.side.name + ' acquired ' + pointsBuff + ' points in ' + secTarget.side.pnames[buffing] + ' [Total: ' + secTarget.side.points[buffing] + ']!');
 					}
-					if (secTarget.side.points[buffing] >= 100) {
+					if (secTarget.side.points[buffing] >= 100 && secTarget.hp > 0 && !secTarget.fainted) {
 						secTarget.side.points[buffing] -= 100;
 						this.add('-message', 'A secondary effect on ' + secTarget.side.pnames[buffing] + ' triggered! [-100 points]');
 						// Actually trigger here the secondaries to avoid recursion.
-						if (actualWhat === 'boosts' && !secTarget.fainted) {
+						if (actualWhat === 'boosts') {
 							var boosting = {};
 							boosting[messages[i][5]] = messages[i][6];
 							this.boost(boosting, secTarget, pokemon, move);
