@@ -740,6 +740,19 @@ exports.BattleMovedex = {
 			}
 		}
 	},
+	triattack: {
+		inherit: true,
+		secondaries: [{
+			chance: 20,
+			status: 'brn'
+		}, {
+			chance: 20,
+			status: 'par'
+		} ,{
+			chance: 20,
+			status: 'frz'
+		}]
+	},
 	vitalthrow: {
 		inherit: true,
 		accuracy: true,
