@@ -473,8 +473,8 @@ exports.BattleScripts = {
 							this.boost(boosting, secTarget, pokemon, move);
 						}
 						if (actualWhat === 'status') {
-							if (!secTarget.status) {
-								secTarget.setStatus(buffing, pokemon, move);
+							if (!!!secTarget.status) {
+								secTarget.trySetStatus(buffing, pokemon, move);
 							}
 							secTarget.removeVolatile(buffing);
 						}
