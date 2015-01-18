@@ -48,6 +48,20 @@ exports.BattleItems = {
 			}
 		}
 	},
+	quickclaw: {
+		inherit: true,
+		onModifyPriority: function () {}
+		onModifyMove: function (move) {
+			if (!move.secondaries) move.secondaries = [];
+			for (var i = 0; i < move.secondaries.length; i++) {
+				if (move.secondaries[i].boosts && move.secondaries[i].boosts.spe) return;
+			}
+			move.secondaries.push({
+				chance: 20,
+				boosts: {spe: 1}
+			});
+		}
+	},
 	razorclaw: {
 		inherit: true,
 		onModifyAtkPriority: 2,
