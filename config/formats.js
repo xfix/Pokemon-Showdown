@@ -2001,8 +2001,11 @@ exports.Formats = [
 
 		mod: 'skillmons',
 		gameType: 'doubles',
-		ruleset: ['Pokemon', 'Team Preview', 'Sleep Clause Mod', 'Species Clause', 'Endless Battle Clause', 'Exact HP Mod'],
-		banlist: ['Unreleased', 'Illegal', 'Uber', 'Soul Dew']
+		ruleset: ['Pokemon', 'Team Preview', 'Species Clause', 'Endless Battle Clause', 'Exact HP Mod'],
+		banlist: ['Unreleased', 'Illegal',
+			'Arceus', 'Dialga', 'Giratina', 'Giratina-Origin', 'Groudon', 'Ho-Oh', 'Kyogre', 'Kyurem-White', 'Lugia', 'Mewtwo',
+			'Palkia', 'Rayquaza', 'Reshiram', 'Xerneas', 'Yveltal', 'Zekrom', 'Salamencite', 'Soul Dew', 'Dark Void'
+		]
 	},
 	{
 		name: "[Gen 5] Joimmons OU",
