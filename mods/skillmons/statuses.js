@@ -62,7 +62,7 @@ exports.BattleStatuses = {
 				return;
 			}
 			this.add('-activate', source, 'confusion');
-			this.directDamage(Math.ceil(damage / 2));
+			this.directDamage(this.getDamage(pokemon, pokemon, 20));
 			return this.chainModify(0.5);
 		}
 	},
