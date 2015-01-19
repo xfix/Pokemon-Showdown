@@ -460,7 +460,7 @@ exports.BattleScripts = {
 					if (!secTarget.side.points) secTarget.side.points = {};
 					if (!secTarget.side.points[buffing] && secTarget.side.points[buffing] !== 0) secTarget.side.points[buffing] = 50;
 					if (!secTarget.fainted && secTarget.hp > 0) {
-						if (!(buffing in {'par':1, 'brn':1, 'psn':1, 'tox':1, 'slp':1, 'frz':1}) || !secTarget.status) {
+						if (actualWhat !== 'status' || !secTarget.status) {
 							secTarget.side.points[buffing] += pointsBuff;
 							this.add('-message', secTarget.side.name + ' acquired ' + pointsBuff + ' points in ' + secTarget.side.pnames[buffing] + ' [Total: ' + secTarget.side.points[buffing] + ']!');
 						}
