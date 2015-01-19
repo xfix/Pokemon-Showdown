@@ -50,7 +50,7 @@ exports.BattleItems = {
 	},
 	quickclaw: {
 		inherit: true,
-		onModifyPriority: function () {}
+		onModifyPriority: function () {},
 		onModifyMove: function (move) {
 			if (!move.secondaries) move.secondaries = [];
 			for (var i = 0; i < move.secondaries.length; i++) {
