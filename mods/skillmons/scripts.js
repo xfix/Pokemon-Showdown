@@ -459,27 +459,29 @@ exports.BattleScripts = {
 				if (!!buffing && !!pointsBuff && !!secTarget) {
 					if (!secTarget.side.points) secTarget.side.points = {};
 					if (!secTarget.side.points[buffing] && secTarget.side.points[buffing] !== 0) secTarget.side.points[buffing] = 50;
-					if (!(buffing in {'par':1, 'brn':1, 'psn':1, 'tox':1, 'slp':1, 'frz':1}) || !secTarget.status) {
-						secTarget.side.points[buffing] += pointsBuff;
-						this.add('-message', secTarget.side.name + ' acquired ' + pointsBuff + ' points in ' + secTarget.side.pnames[buffing] + ' [Total: ' + secTarget.side.points[buffing] + ']!');
-					}
-					if (secTarget.side.points[buffing] >= 100 && secTarget.hp > 0 && !secTarget.fainted) {
-						secTarget.side.points[buffing] -= 100;
-						this.add('-message', 'A secondary effect on ' + secTarget.side.pnames[buffing] + ' triggered! [-100 points]');
-						// Actually trigger here the secondaries to avoid recursion.
-						if (actualWhat === 'boosts') {
-							var boosting = {};
-							boosting[messages[i][5]] = messages[i][6];
-							this.boost(boosting, secTarget, pokemon, move);
+					if (!secTarget.fainted && secTarget.hp > 0) {
+						if (!(buffing in {'par':1, 'brn':1, 'psn':1, 'tox':1, 'slp':1, 'frz':1}) || !secTarget.status) {
+							secTarget.side.points[buffing] += pointsBuff;
+							this.add('-message', secTarget.side.name + ' acquired ' + pointsBuff + ' points in ' + secTarget.side.pnames[buffing] + ' [Total: ' + secTarget.side.points[buffing] + ']!');
 						}
-						if (actualWhat === 'status') {
-							if (!!!secTarget.status) {
-								secTarget.trySetStatus(buffing, pokemon, move);
+						if (secTarget.side.points[buffing] >= 100 && secTarget.hp > 0) {
+							secTarget.side.points[buffing] -= 100;
+							this.add('-message', 'A secondary effect on ' + secTarget.side.pnames[buffing] + ' triggered! [-100 points]');
+							// Actually trigger here the secondaries to avoid recursion.
+							if (actualWhat === 'boosts') {
+								var boosting = {};
+								boosting[messages[i][5]] = messages[i][6];
+								this.boost(boosting, secTarget, pokemon, move);
 							}
-							secTarget.removeVolatile(move.id);
-						}
-						if (actualWhat === 'volatileStatus') {
-							secTarget.addVolatile(buffing, pokemon, move);
+							if (actualWhat === 'status') {
+								if (!!!secTarget.status) {
+									secTarget.trySetStatus(buffing, pokemon, move);
+								}
+								secTarget.removeVolatile(move.id);
+							}
+							if (actualWhat === 'volatileStatus') {
+								secTarget.addVolatile(buffing, pokemon, move);
+							}
 						}
 					}
 				}
