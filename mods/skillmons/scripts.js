@@ -476,7 +476,7 @@ exports.BattleScripts = {
 							if (!!!secTarget.status) {
 								secTarget.trySetStatus(buffing, pokemon, move);
 							}
-							secTarget.removeVolatile(buffing);
+							secTarget.removeVolatile(move.id);
 						}
 						if (actualWhat === 'volatileStatus') {
 							secTarget.addVolatile(buffing, pokemon, move);

@@ -125,7 +125,7 @@ exports.BattleMovedex = {
 		inherit: true,
 		accuracy: true,
 		status: false,
-		volatileStatus: 'slp',
+		volatileStatus: 'darkvoid',
 		secondary: {chance: 80, status: 'slp'}
 	},
 	defog: {
@@ -228,7 +228,7 @@ exports.BattleMovedex = {
 		inherit: true,
 		accuracy: true,
 		status: false,
-		volatileStatus: 'slp',
+		volatileStatus: 'grasswhistle',
 		secondary: {chance: 55, status: 'slp'}
 	},
 	gravity: {
@@ -325,7 +325,7 @@ exports.BattleMovedex = {
 		inherit: true,
 		accuracy: true,
 		status: false,
-		volatileStatus: 'slp',
+		volatileStatus: 'hypnosis',
 		secondary: {chance: 60, status: 'slp'}
 	},
 	inferno: {
@@ -361,7 +361,7 @@ exports.BattleMovedex = {
 		inherit: true,
 		accuracy: true,
 		status: false,
-		volatileStatus: 'slp',
+		volatileStatus: 'lovelykiss',
 		secondary: {chance: 75, status: 'slp'}
 	},
 	luckychant: {
@@ -611,7 +611,7 @@ exports.BattleMovedex = {
 		inherit: true,
 		accuracy: true,
 		status: false,
-		volatileStatus: 'slp',
+		volatileStatus: 'sing',
 		secondary: {chance: 55, status: 'slp'}
 	},
 	sleeptalk: {
@@ -640,7 +640,7 @@ exports.BattleMovedex = {
 		inherit: true,
 		accuracy: true,
 		status: false,
-		volatileStatus: 'slp',
+		volatileStatus: 'sleeppowder',
 		secondary: {chance: 75, status: 'slp'}
 	},
 	sleeptalk: {
@@ -768,7 +768,7 @@ exports.BattleMovedex = {
 		inherit: true,
 		accuracy: true,
 		status: false,
-		volatileStatus: 'brn',
+		volatileStatus: 'willowisp',
 		secondary: {chance: 85, status: 'brn'}
 	}
 };
