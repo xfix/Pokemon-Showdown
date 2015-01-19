@@ -695,7 +695,7 @@ var commands = exports.commands = {
 			if (!move.exists) {
 				return this.sendReply("Move '" + move.id + "' not found.");
 			}
-			problem = TeamValidator.checkLearnsetSync(format, move, template, lsetData);
+			problem = TeamValidator.checkLearnsetSync(format, move, template.species, lsetData);
 			if (problem) break;
 		}
 		var buffer = template.name + (problem ? " <span class=\"message-learn-cannotlearn\">can't</span> learn " : " <span class=\"message-learn-canlearn\">can</span> learn ") + (targets.length > 2 ? "these moves" : move.name);
