@@ -45,13 +45,13 @@ exports.BattleMovedex = {
 	bonerush: {
 		inherit: true,
 		accuracy: true,
-		basePower: 30,
+		basePower: 26,
 		multihit: 3
 	},
 	bulletseed: {
 		inherit: true,
 		accuracy: true,
-		basePower: 30,
+		basePower: 26,
 		multihit: 3
 	},
 	chargebeam: {
@@ -74,7 +74,7 @@ exports.BattleMovedex = {
 	cometpunch: {
 		inherit: true,
 		accuracy: true,
-		basePower: 22,
+		basePower: 19,
 		multihit: 3
 	},
 	conversion2: {
@@ -677,7 +677,7 @@ exports.BattleMovedex = {
 	spikecannon: {
 		inherit: true,
 		accuracy: true,
-		basePower: 25,
+		basePower: 21,
 		multihit: 3
 	},
 	stormthrow: {
@@ -701,7 +701,7 @@ exports.BattleMovedex = {
 	tailslap: {
 		inherit: true,
 		accuracy: true,
-		basePower: 30,
+		basePower: 26,
 		multihit: 3
 	},
 	telekinesis: {
@@ -761,7 +761,7 @@ exports.BattleMovedex = {
 	watershuriken: {
 		inherit: true,
 		accuracy: true,
-		basePower: 20,
+		basePower: 16,
 		multihit: 3
 	},
 	willowisp: {
