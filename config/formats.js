@@ -2016,6 +2016,13 @@ exports.Formats = [
 		ruleset: ['OU']
 	},
 	{
+		name: "Hidden OU",
+		section: "Other Metagames",
+		
+		mod: 'hiddenou',
+		ruleset: ['OU']
+	},
+	{
 		name: "350 Cup",
 		section: "Other Metagames",
 
