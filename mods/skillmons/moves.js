@@ -567,6 +567,12 @@ exports.BattleMovedex = {
 			return pokemon.level + 50;
 		}
 	},
+	rockblast: {
+		inherit: true,
+		accuracy: true,
+		basePower: 26,
+		multihit: 3
+	},
 	rocksmash: {
 		inherit: true,
 		accuracy: true,
