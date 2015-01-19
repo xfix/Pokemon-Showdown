@@ -130,15 +130,11 @@ exports.BattleAbilities = {
 	},
 	skilllink: {
 		inherit: true,
-		onModifyMove: function (move) {
-			if (move.multihit && move.id !== 'beatup') {
-				if (move.multihit.length) {
-					move.multihit = move.multihit[0] + 1;
-				} else {
-					move.multihit++;
-				}
+		onBasePower: function (basePower, pokemon, target, move) {
+			if (move.multihit === 3) {
+				return this.chainModify(5 / 3);
 			}
-		},
+		}
 	},
 	sniper: {
 		inherit: true,
