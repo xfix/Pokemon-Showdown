@@ -98,15 +98,22 @@ exports.BattleStatuses = {
 		onStallMove: function () {
 			// Don't allow pointless Endure stall
 			var move = this.activeMove.id;
-			var endure = (move === 'endure' || move === 'craftyshield');
-			return this.effectData.counter < (endure ? 1 : 5);
+			if (move === 'endure' || move === 'craftyshield') {
+				return !this.effectData.counter;
+			}
 		},
 		onFoeModifyMove: function (move) {
+			if (move === 'endure' || move === 'craftyshield' || this.effectData.duration === 1) return;
 			if (this.effectData.counter !== 1) {
 				move.isNotProtectable = true;
 			}
+			if (move.secondaries) {
+				for (var i = 0; i < move.secondaries.length; i++) {
+					move.secondaries[i].chance *= 1 - Math.pow(2, 1 - this.effectData.counter);
+				}
+			}
 		},
-		onSourceModifyDamage: function (damage, source, target, move) {
+		onSourceModifyDamage: function () {
 			var move = this.effectData.move;
 			if (move === 'endure' || move === 'craftyshield' || this.effectData.duration === 1) return;
 			return this.chainModify(1 - Math.pow(2, 1 - this.effectData.counter));
