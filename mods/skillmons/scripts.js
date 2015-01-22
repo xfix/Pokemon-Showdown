@@ -1,19 +1,5 @@
 exports.BattleScripts = {
 	gen: 6,
-	// Init function to set things up.
-	// It makes all moves to have true accuracy.
-	init: function() {
-		for (var i in this.data.Movedex) {
-			if (typeof this.data.Movedex[i].basePower === 'number' && this.data.Movedex[i].basePower > 0) {
-				var accuracy = (this.data.Movedex[i].accuracy === true) ? 100 : this.data.Movedex[i].accuracy;
-				var basePower = Math.floor(this.data.Movedex[i].basePower * accuracy / 100);
-				if (this.data.Movedex[i].critRatio === 2) basePower *= 1.125;
-				if (this.data.Movedex[i].critRatio === 3) basePower *= 1.25;
-				this.modData('Movedex', i).basePower = basePower;
-			}
-			this.modData('Movedex', i).accuracy = true;
-		}
-	},
 	side: {
 		pnames: {
 			atk: 'Attack boost',
@@ -71,7 +57,8 @@ exports.BattleScripts = {
 		var category = this.getCategory(move);
 		var defensiveCategory = move.defensiveCategory || category;
 
-		var basePower = move.basePower;
+		var accuracy = move.accuracy;
+		var basePower = move.basePower * accuracy / 100;
 		if (move.basePowerCallback) {
 			basePower = move.basePowerCallback.call(this, pokemon, target, move);
 		}
@@ -79,8 +66,10 @@ exports.BattleScripts = {
 			if (basePower === 0) return; // returning undefined means not dealing damage
 			return basePower;
 		}
-		basePower = this.clampIntRange(basePower, 1);
+		if (move.critRatio === 2) basePower *= 1.125;
+		if (move.critRatio === 3) basePower *= 1.25;
 
+		basePower = this.clampIntRange(basePower, 1);
 
 		basePower = this.runEvent('BasePower', pokemon, target, move, basePower, true);
 		if (!basePower) return 0;
@@ -416,7 +405,7 @@ exports.BattleScripts = {
 			// We gather the effects to apply them.
 			for (var i = 0; i < moveData.secondaries.length; i++) {
 				var buffDebuff = 'none';
-				var points = moveData.secondaries[i].chance;
+				var points = Math.floor(moveData.secondaries[i].chance * moveData.accuracy / 100);
 				var messages = [];
 				var buffing = 'nothing';
 				var boosts = false;
