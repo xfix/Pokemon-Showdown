@@ -58,6 +58,9 @@ exports.BattleScripts = {
 		var defensiveCategory = move.defensiveCategory || category;
 
 		var accuracy = move.accuracy;
+		if (accuracy === true) {
+			accuracy = 100;
+		}
 		var basePower = move.basePower * accuracy / 100;
 		if (move.basePowerCallback) {
 			basePower = move.basePowerCallback.call(this, pokemon, target, move);
@@ -405,7 +408,11 @@ exports.BattleScripts = {
 			// We gather the effects to apply them.
 			for (var i = 0; i < moveData.secondaries.length; i++) {
 				var buffDebuff = 'none';
-				var points = Math.floor(moveData.secondaries[i].chance * moveData.accuracy / 100);
+				var accuracy = moveData.accuracy;
+				if (accuracy === true) {
+					accuracy = 100;
+				}
+				var points = Math.floor(moveData.secondaries[i].chance * accuracy / 100);
 				var messages = [];
 				var buffing = 'nothing';
 				var boosts = false;
