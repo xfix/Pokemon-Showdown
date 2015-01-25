@@ -314,5 +314,33 @@ exports.BattleScripts = {
 		this.modData('Pokedex', 'heatran').abilities = {0:"Flash Fire", H:"Weak Armor"};
 		this.modData('Pokedex', 'giratina').abilities = {0:"Pressure", H:"Mummy"};
 		this.modData('Pokedex', 'giratinaorigin').abilities = {0:"Pressure", H:"Insomnia"};
+		
+		// All of the new moves
+		this.modData('Learnsets', 'venusaur').learnset.aromatherapy = ['5L100'];
+		this.modData('Learnsets', 'charizard').learnset.blueflare = ['5L100'];
+                this.modData('Learnsets', 'blastoise').learnset.slackoff = ['5L100'];
+                this.modData('Learnsets', 'pidgeot').learnset.aeroblast = ['5L100'];
+                this.modData('Learnsets', 'alakazam').learnset.superpower = ['5L100'];
+                this.modData('Learnsets', 'slowbro').learnset.rockpolish  = ['5L100'];
+                this.modData('Learnsets', 'gengar').learnset.partingshot = ['5L100'];
+                this.modData('Learnsets', 'gyarados').learnset.firefang = ['5L100'];
+                this.modData('Learnsets', 'gyarados').learnset.thunderfang = ['5L100'];
+                this.modData('Learnsets', 'scizor').learnset.drillrun = ['5L100'];
+                this.modData('Learnsets', 'houndoom').learnset.nightdaze = ['5L100'];
+                this.modData('Learnsets', 'tyranitar').learnset.kingsshield = ['5L100'];
+                this.modData('Learnsets', 'sceptile').learnset.sleeppowder = ['5L100'];
+                this.modData('Learnsets', 'swampert').learnset.gunkshot = ['5L100'];
+                this.modData('Learnsets', 'blaziken').learnset.uturn = ['5L100'];
+                this.modData('Learnsets', 'gardevoir').learnset.babydolleyes = ['5L100'];
+                this.modData('Learnsets', 'sableye').learnset.phantomforce = ['5L100'];
+                this.modData('Learnsets', 'metagross').learnset.heavyslam = ['5L100'];
+                this.modData('Learnsets', 'latias').learnset.guardswap = ['5L100'];
+                this.modData('Learnsets', 'latios').learnset.powerswap = ['5L100'];
+                this.modData('Learnsets', 'lopunny').learnset.volttackle = ['5L100'];
+                this.modData('Learnsets', 'garchomp').learnset.aquajet = ['5L100'];
+                this.modData('Learnsets', 'lucario').learnset.stormthrow = ['5L100'];
+                this.modData('Learnsets', 'abomasnow').learnset.earthpower = ['5L100'];
+                this.modData('Learnsets', 'gallade').learnset.playrough = ['5L100'];
+                this.modData('Learnsets', 'audino').learnset.nuzzle = ['5L100'];
 	}
 };
