@@ -3955,5 +3955,146 @@ exports.BattleScripts = {
 			team.push(set);
 		}
 		return team;
+	},
+	randomSeasonalStaffTeam: function (side) {
+		// Only adding people with sets right now.
+		// tbh I could put all of them on the same array and detect rank via charAt(0)
+		// but this way is tidier imo
+		var team = [];
+		var admins = ['~Joim', '~Haunter', '~Jasmine', '~V4', '~The Immortal', '~Zarel'].randomize();
+		var leaders = ['&hollywood', '&jdarden', '&Okuu', '&verbatim'].randomize();
+		var mods = [
+			'@Ascriptmaster', '@Nani Man', '@Genesect', '@RosieTheVenusaur', '@Scotteh', '@Beowulf', '@Skitty',
+			'@WaterBomb', '@Trickster', '@Hippopotas', '@shaymin', '@Relados'/*, '@SteelEdges', '@Barton',
+			'@BiGGiE', '@innovamania', '@jin of the gale', '@MattL', '@sirDonovan', '@Spydreigon', '@Test2107'*/
+		].randomize();
+		var drivers = [
+			'%Legitimate Username', '%Lyto'/*, '%useless trainer', '%Majorbling', '%Aelita', '%Marty', '%Astara',
+			'%Feliburn', '%Queez', '%raseri'*/
+		].randomize();
+		//var voices = [];
+		// Teams are composed of 1 admin, 1 leader, 2 mods, 1-2 drivers, 0-1 voices.
+		var mons = [admins[0], leaders[0], mods[0], mods[1], drivers[0], drivers[1]];
+
+		// Hardcoded sets
+		var sets = {
+			haunter: {
+				species: 'Landorus', ability: 'Sheer Force', item: 'Life Orb', gender: 'M',
+				moves: ['hurricane', 'earthpower', 'fireblast', 'blizzard', 'thunder', 'quiverdance']
+			},
+			jasmine: {
+				species: 'Mew', ability: 'Download', item: '', gender: 'F',
+				moves: ['transform', 'explosion', 'taunt', 'protect', 'conversion2']
+			},
+			joim: {
+				species: 'Zapdos', ability: 'Download', item: 'Sitrus Berry', gender: 'M',
+				moves: ['thunderbolt', 'hurricane', 'earthpower', 'roost', 'flamethrower', 'milkdrink', 'simplebeam'],
+				evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
+			},
+			theimmortal: {
+				species: 'Regigigas', ability: 'Poison Heal', item: 'Toxic Orb', gender: 'M',
+				moves: ['facade', 'knockoff', 'sacredfire', 'kingsshield', 'spikyshield']
+			},
+			v4: {
+				species: 'Victini', ability: 'Desolate Land', item: ['Charcoal', 'Choice Scarf', 'Leftoverts', 'Life Orb'][this.random(4)], gender: 'M',
+				moves: ['vcreate', 'thousandarrows', 'bolt strike', 'shiftgear', ['dragonascent', 'closecombat'][this.random(2)], 'substitute']
+			},
+			zarel: {
+				species: 'Meloetta', ability: 'Serene Grace', item: '', gender: 'F',
+				moves: ['lunardance', 'fierydance', 'perishsong', 'petaldance', 'quiverdance', 'relicsong']
+			},
+			hollywood: {
+				species: 'Mr. Mime', ability: 'Prankster', item: 'Leftovers', gender: 'M',
+				moves: ['Baton Pass', 'Substitute', 'Milk Drink', 'Encore', 'Geomancy'],
+				evs: {hp:252, def:4, spe:252}, nature: 'Timid'
+			},
+			jdarden: {
+				species: 'Giratina-Origin', ability: 'Illusion', item: 'Griseous Orb', gender: 'M',
+				moves: ['superpower', 'vcreate', 'dracometeor', 'roost', 'psychoshift', 'gastroacid'],
+				evs: {hp:252, atk:84, spa:176}, nature: 'Quiet'
+			},
+			okuu: {
+				species: 'Honchkrow', ability: 'Desolate Land', item: 'Life Orb', gender: 'F',
+				moves: ['sacredfire', 'bravebird', 'punishment', 'fusionflare', 'roost', 'mysticalfire'],
+				evs: {hp:252, atk:84, spa:176}, nature: 'Quiet'
+			},
+			verbatim: {
+				species: 'Archeops', ability: 'Reckless', item: 'Life Orb', gender: 'M',
+				moves: ['headsmash', 'highjumpkick', 'flareblitz', 'volttackle', 'woodhammer', 'dragonascent'],
+				evs: {hp:4, atk:252, spe:252}, nature: 'Jolly'
+			},
+			ascriptmaster: {
+				species: 'Rotom', ability: 'Motor Drive', item: 'Air Balloon', gender: 'M',
+				moves: ['chargebeam', 'signalbeam', 'flamethrower', 'aurorabeam', 'dazzlinggleam', 'flash']
+			},
+			naniman: {
+				species: 'Gengar', ability: 'Desolate Land', item: 'Black Glasses', gender: 'M',
+				moves: ['eruption', 'swagger', 'shadow ball', 'attract', 'dazzlinggleam', 'fireblast']
+			},
+			genesect: {
+				species: 'Genesect', ability: 'Simple', item: 'Assault Vest', gender: 'M',
+				moves: ['bugbuzz', 'explosion', 'extremespeed', 'flashcannon', 'uturn', 'geargrind']
+			},
+			rosiethevenusaur: {
+				species: 'Venusaur', ability: 'Moxie', item: 'Leftovers', gender: 'F',
+				moves: ['flamethrower', 'extremespeed', 'attract', 'knockoff', 'earthquake', 'frenzyplant']	
+			},
+			scotteh: {
+				species: 'Suicune', ability: 'Fur Coat', item: 'Leftovers', gender: 'M',
+				moves: ['hurricane', 'icebeam', 'steameruption', 'recover', 'tailglow', 'doubleedge']
+			},
+			beowulf: {
+				species: 'Beedrill', ability: 'Download', item: "King's Rock", gender: 'M',
+				moves: ['sacredfire', 'boltstrike', 'gunkshot', 'iciclecrash', 'ironhead', 'dragonascent']	
+			},
+			skitty: {
+				species: 'Audino', ability: 'Intimidate', item: 'Audinite', gender: 'M',
+				moves: ['acupressure', 'storedpower', 'moonlight', 'refresh', 'cosmicpower', 'magiccoat'],
+				nature: 'Bold'
+			},
+			waterbomb: {
+				species: 'Poliwrath', ability: 'Unaware', item: 'Leftovers', gender: 'M',
+				moves: ['psychup', 'recover', 'refresh', 'drainpunch', 'bulkup', 'vcreate']
+			},
+			legitimateusername: {
+				species: 'Shuckle', ability: 'Unaware', item: 'Leftovers', gender: 'M',
+				moves: ['leechseed', 'rest', 'foulplay', 'shellsmash'],
+				evs: {hp:252, def:228, spd:28}, nature: 'Calm'
+			},
+			trickster: {
+				species: 'Whimsicott', ability: 'Prankster', item: 'Leftovers', gender: 'M',
+				moves: ['swagger', 'spore', 'seedflare', 'recover', 'tailglow', 'naturepower']
+			},
+			hippopotas: {
+				species: 'Hippopotas', ability: 'Magic Guard', item: 'Focus Sash', gender: 'M',
+				moves: ['agility', 'stealthrock', 'spikes', 'toxicspikes', 'stickyweb', 'destinybond']
+			},
+			shaymin: {
+				species: 'Shaymin-Sky', ability: 'Magic Guard', item: 'Life Orb', gender: 'F',
+				moves: ['seedflare', 'hurricane', 'earthpower', 'flashcannon', 'spikyshield', 'triattack']
+			},
+			relados: {
+				species: 'Kyurem-Black', ability: 'Guts', item: 'Flame Orb', gender: 'M',
+				moves: ['facade', 'iceshard', 'closecombat', 'dualchop', 'recover', 'magicroom'],
+				evs: {hp:252, def:252, spd:4}, nature: 'Adamant'
+			},
+			lyto: {
+				species: 'Lanturn', ability: 'Magic Bounce', item: 'Power Herb', gender: 'M',
+				moves: ['originpulse', 'lightofruin', 'blueflare', 'recover', 'geomancy', 'thundershock'],
+				evs: {hp:188, spa:252, spe:68}, nature: 'Timid'
+			}
+		};
+		for (var i = 0; i<6; i++) {
+			var set = sets[toId(mons[i])];
+			if (set) {
+				set.name = mons[i];
+				set.level = [99, 90, 85, 85, 80, 80][i];
+				set.ivs = {hp:31, atk:31, def:31, spa:31, spd:30, spe:31};
+				if (!set.evs) set.evs = {hp:84, atk:84, def:84, spa:84, spd:84, spe:84};
+				team.push(set);
+			}
+		}
+
+		return team;
 	}
 };

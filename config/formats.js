@@ -1974,6 +1974,76 @@ exports.Formats = [
 			}
 		}
 	},
+	// STAFF SHOWDOWN MARCH 2015
+	{
+		name: "STAFF SHOWDOWN",
+		section: "Seasonal",
+
+		team: 'randomSeasonalStaff',
+		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod'],
+		onBegin: function () {
+			this.add('-message', "GET REKT");
+		},
+		onSwitchIn: function (pokemon) {
+			// Add here edgy sentences and hacky stuff for mega abilities
+		},
+		onFaint: function (pokemon) {
+			// Add here salty tears
+		},
+		// A thousand lines of giberish
+		onModifyMove: function (move, pokemon) {
+			if (move.id === 'quiverdance' && pokemon.name === '~Haunter') {
+				move.name = 'Genius Dance';
+				move.boosts = {spd:1, spe:1, accuracy:1};
+			}
+			if (move.id === 'conversion2' && pokemon.name === '~Jasmine') {
+				move.name = 'Transform Reversal';
+				move.onHit = function (target, source) {
+					if (!target.transformInto(source, source)) {
+						return false;
+					}
+				};
+			}
+			if (move.id === 'milkdrink' && pokemon.name === '~Joim') {
+				move.name = 'Red Bull Drink';
+				move.boosts = {spa:1, spe:2, accuracy:1};
+				move.priority = -1;
+				pokemon.addVolatile('redbull');
+				move.onTryHit = function (pokemon) {
+					if (pokemon.volatiles['redbull']) return false;
+				};
+				move.onHit = function (pokemon) {
+					if (pokemon.volatiles['redbull']) return false;
+				};
+			}
+			if (move.id === 'facade' && pokemon.name === '~The Immortal') {
+				move.name = 'Neutralizer';
+				move.drain = [1 / 2];
+			}
+			if (move.id === 'vcreate' && pokemon.name === '~V4') {
+				move.name = 'V-Generate';
+				move.boosts = {def:2, spd:2};
+				move.onHit = function (target) {
+					if (this.random(1)) {
+						target.trySetStatus('brn');
+					}
+				};
+			}
+			if (move.id === 'relicsong' && pokemon.name === '~Zarel') {
+				move.name = 'Relic Song Dance';
+				move.basePower = 60;
+				if (!pokemon.volatiles['relicsong']) {
+					// Psychic meloetta
+					move.category = 'Special';
+					move.type = 'Psychic';
+				} else {
+					// Fighting meloetta
+					move.category = 'Physical';
+					move.type = 'Fighting';
+				}
+			}
+		}
+	},
 
 	// Other Metagames
 	///////////////////////////////////////////////////////////////////
