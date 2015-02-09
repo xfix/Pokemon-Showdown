@@ -1982,7 +1982,7 @@ exports.Formats = [
 		team: 'randomSeasonalStaff',
 		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod'],
 		onBegin: function () {
-			this.add('-message', "GET REKT");
+			this.add('-message', "GET REKT - MOST CUSTOM MOVES AREN'T DONE DON'T USE THEM");
 		},
 		onSwitchIn: function (pokemon) {
 			// Add here edgy sentences and hacky stuff for mega abilities
@@ -1994,7 +1994,14 @@ exports.Formats = [
 		onModifyMove: function (move, pokemon) {
 			if (move.id === 'quiverdance' && pokemon.name === '~Haunter') {
 				move.name = 'Genius Dance';
-				move.boosts = {spd:1, spe:1, accuracy:1};
+				move.boosts = {spd:1, spe:1, accuracy:1, evasion:-1};
+				move.onTryHit = function (pokemon) {
+					if (pokemon.volatiles['haunterino']) return false;
+				};
+				move.onHit = function (pokemon) {
+					if (pokemon.volatiles['haunterino']) return false;
+					pokemon.addVolatile('haunterino');
+				};
 			}
 			if (move.id === 'conversion2' && pokemon.name === '~Jasmine') {
 				move.name = 'Transform Reversal';
@@ -2006,28 +2013,28 @@ exports.Formats = [
 			}
 			if (move.id === 'milkdrink' && pokemon.name === '~Joim') {
 				move.name = 'Red Bull Drink';
-				move.boosts = {spa:1, spe:2, accuracy:1};
+				move.boosts = {spa:1, spe:1, accuracy:1, evasion:-1};
 				move.priority = -1;
-				pokemon.addVolatile('redbull');
 				move.onTryHit = function (pokemon) {
 					if (pokemon.volatiles['redbull']) return false;
 				};
 				move.onHit = function (pokemon) {
 					if (pokemon.volatiles['redbull']) return false;
+					pokemon.addVolatile('redbull');
 				};
 			}
-			if (move.id === 'facade' && pokemon.name === '~The Immortal') {
-				move.name = 'Neutralizer';
-				move.drain = [1 / 2];
+			if (move.id === 'shadowforce' && pokemon.name === '~The Immortal') {
+				move.name = 'Primordial Fury';
+				move.basePower = 150;
+				move.type = 'Dark';
+				move.notSubBlocked = true;
+				move.ignoreDefensive = true;
 			}
 			if (move.id === 'vcreate' && pokemon.name === '~V4') {
 				move.name = 'V-Generate';
-				move.boosts = {def:2, spd:2};
-				move.onHit = function (target) {
-					if (this.random(1)) {
-						target.trySetStatus('brn');
-					}
-				};
+				move.self.boosts = {accuracy: -1};
+				move.accuracy = 75;
+				move.secondaries.push({chance: 50, status: 'brn'});
 			}
 			if (move.id === 'relicsong' && pokemon.name === '~Zarel') {
 				move.name = 'Relic Song Dance';
