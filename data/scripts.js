@@ -3998,7 +3998,7 @@ exports.BattleScripts = {
 				},
 				joim: {
 					species: 'Zapdos', ability: 'Download', item: 'Leftovers', gender: 'M',
-					moves: ['thunderbolt', 'hurricane', 'earthpower', 'roost', 'flamethrower', 'worryseed'. 'haze'],
+					moves: ['thunderbolt', 'hurricane', 'earthpower', 'roost', 'flamethrower', 'worryseed', 'haze'],
 					signatureMove: 'milkdrink', evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
 				},
 				theimmortal: {
@@ -4085,7 +4085,7 @@ exports.BattleScripts = {
 				},
 				coolstorybrobat: {
 					species: 'Crobat', ability: 'Gale Wings', item: 'Black Glasses', gender: 'M',
-					moves: ['knockoff', 'bulkup', 'roost', 'closecombat', 'defog'], name: 'CoolStoryBrobat'
+					moves: ['knockoff', 'bulkup', 'roost', 'closecombat', 'defog'], name: 'CoolStoryBrobat',
 					signatureMove: 'bravebird', evs: {}
 				},
 				formerhope: {
@@ -4100,7 +4100,7 @@ exports.BattleScripts = {
 				},
 				goddessbriyella: {
 					species: 'Floette-Eternal-Flower', ability: 'Magic Bounce', item: 'Big Root', gender: 'M',
-					moves: ['cottonguard', 'quiverdance', 'drainingkiss', 'batonpass', 'storedpower'], name: 'Goddess Briyella'
+					moves: ['cottonguard', 'quiverdance', 'drainingkiss', 'batonpass', 'storedpower'], name: 'Goddess Briyella',
 					signatureMove: 'earthpower', evs: {}
 				},
 				hippopotas: {
@@ -4110,7 +4110,7 @@ exports.BattleScripts = {
 				},
 				hydroimpact: {
 					species: 'Charizard', ability: 'Rivalry', item: 'Oran Berry', gender: 'M',
-					moves: ['airslash', 'flamethrower', 'nobleroar', 'hydropump'], name: 'HYDROIMPACT'
+					moves: ['airslash', 'flamethrower', 'nobleroar', 'hydropump'], name: 'HYDROIMPACT',
 					signatureMove: 'slash', evs: {atk: 4, spa:252, spe:252}, nature: 'Hasty'
 				},
 				innovamania: {
@@ -4165,7 +4165,7 @@ exports.BattleScripts = {
 				},
 				shaymin: {
 					species: 'Shaymin-Sky', ability: 'Magic Guard', item: 'Life Orb', gender: 'F',
-					moves: ['seedflare', 'oblivionwing', 'earthpower', 'spore', 'nastyplot'], name: 'Shaymin'
+					moves: ['seedflare', 'oblivionwing', 'earthpower', 'spore', 'nastyplot'], name: 'Shaymin',
 					signatureMove: 'triattack'
 				},
 				sirdonovan: {
