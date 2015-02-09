@@ -4296,24 +4296,22 @@ exports.BattleScripts = {
 		var voices = Object.keys(sets.voices);
 		var mons = [admins[0], leaders[0], mods[0], mods[1], drivers[0], voices[0]];
 		for (var i = 0; i<6; i++) {
-			var set = sets[mons[i]];
-			if (set) {
-				set.level = [99, 90, 85, 85, 80, 75][i];
-				if (!set.ivs) {
-					set.ivs = {hp:31, atk:31, def:31, spa:31, spd:31, spe:31};
-				} else {
-					for (var iv in {hp:31, atk:31, def:31, spa:31, spd:31, spe:31}) {
-						set.ivs[iv] = set.ivs[iv] ? set.ivs[iv] : 31;
-					}
+			var set = sets[['admins', 'leaders', 'mods', 'mods', 'drivers', 'voices'][i]][mons[i]];
+			set.level = [99, 90, 85, 85, 80, 75][i];
+			if (!set.ivs) {
+				set.ivs = {hp:31, atk:31, def:31, spa:31, spd:31, spe:31};
+			} else {
+				for (var iv in {hp:31, atk:31, def:31, spa:31, spd:31, spe:31}) {
+					set.ivs[iv] = set.ivs[iv] ? set.ivs[iv] : 31;
 				}
-				// Assuming the hardcoded set evs are all legal.
-				if (!set.evs) set.evs = {hp:84, atk:84, def:84, spa:84, spd:84, spe:84};
-				set.name = ['~', '&', '@', '@', '%', '+'][i] + ((!set.name) ? mons[i].charAt(0).toUpperCase() + mons[i].substr(1).toLowerCase() : set.name);
-				set.moves = set.moves.randomize();
-				set.moves = [set.moves[0], set.moves[1], set.moves[2], set.signatureMove];
-				delete set.signatureMove;
-				team.push(set);
 			}
+			// Assuming the hardcoded set evs are all legal.
+			if (!set.evs) set.evs = {hp:84, atk:84, def:84, spa:84, spd:84, spe:84};
+			set.name = ['~', '&', '@', '@', '%', '+'][i] + ((!set.name) ? mons[i].charAt(0).toUpperCase() + mons[i].substr(1).toLowerCase() : set.name);
+			set.moves = set.moves.randomize();
+			set.moves = [set.moves[0], set.moves[1], set.moves[2], set.signatureMove];
+			delete set.signatureMove;
+			team.push(set);
 		}
 
 		return team;
