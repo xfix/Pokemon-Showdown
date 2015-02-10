@@ -3957,21 +3957,9 @@ exports.BattleScripts = {
 		return team;
 	},
 	randomSeasonalStaffTeam: function (side) {
-		// Only adding people with sets right now.
-		// tbh I could put all of them on the same array and detect rank via charAt(0)
-		// but this way is tidier imo
 		var team = [];
-		var mods = [
-			'@Ascriptmaster', '@Nani Man', '@Genesect', '@RosieTheVenusaur', '@Scotteh', '@Beowulf', '@Skitty',
-			'@WaterBomb', '@Trickster', '@Hippopotas', '@shaymin', '@Relados'/*, '@SteelEdges', '@Barton',
-			'@BiGGiE', '@innovamania', '@jin of the gale', '@MattL', '@sirDonovan', '@Spydreigon', '@Test2017'*/
-		].randomize();
-		var drivers = [
-			'%Legitimate Username', '%Lyto'/*, '%useless trainer', '%Majorbling', '%Aelita', '%Marty', '%Astara',
-			'%Feliburn', '%Queez', '%raseri'*/
-		].randomize();
 
-		// Hardcoded sets
+		// Hardcoded sets, separated by authority.
 		var sets = {
 			// Admins.
 			admins: {
@@ -3980,7 +3968,11 @@ exports.BattleScripts = {
 					moves: ['blueflare', 'quiverdance', 'solarbeam', 'moonblast', 'sunnyday'],
 					signatureMove: 'spikes',
 				},
-				// chaos: {},
+				chaos: {
+					species: 'Bouffalant', ability: 'Fur Coat', item: 'Red Card', gender: 'M',
+					moves: ['precipiceblades', ['recover', 'stockpile', 'swordsdance'][this.random(3)], 'extremespeed', 'explosion'], name: 'chaos',
+					signatureMove: 'embargo', evs: {hp:4, atk:252, spe:252}, nature: 'Adamant'
+				},
 				haunter: {
 					species: 'Landorus', ability: 'Sheer Force', item: 'Life Orb', gender: 'M',
 					moves: ['hurricane', 'earthpower', 'fireblast', 'blizzard', 'thunder'],
@@ -4290,14 +4282,21 @@ exports.BattleScripts = {
 		};
 		// Teams are composed of 1 admin, 1 leader, 2 mods, 1-2 drivers, 0-1 voices.
 		var admins = Object.keys(sets.admins).randomize();
-		var leaders = Object.keys(sets.leaders);
-		var mods = Object.keys(sets.mods);
-		var drivers = Object.keys(sets.drivers);
-		var voices = Object.keys(sets.voices);
-		var mons = [admins[0], leaders[0], mods[0], mods[1], drivers[0], voices[0]];
+		var leaders = Object.keys(sets.leaders).randomize();
+		var mods = Object.keys(sets.mods).randomize();
+		var drivers = Object.keys(sets.drivers).randomize();
+		var voices = Object.keys(sets.voices).randomize();
+		var mons = [admins[0], leaders[0], mods[0], mods[1], drivers[0]];
+		var ranks = ['admins', 'leaders', 'mods', 'mods', 'drivers'];
+		var rankSigns = {'admins':'~', 'leaders':'&', 'mods':'@', 'drivers':'%', 'voices':'+'};
+		var levels = [99, 90, 85, 85, 80];
+		var lastIsVoice = this.random(2) === 1;
+		ranks.push((lastIsVoice ? 'voices' : 'drivers'));
+		levels.push((lastIsVoice ? 75 : 80));
+		mons.push((lastIsVoice ? voices[0] : drivers[1]));
 		for (var i = 0; i<6; i++) {
-			var set = sets[['admins', 'leaders', 'mods', 'mods', 'drivers', 'voices'][i]][mons[i]];
-			set.level = [99, 90, 85, 85, 80, 75][i];
+			var set = sets[ranks[i]][mons[i]];
+			set.level = levels[i];
 			if (!set.ivs) {
 				set.ivs = {hp:31, atk:31, def:31, spa:31, spd:31, spe:31};
 			} else {
@@ -4307,7 +4306,7 @@ exports.BattleScripts = {
 			}
 			// Assuming the hardcoded set evs are all legal.
 			if (!set.evs) set.evs = {hp:84, atk:84, def:84, spa:84, spd:84, spe:84};
-			set.name = ['~', '&', '@', '@', '%', '+'][i] + ((!set.name) ? mons[i].charAt(0).toUpperCase() + mons[i].substr(1).toLowerCase() : set.name);
+			set.name = rankSigns[ranks[i]] + ((!set.name) ? mons[i].charAt(0).toUpperCase() + mons[i].substr(1).toLowerCase() : set.name);
 			set.moves = set.moves.randomize();
 			set.moves = [set.moves[0], set.moves[1], set.moves[2], set.signatureMove];
 			delete set.signatureMove;

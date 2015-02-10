@@ -1976,13 +1976,13 @@ exports.Formats = [
 	},
 	// STAFF SHOWDOWN MARCH 2015
 	{
-		name: "STAFF SHOWDOWN",
+		name: "Super Staff Bros.",
 		section: "Seasonal",
 
 		team: 'randomSeasonalStaff',
 		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod'],
 		onBegin: function () {
-			this.add('-message', "GET REKT - MOST CUSTOM MOVES AREN'T DONE DON'T USE THEM");
+			this.add('-message', "GET READY FOR THE NEXT BATTLE!");
 		},
 		onSwitchIn: function (pokemon) {
 			// Add here edgy sentences and hacky stuff for mega abilities
@@ -1992,6 +1992,27 @@ exports.Formats = [
 		},
 		// A thousand lines of giberish
 		onModifyMove: function (move, pokemon) {
+			if (move.id === 'spikes' && pokemon.name === '~Antar') {
+				move.name = 'Firebomb';
+				move.sideCondition = 'spikes',
+				move.isBounceable = false;
+				move.category = 'Special';
+				move.type = 'Fire';
+				move.basePower = 100;
+				move.onTryHit = function (target, source, move) {
+					this.attrLastMove('[still]');
+					this.add('-anim', target, "Overheat", source);
+					return null;
+				};
+			}
+			if (move.id === 'embargo' && pokemon.name === '~chaos') {
+				move.name = 'Forcewin';
+				move.onHit = function (pokemon) {
+					pokemon.addVolatile('taunt');
+					pokemon.addVolatile('torment');
+					pokemon.addVolatile('confusion');
+				};
+			}
 			if (move.id === 'quiverdance' && pokemon.name === '~Haunter') {
 				move.name = 'Genius Dance';
 				move.boosts = {spd:1, spe:1, accuracy:1, evasion:-1};
@@ -2001,6 +2022,21 @@ exports.Formats = [
 				move.onHit = function (pokemon) {
 					if (pokemon.volatiles['haunterino']) return false;
 					pokemon.addVolatile('haunterino');
+				};
+			}
+			if (move.id === 'psychup' && pokemon.name === '~Hugendugen') {
+				move.name = 'Policy Decision';
+				move.onHit = function (target, source) {
+					var targetBoosts = {};
+					var targetDeboosts = {};
+					for (var i in target.boosts) {
+						targetBoosts[i] = target.boosts[i];
+						targetDeboosts[i] = -target.boosts[i];
+					}
+					source.setBoost(targetBoosts);
+					target.setBoost(targetDeboosts);
+					this.add('-copyboost', source, target, '[from] move: Policy Decision');
+					this.add('-invertboost', target, '[from] move: Policy Decision');
 				};
 			}
 			if (move.id === 'conversion2' && pokemon.name === '~Jasmine') {
@@ -2014,7 +2050,6 @@ exports.Formats = [
 			if (move.id === 'milkdrink' && pokemon.name === '~Joim') {
 				move.name = 'Red Bull Drink';
 				move.boosts = {spa:1, spe:1, accuracy:1, evasion:-1};
-				move.priority = -1;
 				move.onTryHit = function (pokemon) {
 					if (pokemon.volatiles['redbull']) return false;
 				};
@@ -2032,7 +2067,7 @@ exports.Formats = [
 			}
 			if (move.id === 'vcreate' && pokemon.name === '~V4') {
 				move.name = 'V-Generate';
-				move.self.boosts = {accuracy: -1};
+				move.self.boosts = {accuracy: -2};
 				move.accuracy = 75;
 				move.secondaries = [{chance: 50, status: 'brn'}];
 			}
