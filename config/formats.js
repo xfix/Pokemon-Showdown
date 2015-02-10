@@ -2034,7 +2034,7 @@ exports.Formats = [
 				move.name = 'V-Generate';
 				move.self.boosts = {accuracy: -1};
 				move.accuracy = 75;
-				move.secondaries.push({chance: 50, status: 'brn'});
+				move.secondaries = [{chance: 50, status: 'brn'}];
 			}
 			if (move.id === 'relicsong' && pokemon.name === '~Zarel') {
 				move.name = 'Relic Song Dance';
