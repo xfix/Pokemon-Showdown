@@ -2110,7 +2110,7 @@ exports.Formats = [
 			if (move.id === 'mysticalfire' && pokemon.name === '&Okuu') {
 				move.name = 'Blazing Star - Ten Evil Stars';
 				move.basePower = 60;
-				move.self.boosts = {def:1, spd:1, spa:-1};
+				move.self = {boosts: {def:1, spd:1, spa:-1}};
 				move.onTryHit = function (target, source, move) {
 					this.attrLastMove('[still]');
 					this.add('-anim', target, "Fire Spin", source);

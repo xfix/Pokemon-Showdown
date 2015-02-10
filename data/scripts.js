@@ -3989,7 +3989,7 @@ exports.BattleScripts = {
 					signatureMove: 'conversion2'
 				},
 				joim: {
-					species: 'Zapdos', ability: 'Download', item: 'Leftovers', gender: 'M',
+					species: 'Zapdos', ability: 'Download', item: 'Leftovers', gender: 'M', shiny: true,
 					moves: ['thunderbolt', 'hurricane', 'earthpower', 'roost', 'flamethrower', 'worryseed', 'haze'],
 					signatureMove: 'milkdrink', evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
 				},
@@ -4101,7 +4101,7 @@ exports.BattleScripts = {
 					signatureMove: 'voltswitch', evs: {}, ivs: {atk:0, spa:0}
 				},
 				hydroimpact: {
-					species: 'Charizard', ability: 'Rivalry', item: 'Oran Berry', gender: 'M',
+					species: 'Charizard', ability: 'Rivalry', item: 'Life Orb', gender: 'M',
 					moves: ['airslash', 'flamethrower', 'nobleroar', 'hydropump'], name: 'HYDROIMPACT',
 					signatureMove: 'slash', evs: {atk: 4, spa:252, spe:252}, nature: 'Hasty'
 				},
@@ -4126,7 +4126,7 @@ exports.BattleScripts = {
 					signatureMove: 'toxic', evs: {}, nature: 'Bold'
 				},
 				naniman: {
-					species: 'Gengar', ability: 'Desolate Land', item: 'Black Glasses', gender: 'M',
+					species: 'Gengar', ability: 'Desolate Land', item: 'Black Glasses', gender: 'M', shiny: true,
 					moves: ['eruption', 'swagger', 'shadow ball', 'attract', 'dazzlinggleam'], name: 'Nani Man',
 					signatureMove: 'fireblast'
 				},
@@ -4286,14 +4286,20 @@ exports.BattleScripts = {
 		var mods = Object.keys(sets.mods).randomize();
 		var drivers = Object.keys(sets.drivers).randomize();
 		var voices = Object.keys(sets.voices).randomize();
+		// Initial team, last slot to decide between a driver and a voice.
 		var mons = [admins[0], leaders[0], mods[0], mods[1], drivers[0]];
+		// Tese are the rank names of the initial team, lacks the last one. It's to easily access the object.
 		var ranks = ['admins', 'leaders', 'mods', 'mods', 'drivers'];
+		// Hash to add the sign to the name of the mon easily.
 		var rankSigns = {'admins':'~', 'leaders':'&', 'mods':'@', 'drivers':'%', 'voices':'+'};
+		// Levels of the first 5 mons, each rank has its level.
 		var levels = [99, 90, 85, 85, 80];
+		// Check if we add a voice in last slot and update arrays with it.
 		var lastIsVoice = this.random(2) === 1;
 		ranks.push((lastIsVoice ? 'voices' : 'drivers'));
 		levels.push((lastIsVoice ? 75 : 80));
 		mons.push((lastIsVoice ? voices[0] : drivers[1]));
+		// Decided the six mons, let's do the team itself.
 		for (var i = 0; i<6; i++) {
 			var set = sets[ranks[i]][mons[i]];
 			set.level = levels[i];
