@@ -2062,7 +2062,7 @@ exports.Formats = [
 			}
 			if (move.id === 'shadowforce' && pokemon.name === '~The Immortal') {
 				move.name = 'Primordial Fury';
-				move.basePower = 150;
+				move.basePower = 120;
 				move.type = 'Dark';
 				move.notSubBlocked = true;
 				move.ignoreDefensive = true;

@@ -4013,7 +4013,7 @@ exports.BattleScripts = {
 				// Leaders.
 				hollywood: {
 					species: 'Mr. Mime', ability: 'Prankster', item: 'Leftovers', gender: 'M',
-					moves: ['batonpass', 'substitute', 'milkdrink', 'encore'], name: 'hollywood',
+					moves: ['batonpass', ['substitute', 'milkdrink'][this.random(2)], 'encore'], name: 'hollywood',
 					signatureMove: 'geomancy', evs: {hp:252, def:4, spe:252}, nature: 'Timid'
 				},
 				jdarden: {
@@ -4082,8 +4082,8 @@ exports.BattleScripts = {
 				},
 				formerhope: {
 					species: 'Froslass', ability: 'Prankster', item: 'Focus Sash', gender: 'M',
-					moves: [['icebeam', 'shadowball'][this.random(2)], 'destinybond', 'thunderwave'],
-					name: 'Former Hope', signatureMove: 'roleplay', evs: {}
+					moves: [['icebeam', 'shadowball'][this.random(2)], 'destinybond', 'thunderwave'], name: 'Former Hope',
+					signatureMove: 'roleplay', evs: {}
 				},
 				genesect: {
 					species: 'Genesect', ability: 'Mold Breaker', item: 'Life Orb', gender: 'M',
@@ -4120,6 +4120,11 @@ exports.BattleScripts = {
 					moves: ['steameruption', 'hurricane', 'recover', 'psystrike', 'quiverdance'], name: 'jin of the gale',
 					signatureMove: 'rapidspin', evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
 				},
+				lyto: {
+					species: 'Lanturn', ability: 'Magic Bounce', item: 'Leftovers', gender: 'M',
+					moves: ['originpulse', 'lightofruin', 'blueflare', 'recover', 'tailglow'],
+					signatureMove: 'thundershock', evs: {hp:188, spa:252, spe:68}, nature: 'Timid'
+				},
 				mattl: {
 					species: 'Mandibuzz', ability: 'Poison Heal', item: 'Leftovers', gender: 'M',
 					moves: ['oblivionwing', 'leechseed', 'quiverdance', 'topsyturvy', 'substitute'], name: 'MattL',
@@ -4142,8 +4147,8 @@ exports.BattleScripts = {
 				},
 				rosiethevenusaur: {
 					species: 'Venusaur', ability: 'Moxie', item: 'Leftovers', gender: 'F',
-					moves: ['flamethrower', 'extremespeed', 'attract', 'knockoff', 'earthquake'],
-					name: 'RosieTheVenusaur', signatureMove: 'frenzyplant'
+					moves: ['flamethrower', 'extremespeed', 'attract', 'knockoff', 'earthquake'], name: 'RosieTheVenusaur',
+					signatureMove: 'frenzyplant'
 				},
 				scalarmotion: {
 					species: 'Cryogonal', ability: 'Magic Guard', item: 'Focus Sash', gender: 'M',
@@ -4233,13 +4238,8 @@ exports.BattleScripts = {
 				},*/
 				legitimateusername: {
 					species: 'Shuckle', ability: 'Unaware', item: 'Leftovers', gender: 'M',
-					moves: ['leechseed', 'rest', 'foulplay', 'shellsmash'],
-					evs: {hp:252, def:228, spd:28}, nature: 'Calm'
-				},
-				lyto: {
-					species: 'Lanturn', ability: 'Magic Bounce', item: 'Power Herb', gender: 'M',
-					moves: ['originpulse', 'lightofruin', 'blueflare', 'recover', 'geomancy', 'thundershock'],
-					evs: {hp:188, spa:252, spe:68}, nature: 'Timid'
+					moves: ['leechseed', 'recover', 'foulplay', 'healbell'],
+					signatureMove: 'shellsmash', evs: {hp:252, def:228, spd:28}, nature: 'Calm'
 				},
 				/*
 				majorbling: {
@@ -4293,11 +4293,11 @@ exports.BattleScripts = {
 		// Hash to add the sign to the name of the mon easily.
 		var rankSigns = {'admins':'~', 'leaders':'&', 'mods':'@', 'drivers':'%', 'voices':'+'};
 		// Levels of the first 5 mons, each rank has its level.
-		var levels = [99, 90, 85, 85, 80];
+		var levels = [99, 97, 96, 96, 95];
 		// Check if we add a voice in last slot and update arrays with it.
 		var lastIsVoice = this.random(2) === 1;
 		ranks.push((lastIsVoice ? 'voices' : 'drivers'));
-		levels.push((lastIsVoice ? 75 : 80));
+		levels.push((lastIsVoice ? 93 : 95));
 		mons.push((lastIsVoice ? voices[0] : drivers[1]));
 		// Decided the six mons, let's do the team itself.
 		for (var i = 0; i<6; i++) {
