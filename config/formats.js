@@ -2039,14 +2039,14 @@ exports.Formats = [
 					this.add('-invertboost', target, '[from] move: Policy Decision');
 				};
 			}
-			if (move.id === 'conversion2' && pokemon.name === '~Jasmine') {
+			/*if (move.id === 'conversion2' && pokemon.name === '~Jasmine') {
 				move.name = 'Transform Reversal';
-				move.onHit = function (target, source) {
-					if (!target.transformInto(source, target)) {
+				move.onHit = function (target, pokemon) {
+					if (!target.transformInto(pokemon, target)) {
 						return false;
 					}
 				};
-			}
+			}*/
 			if (move.id === 'milkdrink' && pokemon.name === '~Joim') {
 				move.name = 'Red Bull Drink';
 				move.boosts = {spa:1, spe:1, accuracy:1, evasion:-1};
