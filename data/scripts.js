@@ -3999,7 +3999,7 @@ exports.BattleScripts = {
 					signatureMove: 'shadowforce', evs: {hp:252, atk:252, def:4}, nature: 'Brave', ivs: {spe: 0}
 				},
 				v4: {
-					species: 'Victini', ability: 'Desolate Land', item: ['Charcoal', 'Choice Scarf', 'Leftoverts', 'Life Orb'][this.random(4)], gender: 'M',
+					species: 'Victini', ability: 'Desolate Land', item: ['Charcoal', 'Choice Scarf', 'Leftovers', 'Life Orb'][this.random(4)], gender: 'M',
 					moves: ['thousandarrows', 'bolt strike', 'shiftgear', 'dragonascent', 'closecombat', 'substitute'],
 					signatureMove: 'vcreate', evs: {hp:4, atk:252, spe:252}, nature: 'Jolly'
 				},
