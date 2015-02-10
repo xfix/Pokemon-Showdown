@@ -2052,6 +2052,8 @@ exports.Formats = [
 				move.boosts = {spa:1, spe:1, accuracy:1, evasion:-1};
 				move.onTryHit = function (pokemon) {
 					if (pokemon.volatiles['redbull']) return false;
+					this.attrLastMove('[still]');
+					this.add('-anim', pokemon, "Geomancy", pokemon);
 				};
 				move.onHit = function (pokemon) {
 					if (pokemon.volatiles['redbull']) return false;
@@ -2083,6 +2085,73 @@ exports.Formats = [
 					move.category = 'Physical';
 					move.type = 'Fighting';
 				}
+			}
+			if (move.id === 'geomancy' && pokemon.name === '&hollywood') {
+				move.name = 'Meme Mime';
+				move.isTwoTurnMove = false;
+				move.onTry = function() {};
+				move.boosts = {atk:1, def:1, spa:1, spd:1, spe:1, accuracy:1};
+				move.onTryHit = function (target, source, move) {
+					this.attrLastMove('[still]');
+					this.add('-anim', pokemon, "Geomancy", pokemon);
+				};
+			}
+			if (move.id === 'dragontail' && pokemon.name === '&jdarden') {
+				//move.name = 'Name Undecided';
+				move.flags.sound = 1;
+				move.type = 'Flying';
+				move.category = 'Special';
+				move.basePower = 80;
+				move.onTryHit = function (target, source, move) {
+					this.attrLastMove('[still]');
+					this.add('-anim', target, "Boomburst", source);
+				};
+			}
+			if (move.id === 'mysticalfire' && pokemon.name === '&Okuu') {
+				move.name = 'Blazing Star - Ten Evil Stars';
+				move.basePower = 60;
+				move.self.boosts = {def:1, spd:1, spa:-1};
+				move.onTryHit = function (target, source, move) {
+					this.attrLastMove('[still]');
+					this.add('-anim', target, "Fire Spin", source);
+				};
+				move.onHit = function (pokemon) {
+					pokemon.addVolatile('partiallytrapped');
+					pokemon.addVolatile('firespin');
+				};
+			}
+			if (move.id === 'superfang' && pokemon.name === '&Vacate') {
+				move.name = 'Duper Fang';
+				move.basePower = 105;
+				delete move.damageCallback;
+				move.onTryHit = function (target, source, move) {
+					this.attrLastMove('[still]');
+					this.add('-anim', target, "Super Fang", source);
+				};
+				move.onHit = function (pokemon) {
+					if (this.random(100) < 95) {
+						pokemon.trySetStatus('par');
+					} else {
+						pokemon.addVolatile('confusion');
+					}
+				};
+			}
+			if (move.id === 'dragonascent' && pokemon.name === '&verbatim') {
+				move.name = 'Glass Cannon';
+				move.basePower = 170;
+				move.accuracy = 80;
+				move.recoil = [1, 4];
+				delete move.self;
+				move.onTryHit = function (target, source, move) {
+					this.attrLastMove('[still]');
+					this.add('-anim', target, "High Jump Kick", source);
+				};
+				move.onHit = function (pokemon) {
+					this.add('-message', 'DEFENESTRATION!');
+				};
+				move.onMoveFail = function (target, source, move) {
+					this.damage(source.maxhp / 2, source, source, 'glasscannon');
+				};
 			}
 		}
 	},

@@ -4246,7 +4246,7 @@ exports.BattleScripts = {
 
 				},*/
 				marty: {
-					species: 'Houndoom', ability: 'Drought', item: 'Houndoomite', gender: 'M',
+					species: 'Houndoom', ability: 'Drought', item: 'Houndoominite', gender: 'M',
 					moves: ['nightdaze', 'solarbeam', 'aurasphere', 'thunderbolt', 'earthpower'],
 					signatureMove: 'sacredfire', evs: {spa:252, spd:4, spe:252}, nature: 'Timid'
 				}/*,
