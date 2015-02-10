@@ -2006,7 +2006,7 @@ exports.Formats = [
 			if (move.id === 'conversion2' && pokemon.name === '~Jasmine') {
 				move.name = 'Transform Reversal';
 				move.onHit = function (target, source) {
-					if (!target.transformInto(source, source)) {
+					if (!target.transformInto(source, target)) {
 						return false;
 					}
 				};
