@@ -1985,7 +1985,15 @@ exports.Formats = [
 			this.add('-message', "GET READY FOR THE NEXT BATTLE!");
 		},
 		onSwitchIn: function (pokemon) {
-			// Add here edgy sentences and hacky stuff for mega abilities
+			var name = toId(pokemon);
+			// Add here edgy sentences and hacky stuff for mega abilities and special typings.
+			if (name === 'mikel') {
+				this.add('-start', pokemon, 'typechange', 'Normal/Ghost');
+				pokemon.typesData = [
+					{type: 'Normal', suppressed: false,  isAdded: false},
+					{type: 'Ghost', suppressed: false,  isAdded: false}
+				];
+			}
 		},
 		onFaint: function (pokemon) {
 			// Add here salty tears
@@ -2292,6 +2300,21 @@ exports.Formats = [
 						side.pokemon[i].status = '';
 					}
 					this.add('-cureteam', source, '[from] move: Beyblade');
+				};
+			}
+
+			// Driver signature moves.
+
+			// Voices signature moves.
+			if (move.id === 'swagger' && name === 'mikel') {
+				move.accuracy = true;
+				move.name = 'Trolling Lobby';
+				move.onHit = function (pokemon, source) {
+					pokemon.addVolatile('taunt');
+					pokemon.addVolatile('leechseed');
+					pokemon.addVolatile('torment');
+					pokemon.addVolatile('disable');
+					this.directDamage(source.maxhp / 3);
 				};
 			}
 		}

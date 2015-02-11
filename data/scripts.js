@@ -4157,7 +4157,7 @@ exports.BattleScripts = {
 				},
 				scotteh: {
 					species: 'Suicune', ability: 'Fur Coat', item: 'Leftovers', gender: 'M',
-					moves: ['hurricane', 'icebeam', 'steameruption', 'recover', 'nastyplot'],
+					moves: ['icebeam', 'steameruption', 'recover', 'nastyplot'],
 					signatureMove: 'boomburst'
 				},
 				shaymin: {
@@ -4262,12 +4262,11 @@ exports.BattleScripts = {
 			},
 			voices: {
 				/*bmelts: {},
-				cathy: {},
-				mikel: {},*/
-				orphic: {
-					species: 'Mightyena', ability: 'Pressure', item: 'Wise Glasses', gender: 'M',
-					moves: ['howl', 'growl', 'crunch', 'firefang', 'icefang'],
-					signatureMove: 'mefirst', evs: {}, nature: 'Quiet'
+				cathy: {},*/
+				mikel: {
+					species: 'Giratina', ability: 'Prankster', item: 'Lum Berry', gender: 'M',
+					moves: ['rest', 'recycle', ['substitute', 'toxic', 'willowisp'][this.random(3)]], name: 'mikel',
+					signatureMove: 'swagger', evs: {hp:252, def:128, spd:128}, ivs: {atk:0}, nature: 'Calm'
 				}/*,
 				redew: {
 					species: 'Minun', ability: 'Wonder Guard', item: 'Air Balloon', gender: 'M',
