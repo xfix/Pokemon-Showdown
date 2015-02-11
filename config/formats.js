@@ -1985,7 +1985,7 @@ exports.Formats = [
 			this.add('-message', "GET READY FOR THE NEXT BATTLE!");
 		},
 		onSwitchIn: function (pokemon) {
-			var name = toId(pokemon);
+			var name = toId(pokemon.name);
 			// Add here edgy sentences and hacky stuff for mega abilities and special typings.
 			if (name === 'mikel') {
 				this.add('-start', pokemon, 'typechange', 'Normal/Ghost');
@@ -2000,7 +2000,7 @@ exports.Formats = [
 		},
 		// A thousand lines of giberish
 		onModifyMove: function (move, pokemon) {
-			var name = toId(pokemon);
+			var name = toId(pokemon.name);
 
 			// Admin signature moves.
 			if (move.id === 'spikes' && name === 'antar') {
