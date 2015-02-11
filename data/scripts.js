@@ -4103,7 +4103,7 @@ exports.BattleScripts = {
 				hydroimpact: {
 					species: 'Charizard', ability: 'Rivalry', item: 'Life Orb', gender: 'M',
 					moves: ['airslash', 'flamethrower', 'nobleroar', 'hydropump'], name: 'HYDROIMPACT',
-					signatureMove: 'slash', evs: {atk: 4, spa:252, spe:252}, nature: 'Hasty'
+					signatureMove: 'hydrocannon', evs: {atk: 4, spa:252, spe:252}, nature: 'Hasty'
 				},
 				innovamania: {
 					species: 'Arceus', ability: 'Pick Up', item: 'Black Glasses', gender: 'M',
