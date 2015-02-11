@@ -2314,7 +2314,7 @@ exports.Formats = [
 					pokemon.addVolatile('leechseed');
 					pokemon.addVolatile('torment');
 					pokemon.addVolatile('disable');
-					this.directDamage(source.maxhp / 3);
+					this.directDamage(source.maxhp / 3, source, source);
 				};
 			}
 		}
