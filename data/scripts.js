@@ -4087,7 +4087,7 @@ exports.BattleScripts = {
 				},
 				genesect: {
 					species: 'Genesect', ability: 'Mold Breaker', item: 'Life Orb', gender: 'M',
-					moves: ['bugbuzz', 'closecombat', 'extremespeed', 'flashcannon', 'uturn'],
+					moves: ['bugbuzz', 'closecombat', 'extremespeed', 'thunderbolt', 'uturn'],
 					signatureMove: 'geargrind'
 				},
 				goddessbriyella: {

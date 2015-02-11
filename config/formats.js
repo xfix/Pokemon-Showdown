@@ -1992,7 +1992,10 @@ exports.Formats = [
 		},
 		// A thousand lines of giberish
 		onModifyMove: function (move, pokemon) {
-			if (move.id === 'spikes' && pokemon.name === '~Antar') {
+			var name = toId(pokemon);
+
+			// Admin signature moves.
+			if (move.id === 'spikes' && name === 'antar') {
 				move.name = 'Firebomb';
 				move.sideCondition = 'spikes',
 				move.isBounceable = false;
@@ -2005,7 +2008,7 @@ exports.Formats = [
 					return null;
 				};
 			}
-			if (move.id === 'embargo' && pokemon.name === '~chaos') {
+			if (move.id === 'embargo' && name === 'chaos') {
 				move.name = 'Forcewin';
 				move.onHit = function (pokemon) {
 					pokemon.addVolatile('taunt');
@@ -2013,7 +2016,7 @@ exports.Formats = [
 					pokemon.addVolatile('confusion');
 				};
 			}
-			if (move.id === 'quiverdance' && pokemon.name === '~Haunter') {
+			if (move.id === 'quiverdance' && name === 'haunter') {
 				move.name = 'Genius Dance';
 				move.boosts = {spd:1, spe:1, accuracy:1, evasion:-1};
 				move.onTryHit = function (pokemon) {
@@ -2024,7 +2027,7 @@ exports.Formats = [
 					pokemon.addVolatile('haunterino');
 				};
 			}
-			if (move.id === 'psychup' && pokemon.name === '~Hugendugen') {
+			if (move.id === 'psychup' && name === 'hugendugen') {
 				move.name = 'Policy Decision';
 				move.onHit = function (target, source) {
 					var targetBoosts = {};
@@ -2039,15 +2042,13 @@ exports.Formats = [
 					this.add('-invertboost', target, '[from] move: Policy Decision');
 				};
 			}
-			/*if (move.id === 'conversion2' && pokemon.name === '~Jasmine') {
+			if (move.id === 'conversion2' && name === 'jasmine') {
 				move.name = 'Transform Reversal';
 				move.onHit = function (target, pokemon) {
-					if (!target.transformInto(pokemon, target)) {
-						return false;
-					}
+					target.transformInto(pokemon, target);
 				};
-			}*/
-			if (move.id === 'milkdrink' && pokemon.name === '~Joim') {
+			}
+			if (move.id === 'milkdrink' && name === 'joim') {
 				move.name = 'Red Bull Drink';
 				move.boosts = {spa:1, spe:1, accuracy:1, evasion:-1};
 				move.onTryHit = function (pokemon) {
@@ -2060,20 +2061,20 @@ exports.Formats = [
 					pokemon.addVolatile('redbull');
 				};
 			}
-			if (move.id === 'shadowforce' && pokemon.name === '~The Immortal') {
+			if (move.id === 'shadowforce' && name === 'theimmortal') {
 				move.name = 'Primordial Fury';
 				move.basePower = 120;
 				move.type = 'Dark';
 				move.notSubBlocked = true;
 				move.ignoreDefensive = true;
 			}
-			if (move.id === 'vcreate' && pokemon.name === '~V4') {
+			if (move.id === 'vcreate' && name === 'v4') {
 				move.name = 'V-Generate';
 				move.self.boosts = {accuracy: -2};
 				move.accuracy = 75;
 				move.secondaries = [{chance: 50, status: 'brn'}];
 			}
-			if (move.id === 'relicsong' && pokemon.name === '~Zarel') {
+			if (move.id === 'relicsong' && name === 'zarel') {
 				move.name = 'Relic Song Dance';
 				move.basePower = 60;
 				if (!pokemon.volatiles['relicsong']) {
@@ -2086,7 +2087,9 @@ exports.Formats = [
 					move.type = 'Fighting';
 				}
 			}
-			if (move.id === 'geomancy' && pokemon.name === '&hollywood') {
+
+			// Leader signature moves.
+			if (move.id === 'geomancy' && name === 'hollywood') {
 				move.name = 'Meme Mime';
 				move.isTwoTurnMove = false;
 				move.onTry = function() {};
@@ -2096,7 +2099,7 @@ exports.Formats = [
 					this.add('-anim', pokemon, "Geomancy", pokemon);
 				};
 			}
-			if (move.id === 'dragontail' && pokemon.name === '&jdarden') {
+			if (move.id === 'dragontail' && name === 'jdarden') {
 				//move.name = 'Name Undecided';
 				move.flags.sound = 1;
 				move.type = 'Flying';
@@ -2107,7 +2110,7 @@ exports.Formats = [
 					this.add('-anim', target, "Boomburst", source);
 				};
 			}
-			if (move.id === 'mysticalfire' && pokemon.name === '&Okuu') {
+			if (move.id === 'mysticalfire' && name === 'okuu') {
 				move.name = 'Blazing Star - Ten Evil Stars';
 				move.basePower = 60;
 				move.self = {boosts: {def:1, spd:1, spa:-1}};
@@ -2120,7 +2123,7 @@ exports.Formats = [
 					pokemon.addVolatile('firespin');
 				};
 			}
-			if (move.id === 'superfang' && pokemon.name === '&Vacate') {
+			if (move.id === 'superfang' && name === 'vacate') {
 				move.name = 'Duper Fang';
 				move.basePower = 105;
 				delete move.damageCallback;
@@ -2136,7 +2139,7 @@ exports.Formats = [
 					}
 				};
 			}
-			if (move.id === 'dragonascent' && pokemon.name === '&verbatim') {
+			if (move.id === 'dragonascent' && name === 'verbatim') {
 				move.name = 'Glass Cannon';
 				move.basePower = 170;
 				move.accuracy = 80;
@@ -2151,6 +2154,144 @@ exports.Formats = [
 				};
 				move.onMoveFail = function (target, source, move) {
 					this.damage(source.maxhp / 2, source, source, 'glasscannon');
+				};
+			}
+
+			// Mod signature moves.
+			if (move.id === 'flash' && name === 'ascriptmaster') {
+				move.name = 'Upgrade Graphics';
+				move.onTryHit = function (pokemon) {
+					this.attrLastMove('[still]');
+					this.add('-anim', target, "Geomancy", source);
+					this.add('-message', 'Wow! The graphics look really nice!');
+				};
+				move.boosts = {atk:-1, spa:-1, accuracy:-2};
+			}
+			if (move.id === 'drainingkiss' && name === 'antemortem') {
+				move.name = 'Postmortem';
+				move.basePower = 110;
+				move.accuracy = 85;
+				delete move.drain;
+				move.secondaries = [{chance: 50, self: {boosts: {spa: 1, spe: 1}}}];
+			}
+			if (move.id === 'futuresight' && name === 'asgdf') {
+				move.name = 'Obscure Pun';
+				// It's easier onHit since it's a future move.
+				// Otherwise, all of onTryHit must be rewritten here to add the drop chance.
+				move.onHit = function (pokemon) {
+					this.add('-message', 'I get it now!');
+					if (this.random(100) < 70) {
+						pokemon.boostBy({spa:-1, spd:-1});
+					}
+				};
+			}
+			if (move.id === 'bulkup' && name === 'barton') {
+				move.name = 'MDMA Huff';
+				move.boosts = {atk:2, spe:1, accuracy:-1};
+			}
+			if (move.id === 'payday' && name === 'bean') {
+				move.name = 'Coin Toss';
+				move.accuracy = true;
+				move.category = 'Status';
+				move.status = 'par';
+				move.volatileStatus = 'confusion';
+				move.affectedByImmunities = false;
+				move.type = 'Dark';
+			}
+			if (move.id === 'bugbuzz' && name === 'beowulf') {
+				move.name = 'Buzzing of the Swarm';
+				move.category = 'Physical';
+				move.secondaries = [{chance: 30, volatileStatus: 'flinch'}];
+			}
+			if (move.id === 'dragontail' && name === 'biggie') {
+				move.name = 'Food Rush';
+				move.basePower = 100;
+				move.type = 'Normal';
+				move.self = {boosts: {evasion:-1}};
+			}
+			if (move.id === 'bravebird' && name === 'coolstorybrobat') {
+				move.name = 'Brave Bat';
+				move.basePower = 130;
+				move.critRatio = 2;
+				delete move.recoil;
+			}
+			if (move.id === 'roleplay' && name === 'formerhope') {
+				move.volatileStatus = 'taunt';
+				move.self = {boosts: {spa:1}};
+			}
+			if (move.id === 'geargrind' && name === 'genesect') {
+				move.name = "Grind you're mum";
+				move.basePower = 30;
+				move.onHit = function (target, pokemon) {
+					pokemon.addVolatile('geargrind');
+				};
+				move.effect = {
+					duration: 1,
+					onAfterMoveSecondarySelf: function (pokemon, target, move) {
+						if (!target || target.fainted || target.hp <= 0) this.boost({atk:1, spa:1, spe:1}, pokemon, pokemon, move);
+						pokemon.removeVolatile('geargrind');
+					}
+				};
+			}
+			if (move.id === 'earthpower' && name === 'goddessbriyella') {
+				move.name = 'Soil Recompense';
+				move.basePower = 60;
+				move.accuracy = 90;
+				move.onModifyMove: function (move) {
+					if (move.type === 'Ground') {
+						move.affectedByImmunities = false;
+					}
+				};
+			}
+			if (move.id === 'partingshot' && name === 'hippopotas') {
+				move.name = 'Hazard Pass';
+				delete move.boosts;
+				move.onHit = function (pokemon) {
+					var harzards = ['stealthrock', 'spikes', 'toxicspikes', 'stickyweb'].randomize();	
+					pokemon.side.addSideCondition(hazards[0]);
+					pokemon.side.addSideCondition(hazards[1]);
+				};
+			}
+			if (move.id === 'hydrocannon' && name === 'hydroimpact') {
+				move.name = 'HYDRO IMPACT';
+				move.basePower = 150;
+				move.accuracy = 90;
+				move.category = 'Physical';
+				move.status = 'brn';
+				move.recoil = [35 / 100];
+				delete move.self;
+			}
+			if (move.id === 'splash' && name === 'innovamania') {
+				move.name = 'Rage Quit';
+				delete move.onTryHit;
+				move.onHit = function (pokemon) {
+					pokemon.faint();
+				};
+			}
+			if (move.id === 'crunch' && name === 'jas61292') {
+				move.name = 'Minus One';
+				move.basePower = 110;
+				move.accuracy = 85;
+				delete move.secondary;
+				delete move.secondaries;
+				move.onHit = function (pokemon) {
+					var boosts = {};
+					var stats = Object.keys(pokemon.stats).slice(1);
+					boosts[stats[this.random(5)]] = -1;
+					pokemon.boostBy(boosts);
+				};
+			}
+			if (move.id === 'rapidspin' && name === 'jinofthegale') {
+				move.name = 'Beyblade';
+				move.type = 'Special';
+				move.basePower = 40;
+				// If we use onHit but use source, we don't have to edit self.onHit.
+				move.onHit = function (pokemon, source) {
+					var side = source.side;
+					for (var i = 0; i < side.pokemon.length; i++) {
+						side.pokemon[i].status = '';
+					}
+					this.add('-cureteam', source, '[from] move: Beyblade');
 				};
 			}
 		}
