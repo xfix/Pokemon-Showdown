@@ -1994,6 +1994,14 @@ exports.Formats = [
 					{type: 'Ghost', suppressed: false,  isAdded: false}
 				];
 			}
+			// No OP pls
+			if (pokemon.getAbility().id === 'wonderguard') {
+				pokemon.setVolatile('curse');
+			}
+		},
+		onBeforeMove: function (pokemon) {
+			// Here the hacky mega-forme abilities stuff.
+			var name = toId(pokemon.name);
 		},
 		onFaint: function (pokemon) {
 			// Add here salty tears
@@ -2001,6 +2009,12 @@ exports.Formats = [
 		// A thousand lines of giberish
 		onModifyMove: function (move, pokemon) {
 			var name = toId(pokemon.name);
+			// Kek
+			if (move.id === 'defog') {
+				move.name = 'Defrog';
+				this.attrLastMove('[still]');
+				this.add('-anim', pokemon, "Defog", pokemon);
+			}
 
 			// Admin signature moves.
 			if (move.id === 'spikes' && name === 'antar') {
@@ -2315,6 +2329,10 @@ exports.Formats = [
 			}
 
 			// Driver signature moves.
+			if (move.id === 'shellsmash' && name === 'legitimateusername') {
+				move.name = 'Shell Fortress';
+				move.boosts = {def:2, spd:2 atk:-4, spa:-4, spe:-4};
+			}
 
 			// Voices signature moves.
 			if (move.id === 'swagger' && name === 'mikel') {

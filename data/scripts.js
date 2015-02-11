@@ -4098,7 +4098,7 @@ exports.BattleScripts = {
 				hippopotas: {
 					species: 'Hippopotas', ability: 'Regenerator', item: 'Eviolite', gender: 'M',
 					moves: ['haze', 'stealthrock', 'spikes', 'toxicspikes', 'stickyweb'],
-					signatureMove: 'voltswitch', evs: {}, ivs: {atk:0, spa:0}
+					signatureMove: 'partingshot', evs: {}, ivs: {atk:0, spa:0}
 				},
 				hydroimpact: {
 					species: 'Charizard', ability: 'Rivalry', item: 'Life Orb', gender: 'M',
@@ -4231,25 +4231,47 @@ exports.BattleScripts = {
 				}
 			},
 			drivers: {
-				/* fuck this takes ages
 				acedia: {
-
+					species: 'Slakoth', ability: 'Magic Bounce', item: 'Quick Claw', gender: 'F',
+					moves: ['metronome', 'sketch', 'assist', 'swagger', 'foulplay'],
+					signatureMove: 'worryseed', nature: 'Serious'
 				},
 				aelita: {
-
+					species: 'Porygon-Z', ability: 'Protean', item: 'Life Orb', gender: 'F',
+					moves: ['boomburst', 'quiverdance', 'chatter', 'blizzard', 'moonblast'],
+					signatureMove: 'thunder', evs:{hp:4, spa:252, spd:252}, nature: 'Modest'
+				},
+				arcticblast: {
+					species: 'Cresselia', ability: 'Intimidate', item: 'Sitrus Berry', gender: 'M',
+					moves: [['fakeout', 'helpinghand', 'icywind', 'trickroom', 'safeguard', 'thunderwave', 'wideguard', 'quickguard', 'tailwind', 'followme', 'knockoff'][this.random(11)], ['sunnyday', 'moonlight', 'calmmind', 'protect', 'taunt'][this.random(5)], ['originpulse', 'heatwave', 'hypervoice', 'icebeam', 'moonblast'][this.random(5)]],
+					signatureMove: 'luckychant', evs:{hp:252, def:120, spa:56, spd:80}, nature: 'Sassy'
 				},
 				astara: {
-
+					species: 'Jirachi', ability: 'Cursed Body', item: ['Leftovers', 'Sitrus Berry'][this.random(2)], gender: 'F',
+					moves: ['psychic', 'moonblast', 'nastyplot', 'recover', 'surf'],
+					signatureMove: 'lovelykiss', evs:{hp:4, spa:252, spd:252}, nature: 'Modest'
 				},
 				eeveegeneral: {
-
+					species: 'Eevee', ability: 'Magic Guard', item: 'Eviolite', gender: 'M',
+					moves: ['defendorder', 'healorder', 'attackorder', 'sacredsword', 'doubleedge', 'bellydrum'],
+					signatureMove: 'curse', evs: {hp:252, atk:252, def:4}, nature: 'Impish'
 				},
 				feliburn: {
-
+					species: 'Infernape', ability: 'Adaptability', item: 'Expert Belt', gender: 'M',
+					moves: ['highjumpkick', 'sacredfire', 'taunt', 'fusionbolt', 'machpunch'],
+					signatureMove: 'focuspunch', evs: {atk:252, def:4, spe:252}, nature: 'Jolly'
 				},
 				imanalt: {
-	
+					species: 'Rhydon', ability: 'Prankster', item: 'Eviolite', gender: 'M',
+					moves: ['heartswap', 'rockblast', 'stealthrock', 'substitute', 'batonpass'],
+					signatureMove: 'naturepower', evs: {hp:252, atk:252, spd:4}, nature: 'Modest'
 				},
+				jellicent: {
+					species: 'Jellicent', ability: 'Poison Heal', item: 'Toxic Orb', gender: 'M',
+					moves: ['recover', 'freezedry', 'trick', 'substitute'],
+					signatureMove: 'surf', evs: {hp:252, def:4, spd:252}, nature: 'Calm'
+				},
+				/* TODO
 				layell: {
 	
 				},*/
@@ -4258,42 +4280,76 @@ exports.BattleScripts = {
 					moves: ['leechseed', 'recover', 'foulplay', 'healbell'],
 					signatureMove: 'shellsmash', evs: {hp:252, def:228, spd:28}, nature: 'Calm'
 				},
-				/*
+				ljdarkrai: {
+					species: 'Garchomp', ability: 'Coumpound Eyes', item: 'Life Orb', gender: 'M',
+					moves: ['dragondance', 'dragonrush', 'gunkshot', 'precipiceblades', 'sleeppowder', 'stoneedge'], name: 'LJDarkrai',
+					signatureMove: 'blazekick', evs: {hp:4, atk:252, spe:252}, nature: 'Adamant'
+				},
 				majorbling: {
-
-				},*/
+					species: 'Dedenne', ability: 'Levitate', item: 'Expert Belt', gender: 'M',
+					moves: ['moonblast', 'voltswitch', 'discharge', 'focusblast', 'taunt'],
+					signatureMove: 'bulletpunch', evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
+				},
 				marty: {
 					species: 'Houndoom', ability: 'Drought', item: 'Houndoominite', gender: 'M',
 					moves: ['nightdaze', 'solarbeam', 'aurasphere', 'thunderbolt', 'earthpower'],
-					signatureMove: 'sacredfire', evs: {spa:252, spd:4, spe:252}, nature: 'Timid'
-				}/*,
+					signatureMove: 'sacredfire', evs: {spa:252, spd:4, spe:252}, ivs: {atk:0}, nature: 'Timid'
+				},
 				queez: {
-
+					species: 'Cubchoo', ability: 'Prankster', item: 'Eviolite', gender: 'M',
+					moves: ['pound', 'fly', 'softboiled', 'thunderwave', 'waterpulse'],
+					signatureMove: 'curse', evs: {hp:252, def:228, spd:28}, nature: 'Calm'
 				},
 				raseri: {
-
+					species: 'Prinplup', ability: 'Regenerator', item: 'Eviolite', gender: 'M',
+					moves: ['defog', 'stealthrock', 'toxic', 'roar', 'bravebird'],
+					signatureMove: 'scald', evs: {hp:252, def:228, spd:28}, nature: 'Bold'
+				},
+				trinitrotoluene: {
+					species: 'Metagross', ability: 'Levitate', item: 'Metagrossite', gender: 'M',
+					moves: ['meteormash', 'zenheadbutt', 'hammerarm', 'grassknot', 'earthquake', 'thunderpunch', 'icepunch', 'shitgear'],
+					signatureMove: 'explosion', evs: {atk:252, def:4, spe:252}, nature: 'Jolly'
 				},
 				uselesstrainer: {
-
-				}*/
+					species: 'Scatterbug', ability: 'Skill Link', item: 'Altarianite', gender: 'M',
+					moves: ['explosion', 'stringshot', 'stickyweb', 'spiderweb', 'mist'],
+					signatureMove: 'bulletpunch', evs: {atk:252, def:4, spe:252}, nature: 'Jolly'
+				}
 			},
 			voices: {
-				/*bmelts: {},
-				cathy: {},*/
+				bmelts: {
+					species: 'Mewtwo', ability: 'Regenerator', item: 'Eject Button', gender: 'M',
+					moves: ['batonpass', 'uturn', 'voltswitch'], name: 'bmelts',
+					signatureMove: 'partingshot', evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
+				},
+				cathy: {
+					species: 'Aegislash', ability: 'Stance Change', item: 'Life Orb', gender: 'F',
+					moves: ['kingsshield', 'shadowsneak', ['shadowball', 'shadowclaw', 'flashcannon', 'dragontail', 'hyperbeam'][this.random(5)]],
+					signatureMove: 'memento', evs: {hp:4, atk:252, spa:252}, nature: 'Quiet'
+				},
+				limi: {
+					species: 'Primeape', ability: 'Poison Heal', item: 'Leftovers', gender: 'M',
+					moves: ['ingrain', 'doubleedge', 'leechseed'],
+					signatureMove: 'growl', evs: {hp:252, atk:252, def:4}, nature: 'Adamant'
+				},
 				mikel: {
 					species: 'Giratina', ability: 'Prankster', item: 'Lum Berry', gender: 'M',
 					moves: ['rest', 'recycle', ['substitute', 'toxic', 'willowisp'][this.random(3)]], name: 'mikel',
 					signatureMove: 'swagger', evs: {hp:252, def:128, spd:128}, ivs: {atk:0}, nature: 'Calm'
-				}/*,
+				},
 				redew: {
 					species: 'Minun', ability: 'Wonder Guard', item: 'Air Balloon', gender: 'M',
-					moves: ['nastyplot', 'thunderbolt', 'hiddenpowerice'],
-					signatureMove: 'mefirst', evs: {}, nature: 'Quiet'
+					moves: ['nastyplot', 'thunderbolt', 'icebeam'],
+					signatureMove: 'mefirst', nature: 'Quiet'
 				},
+				somalia: {
+					species: 'Gastrodon', ability: 'Anger Point', item: 'Leftovers', gender: 'M',
+					moves: ['recover', 'steameruption', 'earthpower', 'leafstorm', 'substitute'],
+					signatureMove: 'energyball', evs: {hp:252, spa:252, spd:4}, nature: 'Modest'
+				}/* TODO,
 				talktakestime: {
 
-				}
-				*/
+				}*/
 			}
 		};
 		// Teams are composed of 1 admin, 1 leader, 2 mods, 1-2 drivers, 0-1 voices.
