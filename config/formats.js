@@ -2245,7 +2245,7 @@ exports.Formats = [
 				move.name = 'Soil Recompense';
 				move.basePower = 60;
 				move.accuracy = 90;
-				move.onModifyMove: function (move) {
+				move.onModifyMove = function (move) {
 					if (move.type === 'Ground') {
 						move.affectedByImmunities = false;
 					}
