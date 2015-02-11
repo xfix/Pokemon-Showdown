@@ -4120,6 +4120,11 @@ exports.BattleScripts = {
 					moves: ['steameruption', 'hurricane', 'recover', 'psystrike', 'quiverdance'], name: 'jin of the gale',
 					signatureMove: 'rapidspin', evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
 				},
+				level51: {
+					species: 'Ledian', ability: 'Parental Bond', item: 'Leftovers', gender: 'M',
+					moves: ['seismictoss', 'roost', 'cosmicpower'], name: 'Level 51',
+					signatureMove: 'trumpcard', evs: {hp:252, def:252, spd:4}, nature: 'Bold'
+				},
 				lyto: {
 					species: 'Lanturn', ability: 'Magic Bounce', item: 'Leftovers', gender: 'M',
 					moves: ['originpulse', 'lightofruin', 'blueflare', 'recover', 'tailglow'],
@@ -4340,7 +4345,7 @@ exports.BattleScripts = {
 				redew: {
 					species: 'Minun', ability: 'Wonder Guard', item: 'Air Balloon', gender: 'M',
 					moves: ['nastyplot', 'thunderbolt', 'icebeam'],
-					signatureMove: 'mefirst', nature: 'Quiet'
+					signatureMove: 'flamethrower', nature: 'Quiet'
 				},
 				somalia: {
 					species: 'Gastrodon', ability: 'Anger Point', item: 'Leftovers', gender: 'M',

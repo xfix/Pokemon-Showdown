@@ -1985,7 +1985,12 @@ exports.Formats = [
 			this.add('-message', "GET READY FOR THE NEXT BATTLE!");
 		},
 		onSwitchIn: function (pokemon) {
+			// No OP pls
+			if (pokemon.getAbility().id === 'wonderguard') {
+				pokemon.setVolatile('curse');
+			}
 			var name = toId(pokemon.name);
+
 			// Add here edgy sentences and hacky stuff for mega abilities and special typings.
 			if (name === 'mikel') {
 				this.add('-start', pokemon, 'typechange', 'Normal/Ghost');
@@ -1994,9 +1999,21 @@ exports.Formats = [
 					{type: 'Ghost', suppressed: false,  isAdded: false}
 				];
 			}
-			// No OP pls
-			if (pokemon.getAbility().id === 'wonderguard') {
-				pokemon.setVolatile('curse');
+			if (name === 'joim') {
+				this.add('-message', '░░░░░░░░▄▄▄▀▀▀▄▄███▄');
+				this.add('-message', '░░░░░▄▀▀░░░░░░░▐░▀██▌');
+				this.add('-message', '░░░▄▀░░░░▄▄███░▌▀▀░▀█');
+				this.add('-message', '░░▄█░░▄▀▀▒▒▒▒▒▄▐░░░░█▌');
+				this.add('-message', '░▐█▀▄▀▄▄▄▄▀▀▀▀▌░░░░░▐█▄');
+				this.add('-message', '░▌▄▄▀▀░░░░░░░░▌░░░░▄███████▄');
+				this.add('-message', '░░░░░░░░░░░░░▐░░░░▐███████████▄');
+				this.add('-message', '░░blessed by░░░░▐░░░░▐█████████████▄');
+				this.add('-message', '░░le toucan░░░░░░▀▄░░░▐██████████████▄');
+				this.add('-message', '░░░░░░ of ░░░░░░░░▀▄▄████████████████▄');
+				this.add('-message', '░░░░░luck░░░░░░░░░░░░░█▀██████');
+			}
+			if (name === 'genesect') {
+				this.add('-message', '(ง ͠ ͠° ͟ل͜ ͡°)ง sᴏᴜɴᴅs ᴅᴏɴɢᴇʀᴏᴜs... ɪᴍ ɪɴ (ง ͠ ͠° ͟ل͜ ͡°)ง');
 			}
 		},
 		onBeforeMove: function (pokemon) {
@@ -2316,6 +2333,27 @@ exports.Formats = [
 					this.add('-cureteam', source, '[from] move: Beyblade');
 				};
 			}
+			if (move.id === 'trumpcard' && name === 'level51') {
+				delete move.basePowerCallback;
+				move.target = 'self';
+				move.category = 'Status';
+				move.onTryHit = function (pokemon) {
+					if (pokemon.level >= 200) return false;
+				};
+				move.onHit = function (pokemon) {
+					pokemon.level += 12;
+					if (pokemon.level > 200) pokemon.level = 200;
+					this.add('-message', 'Level 51 advanced 12 levels! It is now level ' + pokemon.level + '!');
+				};
+			}
+			if (move.id === 'thundershock' && name === 'lyto') {
+				move.name = 'Gravity Storm';
+				move.basePower = 100;
+				move.accuracy = 100;
+				delete move.secondary;
+				delete move.secondaries;
+				move.self = {volatileStatus: 'magnetrise', boosts: {evasion:-1, accuracy:-1}};
+			}
 
 			if (move.id === 'protect' && name === 'steamroll') {
 				move.name = 'Conflagration';
@@ -2331,7 +2369,7 @@ exports.Formats = [
 			// Driver signature moves.
 			if (move.id === 'shellsmash' && name === 'legitimateusername') {
 				move.name = 'Shell Fortress';
-				move.boosts = {def:2, spd:2 atk:-4, spa:-4, spe:-4};
+				move.boosts = {def:2, spd:2, atk:-4, spa:-4, spe:-4};
 			}
 
 			// Voices signature moves.
