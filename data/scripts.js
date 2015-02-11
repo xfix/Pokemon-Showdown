@@ -4180,38 +4180,55 @@ exports.BattleScripts = {
 					moves: ['gigadrain', 'leechseed', 'icebeam', 'recover', 'perishsong', 'batonpass', 'uturn', 'voltswitch', 'seedflare', 'searingshot', 'quiverdance', 'thunderwave', 'psystrike'],
 					signatureMove: 'thousandarrows'
 				},
-				/* needs nerfing
 				spydreigon: {
-					species: 'Hydreigon', ability: 'Contrary', item: 'Life Orb', gender: 'M',
-					moves: [],
-					signatureMove: 'calmmind', nature: 'Hasty'
-				},*/
-				/*TODO
-				steeledges: {
-
+					species: 'Hydreigon', ability: 'Mega Launcher', item: 'Life Orb', gender: 'M',
+					moves: ['dragonpulse', 'darkpulse', 'aurasphere', 'originpulse', 'shiftgear'],
+					signatureMove: 'waterpulse', evs:{hp:4, spa:252, spe:252}, nature: 'Timid'
 				},
+				steamroll: {
+					species: 'Growlithe', ability: 'Adaptability', item: 'Life Orb', gender: 'M',
+					moves: ['flareblitz', 'volttackle', 'closecombat'],
+					signatureMove: 'protect', evs: {atk:252, def:4, spe:252}, nature: 'Adamant'
+				},
+				/** TODO
+				steeledges: {
+					species: 'Dragalge', ability: 'Protean', item: 'Leftovers', gender: 'M',
+					moves: ['icebeam', 'partingshot', 'aeroblast', 'vacuumwave'],
+					signatureMove: 'protect', nature: 'Serious'
+				},
+				sweep: {
+					species: 'Omastar'
+				},*/
 				temporaryanonymous: {
-
+					species: 'Doublade', ability: 'Tough Claws', item: 'Eviolite', gender: 'M',
+					moves: ['swordsdance', ['xscissor', 'sacredsword', 'knockoff'][this.random(3)], 'geargrind'],
+					signatureMove: 'extremespeed', evs: {atk:252, def:4, spe:252}, nature: 'Adamant'
 				},
 				test2017: {
-
+					species: "Farfetch'd", ability: 'Wonder Guard', item: 'Stick', gender: 'M',
+					moves: ['foresight', 'gastroacid', 'nightslash', 'roost', 'thousandarrows'],
+					signatureMove: 'karatechop', evs: {hp:252, atk:252, spe:4}, nature: 'Adamant'
 				},
 				tfc: {
-
-				},*/
+					species: 'Blastoise', ability: 'Prankster', item: 'Leftovers', gender: 'M',
+					moves: ['quiverdance', 'cottonguard', 'storedpower', 'aurasphere', 'slackoff'],
+					signatureMove: 'drainpunch', evs: {atk:252, def:4, spe:252}, nature: 'Modest'
+				},
 				trickster: {
 					species: 'Whimsicott', ability: 'Prankster', item: 'Leftovers', gender: 'M',
-					moves: ['swagger', 'spore', 'seedflare', 'recover', 'tailglow'],
-					signatureMove: 'naturepower'
+					moves: ['swagger', 'spore', 'seedflare', 'recover', 'nastyplot'],
+					signatureMove: 'naturepower', evs: {hp:252, spa:252, spe:4}
 				},
 				waterbomb: {
 					species: 'Poliwrath', ability: 'Unaware', item: 'Leftovers', gender: 'M',
-					moves: ['psychup', 'recover', 'refresh', 'drainpunch', 'bulkup'],
-					signatureMove: 'vcreate'
-				}/*,
+					moves: ['heartswap', 'softboiled', 'aromatherapy', 'highjumpkick', 'defog'],
+					signatureMove: 'waterfall'
+				},
 				zdrup: {
-
-				}*/
+					species: 'Slowking', ability: 'Slow Start', item: 'Leftovers', gender: 'M',
+					moves: ['psystrike', 'futuresight', 'originpulse', 'slackoff', 'destinybond'],
+					signatureMove: 'wish', evs: {hp:252, def:4, spd:252}, nature: 'Quiet'
+				}
 			},
 			drivers: {
 				/* fuck this takes ages

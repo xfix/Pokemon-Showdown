@@ -2303,18 +2303,32 @@ exports.Formats = [
 				};
 			}
 
+			if (move.id === 'protect' && name === 'steamroll') {
+				move.name = 'Conflagration';
+				move.onTryHit = function (target, pokemon) {
+					if (pokemon.activeTurns > 1) {
+						this.add('-hint', "Conflagration only works on your first turn out.");
+						return false;
+					}
+				};
+				move.self = {boosts: {atk:2, def:2, spa:2, spd:2, spe:2}};
+			}
+
 			// Driver signature moves.
 
 			// Voices signature moves.
 			if (move.id === 'swagger' && name === 'mikel') {
 				move.accuracy = true;
 				move.name = 'Trolling Lobby';
+				move.onTryHit = function (pokemon, source) {
+					if (source.hp <= Math.floor(source.maxhp / 2)) return false;
+					return;
+				};
 				move.onHit = function (pokemon, source) {
 					pokemon.addVolatile('taunt');
 					pokemon.addVolatile('leechseed');
 					pokemon.addVolatile('torment');
-					pokemon.addVolatile('disable');
-					this.directDamage(source.maxhp / 3, source, source);
+					this.directDamage(source.maxhp / 2, source, source);
 				};
 			}
 		}
