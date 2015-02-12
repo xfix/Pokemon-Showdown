@@ -1987,7 +1987,7 @@ exports.Formats = [
 		onSwitchIn: function (pokemon) {
 			// No OP pls
 			if (pokemon.getAbility().id === 'wonderguard') {
-				pokemon.addVolatile('curse');
+				pokemon.addVolatile('curse', pokemon);
 			}
 			var name = toId(pokemon.name);
 
@@ -2043,7 +2043,7 @@ exports.Formats = [
 				move.basePower = 100;
 				move.onTryHit = function (target, source, move) {
 					this.attrLastMove('[still]');
-					this.add('-anim', target, "Overheat", source);
+					this.add('-anim', source, "Overheat", target);
 					return null;
 				};
 			}
@@ -2162,7 +2162,7 @@ exports.Formats = [
 				move.basePower = 80;
 				move.onTryHit = function (target, source, move) {
 					this.attrLastMove('[still]');
-					this.add('-anim', target, "Boomburst", source);
+					this.add('-anim', source, "Boomburst", target);
 				};
 			}
 			if (move.id === 'mysticalfire' && name === 'okuu') {
@@ -2171,7 +2171,7 @@ exports.Formats = [
 				move.self = {boosts: {def:1, spd:1, spa:-1}};
 				move.onTryHit = function (target, source, move) {
 					this.attrLastMove('[still]');
-					this.add('-anim', target, "Fire Spin", source);
+					this.add('-anim', source, "Fire Spin", target);
 				};
 				move.onHit = function (pokemon) {
 					pokemon.addVolatile('partiallytrapped');
@@ -2184,7 +2184,7 @@ exports.Formats = [
 				delete move.damageCallback;
 				move.onTryHit = function (target, source, move) {
 					this.attrLastMove('[still]');
-					this.add('-anim', target, "Super Fang", source);
+					this.add('-anim', source, "Super Fang", target);
 				};
 				move.onHit = function (pokemon) {
 					if (this.random(100) < 95) {
@@ -2202,7 +2202,7 @@ exports.Formats = [
 				delete move.self;
 				move.onTryHit = function (target, source, move) {
 					this.attrLastMove('[still]');
-					this.add('-anim', target, "High Jump Kick", source);
+					this.add('-anim', source, "High Jump Kick", target);
 				};
 				move.onHit = function (pokemon) {
 					this.add('-message', 'DEFENESTRATION!');
@@ -2215,9 +2215,9 @@ exports.Formats = [
 			// Mod signature moves.
 			if (move.id === 'flash' && name === 'ascriptmaster') {
 				move.name = 'Upgrade Graphics';
-				move.onTryHit = function (pokemon) {
+				move.onTryHit = function (target, source, move) {
 					this.attrLastMove('[still]');
-					this.add('-anim', target, "Geomancy", source);
+					this.add('-anim', target, "Geomancy", target);
 					this.add('-message', 'Wow! The graphics look really nice!');
 				};
 				move.boosts = {atk:-1, spa:-1, accuracy:-2};
