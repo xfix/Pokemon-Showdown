@@ -2278,8 +2278,10 @@ exports.Formats = [
 				move.basePower = 130;
 				move.critRatio = 2;
 				delete move.recoil;
-				this.attrLastMove('[still]');
-				this.add('-anim', source, "Brave Bird", target);
+				move.onTryHit = function (target, source, move) {
+					this.attrLastMove('[still]');
+					this.add('-anim', source, "Brave Bird", target);
+				};
 			}
 			if (move.id === 'roleplay' && name === 'formerhope') {
 				move.volatileStatus = 'taunt';
@@ -2390,8 +2392,10 @@ exports.Formats = [
 				move.name = 'Tanned';
 				move.secondaries = [{status:'brn', chance:100}];
 				move.self = {boosts: {atk:1, spa:1, evasion:-1, accuracy:-1}};
-				this.attrLastMove('[still]');
-				this.add('-anim', source, "Eruption", target);
+				move.onTryHit = function (target, source, move) {
+					this.attrLastMove('[still]');
+					this.add('-anim', source, "Eruption", target);
+				};
 			}
 			if (move.id === 'whirlpool' && name === 'phil') {
 				move.name = 'Slug Attack';
@@ -2426,14 +2430,18 @@ exports.Formats = [
 				move.onEffectiveness = function (typeMod, type) {
 					if (type in {'Fire':1, 'Water': 1}) return 1;
 				};
-				this.attrLastMove('[still]');
-				this.add('-anim', source, "Blizzard", target);
+				move.onTryHit = function (target, source, move) {
+					this.attrLastMove('[still]');
+					this.add('-anim', source, "Blizzard", target);
+				};
 			}
 			if (move.id === 'boomburst' && name === 'scotteh') {
 				move.name = 'Geomagnetic Storm';
 				move.type = 'Electric';
-				this.attrLastMove('[still]');
-				this.add('-anim', source, "Discharge", target);
+				move.onTryHit = function (target, source, move) {
+					this.attrLastMove('[still]');
+					this.add('-anim', source, "Discharge", target);
+				};
 			}
 			if (move.id === 'triattack' && name === 'shaymin') {
 				move.name = "Nature's Fury";
@@ -2497,6 +2505,8 @@ exports.Formats = [
 				move.basePower = 120;
 				move.type = 'Ghost';
 				move.onTryHit = function () {
+					this.attrLastMove('[still]');
+					this.add('-anim', source, "Shadow Force", target);
 					this.add('-message', '*' + pokemon.name + ' teleports behind you*');
 				};
 				move.onAfterMove = function (target) {
@@ -2507,8 +2517,6 @@ exports.Formats = [
 						}
 					}
 				};
-				this.attrLastMove('[still]');
-				this.add('-anim', source, "Shadow Force", target);
 			}
 			if (move.id === 'karatechop' && name === 'test2017') {
 				move.name = 'Ducktastic';
