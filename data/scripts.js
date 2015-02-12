@@ -3963,393 +3963,396 @@ exports.BattleScripts = {
 		var sets = {
 			// Admins.
 			admins: {
-				antar: {
+				'~antar': {
 					species: 'Quilava', ability: 'Turboblaze', item: 'Eviolite', gender: 'M',
-					moves: ['blueflare', 'quiverdance', 'solarbeam', 'moonblast', 'sunnyday'],
+					moves: ['blueflare', 'quiverdance', 'solarbeam', 'moonblast', 'sunnyday'], name: '~Antar',
 					signatureMove: 'spikes',
 				},
-				chaos: {
+				'~chaos': {
 					species: 'Bouffalant', ability: 'Fur Coat', item: 'Red Card', gender: 'M',
-					moves: ['precipiceblades', ['recover', 'stockpile', 'swordsdance'][this.random(3)], 'extremespeed', 'explosion'], name: 'chaos',
+					moves: ['precipiceblades', ['recover', 'stockpile', 'swordsdance'][this.random(3)], 'extremespeed', 'explosion'], name: '~chaos',
 					signatureMove: 'embargo', evs: {hp:4, atk:252, spe:252}, nature: 'Adamant'
 				},
-				haunter: {
+				'~haunter': {
 					species: 'Landorus', ability: 'Sheer Force', item: 'Life Orb', gender: 'M',
-					moves: ['hurricane', 'earthpower', 'fireblast', 'blizzard', 'thunder'],
+					moves: ['hurricane', 'earthpower', 'fireblast', 'blizzard', 'thunder'], name: '~Haunter',
 					signatureMove: 'quiverdance'
 				},
-				hugendugen: {
+				'~hugendugen': {
 					species: 'Latios', ability: 'Prankster', item: 'Life Orb', gender: 'M',
-					moves: ['taunt', 'dracometeor', 'surf', 'earthpower', 'recover', 'thunderbolt', 'icebeam'],
+					moves: ['taunt', 'dracometeor', 'surf', 'earthpower', 'recover', 'thunderbolt', 'icebeam'], name: '~Hugendugen',
 					signatureMove: 'psychup'
 				},
-				jasmine: {
+				'~jasmine': {
 					species: 'Mew', ability: 'Arena Trap', item: 'Focus Sash', gender: 'F',
-					moves: ['transform', 'explosion', 'taunt', 'protect', 'wish'],
+					moves: ['transform', 'explosion', 'taunt', 'protect', 'wish'], name: '~Jasmine',
 					signatureMove: 'conversion2'
 				},
-				joim: {
+				'~joim': {
 					species: 'Zapdos', ability: 'Download', item: 'Leftovers', gender: 'M', shiny: true,
-					moves: ['thunderbolt', 'hurricane', 'earthpower', 'roost', 'flamethrower', 'worryseed', 'haze'],
+					moves: ['thunderbolt', 'hurricane', ['earthpower', 'roost', 'flamethrower', 'worryseed', 'haze'][this.random(5)]], name: '~Joim',
 					signatureMove: 'milkdrink', evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
 				},
-				theimmortal: {
+				'~theimmortal': {
 					species: 'Hoopa-Unbound', ability: 'Prankster', item: 'Dread Plate', gender: 'M',
-					moves: ['copycat', 'destinybond', 'substitute'], name: 'The Immortal',
+					moves: ['copycat', 'destinybond', 'substitute'], name: '~The Immortal',
 					signatureMove: 'shadowforce', evs: {hp:252, atk:252, def:4}, nature: 'Brave', ivs: {spe: 0}
 				},
-				v4: {
+				'~v4': {
 					species: 'Victini', ability: 'Desolate Land', item: ['Charcoal', 'Choice Scarf', 'Leftovers', 'Life Orb'][this.random(4)], gender: 'M',
-					moves: ['thousandarrows', 'bolt strike', 'shiftgear', 'dragonascent', 'closecombat', 'substitute'],
+					moves: ['thousandarrows', 'bolt strike', 'shiftgear', 'dragonascent', 'closecombat', 'substitute'], name: '~V4',
 					signatureMove: 'vcreate', evs: {hp:4, atk:252, spe:252}, nature: 'Jolly'
 				},
-				zarel: {
+				'~zarel': {
 					species: 'Meloetta', ability: 'Serene Grace', item: '', gender: 'F',
-					moves: ['lunardance', 'fierydance', 'perishsong', 'petaldance', 'quiverdance'],
+					moves: ['lunardance', 'fierydance', 'perishsong', 'petaldance', 'quiverdance'], name: '~Zarel',
 					signatureMove: 'relicsong'
 				}
 			},
 			leaders: {
 				// Leaders.
-				hollywood: {
+				'&hollywood': {
 					species: 'Mr. Mime', ability: 'Prankster', item: 'Leftovers', gender: 'M',
-					moves: ['batonpass', ['substitute', 'milkdrink'][this.random(2)], 'encore'], name: 'hollywood',
+					moves: ['batonpass', ['substitute', 'milkdrink'][this.random(2)], 'encore'], name: '&hollywood',
 					signatureMove: 'geomancy', evs: {hp:252, def:4, spe:252}, nature: 'Timid'
 				},
-				jdarden: {
+				'&jdarden': {
 					species: 'Dragonair', ability: 'Fur Coat', item: 'Eviolite', gender: 'M',
-					moves: ['rest', 'sleeptalk', 'quiverdance'], name: 'jdarden',
+					moves: ['rest', 'sleeptalk', 'quiverdance'], name: 'jdarden', name: '&jdarden',
 					signatureMove: 'dragontail', evs: {hp:252, def:4, spd:252}, nature: 'Calm'
 				},
-				okuu: {
+				'&okuu': {
 					species: 'Honchkrow', ability: 'Desolate Land', item: 'Life Orb', gender: 'F',
-					moves: ['sacredfire', 'bravebird', 'punishment', 'flamecharge', 'roost'],
+					moves: ['sacredfire', 'bravebird', 'punishment', 'flamecharge', 'roost'], name: '&Okuu',
 					signatureMove: 'mysticalfire', evs: {atk:252, spa:4, spe:252}, nature: 'Quirky'
 				},
-				vacate: {
+				'&vacate': {
 					species: 'Bibarel', ability: 'Adaptability', item: 'Leftovers', gender: 'M',
-					moves: ['earthquake', 'smellingsalts', 'stockpile', 'zenheadbutt', 'waterfall'],
+					moves: ['earthquake', 'smellingsalts', 'stockpile', 'zenheadbutt', 'waterfall'], name: '&Vacate',
 					signatureMove: 'superfang', evs: {atk:252, def:4, spd:252}, nature: 'Quiet'
 				},
-				verbatim: {
+				'&verbatim': {
 					species: 'Archeops', ability: 'Reckless', item: 'Life Orb', gender: 'M',
-					moves: ['headsmash', 'highjumpkick', 'flareblitz', 'volttackle', 'woodhammer'], name: 'verbatim',
+					moves: ['headsmash', 'highjumpkick', 'flareblitz', 'volttackle', 'woodhammer'], name: '&verbatim',
 					signatureMove: 'dragonascent', evs: {hp:4, atk:252, spe:252}, nature: 'Jolly'
 				}
 			},
 			// Mods.
 			mods: {
-				ascriptmaster: {
+				'@ascriptmaster': {
 					species: 'Rotom', ability: 'Motor Drive', item: 'Air Balloon', gender: 'M',
-					moves: ['chargebeam', 'signalbeam', 'flamethrower', 'aurorabeam', 'dazzlinggleam'],
+					moves: ['chargebeam', 'signalbeam', 'flamethrower', 'aurorabeam', 'dazzlinggleam'], name: '@Ascriptmaster',
 					signatureMove: 'flash'
 				},
-				antemortem: {
-					species: 'Clefable', ability: ['Sheer Force', 'Multiscale'][this.random(2)],
-					item: ['Leftovers', 'Life Orb'][this.random(2)], gender: 'M',
-					moves: ['moonblast', 'earthpower', 'cosmicpower', 'recover'],
+				'@antemortem': {
+					species: 'Clefable', ability: ['Sheer Force', 'Multiscale'][this.random(2)], item: ['Leftovers', 'Life Orb'][this.random(2)], gender: 'M',
+					moves: ['moonblast', 'earthpower', 'cosmicpower', 'recover'],  name: '@Antemortem',
 					signatureMove: 'drainingkiss'
 				},
-				asgdf: {
+				'@asgdf': {
 					species: 'Empoleon', ability: 'Filter', item: 'Rocky Helmet', gender: 'M',
-					moves: ['scald', 'recover', 'calmmind', 'searingshot', 'encore'],
+					moves: ['scald', 'recover', 'calmmind', 'searingshot', 'encore'], name: '@asgdf',
 					signatureMove: 'futuresight', evs: {}
 				},
-				barton: {
+				'@barton': {
 					species: 'Piloswine', ability: 'Parental Bond', item: 'Eviolite', gender: 'M',
-					moves: ['earthquake', 'iciclecrash', 'taunt'],
+					moves: ['earthquake', 'iciclecrash', 'taunt'], name: '@Barton',
 					signatureMove: 'bulkup', evs: {}
 				},
-				bean: {
+				'@bean': {
 					species: 'Liepard', ability: 'Prankster', item: 'Leftovers', gender: 'M',
-					moves: ['knockoff', 'encore', 'substitute', 'gastroacid', 'leechseed'],
+					moves: ['knockoff', 'encore', 'substitute', 'gastroacid', 'leechseed'], name: '@Bean',
 					signatureMove: 'payday', evs: {hp:252, def:252, spd:4}, nature: 'Calm'
 				},
-				beowulf: {
+				'@beowulf': {
 					species: 'Beedrill', ability: 'Download', item: 'Beedrillite', gender: 'M',
-					moves: ['spikyshield', 'sacredfire', 'boltstrike', 'gunkshot', 'diamondstorm'],
+					moves: ['spikyshield', 'sacredfire', 'boltstrike', 'gunkshot', 'diamondstorm'], name: '@Beowulf',
 					signatureMove: 'bugbuzz'
 				},
-				biggie: {
+				'@biggie': {
 					species: 'Snorlax', ability: 'Fur Coat', item: 'Leftovers', gender: 'M',
-					moves: ['drainpunch', 'diamondstorm', 'kingsshield', 'knockoff', 'precipiceblades'], name: 'BiGGiE',
+					moves: ['drainpunch', 'diamondstorm', 'kingsshield', 'knockoff', 'precipiceblades'], name: '@BiGGiE',
 					signatureMove: 'dragontail', evs: {hp:4, atk:252, spd:252}, nature: 'Adamant'
 				},
-				coolstorybrobat: {
+				'@coolstorybrobat': {
 					species: 'Crobat', ability: 'Gale Wings', item: 'Black Glasses', gender: 'M',
-					moves: ['knockoff', 'bulkup', 'roost', 'closecombat', 'defog'], name: 'CoolStoryBrobat',
+					moves: ['knockoff', 'bulkup', 'roost', 'closecombat', 'defog'], name: '@CoolStoryBrobat',
 					signatureMove: 'bravebird', evs: {}
 				},
-				formerhope: {
+				'@formerhope': {
 					species: 'Froslass', ability: 'Prankster', item: 'Focus Sash', gender: 'M',
-					moves: [['icebeam', 'shadowball'][this.random(2)], 'destinybond', 'thunderwave'], name: 'Former Hope',
+					moves: [['icebeam', 'shadowball'][this.random(2)], 'destinybond', 'thunderwave'], name: '@Former Hope',
 					signatureMove: 'roleplay', evs: {}
 				},
-				genesect: {
+				'@genesect': {
 					species: 'Genesect', ability: 'Mold Breaker', item: 'Life Orb', gender: 'M',
-					moves: ['bugbuzz', 'closecombat', 'extremespeed', 'thunderbolt', 'uturn'],
+					moves: ['bugbuzz', 'closecombat', 'extremespeed', 'thunderbolt', 'uturn'], name: '@Genesect',
 					signatureMove: 'geargrind'
 				},
-				goddessbriyella: {
+				'@goddessbriyella': {
 					species: 'Floette-Eternal-Flower', ability: 'Magic Bounce', item: 'Big Root', gender: 'M',
-					moves: ['cottonguard', 'quiverdance', 'drainingkiss', 'batonpass', 'storedpower'], name: 'Goddess Briyella',
+					moves: ['cottonguard', 'quiverdance', 'drainingkiss', 'batonpass', 'storedpower'], name: '@Goddess Briyella',
 					signatureMove: 'earthpower', evs: {}
 				},
-				hippopotas: {
+				'@hippopotas': {
 					species: 'Hippopotas', ability: 'Regenerator', item: 'Eviolite', gender: 'M',
-					moves: ['haze', 'stealthrock', 'spikes', 'toxicspikes', 'stickyweb'],
+					moves: ['haze', 'stealthrock', 'spikes', 'toxicspikes', 'stickyweb'], name: '@Hippopotas',
 					signatureMove: 'partingshot', evs: {}, ivs: {atk:0, spa:0}
 				},
-				hydroimpact: {
+				'@hydroimpact': {
 					species: 'Charizard', ability: 'Rivalry', item: 'Life Orb', gender: 'M',
-					moves: ['airslash', 'flamethrower', 'nobleroar', 'hydropump'], name: 'HYDROIMPACT',
+					moves: ['airslash', 'flamethrower', 'nobleroar', 'hydropump'], name: '@HYDROIMPACT',
 					signatureMove: 'hydrocannon', evs: {atk: 4, spa:252, spe:252}, nature: 'Hasty'
 				},
-				innovamania: {
+				'@innovamania': {
 					species: 'Arceus', ability: 'Pick Up', item: 'Black Glasses', gender: 'M',
-					moves: ['celebrate', 'holdhands', 'trickortreat', 'swordsdance', 'agility'],
+					moves: ['celebrate', 'holdhands', 'trickortreat', 'swordsdance', 'agility'], name: '@Innovamania',
 					signatureMove: 'splash', evs: {}
 				},
-				jas61292: {
+				'@jas61292': {
 					species: 'Malaconda', ability: 'Analytic', item: 'Safety Goggles', gender: 'M',
-					moves: ['coil', 'thunderwave', 'icefang', 'powerwhip', 'moonlight'],
+					moves: ['coil', 'thunderwave', 'icefang', 'powerwhip', 'moonlight'], name: '@jas61292',
 					signatureMove: 'crunch', evs: {}
 				},
-				jinofthegale: {
+				'@jinofthegale': {
 					species: 'Starmie', ability: 'Drizzle', item: 'Damp Rock', gender: 'M',
-					moves: ['steameruption', 'hurricane', 'recover', 'psystrike', 'quiverdance'], name: 'jin of the gale',
+					moves: ['steameruption', 'hurricane', 'recover', 'psystrike', 'quiverdance'], name: '@jin of the gale',
 					signatureMove: 'rapidspin', evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
 				},
-				level51: {
+				'@level51': {
 					species: 'Ledian', ability: 'Parental Bond', item: 'Leftovers', gender: 'M',
-					moves: ['seismictoss', 'roost', 'cosmicpower'], name: 'Level 51',
+					moves: ['seismictoss', 'roost', 'cosmicpower'], name: '@Level 51',
 					signatureMove: 'trumpcard', evs: {hp:252, def:252, spd:4}, nature: 'Bold'
 				},
-				lyto: {
+				'@lyto': {
 					species: 'Lanturn', ability: 'Magic Bounce', item: 'Leftovers', gender: 'M',
-					moves: ['originpulse', 'lightofruin', 'blueflare', 'recover', 'tailglow'],
+					moves: ['originpulse', 'lightofruin', 'blueflare', 'recover', 'tailglow'], name: '@Lyto',
 					signatureMove: 'thundershock', evs: {hp:188, spa:252, spe:68}, nature: 'Timid'
 				},
-				mattl: {
+				'@mattl': {
 					species: 'Mandibuzz', ability: 'Poison Heal', item: 'Leftovers', gender: 'M',
-					moves: ['oblivionwing', 'leechseed', 'quiverdance', 'topsyturvy', 'substitute'], name: 'MattL',
+					moves: ['oblivionwing', 'leechseed', 'quiverdance', 'topsyturvy', 'substitute'], name: '@MattL',
 					signatureMove: 'toxic', evs: {}, nature: 'Bold'
 				},
-				naniman: {
+				'@naniman': {
 					species: 'Gengar', ability: 'Desolate Land', item: 'Black Glasses', gender: 'M', shiny: true,
-					moves: ['eruption', 'swagger', 'shadow ball', 'attract', 'dazzlinggleam'], name: 'Nani Man',
+					moves: ['eruption', 'swagger', 'shadow ball', 'attract', 'dazzlinggleam'], name: '@Nani Man',
 					signatureMove: 'fireblast'
 				},
-				phil: {
+				'@phil': {
 					species: 'Gastrodon', ability: 'Drizzle', item: 'Shell Bell', gender: 'M',
-					moves: ['scald', 'recover', 'gastroacid', 'brine'], name: 'phil',
+					moves: ['scald', 'recover', 'gastroacid', 'brine'], name: '@phil',
 					signatureMove: 'whirlpool', evs: {}, nature: 'Quirky'
 				},
-				relados: {
+				'@relados': {
 					species: 'Terrakion', ability: 'Guts', item: 'Flame Orb', gender: 'M',
-					moves: ['facade', 'diamondstorm', 'closecombat', 'iceshard', 'drainpunch'],
+					moves: ['facade', 'diamondstorm', 'closecombat', 'iceshard', 'drainpunch'], name: '@Relados',
 					signatureMove: 'gravity', evs: {atk:252, def:4, spe:252}, nature: 'Adamant'
 				},
-				rosiethevenusaur: {
+				'@rosiethevenusaur': {
 					species: 'Venusaur', ability: 'Moxie', item: 'Leftovers', gender: 'F',
-					moves: ['flamethrower', 'extremespeed', 'attract', 'knockoff', 'earthquake'], name: 'RosieTheVenusaur',
+					moves: ['flamethrower', 'extremespeed', 'attract', 'knockoff', 'earthquake'], name: '@RosieTheVenusaur',
 					signatureMove: 'frenzyplant'
 				},
-				scalarmotion: {
+				'@scalarmotion': {
 					species: 'Cryogonal', ability: 'Magic Guard', item: 'Focus Sash', gender: 'M',
-					moves: ['rapidspin', 'willowisp', 'taunt', 'recover', 'voltswitch'],
+					moves: ['rapidspin', 'willowisp', 'taunt', 'recover', 'voltswitch'], name: '@Scalarmotion',
 					signatureMove: 'icebeam'
 				},
-				scotteh: {
+				'@scotteh': {
 					species: 'Suicune', ability: 'Fur Coat', item: 'Leftovers', gender: 'M',
-					moves: ['icebeam', 'steameruption', 'recover', 'nastyplot'],
+					moves: ['icebeam', 'steameruption', 'recover', 'nastyplot'], name: '@Scotteh',
 					signatureMove: 'boomburst'
 				},
-				shaymin: {
+				'@shaymin': {
 					species: 'Shaymin-Sky', ability: 'Magic Guard', item: 'Life Orb', gender: 'F',
-					moves: ['seedflare', 'oblivionwing', 'earthpower', 'spore', 'nastyplot'], name: 'Shaymin',
+					moves: ['seedflare', 'oblivionwing', 'earthpower', 'spore', 'nastyplot'], name: '@Shaymin',
 					signatureMove: 'triattack'
 				},
-				sirdonovan: {
+				'@sirdonovan': {
 					species: 'Togetic', ability: 'Gale Wings', item: 'Eviolite', gender: 'M',
-					moves: ['roost', 'hurricane', 'afteryou', 'charm', 'dazzlinggleam'], name: 'sirDonovan',
+					moves: ['roost', 'hurricane', 'afteryou', 'charm', 'dazzlinggleam'], name: '@sirDonovan',
 					signatureMove: 'mefirst'
 				},
-				skitty: {
+				'@skitty': {
 					species: 'Audino', ability: 'Intimidate', item: 'Audinite', gender: 'M',
-					moves: ['acupressure', 'recover', 'taunt', ['cosmicpower', 'magiccoat'][this.random(2)]],
+					moves: ['acupressure', 'recover', 'taunt', ['cosmicpower', 'magiccoat'][this.random(2)]], name: '@Skitty',
 					signatureMove: 'storedpower', nature: 'Bold'
 				},
-				snowflakes: {
+				'@snowflakes': {
 					species: 'Celebi', ability: 'Filter', item: 'Leftovers', gender: 'M',
-					moves: ['gigadrain', 'leechseed', 'icebeam', 'recover', 'perishsong', 'batonpass', 'uturn', 'voltswitch', 'seedflare', 'searingshot', 'quiverdance', 'thunderwave', 'psystrike'],
+					moves: ['gigadrain', 'leechseed', 'icebeam', 'recover', 'perishsong', 'batonpass', 'uturn', 'voltswitch', 'seedflare', 'searingshot', 'quiverdance', 'thunderwave', 'psystrike'], name: '@Snowflakes',
 					signatureMove: 'thousandarrows'
 				},
-				spydreigon: {
+				'@spydreigon': {
 					species: 'Hydreigon', ability: 'Mega Launcher', item: 'Life Orb', gender: 'M',
-					moves: ['dragonpulse', 'darkpulse', 'aurasphere', 'originpulse', 'shiftgear'],
+					moves: ['dragonpulse', 'darkpulse', 'aurasphere', 'originpulse', 'shiftgear'], name: '@Spydreigon',
 					signatureMove: 'waterpulse', evs:{hp:4, spa:252, spe:252}, nature: 'Timid'
 				},
-				steamroll: {
+				'@steamroll': {
 					species: 'Growlithe', ability: 'Adaptability', item: 'Life Orb', gender: 'M',
-					moves: ['flareblitz', 'volttackle', 'closecombat'],
+					moves: ['flareblitz', 'volttackle', 'closecombat'], name: '@Steamroll',
 					signatureMove: 'protect', evs: {atk:252, def:4, spe:252}, nature: 'Adamant'
 				},
 				/** TODO
 				steeledges: {
 					species: 'Dragalge', ability: 'Protean', item: 'Leftovers', gender: 'M',
-					moves: ['icebeam', 'partingshot', 'aeroblast', 'vacuumwave'],
+					moves: ['icebeam', 'partingshot', 'aeroblast', 'vacuumwave'], name: '@SteelEdges',
 					signatureMove: 'protect', nature: 'Serious'
 				},
 				sweep: {
 					species: 'Omastar'
 				},*/
-				temporaryanonymous: {
+				'@temporaryanonymous': {
 					species: 'Doublade', ability: 'Tough Claws', item: 'Eviolite', gender: 'M',
-					moves: ['swordsdance', ['xscissor', 'sacredsword', 'knockoff'][this.random(3)], 'geargrind'],
+					moves: ['swordsdance', ['xscissor', 'sacredsword', 'knockoff'][this.random(3)], 'geargrind'], name: '@temporaryanonymous',
 					signatureMove: 'extremespeed', evs: {atk:252, def:4, spe:252}, nature: 'Adamant'
 				},
-				test2017: {
+				'@test2017': {
 					species: "Farfetch'd", ability: 'Wonder Guard', item: 'Stick', gender: 'M',
-					moves: ['foresight', 'gastroacid', 'nightslash', 'roost', 'thousandarrows'],
+					moves: ['foresight', 'gastroacid', 'nightslash', 'roost', 'thousandarrows'], name: '@Test2017',
 					signatureMove: 'karatechop', evs: {hp:252, atk:252, spe:4}, nature: 'Adamant'
 				},
-				tfc: {
+				'@tfc': {
 					species: 'Blastoise', ability: 'Prankster', item: 'Leftovers', gender: 'M',
-					moves: ['quiverdance', 'cottonguard', 'storedpower', 'aurasphere', 'slackoff'],
+					moves: ['quiverdance', 'cottonguard', 'storedpower', 'aurasphere', 'slackoff'], name: '@TFC',
 					signatureMove: 'drainpunch', evs: {atk:252, def:4, spe:252}, nature: 'Modest'
 				},
-				trickster: {
+				'@trickster': {
 					species: 'Whimsicott', ability: 'Prankster', item: 'Leftovers', gender: 'M',
-					moves: ['swagger', 'spore', 'seedflare', 'recover', 'nastyplot'],
+					moves: ['swagger', 'spore', 'seedflare', 'recover', 'nastyplot'], name: '@Trickster',
 					signatureMove: 'naturepower', evs: {hp:252, spa:252, spe:4}
 				},
-				waterbomb: {
+				'@waterbomb': {
 					species: 'Poliwrath', ability: 'Unaware', item: 'Leftovers', gender: 'M',
-					moves: ['heartswap', 'softboiled', 'aromatherapy', 'highjumpkick', 'defog'],
+					moves: ['heartswap', 'softboiled', 'aromatherapy', 'highjumpkick', 'defog'], name: '@WaterBomb',
 					signatureMove: 'waterfall'
 				},
-				zdrup: {
+				'@zdrup': {
 					species: 'Slowking', ability: 'Slow Start', item: 'Leftovers', gender: 'M',
-					moves: ['psystrike', 'futuresight', 'originpulse', 'slackoff', 'destinybond'],
+					moves: ['psystrike', 'futuresight', 'originpulse', 'slackoff', 'destinybond'], name: '@zdrup',
 					signatureMove: 'wish', evs: {hp:252, def:4, spd:252}, nature: 'Quiet'
 				}
 			},
 			drivers: {
-				acedia: {
+				'%acedia': {
 					species: 'Slakoth', ability: 'Magic Bounce', item: 'Quick Claw', gender: 'F',
-					moves: ['metronome', 'sketch', 'assist', 'swagger', 'foulplay'],
+					moves: ['metronome', 'sketch', 'assist', 'swagger', 'foulplay'], name: '%Acedia',
 					signatureMove: 'worryseed', nature: 'Serious'
 				},
-				aelita: {
+				'%aelita': {
 					species: 'Porygon-Z', ability: 'Protean', item: 'Life Orb', gender: 'F',
-					moves: ['boomburst', 'quiverdance', 'chatter', 'blizzard', 'moonblast'],
+					moves: ['boomburst', 'quiverdance', 'chatter', 'blizzard', 'moonblast'], name: '%Aelita',
 					signatureMove: 'thunder', evs:{hp:4, spa:252, spd:252}, nature: 'Modest'
 				},
-				arcticblast: {
+				'%arcticblast': {
 					species: 'Cresselia', ability: 'Intimidate', item: 'Sitrus Berry', gender: 'M',
-					moves: [['fakeout', 'helpinghand', 'icywind', 'trickroom', 'safeguard', 'thunderwave', 'wideguard', 'quickguard', 'tailwind', 'followme', 'knockoff'][this.random(11)], ['sunnyday', 'moonlight', 'calmmind', 'protect', 'taunt'][this.random(5)], ['originpulse', 'heatwave', 'hypervoice', 'icebeam', 'moonblast'][this.random(5)]],
+					moves: [
+						['fakeout', 'helpinghand', 'icywind', 'trickroom', 'safeguard', 'thunderwave', 'wideguard', 'quickguard', 'tailwind', 'followme', 'knockoff'][this.random(11)],
+						['sunnyday', 'moonlight', 'calmmind', 'protect', 'taunt'][this.random(5)],
+						['originpulse', 'heatwave', 'hypervoice', 'icebeam', 'moonblast'][this.random(5)]
+					], name: '%Arcticblast',
 					signatureMove: 'luckychant', evs:{hp:252, def:120, spa:56, spd:80}, nature: 'Sassy'
 				},
-				astara: {
+				'%astara': {
 					species: 'Jirachi', ability: 'Cursed Body', item: ['Leftovers', 'Sitrus Berry'][this.random(2)], gender: 'F',
-					moves: ['psychic', 'moonblast', 'nastyplot', 'recover', 'surf'],
+					moves: ['psychic', 'moonblast', 'nastyplot', 'recover', 'surf'], name: '%Astara',
 					signatureMove: 'lovelykiss', evs:{hp:4, spa:252, spd:252}, nature: 'Modest'
 				},
-				eeveegeneral: {
+				'%eeveegeneral': {
 					species: 'Eevee', ability: 'Magic Guard', item: 'Eviolite', gender: 'M',
-					moves: ['defendorder', 'healorder', 'attackorder', 'sacredsword', 'doubleedge', 'bellydrum'],
+					moves: ['defendorder', 'healorder', 'attackorder', 'sacredsword', 'doubleedge', 'bellydrum'], name: '%Eevee General',
 					signatureMove: 'curse', evs: {hp:252, atk:252, def:4}, nature: 'Impish'
 				},
-				feliburn: {
+				'%feliburn': {
 					species: 'Infernape', ability: 'Adaptability', item: 'Expert Belt', gender: 'M',
-					moves: ['highjumpkick', 'sacredfire', 'taunt', 'fusionbolt', 'machpunch'],
+					moves: ['highjumpkick', 'sacredfire', 'taunt', 'fusionbolt', 'machpunch'], name: '%Feliburn',
 					signatureMove: 'focuspunch', evs: {atk:252, def:4, spe:252}, nature: 'Jolly'
 				},
-				imanalt: {
+				'%imanalt': {
 					species: 'Rhydon', ability: 'Prankster', item: 'Eviolite', gender: 'M',
-					moves: ['heartswap', 'rockblast', 'stealthrock', 'substitute', 'batonpass'],
+					moves: ['heartswap', 'rockblast', 'stealthrock', 'substitute', 'batonpass'], name: '%Iamanalt',
 					signatureMove: 'naturepower', evs: {hp:252, atk:252, spd:4}, nature: 'Modest'
 				},
-				jellicent: {
+				'%jellicent': {
 					species: 'Jellicent', ability: 'Poison Heal', item: 'Toxic Orb', gender: 'M',
-					moves: ['recover', 'freezedry', 'trick', 'substitute'],
+					moves: ['recover', 'freezedry', 'trick', 'substitute'], name: '%Jellicent',
 					signatureMove: 'surf', evs: {hp:252, def:4, spd:252}, nature: 'Calm'
 				},
 				/* TODO
 				layell: {
 	
 				},*/
-				legitimateusername: {
+				'%legitimateusername': {
 					species: 'Shuckle', ability: 'Unaware', item: 'Leftovers', gender: 'M',
-					moves: ['leechseed', 'recover', 'foulplay', 'healbell'],
+					moves: ['leechseed', 'recover', 'foulplay', 'healbell'], name: '%legitimateusername',
 					signatureMove: 'shellsmash', evs: {hp:252, def:228, spd:28}, nature: 'Calm'
 				},
-				ljdarkrai: {
+				'%ljdarkrai': {
 					species: 'Garchomp', ability: 'Coumpound Eyes', item: 'Life Orb', gender: 'M',
-					moves: ['dragondance', 'dragonrush', 'gunkshot', 'precipiceblades', 'sleeppowder', 'stoneedge'], name: 'LJDarkrai',
+					moves: ['dragondance', 'dragonrush', 'gunkshot', 'precipiceblades', 'sleeppowder', 'stoneedge'], name: '%LJDarkrai',
 					signatureMove: 'blazekick', evs: {hp:4, atk:252, spe:252}, nature: 'Adamant'
 				},
-				majorbling: {
+				'%majorbling': {
 					species: 'Dedenne', ability: 'Levitate', item: 'Expert Belt', gender: 'M',
-					moves: ['moonblast', 'voltswitch', 'discharge', 'focusblast', 'taunt'],
+					moves: ['moonblast', 'voltswitch', 'discharge', 'focusblast', 'taunt'], name: '%Majorbling',
 					signatureMove: 'bulletpunch', evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
 				},
-				marty: {
+				'%marty': {
 					species: 'Houndoom', ability: 'Drought', item: 'Houndoominite', gender: 'M',
-					moves: ['nightdaze', 'solarbeam', 'aurasphere', 'thunderbolt', 'earthpower'],
+					moves: ['nightdaze', 'solarbeam', 'aurasphere', 'thunderbolt', 'earthpower'], name: '%Marty',
 					signatureMove: 'sacredfire', evs: {spa:252, spd:4, spe:252}, ivs: {atk:0}, nature: 'Timid'
 				},
-				queez: {
+				'%queez': {
 					species: 'Cubchoo', ability: 'Prankster', item: 'Eviolite', gender: 'M',
-					moves: ['pound', 'fly', 'softboiled', 'thunderwave', 'waterpulse'],
+					moves: ['pound', 'fly', 'softboiled', 'thunderwave', 'waterpulse'], name: '%Queez',
 					signatureMove: 'curse', evs: {hp:252, def:228, spd:28}, nature: 'Calm'
 				},
-				raseri: {
+				'%raseri': {
 					species: 'Prinplup', ability: 'Regenerator', item: 'Eviolite', gender: 'M',
-					moves: ['defog', 'stealthrock', 'toxic', 'roar', 'bravebird'],
+					moves: ['defog', 'stealthrock', 'toxic', 'roar', 'bravebird'], name: '%Raseri',
 					signatureMove: 'scald', evs: {hp:252, def:228, spd:28}, nature: 'Bold'
 				},
-				trinitrotoluene: {
+				'%trinitrotoluene': {
 					species: 'Metagross', ability: 'Levitate', item: 'Metagrossite', gender: 'M',
-					moves: ['meteormash', 'zenheadbutt', 'hammerarm', 'grassknot', 'earthquake', 'thunderpunch', 'icepunch', 'shitgear'],
+					moves: ['meteormash', 'zenheadbutt', 'hammerarm', 'grassknot', 'earthquake', 'thunderpunch', 'icepunch', 'shitgear'], name: '%trinitrotoluene',
 					signatureMove: 'explosion', evs: {atk:252, def:4, spe:252}, nature: 'Jolly'
 				},
-				uselesstrainer: {
+				'%uselesstrainer': {
 					species: 'Scatterbug', ability: 'Skill Link', item: 'Altarianite', gender: 'M',
-					moves: ['explosion', 'stringshot', 'stickyweb', 'spiderweb', 'mist'],
+					moves: ['explosion', 'stringshot', 'stickyweb', 'spiderweb', 'mist'], name: '%Uselesstrainer',
 					signatureMove: 'bulletpunch', evs: {atk:252, def:4, spe:252}, nature: 'Jolly'
 				}
 			},
 			voices: {
-				bmelts: {
+				'+bmelts': {
 					species: 'Mewtwo', ability: 'Regenerator', item: 'Eject Button', gender: 'M',
-					moves: ['batonpass', 'uturn', 'voltswitch'], name: 'bmelts',
+					moves: ['batonpass', 'uturn', 'voltswitch'], name: '+bmelts',
 					signatureMove: 'partingshot', evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
 				},
-				cathy: {
+				'+cathy': {
 					species: 'Aegislash', ability: 'Stance Change', item: 'Life Orb', gender: 'F',
-					moves: ['kingsshield', 'shadowsneak', ['shadowball', 'shadowclaw', 'flashcannon', 'dragontail', 'hyperbeam'][this.random(5)]],
+					moves: ['kingsshield', 'shadowsneak', ['shadowball', 'shadowclaw', 'flashcannon', 'dragontail', 'hyperbeam'][this.random(5)]], name: '+Cathy',
 					signatureMove: 'memento', evs: {hp:4, atk:252, spa:252}, nature: 'Quiet'
 				},
-				limi: {
+				'+limi': {
 					species: 'Primeape', ability: 'Poison Heal', item: 'Leftovers', gender: 'M',
-					moves: ['ingrain', 'doubleedge', 'leechseed'],
+					moves: ['ingrain', 'doubleedge', 'leechseed'], name: '+Limi',
 					signatureMove: 'growl', evs: {hp:252, atk:252, def:4}, nature: 'Adamant'
 				},
-				mikel: {
+				'+mikel': {
 					species: 'Giratina', ability: 'Prankster', item: 'Lum Berry', gender: 'M',
-					moves: ['rest', 'recycle', ['substitute', 'toxic', 'willowisp'][this.random(3)]], name: 'mikel',
+					moves: ['rest', 'recycle', ['substitute', 'toxic', 'willowisp'][this.random(3)]], name: '+mikel',
 					signatureMove: 'swagger', evs: {hp:252, def:128, spd:128}, ivs: {atk:0}, nature: 'Calm'
 				},
-				redew: {
+				'+redew': {
 					species: 'Minun', ability: 'Wonder Guard', item: 'Air Balloon', gender: 'M',
-					moves: ['nastyplot', 'thunderbolt', 'icebeam'],
+					moves: ['nastyplot', 'thunderbolt', 'icebeam'], name: '+Redew',
 					signatureMove: 'flamethrower', nature: 'Quiet'
 				},
-				somalia: {
+				'+somalia': {
 					species: 'Gastrodon', ability: 'Anger Point', item: 'Leftovers', gender: 'M',
-					moves: ['recover', 'steameruption', 'earthpower', 'leafstorm', 'substitute'],
+					moves: ['recover', 'steameruption', 'earthpower', 'leafstorm', 'substitute'], name: '+SOMALIA',
 					signatureMove: 'energyball', evs: {hp:252, spa:252, spd:4}, nature: 'Modest'
 				}/* TODO,
 				talktakestime: {
@@ -4357,29 +4360,19 @@ exports.BattleScripts = {
 				}*/
 			}
 		};
-		// Teams are composed of 1 admin, 1 leader, 2 mods, 1-2 drivers, 0-1 voices.
+		// Generate the team randomly.
 		var admins = Object.keys(sets.admins).randomize();
 		var leaders = Object.keys(sets.leaders).randomize();
 		var mods = Object.keys(sets.mods).randomize();
 		var drivers = Object.keys(sets.drivers).randomize();
 		var voices = Object.keys(sets.voices).randomize();
-		// Initial team, last slot to decide between a driver and a voice.
-		var mons = [admins[0], leaders[0], mods[0], mods[1], drivers[0]];
-		// Tese are the rank names of the initial team, lacks the last one. It's to easily access the object.
-		var ranks = ['admins', 'leaders', 'mods', 'mods', 'drivers'];
-		// Hash to add the sign to the name of the mon easily.
-		var rankSigns = {'admins':'~', 'leaders':'&', 'mods':'@', 'drivers':'%', 'voices':'+'};
-		// Levels of the first 5 mons, each rank has its level.
-		var levels = [99, 97, 96, 96, 95];
-		// Check if we add a voice in last slot and update arrays with it.
-		var lastIsVoice = this.random(2) === 1;
-		ranks.push((lastIsVoice ? 'voices' : 'drivers'));
-		levels.push((lastIsVoice ? 93 : 95));
-		mons.push((lastIsVoice ? voices[0] : drivers[1]));
-		// Decided the six mons, let's do the team itself.
+		var pool = admins.concat(leaders).concat(mods).concat(drivers).concat(voices).randomize();
+		var ranks = {'~':'admins', '&':'leaders', '@':'mods', '%':'drivers', '+':'voices'};
+		var levels = {'~':99, '&':97, '@':96, '%':96, '+':95};
 		for (var i = 0; i<6; i++) {
-			var set = sets[ranks[i]][mons[i]];
-			set.level = levels[i];
+			var rank = pool[i].charAt(0);
+			var set = sets[ranks[rank]][pool[i]];
+			set.level = levels[rank];
 			if (!set.ivs) {
 				set.ivs = {hp:31, atk:31, def:31, spa:31, spd:31, spe:31};
 			} else {
@@ -4389,7 +4382,6 @@ exports.BattleScripts = {
 			}
 			// Assuming the hardcoded set evs are all legal.
 			if (!set.evs) set.evs = {hp:84, atk:84, def:84, spa:84, spd:84, spe:84};
-			set.name = rankSigns[ranks[i]] + ((!set.name) ? mons[i].charAt(0).toUpperCase() + mons[i].substr(1).toLowerCase() : set.name);
 			set.moves = set.moves.randomize();
 			set.moves = [set.moves[0], set.moves[1], set.moves[2], set.signatureMove];
 			delete set.signatureMove;

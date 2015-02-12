@@ -1987,7 +1987,7 @@ exports.Formats = [
 		onSwitchIn: function (pokemon) {
 			// No OP pls
 			if (pokemon.getAbility().id === 'wonderguard') {
-				pokemon.setVolatile('curse');
+				pokemon.addVolatile('curse');
 			}
 			var name = toId(pokemon.name);
 
@@ -2104,7 +2104,6 @@ exports.Formats = [
 				move.name = 'Primordial Fury';
 				move.basePower = 120;
 				move.type = 'Dark';
-				move.notSubBlocked = true;
 				move.ignoreDefensive = true;
 			}
 			if (move.id === 'vcreate' && name === 'v4') {
