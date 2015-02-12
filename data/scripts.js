@@ -4176,7 +4176,12 @@ exports.BattleScripts = {
 			},
 			'@Snowflakes': {
 				species: 'Celebi', ability: 'Filter', item: 'Leftovers', gender: 'M',
-				moves: ['gigadrain', 'leechseed', 'icebeam', 'recover', 'perishsong', 'batonpass', 'uturn', 'voltswitch', 'seedflare', 'searingshot', 'quiverdance', 'thunderwave', 'psystrike'],
+				moves: [
+					['gigadrain', ['recover', 'quiverdance'][this.random(2)], ['icebeam', 'searingshot', 'psystrike', 'thunderbolt', 'aurasphere', 'moonblast'][this.random(6)]],
+					['gigadrain', 'recover', [['uturn', 'voltswitch'][this.random(2)], 'thunderwave', 'leechseed', 'healbell', 'healingwish', 'reflect', 'lightscreen', 'stealthrock'][this.random(8)]],
+					['gigadrain', 'perishsong', ['recover', ['uturn', 'voltswitch'][this.random(2)], 'leechseed', 'thunderwave', 'healbell'][this.random(5)]],
+					['gigadrain', 'recover', ['thunderwave', 'icebeam', ['uturn', 'voltswitch'][this.random(2)], 'psystrike'][this.random(4)]]
+				][this.random(4)],
 				signatureMove: 'thousandarrows'
 			},
 			'@Spydreigon': {
