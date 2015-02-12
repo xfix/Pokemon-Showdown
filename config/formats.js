@@ -2015,6 +2015,9 @@ exports.Formats = [
 				this.add('-message', '░░░░░░ of ░░░░░░░░▀▄▄████████████████▄');
 				this.add('-message', '░░░░░luck░░░░░░░░░░░░░█▀██████');
 			}
+			if (name === 'marty') {
+				this.add('-message', 'Prepare yourself.');
+			}
 			if (name === 'theimmortal') {
 				this.add('-message', 'You are doomed!');
 			}
@@ -2574,6 +2577,11 @@ exports.Formats = [
 			// ljdarkrai
 			// majorbling
 			// marty
+			if (move.id === 'sacredfire' && name === 'marty') {
+				move.name = 'Immolate';
+				move.basePower += 20;
+				move.category = 'Special';
+			}
 			// queez
 			// raseri
 			// tnt
