@@ -1999,6 +1999,9 @@ exports.Formats = [
 					{type: 'Ghost', suppressed: false,  isAdded: false}
 				];
 			}
+			if (name === 'genesect') {
+				this.add('-message', '(ง ͠ ͠° ͟ل͜ ͡°)ง sᴏᴜɴᴅs ᴅᴏɴɢᴇʀᴏᴜs... ɪᴍ ɪɴ (ง ͠ ͠° ͟ل͜ ͡°)ง');
+			}
 			if (name === 'joim') {
 				this.add('-message', '░░░░░░░░▄▄▄▀▀▀▄▄███▄');
 				this.add('-message', '░░░░░▄▀▀░░░░░░░▐░▀██▌');
@@ -2012,8 +2015,8 @@ exports.Formats = [
 				this.add('-message', '░░░░░░ of ░░░░░░░░▀▄▄████████████████▄');
 				this.add('-message', '░░░░░luck░░░░░░░░░░░░░█▀██████');
 			}
-			if (name === 'genesect') {
-				this.add('-message', '(ง ͠ ͠° ͟ل͜ ͡°)ง sᴏᴜɴᴅs ᴅᴏɴɢᴇʀᴏᴜs... ɪᴍ ɪɴ (ง ͠ ͠° ͟ل͜ ͡°)ง');
+			if (name === 'theimmortal') {
+				this.add('-message', 'You are doomed!');
 			}
 		},
 		onBeforeMove: function (pokemon) {
@@ -2523,7 +2526,26 @@ exports.Formats = [
 				move.self = {boosts: {accuracy:-1}};
 			}
 			// waterbomb
+			if (move.id === 'waterfall' && name === 'waterbomb') {
+				move.name = 'Water Bomb';
+				move.basePower = 140;
+				move.isContact = false;
+				// todo: effect
+			}
 			// zdrup
+			if (move.id === 'wish' && name === 'zdrup') {
+				move.name = 'Premonition';
+				move.effect = {
+					duration: 5,
+					onResidualOrder: 4,
+					onEnd: function (side) {
+						var target = side.active[this.effectData.sourcePosition];
+						if (!target.fainted) {
+							target.boost({atk:1, def:1, spa:1, spd:1, spe:1, accuracy:1}
+						}
+					}
+				};
+			}
 
 			// Driver signature moves.
 			// acedia
