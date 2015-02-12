@@ -2116,15 +2116,32 @@ exports.Formats = [
 			if (move.id === 'relicsong' && name === 'zarel') {
 				move.name = 'Relic Song Dance';
 				move.basePower = 60;
-				if (!pokemon.volatiles['relicsong']) {
-					// Psychic meloetta
-					move.category = 'Special';
-					move.type = 'Psychic';
-				} else {
-					// Fighting meloetta
-					move.category = 'Physical';
-					move.type = 'Fighting';
-				}
+				move.multihit = 2;
+				move.category = 'Special';
+				move.type = 'Psychic';
+				move.negateSecondary = true;
+				delete move.secondaries;
+				move.onTryHit = function (target, pokemon) {
+					this.attrLastMove('[still]');
+					var move = pokemon.template.speciesid === 'meloettapirouette' ? 'Brick Break' : 'Relic Song';
+					this.add('-anim', pokemon, move, target);
+				};
+				move.onHit = function (target, pokemon, move) {
+					if (pokemon.template.speciesid === 'meloettapirouette' && pokemon.formeChange('Meloetta')) {
+						this.add('-formechange', pokemon, 'Meloetta', '[msg]');
+					} else if (pokemon.formeChange('Meloetta-Pirouette')) {
+						this.add('-formechange', pokemon, 'Meloetta-Pirouette', '[msg]');
+						// Modifying the move outside of the ModifyMove event? BLASPHEMY
+						move.category = 'Physical';
+						move.type = 'Fighting';
+					}
+				};
+				move.onAfterMove = function (pokemon) {
+					// Ensure Meloetta goes back to standard form after using the move
+					if (pokemon.template.speciesid === 'meloettapirouette' && pokemon.formeChange('Meloetta')) {
+						this.add('-formechange', pokemon, 'Meloetta', '[msg]');
+					}
+				};
 			}
 
 			// Leader signature moves.
