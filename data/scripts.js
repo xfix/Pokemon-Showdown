@@ -4040,9 +4040,10 @@ exports.BattleScripts = {
 				moves: ['chargebeam', 'signalbeam', 'flamethrower', 'aurorabeam', 'dazzlinggleam'],
 				signatureMove: 'flash'
 			},
-			'@Atemortem': {
+			'@Antemortem': {
 				species: 'Clefable', ability: ['Sheer Force', 'Multiscale'][this.random(2)], item: ['Leftovers', 'Life Orb'][this.random(2)], gender: 'M',
 				moves: ['moonblast', 'earthpower', 'cosmicpower', 'recover'],
+				signatureMove: 'drainingkiss'
 			},
 			'@asgdf': {
 				species: 'Empoleon', ability: 'Filter', item: 'Rocky Helmet', gender: 'M',
