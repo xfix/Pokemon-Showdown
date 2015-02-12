@@ -4314,7 +4314,7 @@ exports.BattleScripts = {
 			},
 			'%trinitrotoluene': {
 				species: 'Metagross', ability: 'Levitate', item: 'Metagrossite', gender: 'M',
-				moves: ['meteormash', 'zenheadbutt', 'hammerarm', 'grassknot', 'earthquake', 'thunderpunch', 'icepunch', 'shitgear'],
+				moves: ['meteormash', 'zenheadbutt', 'hammerarm', 'grassknot', 'earthquake', 'thunderpunch', 'icepunch', 'shiftgear'],
 				signatureMove: 'explosion', evs: {atk:252, def:4, spe:252}, nature: 'Jolly'
 			},
 			'%uselesstrainer': {
@@ -4372,7 +4372,7 @@ exports.BattleScripts = {
 			var set = sets[pool[i]];
 			// Slight power level balance.
 			if (!set.powerlevel) set.powerlevel = powerlevels[rank];
-			if (totalPower + set.powerlevel > 3175 && 3175 - totalPower > 475 && 6-p < pool.length-i) break;
+			//if (totalPower + set.powerlevel > 3175 && 3175 - totalPower > 475 && 6-p < pool.length-i) break;
 			if ((avgPower + set.powerlevel) / 2 > 545) break;
 			avgPower = Math.ceil((avgPower + set.powerlevel) / 2);
 			totalPower += set.powerlevel;

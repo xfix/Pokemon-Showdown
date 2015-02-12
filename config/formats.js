@@ -2302,7 +2302,7 @@ exports.Formats = [
 				move.name = 'Hazard Pass';
 				delete move.boosts;
 				move.onHit = function (pokemon) {
-					var harzards = ['stealthrock', 'spikes', 'toxicspikes', 'stickyweb'].randomize();	
+					var hazards = ['stealthrock', 'spikes', 'toxicspikes', 'stickyweb'].randomize();	
 					pokemon.side.addSideCondition(hazards[0]);
 					pokemon.side.addSideCondition(hazards[1]);
 				};
