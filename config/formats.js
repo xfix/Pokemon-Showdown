@@ -2163,14 +2163,17 @@ exports.Formats = [
 				move.type = 'Flying';
 				move.category = 'Special';
 				move.basePower = 80;
+				move.notSubBlocked = true;
 				move.onTryHit = function (target, source, move) {
 					this.attrLastMove('[still]');
 					this.add('-anim', source, "Boomburst", target);
 				};
 			}
-			if (move.id === 'mysticalfire' && name === 'okuu') {
+			if (move.id === 'extremespeed' && name === 'okuu') {
 				move.name = 'Blazing Star - Ten Evil Stars';
 				move.basePower = 60;
+				move.type = 'Fire';
+				move.category = 'Special';
 				move.self = {boosts: {def:1, spd:1, spa:-1}};
 				move.onTryHit = function (target, source, move) {
 					this.attrLastMove('[still]');
@@ -2272,6 +2275,8 @@ exports.Formats = [
 				move.basePower = 130;
 				move.critRatio = 2;
 				delete move.recoil;
+				this.attrLastMove('[still]');
+				this.add('-anim', source, "Brave Bird", target);
 			}
 			if (move.id === 'roleplay' && name === 'formerhope') {
 				move.volatileStatus = 'taunt';

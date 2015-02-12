@@ -3959,7 +3959,7 @@ exports.BattleScripts = {
 	randomSeasonalStaffTeam: function (side) {
 		var team = [];
 
-		// Hardcoded sets, separated by authority.
+		// Hardcoded sets of the available Pokémon.
 		var sets = {
 			// Admins.
 			'~Antar': {
@@ -4022,7 +4022,7 @@ exports.BattleScripts = {
 			'&Okuu': {
 				species: 'Honchkrow', ability: 'Desolate Land', item: 'Life Orb', gender: 'F',
 				moves: ['sacredfire', 'bravebird', 'punishment', 'flamecharge', 'roost'],
-				signatureMove: 'mysticalfire', evs: {atk:252, spa:4, spe:252}, nature: 'Quirky'
+				signatureMove: 'extremespeed', evs: {atk:252, spa:4, spe:252}, nature: 'Quirky'
 			},
 			'&Vacate': {
 				species: 'Bibarel', ability: 'Adaptability', item: 'Leftovers', gender: 'M',
