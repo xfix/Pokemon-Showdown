@@ -2016,10 +2016,10 @@ exports.Formats = [
 				this.add('-message', '░░░░░luck░░░░░░░░░░░░░█▀██████');
 			}
 			if (name === 'marty') {
-				this.add('-message', 'Prepare yourself.');
+				this.add('-message', pokemon.name + ': Prepare yourself.');
 			}
 			if (name === 'theimmortal') {
-				this.add('-message', 'You are doomed!');
+				this.add('-message', pokemon.name + ': You are doomed!');
 			}
 		},
 		onBeforeMove: function (pokemon) {
