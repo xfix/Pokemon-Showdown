@@ -2549,7 +2549,7 @@ exports.Formats = [
 					onEnd: function (side) {
 						var target = side.active[this.effectData.sourcePosition];
 						if (!target.fainted) {
-							target.boost({atk:1, def:1, spa:1, spd:1, spe:1, accuracy:1}
+							target.boost({atk:1, def:1, spa:1, spd:1, spe:1, accuracy:1});
 						}
 					}
 				};
