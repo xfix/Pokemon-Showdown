@@ -2350,6 +2350,7 @@ exports.Formats = [
 				};
 			}
 			if (move.id === 'trumpcard' && name === 'level51') {
+				move.name = 'Next Level Strats';
 				delete move.basePowerCallback;
 				move.target = 'self';
 				move.category = 'Status';
@@ -2370,7 +2371,106 @@ exports.Formats = [
 				delete move.secondaries;
 				move.self = {volatileStatus: 'magnetrise', boosts: {evasion:-1, accuracy:-1}};
 			}
-
+			if (move.id === 'toxic' && name === 'mattl') {
+				move.name = 'Topology';
+				move.self = {status: 'tox'};
+			}
+			if (move.id === 'Fire Blast' && name === 'naniman') {
+				move.name = 'Tanned';
+				move.secondaries = [{status:'brn', chance:100}];
+				move.self = {boosts: {atk:1, spa:1, evasion:-1, accuracy:-1}};
+				this.attrLastMove('[still]');
+				this.add('-anim', source, "Eruption", target);
+			}
+			if (move.id === 'whirlpool' && name === 'phil') {
+				move.name = 'Slug Attack';
+				move.basePower = 50;
+				move.secondaries = [{chance:100, status:'tox'}];
+			}
+			if (move.id === 'gravity' && name === 'relados') {
+				move.name = 'Nihil';
+				move.type = 'Dark';
+				move.effect = {
+					duration: 5,
+					onStart: function () {
+						this.add('-fieldstart', 'move: Nihil');
+					},
+					onDamage: function (damage, target, source, effect) {
+						if (effect.effectType !== 'Move') return false;
+					},
+					onResidualOrder: 22,
+					onEnd: function () {
+						this.add('-fieldend', 'move: Nihil');
+					}
+				};
+			}
+			if (move.id === 'frenzyplant' && name === 'rosiethevenusaur') {
+				move.name = 'Swag Plant';
+				move.volatileStatus = 'confusion';
+				move.self = {boosts: {def:1}};
+			}
+			if (move.id === 'icebeam' && name === 'scalarmotion') {
+				move.name = 'Eroding Frost';
+				move.basePower = 65;
+				move.onEffectiveness = function (typeMod, type) {
+					if (type in {'Fire':1, 'Water': 1}) return 1;
+				};
+				this.attrLastMove('[still]');
+				this.add('-anim', source, "Blizzard", target);
+			}
+			if (move.id === 'boomburst' && name === 'scotteh') {
+				move.name = 'Geomagnetic Storm';
+				move.type = 'Electric';
+				this.attrLastMove('[still]');
+				this.add('-anim', source, "Discharge", target);
+			}
+			if (move.id === 'triattack' && name === 'shaymin') {
+				move.name = "Nature's Fury";
+				move.defensiveCategory = "Physical";
+				move.onHit = function (pokemon) {
+					if (this.random(100) < 40) {
+						pokemon.trySetStatus(['par', 'brn', 'frz', 'psn', 'tox', 'slp'][this.random(6)]);
+					}
+				}
+			}
+			if (move.id === 'mefirst' && name === 'sirdonovan') {
+				move.name = 'Ladies First';
+				move.category = 'Special';
+				move.type = 'Fairy';
+				move.basePower = 120;
+				move.accuracy = 100;
+				move.self = {boosts: {spe:1}};
+				move.onHit = function (target, pokemon) {
+					var decision = this.willMove(pokemon);
+					if (decision && target.gender === 'F') {
+						this.cancelMove(pokemon);
+						this.queue.unshift(decision);
+						this.add('-activate', pokemon, 'move: Ladies First');
+					}
+				};
+			}
+			if (move.id === 'storedpower' && name === 'skitty') {
+				move.name = 'Ultimate Dismissal';
+				move.type = 'Fairy';
+				move.onDamage = function (damage, target, source, effect) {
+					if (damage > 0) {
+						this.heal(Math.ceil((damage * 0.25) * 100 / target.maxhp), source, source);
+					}
+				};
+			}
+			if (move.id === 'thousandarrows' && name === 'snowflakes') {
+				move.name = 'Azalea Butt Slam';
+				move.category = 'Special';
+				move.onHit = function (target, source, move) {
+					target.addVolatile('trapped', source, move, 'trapper');
+				};
+			}
+			if (move.id === 'waterpulse' && name === 'spydreigon') {
+				move.name = 'Mineral Pulse';
+				move.basePower = 95;
+				move.type = 'Steel';
+				move.accuracy = 100;
+			}
 			if (move.id === 'protect' && name === 'steamroll') {
 				move.name = 'Conflagration';
 				move.onTryHit = function (target, pokemon) {
@@ -2381,14 +2481,81 @@ exports.Formats = [
 				};
 				move.self = {boosts: {atk:2, def:2, spa:2, spd:2, spe:2}};
 			}
+			if (move.id === 'extremespeed' && name === 'temporaryanonymous') {
+				move.name = 'SPOOPY EDGE CUT';
+				move.basePower = 120;
+				move.type = 'Ghost';
+				move.onTryHit = function () {
+					this.add('-message', '*' + pokemon.name + ' teleports behind you*');
+				};
+				move.onAfterMove = function (target) {
+					if (!source || !effect) return;
+					if (effect.effectType === 'Move' && !effect.isFutureMove) {
+						if (target.hp <= 0 || target.fainted) {
+							this.add('-message', 'YOU ARE ALREADY DEAD *unsheathes glorious cursed nippon steel katana and cuts you in half with it* heh......nothing personnel.........kid......................');
+						}
+					}
+				};
+				this.attrLastMove('[still]');
+				this.add('-anim', source, "Shadow Force", target);
+			}
+			if (move.id === 'karatechop' && name === 'test2017') {
+				move.name = 'Ducktastic';
+				move.basePower = 100;
+				move.accuracy = 100;
+			}
+			if (move.id === 'drainpunch' && name === 'tfc') {
+				move.name = 'Chat Flood';
+				move.basePower = 150;
+				move.type = 'Water';
+				move.category = 'Special';
+				move.self = {boosts: {spa:-1, spd:-1, def:-1}};
+			}
+			if (move.id === 'naturepower' && name === 'trickster') {
+				move.name = 'Cometstorm';
+				move.category = 'Special';
+				move.type = 'Fairy';
+				move.basePower = 80;
+				move.secondaries = [{chance:30, status:'brn'}, {chance:30, status:'frz'}];
+				move.onEffectiveness = function (typeMod, type, move) {
+					return typeMod + this.getEffectiveness('Ice', type);
+				};
+				move.self = {boosts: {accuracy:-1}};
+			}
+			// waterbomb
+			// zdrup
 
 			// Driver signature moves.
+			// acedia
+			// aelita
+			// ablast
+			// astara
+			// eevee general
+			// feliburn
+			if (move.id === 'naturepower' && name === 'imanalt') {
+				move.name = 'FREE GENV BH';
+				move.onHit = function (target, source) {
+					this.useMove('earthquake', source, target);
+				};
+			}
+
+			// jellicent
 			if (move.id === 'shellsmash' && name === 'legitimateusername') {
 				move.name = 'Shell Fortress';
 				move.boosts = {def:2, spd:2, atk:-4, spa:-4, spe:-4};
 			}
-
+			// ljdarkrai
+			// majorbling
+			// marty
+			// queez
+			// raseri
+			// tnt
+			// uselesstrainer
+			
 			// Voices signature moves.
+			// aldaron
+			// bmelts
+			// cathy
 			if (move.id === 'swagger' && name === 'mikel') {
 				move.accuracy = true;
 				move.name = 'Trolling Lobby';
@@ -2403,6 +2570,10 @@ exports.Formats = [
 					this.directDamage(source.maxhp / 2, source, source);
 				};
 			}
+			// greatsage
+			// redew
+			// limi
+			// somalia
 		}
 	},
 
