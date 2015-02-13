@@ -2550,7 +2550,7 @@ exports.Formats = [
 				move.name = 'SPOOPY EDGE CUT';
 				move.basePower = 120;
 				move.type = 'Ghost';
-				move.onTryHit = function () {
+				move.onTryHit = function (target, source) {
 					this.attrLastMove('[still]');
 					this.add('-anim', source, "Shadow Force", target);
 					this.add('-message', '*@temporaryanonymous teleports behind you*');
