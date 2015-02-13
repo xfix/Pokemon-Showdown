@@ -4021,8 +4021,13 @@ exports.BattleScripts = {
 			},
 			'&Okuu': {
 				species: 'Honchkrow', ability: 'Desolate Land', item: 'Life Orb', gender: 'F',
-				moves: ['sacredfire', 'bravebird', 'punishment', 'flamecharge', 'roost'],
+				moves: ['sacredfire', ['bravebird', 'punishment', 'flamecharge'][this.random(3)], 'roost'],
 				signatureMove: 'extremespeed', evs: {atk:252, spa:4, spe:252}, nature: 'Quirky'
+			},
+			'&Slayer95': {
+				species: 'Scizor', ability: 'Illusion', item: 'Scizorite', gender: 'M',
+				moves: ['swordsdance', 'bulletpunch', 'uturn'],
+				signatureMove: 'allyswitch', evs: {atk:252, def:252, spd: 4}, nature: 'Brave'
 			},
 			'&Vacate': {
 				species: 'Bibarel', ability: 'Adaptability', item: 'Leftovers', gender: 'M',
@@ -4163,7 +4168,7 @@ exports.BattleScripts = {
 			'@Shaymin': {
 				species: 'Shaymin-Sky', ability: 'Magic Guard', item: 'Life Orb', gender: 'F',
 				moves: ['seedflare', 'oblivionwing', 'earthpower', 'spore', 'nastyplot'],
-				signatureMove: 'triattack'
+				signatureMove: 'triattack', evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
 			},
 			'@sirDonovan': {
 				species: 'Togetic', ability: 'Gale Wings', item: 'Eviolite', gender: 'M',
@@ -4341,7 +4346,7 @@ exports.BattleScripts = {
 			},
 			'+mikel': {
 				species: 'Giratina', ability: 'Prankster', item: 'Lum Berry', gender: 'M',
-				moves: ['rest', 'recycle', ['substitute', 'toxic', 'willowisp'][this.random(3)]],
+				moves: ['rest', 'recycle', ['toxic', 'willowisp'][this.random(3)]],
 				signatureMove: 'swagger', evs: {hp:252, def:128, spd:128}, ivs: {atk:0}, nature: 'Calm',
 				powerlevel: 700
 			},

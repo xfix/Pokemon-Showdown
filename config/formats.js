@@ -1988,11 +1988,17 @@ exports.Formats = [
 			// No OP pls
 			if (pokemon.getAbility().id === 'wonderguard') {
 				pokemon.addVolatile('curse', pokemon);
+				this.add('-message', pokemon.name + "'s Wonder Guard has cursed it!");
 			}
-			var name = toId(pokemon.name);
+			var name = toId(pokemon.illusion ? pokemon.illusion.name : pokemon.name);
 
 			// Add here edgy sentences and hacky stuff for mega abilities and special typings.
-			if (name === 'mikel') {
+			if (pokemon.template.isMega && name === 'trinitrotoluene' && pokemon.getAbility().id !== 'protean') {
+				pokemon.setAbility('protean');
+			}
+
+			// Sentences vary in style and how they are presented, so each Pokémon has its own way of sending them.
+			if (name === 'mikel' && !pokemon.illusion) {
 				this.add('-start', pokemon, 'typechange', 'Normal/Ghost');
 				pokemon.typesData = [
 					{type: 'Normal', suppressed: false,  isAdded: false},
@@ -2000,7 +2006,7 @@ exports.Formats = [
 				];
 			}
 			if (name === 'genesect') {
-				this.add('-message', '(ง ͠ ͠° ͟ل͜ ͡°)ง sᴏᴜɴᴅs ᴅᴏɴɢᴇʀᴏᴜs... ɪᴍ ɪɴ (ง ͠ ͠° ͟ل͜ ͡°)ง');
+				this.add('|c|@Genesect|(ง ͠ ͠° ͟ل͜ ͡°)ง sᴏᴜɴᴅs ᴅᴏɴɢᴇʀᴏᴜs... ɪᴍ ɪɴ (ง ͠ ͠° ͟ل͜ ͡°)ง');
 			}
 			if (name === 'joim') {
 				this.add('-message', '░░░░░░░░▄▄▄▀▀▀▄▄███▄');
@@ -2016,22 +2022,31 @@ exports.Formats = [
 				this.add('-message', '░░░░░luck░░░░░░░░░░░░░█▀██████');
 			}
 			if (name === 'marty') {
-				this.add('-message', pokemon.name + ': Prepare yourself.');
+				this.add('|c|%Marty|Prepare yourself.');
 			}
 			if (name === 'theimmortal') {
-				this.add('-message', pokemon.name + ': You are doomed!');
+				this.add('|c|~The Immortal|You are doomed!');
 			}
 		},
 		onBeforeMove: function (pokemon) {
 			// Here the hacky mega-forme abilities stuff.
 			var name = toId(pokemon.name);
+			if (pokemon.template.isMega && name === 'trinitrotoluene' && pokemon.getAbility().id !== 'protean') {
+				pokemon.setAbility('protean');
+			}
 		},
 		onFaint: function (pokemon) {
 			// Add here salty tears
 		},
+		onAfterMoveSelf: function (source, target, move) {
+			// Make Haunter not immune to Life Orb as a means to balance.
+			if (toId(source.name) === 'haunter') {
+				this.damage(source.maxhp / 10, source, source, this.getItem('lifeorb'));
+			}
+		},
 		// A thousand lines of giberish
 		onModifyMove: function (move, pokemon) {
-			var name = toId(pokemon.name);
+			var name = toId(pokemon.illusion && move.sourceEffect === 'allyswitch' ? pokemon.illusion.name : pokemon.name);
 			// Kek
 			if (move.id === 'defog') {
 				move.name = 'Defrog';
@@ -2063,7 +2078,7 @@ exports.Formats = [
 			}
 			if (move.id === 'quiverdance' && name === 'haunter') {
 				move.name = 'Genius Dance';
-				move.boosts = {spd:1, spe:1, accuracy:1, evasion:-1};
+				move.boosts = {spd:1, spe:1, accuracy:2, evasion:-1, def:-1};
 				move.onTryHit = function (pokemon) {
 					if (pokemon.volatiles['haunterino']) return false;
 				};
@@ -2111,6 +2126,13 @@ exports.Formats = [
 				move.basePower = 120;
 				move.type = 'Dark';
 				move.ignoreDefensive = true;
+				move.onBeforeMove = function (pokemon) {
+					if (pokemon.boosts.spe < 1) {
+						boost = 1 - pokemon.boosts.spe;
+						pokemon.boostBy({spe: boost});
+						this.add('-message', "~The Immortal's speed was raised by its brokenness!");
+					}
+				}
 			}
 			if (move.id === 'vcreate' && name === 'v4') {
 				move.name = 'V-Generate';
@@ -2187,6 +2209,22 @@ exports.Formats = [
 					pokemon.addVolatile('firespin');
 				};
 			}
+			if (move.id === 'allyswitch' && name === 'slayer95') {
+				move.name = 'Spell Steal';
+				move.target = 'self';
+				if (!pokemon.illusion || pokemon.illusion.moves[3] === move.id) {
+					move.onTryHit = function (pokemon) {
+						this.add('-fail', pokemon);
+						this.add('-hint', "Spell Steal only works behind an Illusion!");
+						return null;
+					};
+				} else {
+					delete move.onTryHit;
+					move.onHit = function (pokemon, source, sourceEffect) {
+						this.useMove(pokemon.illusion.moves[3], pokemon, null, sourceEffect);
+					};
+				};
+			}
 			if (move.id === 'superfang' && name === 'vacate') {
 				move.name = 'Duper Fang';
 				move.basePower = 105;
@@ -2214,7 +2252,7 @@ exports.Formats = [
 					this.add('-anim', source, "High Jump Kick", target);
 				};
 				move.onHit = function (pokemon) {
-					this.add('-message', 'DEFENESTRATION!');
+					this.add('|c|&verbatim|DEFENESTRATION!');
 				};
 				move.onMoveFail = function (target, source, move) {
 					this.damage(source.maxhp / 2, source, source, 'glasscannon');
@@ -2371,9 +2409,10 @@ exports.Formats = [
 					if (pokemon.level >= 200) return false;
 				};
 				move.onHit = function (pokemon) {
-					pokemon.level += 12;
+					var increase = (pokemon.volatiles['parentalbond']) ? 6 : 12;
+					pokemon.level += increase;
 					if (pokemon.level > 200) pokemon.level = 200;
-					this.add('-message', 'Level 51 advanced 12 levels! It is now level ' + pokemon.level + '!');
+					this.add('-message', 'Level 51 advanced ' + increase + ' levels! It is now level ' + pokemon.level + '!');
 				};
 			}
 			if (move.id === 'thundershock' && name === 'lyto') {
@@ -2507,13 +2546,13 @@ exports.Formats = [
 				move.onTryHit = function () {
 					this.attrLastMove('[still]');
 					this.add('-anim', source, "Shadow Force", target);
-					this.add('-message', '*' + pokemon.name + ' teleports behind you*');
+					this.add('-message', '*@temporaryanonymous teleports behind you*');
 				};
 				move.onAfterMove = function (target) {
 					if (!source || !effect) return;
 					if (effect.effectType === 'Move' && !effect.isFutureMove) {
 						if (target.hp <= 0 || target.fainted) {
-							this.add('-message', 'YOU ARE ALREADY DEAD *unsheathes glorious cursed nippon steel katana and cuts you in half with it* heh......nothing personnel.........kid......................');
+							this.add('|c|@temporaryanonymous|YOU ARE ALREADY DEAD *unsheathes glorious cursed nippon steel katana and cuts you in half with it* heh......nothing personnel.........kid......................');
 						}
 					}
 				};
@@ -2603,14 +2642,14 @@ exports.Formats = [
 				move.accuracy = true;
 				move.name = 'Trolling Lobby';
 				move.onTryHit = function (pokemon, source) {
-					if (source.hp <= Math.floor(source.maxhp / 2)) return false;
+					if (source.hp <= Math.floor(source.maxhp * 6 / 10)) return false;
 					return;
 				};
 				move.onHit = function (pokemon, source) {
 					pokemon.addVolatile('taunt');
 					pokemon.addVolatile('leechseed');
 					pokemon.addVolatile('torment');
-					this.directDamage(source.maxhp / 2, source, source);
+					this.directDamage(source.maxhp * 6 / 10, source, source);
 				};
 			}
 			// greatsage
