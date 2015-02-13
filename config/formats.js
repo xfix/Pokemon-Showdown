@@ -1984,6 +1984,13 @@ exports.Formats = [
 		onBegin: function () {
 			this.add('-message', "GET READY FOR THE NEXT BATTLE!");
 		},
+		onImmunity: function (type, pokemon) {
+			// Great Sage is immune to Attract.
+			if (type === 'attract' && toId(pokemon.name) === 'greatsage') {
+				this.add('-immune', pokemon, '[from] Irrelevant');
+				return false;
+			}
+		},
 		onSwitchIn: function (pokemon) {
 			// No OP pls
 			if (pokemon.getAbility().id === 'wonderguard') {
