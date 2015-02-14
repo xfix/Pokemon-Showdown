@@ -2113,7 +2113,7 @@ exports.Formats = [
 			if (move.id === 'conversion2' && name === 'jasmine') {
 				move.name = 'Transform Reversal';
 				move.onHit = function (target, pokemon) {
-					target.transformInto(pokemon, target);
+					//target.transformInto(pokemon, target);
 				};
 			}
 			if (move.id === 'milkdrink' && name === 'joim') {
@@ -2303,8 +2303,10 @@ exports.Formats = [
 				move.name = 'Coin Toss';
 				move.accuracy = true;
 				move.category = 'Status';
-				move.status = 'par';
-				move.volatileStatus = 'confusion';
+				move.onHit = function (pokemon) {
+					pokemon.trySetStatus('par');
+					pokemon.addVolatile('confusion');
+				};
 				move.affectedByImmunities = false;
 				move.type = 'Dark';
 			}
@@ -2585,7 +2587,7 @@ exports.Formats = [
 					return typeMod + this.getEffectiveness('Ice', type);
 				};
 				move.self = {boosts: {accuracy:-1}};
-			
+			}
 			if (move.id === 'waterfall' && name === 'waterbomb') {
 				move.name = 'Water Bomb';
 				move.basePower = 140;
