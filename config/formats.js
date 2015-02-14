@@ -2081,6 +2081,7 @@ exports.Formats = [
 					pokemon.addVolatile('taunt');
 					pokemon.addVolatile('torment');
 					pokemon.addVolatile('confusion');
+					pokemon.addVolatile('healblock');
 				};
 			}
 			if (move.id === 'quiverdance' && name === 'haunter') {
@@ -2543,6 +2544,8 @@ exports.Formats = [
 						this.add('-hint', "Conflagration only works on your first turn out.");
 						return false;
 					}
+					this.attrLastMove('[still]');
+					this.add('-anim', target, "Fire Blast", target);
 				};
 				move.self = {boosts: {atk:2, def:2, spa:2, spd:2, spe:2}};
 			}
@@ -2555,19 +2558,15 @@ exports.Formats = [
 					this.add('-anim', source, "Shadow Force", target);
 					this.add('-message', '*@temporaryanonymous teleports behind you*');
 				};
-				move.onAfterMove = function (target) {
-					if (!source || !effect) return;
-					if (effect.effectType === 'Move' && !effect.isFutureMove) {
-						if (target.hp <= 0 || target.fainted) {
-							this.add('|c|@temporaryanonymous|YOU ARE ALREADY DEAD *unsheathes glorious cursed nippon steel katana and cuts you in half with it* heh......nothing personnel.........kid......................');
-						}
-					}
+				move.onSourceFaint = function (target, source, effect) {
+					this.add('|c|@temporaryanonymous|YOU ARE ALREADY DEAD *unsheathes glorious cursed nippon steel katana and cuts you in half with it* heh......nothing personnel.........kid......................');
 				};
 			}
 			if (move.id === 'karatechop' && name === 'test2017') {
 				move.name = 'Ducktastic';
 				move.basePower = 100;
 				move.accuracy = 100;
+				move.type = 'Normal';
 			}
 			if (move.id === 'drainpunch' && name === 'tfc') {
 				move.name = 'Chat Flood';
@@ -2586,15 +2585,13 @@ exports.Formats = [
 					return typeMod + this.getEffectiveness('Ice', type);
 				};
 				move.self = {boosts: {accuracy:-1}};
-			}
-			// waterbomb
+			
 			if (move.id === 'waterfall' && name === 'waterbomb') {
 				move.name = 'Water Bomb';
 				move.basePower = 140;
 				move.isContact = false;
 				// todo: effect
 			}
-			// zdrup
 			if (move.id === 'wish' && name === 'zdrup') {
 				move.name = 'Premonition';
 				move.effect = {

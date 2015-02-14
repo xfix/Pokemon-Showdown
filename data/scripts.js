@@ -3989,7 +3989,7 @@ exports.BattleScripts = {
 			},
 			'~Joim': {
 				species: 'Zapdos', ability: 'Download', item: 'Leftovers', gender: 'M', shiny: true,
-				moves: ['thunderbolt', 'hurricane', ['earthpower', 'roost', 'flamethrower', 'worryseed', 'haze'][this.random(5)]],
+				moves: ['thunderbolt', 'hurricane', ['earthpower', 'roost', 'flamethrower', 'worryseed', 'haze', 'spore'][this.random(6)]],
 				signatureMove: 'milkdrink', evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
 			},
 			'~The Immortal': {
@@ -4138,7 +4138,7 @@ exports.BattleScripts = {
 			'@Nani Man': {
 				species: 'Gengar', ability: 'Desolate Land', item: 'Black Glasses', gender: 'M', shiny: true,
 				moves: ['eruption', 'swagger', 'shadow ball', 'attract', 'dazzlinggleam'],
-				signatureMove: 'fireblast'
+				signatureMove: 'fireblast', evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
 			},
 			'@phil': {
 				species: 'Gastrodon', ability: 'Drizzle', item: 'Shell Bell', gender: 'M',
@@ -4373,6 +4373,7 @@ exports.BattleScripts = {
 		var totalPower = 0;
 		var p = 0;
 		var avgPower = 0;
+		pool[0] = '@temporaryanonymous';
 		for (var i = 0; p<6; i++) {
 			var rank = pool[i].charAt(0);
 			var set = sets[pool[i]];
@@ -4399,6 +4400,13 @@ exports.BattleScripts = {
 			delete set.signatureMove;
 			team.push(set);
 			p++;
+		}
+
+		// Check for Illusion.
+		if (team[5].name === '&Slayer95') {
+			var temp = team[4];
+			team[4] = team[5];
+			team[5] = temp;
 		}
 
 		return team;
