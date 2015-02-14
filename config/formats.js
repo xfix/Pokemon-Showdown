@@ -2013,7 +2013,7 @@ exports.Formats = [
 				];
 			}
 			if (name === 'genesect') {
-				this.add('|c|@Genesect|(ง ͠ ͠° ͟ل͜ ͡°)ง sᴏᴜɴᴅs ᴅᴏɴɢᴇʀᴏᴜs... ɪᴍ ɪɴ (ง ͠ ͠° ͟ل͜ ͡°)ง');
+				this.add('c|@Genesect|(ง ͠ ͠° ͟ل͜ ͡°)ง sᴏᴜɴᴅs ᴅᴏɴɢᴇʀᴏᴜs... ɪᴍ ɪɴ (ง ͠ ͠° ͟ل͜ ͡°)ง');
 			}
 			if (name === 'joim') {
 				this.add('-message', '░░░░░░░░▄▄▄▀▀▀▄▄███▄');
@@ -2029,10 +2029,10 @@ exports.Formats = [
 				this.add('-message', '░░░░░luck░░░░░░░░░░░░░█▀██████');
 			}
 			if (name === 'marty') {
-				this.add('|c|%Marty|Prepare yourself.');
+				this.add('c|%Marty|Prepare yourself.');
 			}
 			if (name === 'theimmortal') {
-				this.add('|c|~The Immortal|You are doomed!');
+				this.add('c|~The Immortal|You are doomed!');
 			}
 		},
 		onBeforeMove: function (pokemon) {
@@ -2260,7 +2260,7 @@ exports.Formats = [
 					this.add('-anim', source, "High Jump Kick", target);
 				};
 				move.onHit = function (pokemon) {
-					this.add('|c|&verbatim|DEFENESTRATION!');
+					this.add('c|&verbatim|DEFENESTRATION!');
 				};
 				move.onMoveFail = function (target, source, move) {
 					this.damage(source.maxhp / 2, source, source, 'glasscannon');
@@ -2556,12 +2556,14 @@ exports.Formats = [
 				move.basePower = 120;
 				move.type = 'Ghost';
 				move.onTryHit = function (target, source) {
-					this.attrLastMove('[still]');
-					this.add('-anim', source, "Shadow Force", target);
 					this.add('-message', '*@temporaryanonymous teleports behind you*');
+					this.attrLastMove('[still]');
+					this.add('-anim', source, "Shadow Force", target);					
 				};
-				move.onSourceFaint = function (target, source, effect) {
-					this.add('|c|@temporaryanonymous|YOU ARE ALREADY DEAD *unsheathes glorious cursed nippon steel katana and cuts you in half with it* heh......nothing personnel.........kid......................');
+				move.onHit = function (pokemon) {
+					if (pokemon.hp <= 0 || pokemon.fainted) {
+						this.add('c|@temporaryanonymous|YOU ARE ALREADY DEAD *unsheathes glorious cursed nippon steel katana and cuts you in half with it* heh......nothing personnel.........kid......................');
+					}
 				};
 			}
 			if (move.id === 'karatechop' && name === 'test2017') {
