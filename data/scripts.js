@@ -4399,7 +4399,6 @@ exports.BattleScripts = {
 		var totalPower = 0;
 		var p = 0;
 		var avgPower = 0;
-		pool[0] = '~Jasmine';
 		for (var i = 0; p<6; i++) {
 			var rank = pool[i].charAt(0);
 			var set = sets[pool[i]];
