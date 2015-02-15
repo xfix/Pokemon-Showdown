@@ -4267,7 +4267,7 @@ exports.BattleScripts = {
 			'%Eevee General': {
 				species: 'Eevee', ability: 'Magic Guard', item: 'Eviolite', gender: 'M',
 				moves: ['defendorder', 'healorder', 'attackorder', 'sacredsword', 'doubleedge', 'bellydrum'],
-				signatureMove: 'curse', evs: {hp:252, atk:252, def:4}, nature: 'Impish'
+				signatureMove: 'quickattack', evs: {hp:252, atk:252, def:4}, nature: 'Impish'
 			},
 			'%Feliburn': {
 				species: 'Infernape', ability: 'Adaptability', item: 'Expert Belt', gender: 'M',
@@ -4284,10 +4284,11 @@ exports.BattleScripts = {
 				moves: ['recover', 'freezedry', 'trick', 'substitute'],
 				signatureMove: 'surf', evs: {hp:252, def:4, spd:252}, nature: 'Calm', powerlevel: 350
 			},
-			/* TODO
-			layell: {
-
-			},*/
+			'%Layell': {
+				species: 'Sneasel', ability: 'Technician', item: "King's Rock", gender: 'M',
+				moves: ['iceshard', 'iciclespear', ['machpunch', 'pursuit', 'knockoff'][this.random(3)]],
+				signatureMove: 'protect', evs: {hp:4, atk:252, spe:252}, nature: 'Adamant'
+			},
 			'%Legitimate Username': {
 				species: 'Shuckle', ability: 'Unaware', item: 'Leftovers', gender: 'M',
 				moves: ['leechseed', 'recover', 'foulplay', 'healbell'],
@@ -4318,6 +4319,11 @@ exports.BattleScripts = {
 				moves: ['defog', 'stealthrock', 'toxic', 'roar', 'bravebird'],
 				signatureMove: 'scald', evs: {hp:252, def:228, spd:28}, nature: 'Bold'
 			},
+			'%rekeri': {
+				species: 'Tyrantrum', ability: 'Tough Claws', item: 'Life Orb', gender: 'M',
+				moves: ['outrage', 'extremespeed', 'stoneedge', 'closecombat'],
+				signatureMove: 'headcharge', evs: {hp:252, atk:252, def:4}, nature: 'Adamant'
+			},
 			'%trinitrotoluene': {
 				species: 'Metagross', ability: 'Levitate', item: 'Metagrossite', gender: 'M',
 				moves: ['meteormash', 'zenheadbutt', 'hammerarm', 'grassknot', 'earthquake', 'thunderpunch', 'icepunch', 'shiftgear'],
@@ -4329,6 +4335,16 @@ exports.BattleScripts = {
 				signatureMove: 'bulletpunch', evs: {atk:252, def:4, spe:252}, nature: 'Jolly'
 			},
 			// Voices.
+			'+Aldaron': {
+				species: 'Conkeldurr', ability: 'Speed Boost', item: 'Assault Vest', gender: 'M',
+				moves: ['drainpunch', 'machpunch', 'iciclecrash', 'closecombat', 'earthquake', 'shadowclaw'],
+				signatureMove: 'superpower', evs: {hp:252, atk:252, def:4}, nature: 'Adamant'
+			},
+			'+birkal': {
+				species: 'Rotom-Fan', ability: 'Magic Guard', item: 'Choice Scarf', gender: 'M',
+				moves: ['trick', 'aeroblast', ['discharge', 'partingshot', 'recover', 'tailglow'][this.random(4)]],
+				signatureMove: 'quickattack', evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
+			},
 			'+bmelts': {
 				species: 'Mewtwo', ability: 'Regenerator', item: 'Eject Button', gender: 'M',
 				moves: ['batonpass', 'uturn', 'voltswitch'],
@@ -4336,7 +4352,7 @@ exports.BattleScripts = {
 			},
 			'+Cathy': {
 				species: 'Aegislash', ability: 'Stance Change', item: 'Life Orb', gender: 'F',
-				moves: ['kingsshield', 'shadowsneak', ['shadowball', 'shadowclaw', 'flashcannon', 'dragontail', 'hyperbeam'][this.random(5)]],
+				moves: ['kingsshield', 'shadowsneak', ['calmmind', 'shadowball', 'shadowclaw', 'flashcannon', 'dragontail', 'hyperbeam'][this.random(5)]],
 				signatureMove: 'memento', evs: {hp:4, atk:252, spa:252}, nature: 'Quiet', powerlevel: 700
 			},
 			'+Limi': {
@@ -4350,10 +4366,15 @@ exports.BattleScripts = {
 				signatureMove: 'swagger', evs: {hp:252, def:128, spd:128}, ivs: {atk:0}, nature: 'Calm',
 				powerlevel: 700
 			},
+			'+Great Sage': {
+				species: 'Shuckle', ability: 'Harvest', item: 'Leppa Berry', gender: '',
+				moves: ['substitute', 'protect', 'batonpass'],
+				signatureMove: 'judgment', evs: {hp:252, def:28, spd:228}, ivs: {atk:0, def:0, spe:0}, nature: 'Bold'
+			},
 			'+Redew': {
 				species: 'Minun', ability: 'Wonder Guard', item: 'Air Balloon', gender: 'M',
 				moves: ['nastyplot', 'thunderbolt', 'icebeam'],
-				signatureMove: 'flamethrower', nature: 'Quiet', powerlevel: 650
+				signatureMove: 'recover', nature: 'Quiet', powerlevel: 650
 			},
 			'+SOMALIA': {
 				species: 'Gastrodon', ability: 'Anger Point', item: 'Leftovers', gender: 'M',
