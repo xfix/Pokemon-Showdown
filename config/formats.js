@@ -2270,10 +2270,9 @@ exports.Formats = [
 				move.basePower = 120;
 				move.type = 'Dark';
 				move.ignoreDefensive = true;
-				move.onBeforeMove = function (pokemon) {
-					if (pokemon.boosts.spe < 1) {
-						boost = 1 - pokemon.boosts.spe;
-						pokemon.boostBy({spe: boost});
+				move.onHit = function (target, source) {
+					if (source.boosts.spe < 1) {
+						source.setBoost({spe: 1});
 						this.add('-message', "~The Immortal's speed was raised by its brokenness!");
 					}
 				}
