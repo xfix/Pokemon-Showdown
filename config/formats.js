@@ -3055,12 +3055,14 @@ exports.Formats = [
 				}
 				if (move.id === 'memento') {
 					move.name = 'HP Percent Policy';
-					move.boosts = {
-						atk: -6, def: -6, spa: -6, spd: -6, spe: -6, accuracy: -6, evasion: -6
-					};
+					delete move.boosts;
 					move.onTryHit = function (target, source) {
 						this.attrLastMove('[still]');
 						this.add('-anim', source, "Explosion", target);
+					};
+					move.onHit = function (target, source) {
+						target.setBoost({atk: -6, def: -6, spa: -6, spd: -6, spe: -6, accuracy: -6, evasion: -6});
+						source.faint();
 					};
 				}
 			}
