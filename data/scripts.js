@@ -3965,7 +3965,7 @@ exports.BattleScripts = {
 			'~Antar': {
 				species: 'Quilava', ability: 'Turboblaze', item: 'Eviolite', gender: 'M',
 				moves: ['blueflare', 'quiverdance', 'solarbeam', 'moonblast', 'sunnyday'],
-				signatureMove: 'spikes',
+				signatureMove: 'spikes', evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
 			},
 			'~chaos': {
 				species: 'Bouffalant', ability: 'Fur Coat', item: 'Red Card', gender: 'M',
@@ -3980,12 +3980,12 @@ exports.BattleScripts = {
 			'~Hugendugen': {
 				species: 'Latios', ability: 'Prankster', item: 'Life Orb', gender: 'M',
 				moves: ['taunt', 'dracometeor', 'surf', 'earthpower', 'recover', 'thunderbolt', 'icebeam'],
-				signatureMove: 'psychup'
+				signatureMove: 'psychup', evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
 			},
 			'~Jasmine': {
-				species: 'Mew', ability: 'Arena Trap', item: 'Focus Sash', gender: 'F',
-				moves: ['transform', 'explosion', 'taunt', 'protect', 'wish'],
-				signatureMove: 'conversion2'
+				species: 'Mew', ability: 'Speed Boost', item: 'Focus Sash', gender: 'F',
+				moves: ['explosion', 'transform', 'milkdrink', 'storedpower'],
+				signatureMove: 'bellydrum', evs: {hp:252, def:252, spd:4}, nature: 'Bold'
 			},
 			'~Joim': {
 				species: 'Zapdos', ability: 'Download', item: 'Leftovers', gender: 'M', shiny: true,
@@ -4006,7 +4006,7 @@ exports.BattleScripts = {
 			'~Zarel': {
 				species: 'Meloetta', ability: 'Serene Grace', item: '', gender: 'F',
 				moves: ['lunardance', 'fierydance', 'perishsong', 'petaldance', 'quiverdance'],
-				signatureMove: 'relicsong'
+				signatureMove: 'relicsong', evs: {hp:4, atk:252, spa:252}, nature: 'Quiet'
 			},
 			// Leaders.
 			'&hollywood': {
@@ -4040,20 +4040,25 @@ exports.BattleScripts = {
 				signatureMove: 'dragonascent', evs: {hp:4, atk:252, spe:252}, nature: 'Jolly'
 			},
 			// Mods.
-			'@Ascriptmaster': {
-				species: 'Rotom', ability: 'Motor Drive', item: 'Air Balloon', gender: 'M',
-				moves: ['chargebeam', 'signalbeam', 'flamethrower', 'aurorabeam', 'dazzlinggleam'],
-				signatureMove: 'flash'
+			'@AM': {
+				species: 'Tyranitar', ability: 'Adaptability', item: ['Lum Berry', 'Choice Scarf'][this.random(2)], gender: 'M',
+				moves: ['knockoff', 'diamondstorm', ['swordsdance', 'meanlook', 'earthquake'][this.random(3)]],
+				signatureMove: 'pursuit', evs: {atk:252, def:4, spe: 252}, nature: 'Jolly'
 			},
 			'@Antemortem': {
 				species: 'Clefable', ability: ['Sheer Force', 'Multiscale'][this.random(2)], item: ['Leftovers', 'Life Orb'][this.random(2)], gender: 'M',
 				moves: ['moonblast', 'earthpower', 'cosmicpower', 'recover'],
-				signatureMove: 'drainingkiss'
+				signatureMove: 'drainingkiss', evs: {hp:252, spa:252, def:4}, nature: 'Modest'
+			},
+			'@Ascriptmaster': {
+				species: 'Rotom', ability: 'Motor Drive', item: 'Air Balloon', gender: 'M',
+				moves: ['chargebeam', 'signalbeam', 'flamethrower', 'aurorabeam', 'dazzlinggleam'],
+				signatureMove: 'flash', evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
 			},
 			'@asgdf': {
 				species: 'Empoleon', ability: 'Filter', item: 'Rocky Helmet', gender: 'M',
 				moves: ['scald', 'recover', 'calmmind', 'searingshot', 'encore'],
-				signatureMove: 'futuresight', evs: {}
+				signatureMove: 'futuresight', evs: {hp:252, spa:252, def:4}, nature: 'Modest'
 			},
 			'@Barton': {
 				species: 'Piloswine', ability: 'Parental Bond', item: 'Eviolite', gender: 'M',
@@ -4312,7 +4317,7 @@ exports.BattleScripts = {
 			'%Queez': {
 				species: 'Cubchoo', ability: 'Prankster', item: 'Eviolite', gender: 'M',
 				moves: ['pound', 'fly', 'softboiled', 'thunderwave', 'waterpulse'],
-				signatureMove: 'curse', evs: {hp:252, def:228, spd:28}, nature: 'Calm'
+				signatureMove: 'leer', evs: {hp:252, def:228, spd:28}, nature: 'Calm'
 			},
 			'%Raseri': {
 				species: 'Prinplup', ability: 'Regenerator', item: 'Eviolite', gender: 'M',
@@ -4394,6 +4399,7 @@ exports.BattleScripts = {
 		var totalPower = 0;
 		var p = 0;
 		var avgPower = 0;
+		pool[0] = '~Jasmine';
 		for (var i = 0; p<6; i++) {
 			var rank = pool[i].charAt(0);
 			var set = sets[pool[i]];

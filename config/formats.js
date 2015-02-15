@@ -1997,19 +1997,27 @@ exports.Formats = [
 			}
 		},
 		onSwitchIn: function (pokemon) {
-			// No OP pls
+			var name = toId(pokemon.illusion ? pokemon.illusion.name : pokemon.name);
+
+			// No OP pls. Balance stuff.
 			if (pokemon.getAbility().id === 'wonderguard') {
 				pokemon.addVolatile('curse', pokemon);
 				this.add('-message', pokemon.name + "'s Wonder Guard has cursed it!");
 			}
-			var name = toId(pokemon.illusion ? pokemon.illusion.name : pokemon.name);
-
-			// Add here edgy sentences and hacky stuff for mega abilities and special typings.
-			if (pokemon.template.isMega && name === 'trinitrotoluene' && pokemon.getAbility().id !== 'protean') {
-				pokemon.setAbility('protean');
+			if (name === 'test2017') {
+				pokemon.boostBy({atk: 1});
+			}			
+			if (name === 'innovamania') {
+				pokemon.boostBy({atk:6, def:6, spa:6, spd:6, spe:6, accuracy:6});
 			}
 
-			// Sentences vary in style and how they are presented, so each Pokémon has its own way of sending them.
+			// Add here hacky stuff for mega abilities.
+			if (pokemon.template.isMega) {
+				if (name === 'trinitrotoluene' && pokemon.getAbility().id !== 'protean') {
+					pokemon.setAbility('protean');
+				}
+			}
+			// Add here special typings.
 			if (name === 'mikel' && !pokemon.illusion) {
 				this.add('-start', pokemon, 'typechange', 'Normal/Ghost');
 				pokemon.typesData = [
@@ -2017,30 +2025,139 @@ exports.Formats = [
 					{type: 'Ghost', suppressed: false,  isAdded: false}
 				];
 			}
-			if (name === 'genesect') {
-				this.add('c|@Genesect|(ง ͠ ͠° ͟ل͜ ͡°)ง sᴏᴜɴᴅs ᴅᴏɴɢᴇʀᴏᴜs... ɪᴍ ɪɴ (ง ͠ ͠° ͟ل͜ ͡°)ง');
+			if (name === 'birkal' && !pokemon.illusion) {
+				pokemon.addType('Bird');
+				this.add('-start', pokemon, 'typeadd', 'Bird', '[from] ability: Caw');
+			}
+			// Edgy sentences go here.
+			// Sentences vary in style and how they are presented, so each Pokémon has its own way of sending them.
+			var sentences = [];
+			if (name === 'antar') {
+				this.add("c|~Antar|It's my time in the sun.");
+			}
+			if (name === 'chaos') {
+				this.add("c|~chaos|I always win");
+			}
+			if (name === 'haunter') {
+				this.add("c|~Haunter|Dux mea lux");
+			}
+			if (name === 'hugendugen') {
+				this.add("c|~Hugendugen|4-1-0 let's go for it");
+			}
+			if (name === 'jasmine') {
+				var sentence = '';
+				if (pokemon.battle[((pokemon.side.id === 'p1') ? 'p2' : 'p1')].active[0].name.charAt(0) === '%') {
+					sentence = "Back in my day we didn't have Drivers.";
+				} else {
+					sentences = ["Your mum says hi.", "Sorry I was just enjoying a slice of pineapple pizza, what was I supposed to do again?", "I could go for some Cheesy Chips right about now.", "I'd tap that.", "/me throws coffee at the server"].randomize();
+					sentence = sentences[0];
+				}
+				this.add('c|~Jasmine|' + sentence);
 			}
 			if (name === 'joim') {
-				this.add('-message', '░░░░░░░░▄▄▄▀▀▀▄▄███▄');
-				this.add('-message', '░░░░░▄▀▀░░░░░░░▐░▀██▌');
-				this.add('-message', '░░░▄▀░░░░▄▄███░▌▀▀░▀█');
-				this.add('-message', '░░▄█░░▄▀▀▒▒▒▒▒▄▐░░░░█▌');
-				this.add('-message', '░▐█▀▄▀▄▄▄▄▀▀▀▀▌░░░░░▐█▄');
-				this.add('-message', '░▌▄▄▀▀░░░░░░░░▌░░░░▄███████▄');
-				this.add('-message', '░░░░░░░░░░░░░▐░░░░▐███████████▄');
-				this.add('-message', '░░blessed by░░░░▐░░░░▐█████████████▄');
-				this.add('-message', '░░le toucan░░░░░░▀▄░░░▐██████████████▄');
-				this.add('-message', '░░░░░░ of ░░░░░░░░▀▄▄████████████████▄');
-				this.add('-message', '░░░░░luck░░░░░░░░░░░░░█▀██████');
-			}
-			if (name === 'marty') {
-				this.add('c|%Marty|Prepare yourself.');
+				var dice = this.random(3);
+				if (dice === 1) {
+					// Fullscreen toucan!
+					this.add('-message', '░░░░░░░░▄▄▄▀▀▀▄▄███▄');
+					this.add('-message', '░░░░░▄▀▀░░░░░░░▐░▀██▌');
+					this.add('-message', '░░░▄▀░░░░▄▄███░▌▀▀░▀█');
+					this.add('-message', '░░▄█░░▄▀▀▒▒▒▒▒▄▐░░░░█▌');
+					this.add('-message', '░▐█▀▄▀▄▄▄▄▀▀▀▀▌░░░░░▐█▄');
+					this.add('-message', '░▌▄▄▀▀░░░░░░░░▌░░░░▄███████▄');
+					this.add('-message', '░░░░░░░░░░░░░▐░░░░▐███████████▄');
+					this.add('-message', '░░blessed by░░░░▐░░░░▐█████████████▄');
+					this.add('-message', '░░le toucan░░░░░░▀▄░░░▐██████████████▄');
+					this.add('-message', '░░░░░░ of ░░░░░░░░▀▄▄████████████████▄');
+					this.add('-message', '░░░░░luck░░░░░░░░░░░░░█▀██████');
+				} else if (dice === 2) {
+					// Too spammy, sends it to chat only.
+					this.add('c|~Joim|░░░░░░░░░░░░▄▐');
+					this.add('c|~Joim|░░░░░░▄▄▄░░▄██▄');
+					this.add('c|~Joim|░░░░░▐▀█▀▌░░░░▀█▄');
+					this.add('c|~Joim|░░░░░▐█▄█▌░░░░░░▀█▄');
+					this.add('c|~Joim|░░░░░░▀▄▀░░░▄▄▄▄▄▀▀');
+					this.add('c|~Joim|░░░░▄▄▄██▀▀▀▀');
+					this.add('c|~Joim|░░░█▀▄▄▄█░▀▀');
+					this.add('c|~Joim|░░░▌░▄▄▄▐▌▀▀▀');
+					this.add('c|~Joim|▄░▐░░░▄▄░█░▀▀ U HAVE BEEN SPOOKED BY THE');
+					this.add('c|~Joim|▀█▌░░░▄░▀█▀░▀');
+					this.add('c|~Joim|░░░░░░░▄▄▐▌▄▄');
+					this.add('c|~Joim|░░░░░░░▀███▀█░▄');
+					this.add('c|~Joim|░░░░░░▐▌▀▄▀▄▀▐▄SPOOKY SKILENTON');
+					this.add('c|~Joim|░░░░░░▐▀░░░░░░▐▌');
+					this.add('c|~Joim|░░░░░░█░░░░░░░░█');
+					this.add('c|~Joim|░░░░░▐▌░░░░░░░░░█');
+					this.add('c|~Joim|░░░░░█░░░░░░░░░░▐▌SEND THIS TO 7 PPL OR SKELINTONS WILL EAT YOU');
+				} else {
+					sentences = ["Gen 1 OU is a true skill metagame.", "Finally a good reason to punch a teenager in the face!", "So here we are again, it's always such a pleasure.", "( ͝° ͜ʖ͡°)"].randomize();
+					var sentence = sentences[0];
+					this.add('c|~Joim|' + sentence);
+				}
 			}
 			if (name === 'theimmortal') {
 				this.add('c|~The Immortal|You are doomed!');
 			}
-			if (name === 'innovamania') {
-				pokemon.boostBy({atk:6, def:6, spa:6, spd:6, spe:6, accuracy:6});
+			if (name === 'v4') {
+				sentences = ["Oh right. I'm still here...", "WHAT ELSE WERE YOU EXPECTING?!", "Soaring on beautiful buttwings."].randomize();
+				this.add('c|~V4|' + sentences[0]);
+			}
+			if (name === 'zarel') {
+				this.add('c|~Zarel|Your mom');
+			}
+			if (name === 'hollywood') {
+				this.add('c|&hollywood|Kappa');
+			}
+			if (name === 'jdarden') {
+				this.add('c|&jdarden|Did someone call for some BALK?');
+			}
+			if (name === 'okuu') {
+				sentences = ["Current Discussion Topics: Benefits of Nuclear Energy, green raymoo worst raymoo, ...", "Current Discussion Topics: I ate the Sun - AMA, Card Games inside of Fighting Games, ...", "Current Discussion Topics: Our testing process shouldn't include Klaxons, Please remove Orin from keyboard prior to entering chat, ...", "Current Discussion Topics: Please refrain from eating crow, We'll get out of Beta once we handle all of this Alpha Decay, ...", "Current Discussion Topics: Schroedinger's Chen might still be in that box, I'm So Meta Even This Acronym, ...", "Current Discussion Topics: What kind of idiot throws knives into a thermonuclear explosion?, わからない ハハハ,"];
+				this.add('c|&Okuu|' + sentences[0]);
+			}
+			if (name === 'vacate') {
+				this.add('c|&Vacate|sticky situation');
+			}
+			if (name === 'verbatim') {
+				this.add('c|&verbatim|All in');
+			}
+			if (name === 'AM') {
+				this.add('c|&verbatim|Lucky and Bad');
+			}
+			if (name === 'antemortem') {
+				this.add('c|@Antemortem|I Am Here To Oppress Users');
+			}
+			if (name === 'ascriptmaster') {
+				this.add("c|@Ascriptmaster|Good luck, I'm behind 7 proxies");
+			}
+			if (name === 'asgdf') {
+				sentences = ["Steel waters run deep, they say!", "I will insteell fear in your heart!", "Man the harpuns!"].randomize();
+				this.add('c|@asgdf|' + sentences[0]);
+			}
+
+			if (name === 'genesect') {
+				var dice = this.random(3);
+				if (dice === 1) {
+					this.add('-message', '░░ ░░ ██ ██ ██ ██ ██ ░░ ░░');
+					this.add('-message', '░░ ██ ▓▓ ▓▓ ▓▓ ▓▓ ▓▓ ██ ░░');
+					this.add('-message', '██ ▓▓ ▓▓ ▓▓ ▓▓ ▓▓ ▓▓ ▓▓ ██');
+					this.add('-message', '██ ▓▓ ▓▓ ██ ██ ██ ▓▓ ▓▓ ██');
+					this.add('-message', '██ ██ ██ ██ ░░ ██ ██ ██ ██');
+					this.add('-message', '██ ▒▒ ▒▒ ██ ██ ██ ▒▒ ▒▒ ██');
+					this.add('-message', '██ ▒▒ ▒▒ ▒▒ ▒▒ ▒▒ ▒▒ ▒▒ ██');
+					this.add('-message', '░░ ██ ▒▒ ▒▒ ▒▒ ▒▒ ▒▒ ██ ░░');
+					this.add('-message', '░░ ░░ ██ ██ ██ ██ ██ ░░ ░░');
+				} else if (dice === 2) {
+					this.add('c|@Genesect|┬┴┬┴┤  ʕ├┬┴┬┴');
+					this.add('c|@Genesect|┬┴┬┴┤ ʕ•├┬┴┬┴');
+					this.add('c|@Genesect|┬┴┬┴┤ʕ•ᴥ├┬┴┬┴shitposting?');
+				} else {
+					sentences = ["(ง ͠ ͠° ͟ل͜ ͡°)ง sᴏᴜɴᴅs ᴅᴏɴɢᴇʀᴏᴜs... ɪᴍ ɪɴ (ง ͠ ͠° ͟ل͜ ͡°)ง"].randomize();
+					this.add('c|@Genesect|' + sentences[0]);
+				}
+			}
+			
+			if (name === 'marty') {
+				this.add('c|%Marty|Prepare yourself.');
 			}
 		},
 		onBeforeMove: function (pokemon) {
@@ -2128,11 +2245,12 @@ exports.Formats = [
 					this.add('-invertboost', target, '[from] move: Policy Decision');
 				};
 			}
-			if (move.id === 'conversion2' && name === 'jasmine') {
-				move.name = 'Transform Reversal';
+			if (move.id === 'bellydrum' && name === 'jasmine') {
+				move.name = 'Lockdown';
 				move.onHit = function (target, pokemon) {
-					//target.transformInto(pokemon, target);
+					this.add("raw|<div class=\"broadcast-red\"><b>The server is restarting soon.</b><br />Please finish your battles quickly. No new battles can be started until the server resets in a few minutes.</div>");
 				};
+				move.self = {boosts: {atk:6}};
 			}
 			if (move.id === 'milkdrink' && name === 'joim') {
 				move.name = 'Red Bull Drink';
@@ -2286,6 +2404,18 @@ exports.Formats = [
 			}
 
 			// Mod signature moves.
+			if (move.id === 'pursuit' && name === 'am') {
+				move.name = 'Predator';
+				move.basePowerCallback = function (pokemon, target) {
+					if (target.beingCalledBack) return 120;
+					return 60;
+				};
+				move.onTryHit = function (target, source, move) {
+					this.attrLastMove('[still]');
+					this.add('-anim', target, "Pursuit", target);
+				};
+				move.boosts = {atk:-1, spa:-1, accuracy:-2};
+			}
 			if (move.id === 'flash' && name === 'ascriptmaster') {
 				move.name = 'Upgrade Graphics';
 				move.onTryHit = function (target, source, move) {
@@ -2779,20 +2909,22 @@ exports.Formats = [
 					this.add('-anim', source, "Flamethrower", target);
 				};
 			}
-			if (move.id === 'curse' && name === 'queez') {
+			if (move.id === 'leer' && name === 'queez') {
 				move.name = 'Sneeze';
-				delete move.onModifyMove;
+				delete move.boosts;
 				move.onTryHit = function (target, source) {
 					this.attrLastMove('[still]');
 					this.add('-anim', source, "Curse", target);
-					if (target.volatiles.curse) {
+				};
+				move.onHit = function (target, source) {
+					if (!target.volatiles.curse) {
+						source.boostBy({atk:1, def:1, spa:1, spd:1, spe:1, accuracy:1});
+						target.addVolatile('curse');
+					} else {
 						source.boostBy({atk: 1});
 						target.boostBy({def: -1});
 						this.useMove('explosion', source, target);
 					}
-				};
-				move.onHit = function (target, source) {
-					source.boostBy({atk:1, def:1, spa:1, spd:1, spe:1, accuracy:1});
 				};
 			}
 			if (move.id === 'scald' && name === 'raseri') {
@@ -2848,6 +2980,7 @@ exports.Formats = [
 				move.onHit = function (target) {
 					if (!target.setType('Bird')) return false;
 					this.add('-start', target, 'typechange', 'Bird');
+					this.add('c|+Birkal|caw');
 				};
 			}
 			if (move.id === 'partingshot' && name === 'bmelts') {
