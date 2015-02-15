@@ -1990,8 +1990,9 @@ exports.Formats = [
 				this.add('-immune', pokemon, '[from] Irrelevant');
 				return false;
 			}
+			// Somalia's Ban Spree makes it immune to some move types.-
 			if (toId(pokemon.name) === 'somalia' && type in {'Ground':1, 'Water':1, 'Fire':1, 'Grass':1, 'Poison':1, 'Normal':1, 'Electric':1}) {
-				this.add('-immune', pokemon, '[from] Ban Spree');
+				this.add('-message', "You can't stop SOMALIA in middle of his Ban Spree!");
 				return false;
 			}
 		},
@@ -2037,6 +2038,9 @@ exports.Formats = [
 			}
 			if (name === 'theimmortal') {
 				this.add('c|~The Immortal|You are doomed!');
+			}
+			if (name === 'innovamania') {
+				pokemon.boostBy({atk:6, def:6, spa:6, spd:6, spe:6, accuracy:6});
 			}
 		},
 		onBeforeMove: function (pokemon) {
@@ -2447,11 +2451,13 @@ exports.Formats = [
 			if (move.id === 'Fire Blast' && name === 'naniman') {
 				move.name = 'Tanned';
 				move.secondaries = [{status:'brn', chance:100}];
-				move.self = {boosts: {atk:1, spa:1, evasion:-1, accuracy:-1}};
 				move.onTryHit = function (target, source, move) {
 					this.attrLastMove('[still]');
 					this.add('-anim', source, "Eruption", target);
 				};
+				move.onHit = function (target, source) {
+					source.boostBy({atk:1, spa:1, evasion:-1, accuracy:-1});
+				}
 			}
 			if (move.id === 'whirlpool' && name === 'phil') {
 				move.name = 'Slug Attack';
@@ -2652,6 +2658,7 @@ exports.Formats = [
 				};
 			}
 			if (move.id === 'lovelykiss' && name === 'astara') {
+				move.name = 'Star Bolt Desperation';
 				move.accuracy = 100;
 				delete move.status;
 				move.category = 'Special';
@@ -2678,8 +2685,13 @@ exports.Formats = [
 			if (move.id === 'quickattack' && name === 'eeveegeneral') {
 				move.name = 'War Crimes';
 				move.type = 'Normal';
-				move.type = 'Status';
+				move.category = 'Status';
 				move.basePower = 0;
+				move.onHit = function (pokemon) {
+					pokemon.addVolatile('curse');
+					pokemon.addVolatile('confusion');
+					this.add("c|%Eevee General|What's a Geneva Convention?");
+				}
 			}
 			if (name === 'feliburn') {
 				if (move.id === 'focuspunch') {
@@ -2694,7 +2706,7 @@ exports.Formats = [
 						this.attrLastMove('[still]');
 						this.add('-anim', source, "Fire Punch", target);
 					};
-					move.oHit = function () {
+					move.onHit = function () {
 						this.add('c|%Feliburn|PUUUUUNCH!!');
 					};
 				}
@@ -2736,7 +2748,7 @@ exports.Formats = [
 				move.name = 'Shell Fortress';
 				move.boosts = {def:2, spd:2, atk:-4, spa:-4, spe:-4};
 			}
-			if (move.id === 'blazekick' && name === 'lkdarkrai') {
+			if (move.id === 'blazekick' && name === 'ljdarkrai') {
 				move.name = 'Blaze Blade';
 				move.accuracy = 100;
 				move.basePower = 90;
@@ -2751,12 +2763,12 @@ exports.Formats = [
 						this.add('-hint', "Focus Laser only works on your first turn out.");
 						return false;
 					}
-					source.boostBy({spa:2, atk:2, spe:2});
 				};
 				move.onHit = function (target, source) {
+					source.boostBy({spa:2, atk:2, spe:2});
+					source.addVolatile('tormented');
 					this.useMove('discharge', source, target);
 				};
-				move.self = {volatileStatus: 'tormented'};
 			}
 			if (move.id === 'sacredfire' && name === 'marty') {
 				move.name = 'Immolate';
@@ -2839,10 +2851,11 @@ exports.Formats = [
 				};
 			}
 			if (move.id === 'partingshot' && name === 'bmelts') {
-				move.name = "Aaaannnd... he's gone.";
+				move.name = "Aaaannnd... he's gone";
 				move.type = 'Ice';
 				move.category = 'Special';
-				move.baseDamage = 80;
+				move.basePower = 80;
+				delete move.boosts;
 			}
 			if (name === 'cathy') {
 				if (move.id === 'kingsshield') {

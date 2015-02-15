@@ -3975,7 +3975,7 @@ exports.BattleScripts = {
 			'~Haunter': {
 				species: 'Landorus', ability: 'Sheer Force', item: 'Life Orb', gender: 'M',
 				moves: ['hurricane', 'earthpower', 'fireblast', 'blizzard', 'thunder'],
-				signatureMove: 'quiverdance'
+				signatureMove: 'quiverdance', evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
 			},
 			'~Hugendugen': {
 				species: 'Latios', ability: 'Prankster', item: 'Life Orb', gender: 'M',
