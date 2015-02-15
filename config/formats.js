@@ -2731,6 +2731,7 @@ exports.Formats = [
 					return typeMod + this.getEffectiveness('Ice', type);
 				};
 				move.self = {boosts: {accuracy:-1}};
+				delete move.onHit;
 			}
 			if (move.id === 'waterfall' && name === 'waterbomb') {
 				move.name = 'Water Bomb';
@@ -2852,7 +2853,7 @@ exports.Formats = [
 				};
 			}
 			if (move.id === 'surf' && name === 'jellicent') {
-				move.id = 'Shot For Shot';
+				move.name = 'Shot For Shot';
 				move.basePower = 80;
 				move.volatileStatus = 'confusion';
 				move.onTryHit = function (target, source) {
