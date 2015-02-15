@@ -2953,6 +2953,7 @@ exports.Formats = [
 				}
 			}
 			if (move.id === 'bulletpunch' && name === 'uselesstrainer') {
+				move.name = 'Ranting';
 				move.type = 'Bug';
 				move.basePower = 40;
 				move.multihit = [2, 5];
