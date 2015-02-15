@@ -2560,10 +2560,9 @@ exports.Formats = [
 					if (pokemon.level >= 200) return false;
 				};
 				move.onHit = function (pokemon) {
-					var increase = (pokemon.volatiles['parentalbond']) ? 6 : 12;
-					pokemon.level += increase;
+					pokemon.level += 9;
 					if (pokemon.level > 200) pokemon.level = 200;
-					this.add('-message', 'Level 51 advanced ' + increase + ' levels! It is now level ' + pokemon.level + '!');
+					this.add('-message', 'Level 51 advanced 9 levels! It is now level ' + pokemon.level + '!');
 				};
 			}
 			if (move.id === 'thundershock' && name === 'lyto') {
