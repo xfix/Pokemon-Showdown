@@ -2789,6 +2789,7 @@ exports.Formats = [
 			if (move.id === 'lovelykiss' && name === 'astara') {
 				move.name = 'Star Bolt Desperation';
 				move.accuracy = 100;
+				move.type = ['Bird', 'Bug', 'Dark', 'Dragon', 'Electric', 'Fairy', 'Fighting', 'Fire', 'Flying', 'Ghost', 'Grass', 'Ground', 'Ice', 'Normal', 'Poison', 'Psychic', 'Rock', 'Steel', 'Water'][this.random(19)];
 				delete move.status;
 				move.category = 'Special';
 				move.damageCallback = function (pokemon) {

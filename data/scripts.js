@@ -4264,7 +4264,7 @@ exports.BattleScripts = {
 				],
 				signatureMove: 'luckychant', evs:{hp:252, def:120, spa:56, spd:80}, nature: 'Sassy'
 			},
-			'%Astara': {
+			'%Ast☆arA': {
 				species: 'Jirachi', ability: 'Cursed Body', item: ['Leftovers', 'Sitrus Berry'][this.random(2)], gender: 'F',
 				moves: ['psychic', 'moonblast', 'nastyplot', 'recover', 'surf'],
 				signatureMove: 'lovelykiss', evs:{hp:4, spa:252, spd:252}, nature: 'Modest'
