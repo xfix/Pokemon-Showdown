@@ -4063,7 +4063,7 @@ exports.BattleScripts = {
 			'@Barton': {
 				species: 'Piloswine', ability: 'Parental Bond', item: 'Eviolite', gender: 'M',
 				moves: ['earthquake', 'iciclecrash', 'taunt'],
-				signatureMove: 'bulkup', evs: {}
+				signatureMove: 'bulkup', evs: {hp:252, atk:252, def:4}, nature: 'Adamant'
 			},
 			'@bean': {
 				species: 'Liepard', ability: 'Prankster', item: 'Leftovers', gender: 'M',
@@ -4073,7 +4073,7 @@ exports.BattleScripts = {
 			'@Beowulf': {
 				species: 'Beedrill', ability: 'Download', item: 'Beedrillite', gender: 'M',
 				moves: ['spikyshield', 'sacredfire', 'boltstrike', 'gunkshot', 'diamondstorm'],
-				signatureMove: 'bugbuzz'
+				signatureMove: 'bugbuzz', evs: {hp:4, spa:252, spe:252}, nature: 'Jolly'
 			},
 			'@BiGGiE': {
 				species: 'Snorlax', ability: 'Fur Coat', item: 'Leftovers', gender: 'M',
@@ -4083,27 +4083,27 @@ exports.BattleScripts = {
 			'@CoolStoryBrobat': {
 				species: 'Crobat', ability: 'Gale Wings', item: 'Black Glasses', gender: 'M',
 				moves: ['knockoff', 'bulkup', 'roost', 'closecombat', 'defog'],
-				signatureMove: 'bravebird', evs: {}
+				signatureMove: 'bravebird', evs: {hp:4, atk:252, spe:252}, nature: 'Jolly'
 			},
 			'@Former Hope': {
 				species: 'Froslass', ability: 'Prankster', item: 'Focus Sash', gender: 'M',
 				moves: [['icebeam', 'shadowball'][this.random(2)], 'destinybond', 'thunderwave'],
-				signatureMove: 'roleplay', evs: {}
+				signatureMove: 'roleplay', evs: {hp:252, spa:252, spd:4}, nature: 'Modest'
 			},
 			'@Genesect': {
 				species: 'Genesect', ability: 'Mold Breaker', item: 'Life Orb', gender: 'M',
 				moves: ['bugbuzz', 'closecombat', 'extremespeed', 'thunderbolt', 'uturn'],
-				signatureMove: 'geargrind'
+				signatureMove: 'geargrind', evs: {atk:252, spa:252, spe:4}, nature: 'Quiet'
 			},
 			'@Goddess Briyella': {
 				species: 'Floette-Eternal-Flower', ability: 'Magic Bounce', item: 'Big Root', gender: 'M',
 				moves: ['cottonguard', 'quiverdance', 'drainingkiss', 'batonpass', 'storedpower'],
-				signatureMove: 'earthpower', evs: {}
+				signatureMove: 'earthpower', evs: {hp:252, spa:252, def:4}, nature: 'Modest'
 			},
 			'@Hippopotas': {
 				species: 'Hippopotas', ability: 'Regenerator', item: 'Eviolite', gender: 'M',
 				moves: ['haze', 'stealthrock', 'spikes', 'toxicspikes', 'stickyweb'],
-				signatureMove: 'partingshot', evs: {}, ivs: {atk:0, spa:0}
+				signatureMove: 'partingshot', evs: {hp:252, def:252, spd:4}, ivs: {atk:0, spa:0}, nature: 'Bold'
 			},
 			'@HYDROIMPACT': {
 				species: 'Charizard', ability: 'Rivalry', item: 'Life Orb', gender: 'M',
@@ -4113,12 +4113,12 @@ exports.BattleScripts = {
 			'@Innovamania': {
 				species: 'Arceus', ability: 'Pick Up', item: 'Black Glasses', gender: 'M',
 				moves: ['celebrate', 'holdhands', 'trickortreat', 'swordsdance', 'agility'],
-				signatureMove: 'splash', evs: {}
+				signatureMove: 'splash', evs: {hp:4, atk:252, spe:252}, nature: 'Jolly'
 			},
 			'@jas61292': {
 				species: 'Malaconda', ability: 'Analytic', item: 'Safety Goggles', gender: 'M',
 				moves: ['coil', 'thunderwave', 'icefang', 'powerwhip', 'moonlight'],
-				signatureMove: 'crunch', evs: {}
+				signatureMove: 'crunch', evs: {hp:252, atk:252, spd:4}, nature: 'Adamant'
 			},
 			'@jin of the gale': {
 				species: 'Starmie', ability: 'Drizzle', item: 'Damp Rock', gender: 'M',

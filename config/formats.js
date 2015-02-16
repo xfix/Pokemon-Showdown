@@ -2880,21 +2880,23 @@ exports.Formats = [
 				move.basePower = 90;
 				move.critRatio = 2;
 			}
-			if (move.id === 'bulletpunch' && name === 'majorbling') {
-				move.name = 'Focus Laser';
-				move.type = 'Electric';
-				move.type = 'Status';
-				move.onTryHit = function (target, source) {
-					if (pokemon.activeTurns > 1) {
-						this.add('-hint', "Focus Laser only works on your first turn out.");
-						return false;
-					}
-				};
-				move.onHit = function (target, source) {
-					source.boostBy({spa:2, atk:2, spe:2});
-					source.addVolatile('tormented');
-					this.useMove('discharge', source, target);
-				};
+			if (name === 'majorbling') {
+				if (move.id === 'bulletpunch') {
+					move.name = 'Focus Laser';
+					move.type = 'Electric';
+					move.type = 'Status';
+					move.onTryHit = function (target, source) {
+						if (pokemon.activeTurns > 1) {
+							this.add('-hint', "Focus Laser only works on your first turn out.");
+							return false;
+						}
+						source.boostBy({spa:2, atk:2, spe:2});
+						source.addVolatile('tormented');
+					};
+					move.onHit = function (target, source) {
+						this.useMove('discharge', source, target);
+					};
+				}
 			}
 			if (move.id === 'sacredfire' && name === 'marty') {
 				move.name = 'Immolate';
