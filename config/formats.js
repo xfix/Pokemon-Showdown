@@ -2884,7 +2884,7 @@ exports.Formats = [
 				if (move.id === 'bulletpunch') {
 					move.name = 'Focus Laser';
 					move.type = 'Electric';
-					move.type = 'Status';
+					move.category = 'Status';
 					move.onTryHit = function (target, source) {
 						if (pokemon.activeTurns > 1) {
 							this.add('-hint', "Focus Laser only works on your first turn out.");
