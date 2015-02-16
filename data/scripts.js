@@ -4138,7 +4138,7 @@ exports.BattleScripts = {
 			'@MattL': {
 				species: 'Mandibuzz', ability: 'Poison Heal', item: 'Leftovers', gender: 'M',
 				moves: ['oblivionwing', 'leechseed', 'quiverdance', 'topsyturvy', 'substitute'],
-				signatureMove: 'toxic', evs: {}, nature: 'Bold'
+				signatureMove: 'toxic', evs: {hp:252, def:252, spd:4}, nature: 'Bold'
 			},
 			'@Nani Man': {
 				species: 'Gengar', ability: 'Desolate Land', item: 'Black Glasses', gender: 'M', shiny: true,
@@ -4148,7 +4148,7 @@ exports.BattleScripts = {
 			'@phil': {
 				species: 'Gastrodon', ability: 'Drizzle', item: 'Shell Bell', gender: 'M',
 				moves: ['scald', 'recover', 'gastroacid', 'brine'],
-				signatureMove: 'whirlpool', evs: {}, nature: 'Quirky'
+				signatureMove: 'whirlpool', evs: {hp:252, spa:252, def:4}, nature: 'Quirky'
 			},
 			'@Relados': {
 				species: 'Terrakion', ability: 'Guts', item: 'Flame Orb', gender: 'M',
@@ -4158,17 +4158,17 @@ exports.BattleScripts = {
 			'@RosieTheVenusaur': {
 				species: 'Venusaur', ability: 'Moxie', item: 'Leftovers', gender: 'F',
 				moves: ['flamethrower', 'extremespeed', 'attract', 'knockoff', 'earthquake'],
-				signatureMove: 'frenzyplant'
+				signatureMove: 'frenzyplant', evs: {hp:252, atk:252, def:4}, nature: 'Adamant'
 			},
 			'@Scalarmotion': {
 				species: 'Cryogonal', ability: 'Magic Guard', item: 'Focus Sash', gender: 'M',
 				moves: ['rapidspin', 'willowisp', 'taunt', 'recover', 'voltswitch'],
-				signatureMove: 'icebeam'
+				signatureMove: 'icebeam', evs: {hp:252, def:252, spa:4}, nature: 'Bold'
 			},
 			'@Scotteh': {
 				species: 'Suicune', ability: 'Fur Coat', item: 'Leftovers', gender: 'M',
 				moves: ['icebeam', 'steameruption', 'recover', 'nastyplot'],
-				signatureMove: 'boomburst'
+				signatureMove: 'boomburst', evs: {hp:252, def:252, spd:4}, nature: 'Bold'
 			},
 			'@Shaymin': {
 				species: 'Shaymin-Sky', ability: 'Serene Grace', item: 'Expert Belt', gender: 'F',
@@ -4178,12 +4178,12 @@ exports.BattleScripts = {
 			'@sirDonovan': {
 				species: 'Togetic', ability: 'Gale Wings', item: 'Eviolite', gender: 'M',
 				moves: ['roost', 'hurricane', 'afteryou', 'charm', 'dazzlinggleam'],
-				signatureMove: 'mefirst'
+				signatureMove: 'mefirst', evs: {hp:252, spa:252, spe:4}, nature: 'Modest'
 			},
 			'@Skitty': {
 				species: 'Audino', ability: 'Intimidate', item: 'Audinite', gender: 'M',
 				moves: ['acupressure', 'recover', 'taunt', ['cosmicpower', 'magiccoat'][this.random(2)]],
-				signatureMove: 'storedpower', nature: 'Bold'
+				signatureMove: 'storedpower', evs: {hp:252, def:252, spd:4}, nature: 'Bold'
 			},
 			'@Snowflakes': {
 				species: 'Celebi', ability: 'Filter', item: 'Leftovers', gender: 'M',
@@ -4193,7 +4193,7 @@ exports.BattleScripts = {
 					['gigadrain', 'perishsong', ['recover', ['uturn', 'voltswitch'][this.random(2)], 'leechseed', 'thunderwave', 'healbell'][this.random(5)]],
 					['gigadrain', 'recover', ['thunderwave', 'icebeam', ['uturn', 'voltswitch'][this.random(2)], 'psystrike'][this.random(4)]]
 				][this.random(4)],
-				signatureMove: 'thousandarrows'
+				signatureMove: 'thousandarrows', evs: {hp:252, spa:252, def:4}, nature: 'Modest'
 			},
 			'@Spydreigon': {
 				species: 'Hydreigon', ability: 'Mega Launcher', item: 'Life Orb', gender: 'M',
@@ -4237,7 +4237,7 @@ exports.BattleScripts = {
 			'@WaterBomb': {
 				species: 'Poliwrath', ability: 'Unaware', item: 'Leftovers', gender: 'M',
 				moves: ['heartswap', 'softboiled', 'aromatherapy', 'highjumpkick', 'defog'],
-				signatureMove: 'waterfall'
+				signatureMove: 'waterfall', evs: {hp:252, atk:252, def:4}, nature: 'Adamant'
 			},
 			'@zdrup': {
 				species: 'Slowking', ability: 'Slow Start', item: 'Leftovers', gender: 'M',
@@ -4248,7 +4248,7 @@ exports.BattleScripts = {
 			'%Acedia': {
 				species: 'Slakoth', ability: 'Magic Bounce', item: 'Quick Claw', gender: 'F',
 				moves: ['metronome', 'sketch', 'assist', 'swagger', 'foulplay'],
-				signatureMove: 'worryseed', nature: 'Serious'
+				signatureMove: 'worryseed', evs:{hp:252, atk:252, def:4}, nature: 'Serious'
 			},
 			'%Aelita': {
 				species: 'Porygon-Z', ability: 'Protean', item: 'Life Orb', gender: 'F',
@@ -4379,7 +4379,7 @@ exports.BattleScripts = {
 			'+Redew': {
 				species: 'Minun', ability: 'Wonder Guard', item: 'Air Balloon', gender: 'M',
 				moves: ['nastyplot', 'thunderbolt', 'icebeam'],
-				signatureMove: 'recover', nature: 'Quiet', powerlevel: 650
+				signatureMove: 'recover', evs:{hp:4, spa:252, spe:252}, nature: 'Modest', powerlevel: 650
 			},
 			'+SOMALIA': {
 				species: 'Gastrodon', ability: 'Anger Point', item: 'Leftovers', gender: 'M',
