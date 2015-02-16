@@ -2290,6 +2290,7 @@ exports.Formats = [
 				move.category = 'Special';
 				move.type = 'Psychic';
 				move.negateSecondary = true;
+				move.affectedByImmunities = false;
 				delete move.secondaries;
 				move.onTryHit = function (target, pokemon) {
 					this.attrLastMove('[still]');
@@ -2415,14 +2416,23 @@ exports.Formats = [
 				};
 				move.boosts = {atk:-1, spa:-1, accuracy:-2};
 			}
-			if (move.id === 'flash' && name === 'ascriptmaster') {
-				move.name = 'Upgrade Graphics';
-				move.onTryHit = function (target, source, move) {
+			if (move.id === 'triattack' && name === 'ascriptmaster') {
+				move.name = 'Spectrum Beam';
+				move.affectedByImmunities = false;
+				move.basePower = 10;
+				move.typechart = Object.keys(Tools.data.TypeChart);
+				move.hitcount = 0;
+				move.type = move.typechart[0];
+				move.multihit = move.typechart.length;
+				delete move.secondaries;
+				move.onPrepareHit = function (target, source, move) {
 					this.attrLastMove('[still]');
-					this.add('-anim', target, "Geomancy", target);
-					this.add('-message', 'Wow! The graphics look really nice!');
+					this.add('-anim', source, "Swift", target);
 				};
-				move.boosts = {atk:-1, spa:-1, accuracy:-2};
+				move.onHit = function (target, source, move) {
+					move.hitcount++;
+					move.type = move.typechart[move.hitcount];
+				};
 			}
 			if (move.id === 'drainingkiss' && name === 'antemortem') {
 				move.name = 'Postmortem';
