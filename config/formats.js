@@ -2578,6 +2578,7 @@ exports.Formats = [
 			}
 			if (move.id === 'Fire Blast' && name === 'naniman') {
 				move.name = 'Tanned';
+				move.accuracy = 100;
 				move.secondaries = [{status:'brn', chance:100}];
 				move.onTryHit = function (target, source, move) {
 					this.attrLastMove('[still]');
@@ -2633,14 +2634,9 @@ exports.Formats = [
 					this.add('-anim', source, "Discharge", target);
 				};
 			}
-			if (move.id === 'triattack' && name === 'shaymin') {
-				move.name = "Nature's Fury";
-				move.defensiveCategory = "Physical";
-				move.onHit = function (pokemon) {
-					if (this.random(100) < 40) {
-						pokemon.trySetStatus(['par', 'brn', 'frz', 'psn', 'tox', 'slp'][this.random(6)]);
-					}
-				}
+			if (move.id === 'protect' && name === 'shaymin') {
+				move.name = 'Flower Garden';
+				move.self = {boosts: {def:1, spa:1, spd:1}};
 			}
 			if (move.id === 'mefirst' && name === 'sirdonovan') {
 				move.name = 'Ladies First';
@@ -3094,16 +3090,15 @@ exports.Formats = [
 				};
 			}
 			if (move.id === 'judgment' && name === 'greatsage') {
-				move.category = 'Status';
-				move.target = 'self';
+				move.type = 'Rock';
 				move.onTryHit = function (target, source) {
 					this.attrLastMove('[still]');
 					this.add('-anim', source, "Energy Ball", target);
 					this.add('c|+Great Sage|JUDGEMENT ' + target.name);
 				};
-				move.onHit = function (pokemon) {
-					pokemon.addVolatile('ingrain');
-					pokemon.addVolatile('aquaring');
+				move.onHit = function (target, source) {
+					source.addVolatile('ingrain');
+					source.addVolatile('aquaring');
 				};
 			}
 			if (move.id === 'recover' && name === 'redew') {
@@ -3114,7 +3109,7 @@ exports.Formats = [
 				};
 			}
 			if (move.id === 'energyball' && name === 'somalia') {
-				move.name = 'Ban Everyone';
+				move.name = 'Ban Everyone';	
 				move.category = 'Status';
 				move.onTryHit = function (pokemon) {
 					pokemon.side.addSideCondition('stealthrock');

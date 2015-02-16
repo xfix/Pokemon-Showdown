@@ -4171,9 +4171,9 @@ exports.BattleScripts = {
 				signatureMove: 'boomburst'
 			},
 			'@Shaymin': {
-				species: 'Shaymin-Sky', ability: 'Magic Guard', item: 'Life Orb', gender: 'F',
-				moves: ['seedflare', 'oblivionwing', 'earthpower', 'spore', 'nastyplot'],
-				signatureMove: 'triattack', evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
+				species: 'Shaymin-Sky', ability: 'Serene Grace', item: 'Expert Belt', gender: 'F',
+				moves: ['airslash', 'secretsword', 'earthpower', 'roost'],
+				signatureMove: 'protect', evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
 			},
 			'@sirDonovan': {
 				species: 'Togetic', ability: 'Gale Wings', item: 'Eviolite', gender: 'M',
