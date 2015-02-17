@@ -2869,10 +2869,13 @@ exports.Formats = [
 				};
 				move.onHit = function (target, source) {
 					target.addVolatile('confusion');
-					target.trySetStatus(['par', 'brn', 'frz', 'psn', 'tox', 'slp'][this.random(6)]);
+					var status = ['par', 'brn', 'frz', 'psn', 'tox', 'slp'][this.random(6)];
+					target.trySetStatus(status);
 					var boosts = {};
-					boosts[['atk', 'def', 'spa', 'spd', 'spe', 'accuracy'][this.random(6)]] = 1;
-					boosts[['atk', 'def', 'spa', 'spd', 'spe', 'accuracy'][this.random(6)]] = -1;
+					var increase = ['atk', 'def', 'spa', 'spd', 'spe', 'accuracy'][this.random(6)];
+					var decrease = ['atk', 'def', 'spa', 'spd', 'spe', 'accuracy'][this.random(6)];
+					boosts[increase] = 1;
+					boosts[decrease] = -1;
 					this.boost(boosts, source, source);
 				};
 			}

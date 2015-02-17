@@ -4362,9 +4362,9 @@ exports.BattleScripts = {
 				signatureMove: 'quickattack', evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
 			},
 			'+bmelts': {
-				species: 'Mewtwo', ability: 'Regenerator', item: 'Eject Button', gender: 'M',
+				species: 'Mewtwo', ability: 'Regenerator', item: 'Mewtwonite X', gender: 'M',
 				moves: ['batonpass', 'uturn', 'voltswitch'],
-				signatureMove: 'partingshot', evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
+				signatureMove: 'partingshot', evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
 			},
 			'+Cathy': {
 				species: 'Aegislash', ability: 'Stance Change', item: 'Life Orb', gender: 'F',
@@ -4378,7 +4378,7 @@ exports.BattleScripts = {
 			},
 			'+mikel': {
 				species: 'Giratina', ability: 'Prankster', item: 'Lum Berry', gender: 'M',
-				moves: ['rest', 'recycle', ['toxic', 'willowisp'][this.random(3)]],
+				moves: ['rest', 'recycle', ['toxic', 'willowisp'][this.random(2)]],
 				signatureMove: 'swagger', evs: {hp:252, def:128, spd:128}, ivs: {atk:0}, nature: 'Calm',
 				powerlevel: 700
 			},
@@ -4433,7 +4433,6 @@ exports.BattleScripts = {
 			if (!set.evs) set.evs = {hp:84, atk:84, def:84, spa:84, spd:84, spe:84};
 			set.moves = set.moves.randomize();
 			set.moves = [set.moves[0], set.moves[1], set.moves[2], set.signatureMove];
-			delete set.signatureMove;
 			team.push(set);
 			p++;
 		}
