@@ -4082,7 +4082,7 @@ exports.BattleScripts = {
 			},
 			'@Blitzamirin': {
 				species: 'Chandelure', ability: 'Prankster', item: 'Red Card', gender: 'M',
-				moves: ['heartswap', ['darkvoid', 'substitute'][this.random(2), ['shadowball', 'blueflare'][this.random(2)]],
+				moves: ['heartswap', ['darkvoid', 'substitute'][this.random(2)], ['shadowball', 'blueflare'][this.random(2)]],
 				signatureMove: 'oblivionwing', evs: {def:4, spa:252, spe:252}, nature: 'Timid'
 			},
 			'@CoolStoryBrobat': {
@@ -4215,7 +4215,7 @@ exports.BattleScripts = {
 				moves: ['bugbuzz', 'hypervoice', 'psystrike', 'batonpass', 'focusblast'],
 				signatureMove: 'tailglow', evs: {hp:4, spa:252, spe:252}, nature: 'Serious'
 			},
-			'@Sweep:' {
+			'@Sweep': {
 				species: 'Omastar', ability: 'Drizzle', item: ['Honey', 'Brick Mail'][this.random(2)], gender: 'M',
 				moves: ['shellsmash', 'originpulse', ['thunder', 'icebeam'][this.random(2)]],
 				signatureMove: 'kingsshield', evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
