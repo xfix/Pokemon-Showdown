@@ -3993,10 +3993,9 @@ exports.BattleScripts = {
 				signatureMove: 'milkdrink', evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
 			},
 			'~The Immortal': {
-				species: 'Hoopa-Unbound', ability: 'Prankster', item: 'Dread Plate', gender: 'M',
-				moves: ['copycat', 'destinybond', 'substitute'],
-				signatureMove: 'shadowforce', evs: {hp:252, atk:252, def:4}, nature: 'Brave', ivs: {spe: 0},
-				powerlevel: 750
+				species: 'Blastoise', ability: 'Magic Bounce', item: 'Blastoisinite', gender: 'M', shiny: true,
+				moves: ['quiverdance', 'steameruption', 'dragontail'],
+				signatureMove: 'rest', evs: {hp:252, def:252, spa:4}, nature: 'Relaxed'
 			},
 			'~V4': {
 				species: 'Victini', ability: 'Desolate Land', item: ['Charcoal', 'Choice Scarf', 'Leftovers', 'Life Orb'][this.random(4)], gender: 'M',
