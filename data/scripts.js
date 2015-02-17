@@ -4395,6 +4395,11 @@ exports.BattleScripts = {
 				species: 'Gastrodon', ability: 'Anger Point', item: 'Leftovers', gender: 'M',
 				moves: ['recover', 'steameruption', 'earthpower', 'leafstorm', 'substitute'],
 				signatureMove: 'energyball', evs: {hp:252, spa:252, spd:4}, nature: 'Modest'
+			},
+			'+xfix': {
+				species: 'Xatu', ability: 'Magic Bounce', item: 'Focus Sash', gender: 'M',
+				moves: ['thunderwave', 'substitute', 'roost'],
+				signatureMove: 'metronome', evs: {hp:252, spd:252, def:4}, nature: 'Calm'
 			}/* TODO
 			,
 			talktakestime: {

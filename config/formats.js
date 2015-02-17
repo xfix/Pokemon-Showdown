@@ -3224,6 +3224,10 @@ exports.Formats = [
 					source.faint();
 				};
 			}
+			if (move.id === 'metronome' && name === 'xfix') {
+				move.name = 'TM35';
+				move.multihit = [2, 5];
+			}
 		}
 	},
 
