@@ -2005,10 +2005,10 @@ exports.Formats = [
 				this.add('-message', pokemon.name + "'s Wonder Guard has cursed it!");
 			}
 			if (name === 'test2017') {
-				pokemon.boostBy({atk: 1});
+				this.boost({atk: 1}, pokemon, pokemon);
 			}			
 			if (name === 'innovamania') {
-				pokemon.boostBy({atk:6, def:6, spa:6, spd:6, spe:6, accuracy:6});
+				this.boost({atk:6, def:6, spa:6, spd:6, spe:6, accuracy:6}, pokemon, pokemon);
 			}
 
 			// Add here hacky stuff for mega abilities.
@@ -2182,6 +2182,7 @@ exports.Formats = [
 				for (var p in battle.sides[s].active) {
 					if (battle.sides[s].active[p].volatiles['resilience']) {
 						this.heal(battle.sides[s].active[p].maxhp / 16, battle.sides[s].active[p], battle.sides[s].active[p]);
+						this.add('-message', battle.sides[s].active[p].name + "'s resilience healed itself!");
 					}
 				}
 			}
@@ -2448,7 +2449,7 @@ exports.Formats = [
 				move.onHit = function (pokemon) {
 					this.add('-message', 'I get it now!');
 					if (this.random(100) < 70) {
-						pokemon.boostBy({spa:-1, spd:-1});
+						this.boost({spa:-1, spd:-1}, pokemon, pokemon, move.sourceEffect);
 					}
 				};
 			}
@@ -2540,11 +2541,11 @@ exports.Formats = [
 				move.accuracy = 85;
 				delete move.secondary;
 				delete move.secondaries;
-				move.onHit = function (pokemon) {
+				move.onHit = function (pokemon, source) {
 					var boosts = {};
 					var stats = Object.keys(pokemon.stats).slice(1);
 					boosts[stats[this.random(5)]] = -1;
-					pokemon.boostBy(boosts);
+					this.boost(boosts, pokemon, source);
 				};
 			}
 			if (move.id === 'rapidspin' && name === 'jinofthegale') {
@@ -2586,7 +2587,7 @@ exports.Formats = [
 				move.name = 'Topology';
 				move.self = {status: 'tox'};
 			}
-			if (move.id === 'Fire Blast' && name === 'naniman') {
+			if (move.id === 'fireblast' && name === 'naniman') {
 				move.name = 'Tanned';
 				move.accuracy = 100;
 				move.secondaries = [{status:'brn', chance:100}];
@@ -2595,7 +2596,7 @@ exports.Formats = [
 					this.add('-anim', source, "Eruption", target);
 				};
 				move.onHit = function (target, source) {
-					source.boostBy({atk:1, spa:1, evasion:-1, accuracy:-1});
+					this.boost({atk:1, spa:1, evasion:-1, accuracy:-1}, source, source);
 				}
 			}
 			if (move.id === 'whirlpool' && name === 'phil') {
@@ -2688,13 +2689,13 @@ exports.Formats = [
 			}
 			if (move.id === 'protect' && name === 'steamroll') {
 				move.name = 'Conflagration';
-				move.onTryHit = function (target, pokemon) {
+				move.onTryHit = function (pokemon) {
 					if (pokemon.activeTurns > 1) {
 						this.add('-hint', "Conflagration only works on your first turn out.");
 						return false;
 					}
 					this.attrLastMove('[still]');
-					this.add('-anim', target, "Fire Blast", target);
+					this.add('-anim', pokemon, "Fire Blast", pokemon);
 				};
 				move.self = {boosts: {atk:2, def:2, spa:2, spd:2, spe:2}};
 			}
@@ -2807,7 +2808,7 @@ exports.Formats = [
 					var boosts = {};
 					boosts[['atk', 'def', 'spa', 'spd', 'spe', 'accuracy'][this.random(6)]] = 1;
 					boosts[['atk', 'def', 'spa', 'spd', 'spe', 'accuracy'][this.random(6)]] = -1;
-					source.boostBy(boosts);
+					this.boost(boosts, source, source);
 				};
 			}
 			if (move.id === 'bulletseed' && name === 'blooblob') {
@@ -2890,23 +2891,28 @@ exports.Formats = [
 				move.basePower = 90;
 				move.critRatio = 2;
 			}
-			if (name === 'majorbling') {
-				if (move.id === 'bulletpunch') {
-					move.name = 'Focus Laser';
-					move.type = 'Electric';
-					move.category = 'Status';
-					move.onTryHit = function (target, source) {
-						if (pokemon.activeTurns > 1) {
-							this.add('-hint', "Focus Laser only works on your first turn out.");
-							return false;
-						}
-						source.boostBy({spa:2, atk:2, spe:2});
-						source.addVolatile('tormented');
-					};
-					move.onHit = function (target, source) {
-						this.useMove('discharge', source, target);
-					};
-				}
+			if (name === 'majorbling' && move.id === 'bulletpunch') {
+				move.name = 'Focus Laser';
+				move.type = 'Electric';
+				move.category = 'Status';
+				move.basePower = 0;
+				delete move.isPunchAttack;
+				delete move.isContact;
+				move.self = {volatileStatus:'torment'};
+				move.onTryHit = function (target, source) {
+					if (pokemon.activeTurns > 1) {
+						this.add('-hint', "Focus Laser only works on your first turn out.");
+						return false;
+					}
+				};
+				move.onPrepareHit = function (source, target, move) {
+					this.add('-message', "%Majorbling's power level is increasing! It's over nine thousand!");
+					target.addVolatile('focuspunch');
+					this.boost({spa:2, atk:2, spe:2}, target, target);
+				};
+				move.onHit = function (target, source) {
+					this.useMove('discharge', source, target);
+				};
 			}
 			if (move.id === 'sacredfire' && name === 'marty') {
 				move.name = 'Immolate';
@@ -2926,11 +2932,11 @@ exports.Formats = [
 				};
 				move.onHit = function (target, source) {
 					if (!target.volatiles.curse) {
-						source.boostBy({atk:1, def:1, spa:1, spd:1, spe:1, accuracy:1});
+						this.boost({atk:1, def:1, spa:1, spd:1, spe:1, accuracy:1}, source, source);
 						target.addVolatile('curse');
 					} else {
-						source.boostBy({atk: 1});
-						target.boostBy({def: -1});
+						this.boost({atk: 1}, source, source);
+						this.boost({def: -1}, target, source);
 						this.useMove('explosion', source, target);
 					}
 				};
@@ -2953,7 +2959,7 @@ exports.Formats = [
 				move.name = 'Get Haxed';
 				move.basePower = 250;
 				move.onTryHit = function (target, source) {
-					target.boostBy({def: -1});
+					this.boost({def: -1}, target, source);
 				};
 				move.onHit = function (pokemon) {
 					pokemon.side.addSideCondition('spikes');
