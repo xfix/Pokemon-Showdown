@@ -4080,6 +4080,11 @@ exports.BattleScripts = {
 				moves: ['drainpunch', 'diamondstorm', 'kingsshield', 'knockoff', 'precipiceblades'],
 				signatureMove: 'dragontail', evs: {hp:4, atk:252, spd:252}, nature: 'Adamant'
 			},
+			'@Blitzamirin': {
+				species: 'Chandelure', ability: 'Prankster', item: 'Red Card', gender: 'M',
+				moves: ['heartswap', ['darkvoid', 'substitute'][this.random(2), ['shadowball', 'blueflare'][this.random(2)]],
+				signatureMove: 'oblivionwing', evs: {def:4, spa:252, spe:252}, nature: 'Timid'
+			},
 			'@CoolStoryBrobat': {
 				species: 'Crobat', ability: 'Gale Wings', item: 'Black Glasses', gender: 'M',
 				moves: ['knockoff', 'bulkup', 'roost', 'closecombat', 'defog'],

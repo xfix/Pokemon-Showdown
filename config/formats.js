@@ -2479,6 +2479,23 @@ exports.Formats = [
 				move.type = 'Normal';
 				move.self = {boosts: {evasion:-1}};
 			}
+			if (move.id === 'oblivionwing' && name === 'blitzamirin') {
+				move.name = 'Pneuma Relinquish';
+				move.type = 'Ghost';
+				move.damageCallback = function (pokemon, target) {
+					return target.hp / 2;
+				};
+				move.onImmunity = function (type) {
+					if (type in {'Normal':1, 'Ghost':1}) return false;
+				};
+				move.onTryHit = function (target, source, move) {
+					this.attrLastMove('[still]');
+					this.add('-anim', source, "Roar of Time", target);
+				};
+				move.onHit = function (pokemon) {
+					pokemon.addVolatile('gastroacid');
+				};
+			}
 			if (move.id === 'bravebird' && name === 'coolstorybrobat') {
 				move.name = 'Brave Bat';
 				move.basePower = 130;
