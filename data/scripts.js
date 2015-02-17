@@ -4051,9 +4051,9 @@ exports.BattleScripts = {
 				signatureMove: 'drainingkiss', evs: {hp:252, spa:252, def:4}, nature: 'Modest'
 			},
 			'@Ascriptmaster': {
-				species: 'Rotom', ability: 'Motor Drive', item: 'Air Balloon', gender: 'M',
+				species: 'Rotom', ability: 'Teravolt', item: 'Air Balloon', gender: 'M',
 				moves: ['chargebeam', 'signalbeam', 'flamethrower', 'aurorabeam', 'dazzlinggleam'],
-				signatureMove: 'flash', evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
+				signatureMove: 'triattack', evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
 			},
 			'@asgdf': {
 				species: 'Empoleon', ability: 'Filter', item: 'Rocky Helmet', gender: 'M',
