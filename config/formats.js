@@ -2095,7 +2095,7 @@ exports.Formats = [
 				}
 			}
 			if (name === 'theimmortal') {
-				this.add('c|~The Immortal|You are doomed!');
+				this.add('c|~The Immortal|Give me my robe, put on my crown!');
 			}
 			if (name === 'v4') {
 				sentences = ["Oh right. I'm still here...", "WHAT ELSE WERE YOU EXPECTING?!", "Soaring on beautiful buttwings."].randomize();
@@ -2266,16 +2266,34 @@ exports.Formats = [
 					pokemon.addVolatile('redbull');
 				};
 			}
-			if (move.id === 'shadowforce' && name === 'theimmortal') {
-				move.name = 'Primordial Fury';
-				move.basePower = 120;
-				move.type = 'Dark';
-				move.ignoreDefensive = true;
-				move.onHit = function (target, source) {
-					if (source.boosts.spe < 1) {
-						source.setBoost({spe: 1});
-						this.add('-message', "~The Immortal's speed was raised by its brokenness!");
+			if (move.id === 'rest' && name === 'theimmortal') {
+				move.name = 'Sleep Walk';
+				move.sleepUsable = true;
+				move.onHit = function (pokemon) {
+					if (pokemon.status !== 'slp') {
+						if (pokemon.hp >= pokemon.maxhp) return false;
+						if (!pokemon.setStatus('slp')) return false;
+						pokemon.statusData.time = 3;
+						pokemon.statusData.startTime = 3;
+						this.heal(pokemon.maxhp);
+						this.add('-status', pokemon, 'slp', '[from] move: Rest');
 					}
+					var moves = [];
+					for (var i = 0; i < pokemon.moveset.length; i++) {
+						var move = pokemon.moveset[i].id;
+						var NoSleepTalk = {
+							assist:1, bide:1, chatter:1, copycat:1, focuspunch:1, mefirst:1, metronome:1, mimic:1, mirrormove:1, naturepower:1, sketch:1, sleeptalk:1, uproar:1
+						};
+						if (move && !(NoSleepTalk[move] || this.getMove(move).isTwoTurnMove)) {
+							moves.push(move);
+						}
+					}
+					var move = '';
+					if (moves.length) move = moves[this.random(moves.length)];
+					if (!move) {
+						return false;
+					}
+					this.useMove(move, pokemon);
 				}
 			}
 			if (move.id === 'vcreate' && name === 'v4') {
