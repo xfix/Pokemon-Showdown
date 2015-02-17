@@ -4210,19 +4210,20 @@ exports.BattleScripts = {
 				moves: ['flareblitz', 'volttackle', 'closecombat'],
 				signatureMove: 'protect', evs: {atk:252, def:4, spe:252}, nature: 'Adamant'
 			},
-			/** TODO
-			steeledges: {
-				species: 'Dragalge', ability: 'Protean', item: 'Leftovers', gender: 'M',
-				moves: ['icebeam', 'partingshot', 'aeroblast', 'vacuumwave'], name: '@SteelEdges',
-				signatureMove: 'protect', nature: 'Serious'
+			'@SteelEdges': {
+				species: 'Alakazam', ability: 'Competitive', item: 'Alakazite', gender: 'M',
+				moves: ['bugbuzz', 'hypervoice', 'psystrike', 'batonpass', 'focusblast'],
+				signatureMove: 'tailglow', evs: {hp:4, spa:252, spe:252}, nature: 'Serious'
 			},
-			sweep: {
-				species: 'Omastar'
-			},*/
-			'@temporaryanonymous': {
+			'@Sweep:' {
+				species: 'Omastar', ability: 'Drizzle', item: ['Honey', 'Brick Mail'][this.random(2)], gender: 'M',
+				moves: ['shellsmash', 'originpulse', ['thunder', 'icebeam'][this.random(2)]],
+				signatureMove: 'kingsshield', evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
+			},
+			'@Temporaryanonymous': {
 				species: 'Doublade', ability: 'Tough Claws', item: 'Eviolite', gender: 'M',
 				moves: ['swordsdance', ['xscissor', 'sacredsword', 'knockoff'][this.random(3)], 'geargrind'],
-				signatureMove: 'extremespeed', evs: {atk:252, def:4, spe:252}, nature: 'Adamant'
+				signatureMove: 'extremespeed', evs: {hp:252, atk:252, def:4}, nature: 'Adamant'
 			},
 			'@Test2017': {
 				species: "Farfetch'd", ability: 'Wonder Guard', item: 'Stick', gender: 'M',
@@ -4233,6 +4234,11 @@ exports.BattleScripts = {
 				species: 'Blastoise', ability: 'Prankster', item: 'Leftovers', gender: 'M',
 				moves: ['quiverdance', 'cottonguard', 'storedpower', 'aurasphere', 'slackoff'],
 				signatureMove: 'drainpunch', evs: {atk:252, def:4, spe:252}, nature: 'Modest'
+			},
+			'@TGMD': {
+				species: 'Stoutland', ability: 'Speed Boost', item: 'Life Orb', gender: 'M',
+				moves: [['extremespeed', 'sacredsword'][this.random(2)], 'knockoff', 'protect'],
+				signatureMove: 'return', evs: {hp:32, atk:252, spe:224}, nature: 'Adamant'
 			},
 			'@Trickster': {
 				species: 'Whimsicott', ability: 'Prankster', item: 'Leftovers', gender: 'M',

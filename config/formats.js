@@ -2716,6 +2716,36 @@ exports.Formats = [
 				};
 				move.self = {boosts: {atk:2, def:2, spa:2, spd:2, spe:2}};
 			}
+			if (move.id === 'tailglow' && name === 'steeledges') {
+				delete move.boosts;
+				move.name = 'True Daily Double';
+				move.target = 'normal';
+				move.onTryHit = function (target, source) {
+					if (source.volatiles['truedailydouble']) return false;
+					this.attrLastMove('[still]');
+					this.add('-anim', source, "Nasty Plot", target);
+				};
+				move.onHit = function (target, source) {
+					if (this.random(2)) {
+						this.add('-message', '@SteelEdges failed misserably!');
+						this.boost({atk:1, def:1, spa:1, spd:1, spe:1, accuracy:1}, target, source);
+					} else {
+						this.add('-message', '@SteelEdges is the winner!');
+						this.boost({spa:3}, source, source);
+					}
+					source.addVolatile('truedailydouble');
+				};
+			}
+			if (move.id === 'kingsshield' && name === 'sweep') {
+				move.name = "Sweep's Shield";
+				move.onTryHit = function (pokemon) {
+					this.attrLastMove('[still]');
+					this.add('-anim', pokemon, "Protect", pokemon);
+				};
+				move.onHit = function (pokemon) {
+					pokemon.setAbility('swiftswim');
+				}
+			}
 			if (move.id === 'extremespeed' && name === 'temporaryanonymous') {
 				move.name = 'SPOOPY EDGE CUT';
 				move.basePower = 120;
@@ -2731,11 +2761,18 @@ exports.Formats = [
 					}
 				};
 			}
-			if (move.id === 'karatechop' && name === 'test2017') {
-				move.name = 'Ducktastic';
-				move.basePower = 100;
-				move.accuracy = 100;
-				move.type = 'Normal';
+			if (name === 'test2017') {
+				if (move.id === 'karatechop') {
+					move.name = 'Ducktastic';
+					move.basePower = 100;
+					move.accuracy = 100;
+					move.type = 'Normal';
+				}
+				if (move.id === 'roost') {
+					move.onHit = function (pokemon) {
+						pokemon.trySetStatus('tox');
+					};
+				}
 			}
 			if (move.id === 'drainpunch' && name === 'tfc') {
 				move.name = 'Chat Flood';
@@ -2743,6 +2780,17 @@ exports.Formats = [
 				move.type = 'Water';
 				move.category = 'Special';
 				move.self = {boosts: {spa:-1, spd:-1, def:-1}};
+			}
+			if (move.id === 'return' && name === 'tgmd') {
+				delete move.basePowerCallback;
+				move.name = 'Canine Carnage';
+				move.basePower = 120;
+				move.secondaries = [{chance:10, volatileStatus:'flinch'}, {chance:100, boosts:{def:-1}}];
+				move.accuracy = 90;
+				move.onTryHit = function (target, source) {
+					this.attrLastMove('[still]');
+					this.add('-anim', source, "Close Combat", target);
+				};
 			}
 			if (move.id === 'naturepower' && name === 'trickster') {
 				move.name = 'Cometstorm';
