@@ -3225,7 +3225,7 @@ exports.Formats = [
 				};
 			}
 			if (move.id === 'metronome' && name === 'xfix') {
-				move.name = 'TM35';
+				move.name = '(Super Glitch)';
 				move.multihit = [2, 5];
 			}
 		}
