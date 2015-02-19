@@ -1983,6 +1983,44 @@ exports.Formats = [
 		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod'],
 		onBegin: function () {
 			this.add('-message', "GET READY FOR THE NEXT BATTLE!");
+
+			var globalRenamedMoves = {
+				'defog': "Defrog"
+			};
+			var customRenamedMoves = {
+				"cathy": {
+					'kingsshield': "Heavy Dosage of Fun",
+					'calmmind': "Surplus of Humour",
+					'shadowsneak': "Patent Hilarity",
+					'shadowball': "Ion Ray of Fun",
+					'shadowclaw': "Sword of Fun",
+					'flashcannon': "Fun Cannon",
+					'dragontail': "/kick",
+					'hyperbeam': "/ban"
+				}
+			};
+			var allPokemon = this.p1.pokemon.concat(this.p2.pokemon);
+			for (var i = 0, len = allPokemon.length; i < len; i++) {
+				var pokemon = allPokemon[i];
+				if (pokemon.moves[3]) {
+					pokemon.moves[3] = toId(pokemon.set.signatureMove);
+					pokemon.moveset[3].move = pokemon.set.signatureMove;
+					pokemon.baseMoveset[3].move = pokemon.set.signatureMove;
+				}
+				for (var j = 0; j < pokemon.moveset.length; j++) {
+					var moveData = pokemon.moveset[j];
+					if (globalRenamedMoves[moveData.id]) {
+						pokemon.moves[j] = toId(pokemon.set.signatureMove);
+						moveData.move = globalRenamedMoves[moveData.id];
+						pokemon.baseMoveset[j].move = globalRenamedMoves[moveData.id];
+					}
+					if (customRenamedMoves[pokemon.name] && customRenamedMoves[pokemon.name][moveData.id]) {
+						pokemon.moves[j] = toId(pokemon.set.signatureMove);
+						moveData.move = customRenamedMoves[pokemon.name][moveData.id];
+						pokemon.baseMoveset[j].move = customRenamedMoves[pokemon.name][moveData.id];					
+					}
+				}
+			}
 		},
 		onImmunity: function (type, pokemon) {
 			// Great Sage is immune to Attract.
@@ -3154,7 +3192,7 @@ exports.Formats = [
 					};
 				}
 				if (move.id === 'memento') {
-					move.name = 'HP Percent Policy';
+					move.name = 'HP Display Policy';
 					delete move.boosts;
 					move.onTryHit = function (target, source) {
 						this.attrLastMove('[still]');
