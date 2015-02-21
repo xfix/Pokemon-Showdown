@@ -4151,7 +4151,7 @@ exports.BattleScripts = {
 			},
 			'@Innovamania': {
 				species: 'Arceus', ability: 'Pick Up', item: 'Black Glasses', gender: 'M',
-				moves: ['celebrate', 'holdhands', 'trickortreat', 'swordsdance', 'agility'],
+				moves: [['holdhands', 'trickortreat',][this.random(2)], ['swordsdance', 'agility'][this.random(2)], 'celebrate'],
 				baseSignatureMove: 'splash', signatureMove: "Rage Quit",
 				evs: {hp:4, atk:252, spe:252}, nature: 'Jolly'
 			},
@@ -4167,6 +4167,12 @@ exports.BattleScripts = {
 				baseSignatureMove: 'rapidspin', signatureMove: "Beyblade",
 				evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
 			},
+			'@Legitimate Username': {
+				species: 'Shuckle', ability: 'Unaware', item: 'Leftovers', gender: 'M',
+				moves: ['leechseed', 'recover', 'foulplay', 'healbell'],
+				baseSignatureMove: 'shellsmash', signatureMove: "Shell Fortress",
+				evs: {hp:252, def:228, spd:28}, nature: 'Calm'
+			},
 			'@Level 51': {
 				species: 'Ledian', ability: 'Parental Bond', item: 'Leftovers', gender: 'M',
 				moves: ['seismictoss', 'roost', 'cosmicpower'],
@@ -4178,6 +4184,12 @@ exports.BattleScripts = {
 				moves: ['originpulse', 'lightofruin', 'blueflare', 'recover', 'tailglow'],
 				baseSignatureMove: 'thundershock', signatureMove: "Gravity Storm",
 				evs: {hp:188, spa:252, spe:68}, nature: 'Timid'
+			},
+			'@Marty': {
+				species: 'Houndoom', ability: 'Drought', item: 'Houndoominite', gender: 'M',
+				moves: ['nightdaze', 'solarbeam', 'aurasphere', 'thunderbolt', 'earthpower'],
+				baseSignatureMove: 'sacredfire', signatureMove: "Immolate",
+				evs: {spa:252, spd:4, spe:252}, ivs: {atk:0}, nature: 'Timid'
 			},
 			'@MattL': {
 				species: 'Mandibuzz', ability: 'Poison Heal', item: 'Leftovers', gender: 'M',
@@ -4197,6 +4209,12 @@ exports.BattleScripts = {
 				baseSignatureMove: 'whirlpool', signatureMove: "Slug Attack",
 				evs: {hp:252, spa:252, def:4}, nature: 'Quirky'
 			},
+			'@qtrx': {
+				species: 'Unown', ability: 'Tinted Lens', item: 'Focus Sash', gender: 'M',
+				moves: ['hiddenpowerpsychic','hiddenpowerpsychic','hiddenpowerpsychic'],
+				baseSignatureMove: 'meditate', signatureMove: "Hidden Power... Normal?",
+				evs: {hp:252, def:4, spa:252}, ivs: {atk:0, spe:0}, nature: 'Modest'
+			},
 			'@Relados': {
 				species: 'Terrakion', ability: 'Guts', item: 'Flame Orb', gender: 'M',
 				moves: ['facade', 'diamondstorm', 'closecombat', 'iceshard', 'drainpunch'],
@@ -4209,7 +4227,7 @@ exports.BattleScripts = {
 				baseSignatureMove: 'frenzyplant', signatureMove: "Swag Plant",
 				evs: {hp:252, atk:252, def:4}, nature: 'Adamant'
 			},
-			'@Scalarmotion': {
+			'@scalarmotion': {
 				species: 'Cryogonal', ability: 'Magic Guard', item: 'Focus Sash', gender: 'M',
 				moves: ['rapidspin', 'willowisp', 'taunt', 'recover', 'voltswitch'],
 				baseSignatureMove: 'icebeam', signatureMove: "Eroding Frost",
@@ -4219,9 +4237,9 @@ exports.BattleScripts = {
 				species: 'Suicune', ability: 'Fur Coat', item: 'Leftovers', gender: 'M',
 				moves: ['icebeam', 'steameruption', 'recover', 'nastyplot'],
 				baseSignatureMove: 'boomburst', signatureMove: "Geomagnetic Storm",
-				evs: {hp:252, def:252, spd:4}, nature: 'Bold'
+				evs: {def:252, spa:4, spe:252}, nature: 'Bold'
 			},
-			'@Shaymin': {
+			'@shaymin': {
 				species: 'Shaymin-Sky', ability: 'Serene Grace', item: 'Expert Belt', gender: 'F',
 				moves: ['seedflare', 'airslash', ['secretsword', 'earthpower', 'roost'][this.random(3)]],
 				baseSignatureMove: 'protect', signatureMove: "Flower Garden",
@@ -4235,7 +4253,7 @@ exports.BattleScripts = {
 			},
 			'@Skitty': {
 				species: 'Audino', ability: 'Intimidate', item: 'Audinite', gender: 'M',
-				moves: ['acupressure', 'recover', 'taunt', ['cosmicpower', 'magiccoat'][this.random(2)]],
+				moves: ['acupressure', 'recover', ['taunt', 'cosmicpower', 'magiccoat'][this.random(3)]],
 				baseSignatureMove: 'storedpower', signatureMove: "Ultimate Dismissal",
 				evs: {hp:252, def:252, spd:4}, nature: 'Bold'
 			},
@@ -4298,11 +4316,6 @@ exports.BattleScripts = {
 				baseSignatureMove: 'return', signatureMove: "Canine Carnage",
 				evs: {hp:32, atk:252, spe:224}, nature: 'Adamant'
 			},
-			'@TGMD': {
-				species: 'Stoutland', ability: 'Speed Boost', item: 'Life Orb', gender: 'M',
-				moves: [['extremespeed', 'sacredsword'][this.random(2)], 'knockoff', 'protect'],
-				signatureMove: 'return', evs: {hp:32, atk:252, spe:224}, nature: 'Adamant'
-			},
 			'@Trickster': {
 				species: 'Whimsicott', ability: 'Prankster', item: 'Leftovers', gender: 'M',
 				moves: ['swagger', 'spore', 'seedflare', 'recover', 'nastyplot'],
@@ -4320,6 +4333,12 @@ exports.BattleScripts = {
 				moves: ['psystrike', 'futuresight', 'originpulse', 'slackoff', 'destinybond'],
 				baseSignatureMove: 'wish', signatureMove: "Premonition",
 				evs: {hp:252, def:4, spd:252}, nature: 'Quiet'
+			},
+			'@zebraiken': {
+				species: 'zebstrika', ability: 'Compound Eyes', item: 'Life Orb', gender: 'M',
+				moves: ['thunder', ['fire blast', 'focusblast', 'highjumpkick', 'meteormash'][this.random(3)], ['blizzard', 'iciclecrash', 'sleeppowder'][this.random(3)]], // why on earth does he learn Meteor Mash?
+				baseSignatureMove: 'protect', signatureMove: "bzzt",
+				evs: {atk:4, spa:252, spe:252}, nature: 'Hasty' 
 			},
 			// Drivers.
 			'%Acedia': {
@@ -4380,13 +4399,7 @@ exports.BattleScripts = {
 				baseSignatureMove: 'protect', signatureMove: "Pixel Protection",
 				evs: {hp:4, atk:252, spe:252}, nature: 'Adamant'
 			},
-			'%Legitimate Username': {
-				species: 'Shuckle', ability: 'Unaware', item: 'Leftovers', gender: 'M',
-				moves: ['leechseed', 'recover', 'foulplay', 'healbell'],
-				baseSignatureMove: 'shellsmash', signatureMove: "Shell Fortress",
-				evs: {hp:252, def:228, spd:28}, nature: 'Calm'
-			},
-			'%ljdarkrai': {
+			'%LJDarkrai': {
 				species: 'Garchomp', ability: 'Compound Eyes', item: 'Life Orb', gender: 'M',
 				moves: ['dragondance', 'dragonrush', 'gunkshot', 'precipiceblades', 'sleeppowder', 'stoneedge'], name: '%LJDarkrai',
 				baseSignatureMove: 'blazekick', signatureMove: "Blaze Blade",
@@ -4397,12 +4410,6 @@ exports.BattleScripts = {
 				moves: ['moonblast', 'voltswitch', 'discharge', 'focusblast', 'taunt'],
 				baseSignatureMove: 'bulletpunch', signatureMove: "Focus Laser",
 				evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
-			},
-			'%Marty': {
-				species: 'Houndoom', ability: 'Drought', item: 'Houndoominite', gender: 'M',
-				moves: ['nightdaze', 'solarbeam', 'aurasphere', 'thunderbolt', 'earthpower'],
-				baseSignatureMove: 'sacredfire', signatureMove: "Immolate",
-				evs: {spa:252, spd:4, spe:252}, ivs: {atk:0}, nature: 'Timid'
 			},
 			'%Queez': {
 				species: 'Cubchoo', ability: 'Prankster', item: 'Eviolite', gender: 'M',
@@ -4416,7 +4423,7 @@ exports.BattleScripts = {
 				baseSignatureMove: 'scald', signatureMove: "Ban Scald",
 				evs: {hp:252, def:228, spd:28}, nature: 'Bold'
 			},
-			'%rekeri': {
+			'%Rekeri': {
 				species: 'Tyrantrum', ability: 'Tough Claws', item: 'Life Orb', gender: 'M',
 				moves: ['outrage', 'extremespeed', 'stoneedge', 'closecombat'],
 				baseSignatureMove: 'headcharge', signatureMove: "Land Before Time",
