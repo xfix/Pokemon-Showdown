@@ -2289,13 +2289,13 @@ exports.Formats = [
 			}
 
 			//mods
-			if (name === 'AM') {
+			if (name === 'am') {
 				this.add('c|@AM|RIP');
 			}
 			if (name === 'antemortem') {
 				this.add('c|@Antemortem|FUCKING CAMPAIGNERS');
 			}
-			if (name === 'Ascriptmaster') {
+			if (name === 'ascriptmaster') {
 				this.add('c|@Ascriptmaster|Too overpowered. I\'m nerfing you next patch');
 			}
 			if (name === 'asgdf') {
@@ -2545,12 +2545,12 @@ exports.Formats = [
 			if (name === 'cathy') {
 				this.add('c|+Cathy|I was being facetious');
 			}
-			if (name === 'Redew') {
+			if (name === 'redew') {
 				this.add('c|+Redew|i hope u think ur a good player');
 				this.add('c|+Redew|play spl man');
 				this.add('c|+Redew|ud win lots');
 			}
-			if (name === 'TalkTakesTime') {
+			if (name === 'talktakestime') {
 				this.add('c|boTTT|(Automated response: Your battle contained a banned outcome.)');
 			}
 			if (name === 'frizy') {
