@@ -3073,7 +3073,7 @@ exports.Formats = [
 					var hps = ['hiddenpowerbug', 'hiddenpowerdark', 'hiddenpowerdragon', 'hiddenpowerelectric', 'hiddenpowerfighting', 'hiddenpowerfire', 'hiddenpowerflying', 'hiddenpowerghost', 'hiddenpowergrass', 'hiddenpowerground', 'hiddenpowerice', 'hiddenpowerpoison', 'hiddenpowerpsychic', 'hiddenpowerrock', 'hiddenpowersteel', 'hiddenpowerwater'];
 					this.add('c|@qtrx|/me slams face into keyboard!');
 					for (var i = 0; i < 5; i++) {
-						if (!target.fainted) {
+						if (target.hp !== 0) {
 							gibberish = '';
 							for (var j = 0; j < 30; j++) gibberish += String.fromCharCode(97 + this.random(26));
 							this.add('-message', gibberish);
