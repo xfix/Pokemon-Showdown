@@ -2176,8 +2176,8 @@ exports.Formats = [
 			if (name === 'verbatim') {
 				this.add('c|&verbatim|All in');
 			}
-			if (name === 'AM') {
-				this.add('c|&verbatim|Lucky and Bad');
+			if (name === 'am') {
+				this.add('c|&AM|Lucky and Bad');
 			}
 			if (name === 'antemortem') {
 				this.add('c|@Antemortem|I Am Here To Oppress Users');
