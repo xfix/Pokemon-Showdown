@@ -2002,10 +2002,11 @@ exports.Formats = [
 			var allPokemon = this.p1.pokemon.concat(this.p2.pokemon);
 			for (var i = 0, len = allPokemon.length; i < len; i++) {
 				var pokemon = allPokemon[i];
-				if (pokemon.moves[3]) {
-					pokemon.moves[3] = toId(pokemon.set.signatureMove);
-					pokemon.moveset[3].move = pokemon.set.signatureMove;
-					pokemon.baseMoveset[3].move = pokemon.set.signatureMove;
+				var last = pokemon.moves.length - 1;
+				if (pokemon.moves[last]) {
+					pokemon.moves[last] = toId(pokemon.set.signatureMove);
+					pokemon.moveset[last].move = pokemon.set.signatureMove;
+					pokemon.baseMoveset[last].move = pokemon.set.signatureMove;
 				}
 				for (var j = 0; j < pokemon.moveset.length; j++) {
 					var moveData = pokemon.moveset[j];
@@ -2786,7 +2787,8 @@ exports.Formats = [
 			if (move.id === 'allyswitch' && name === 'slayer95') {
 				move.name = 'Spell Steal';
 				move.target = 'self';
-				if (!pokemon.illusion || pokemon.illusion.moves[3] === move.id) {
+				var lastMove = pokemon.illusion.moves[pokemon.illusion.moves.length - 1];
+				if (!pokemon.illusion || lastMove === move.id) {
 					move.onTryHit = function (pokemon) {
 						this.add('-fail', pokemon);
 						this.add('-hint', "Spell Steal only works behind an Illusion!");
@@ -2795,7 +2797,7 @@ exports.Formats = [
 				} else {
 					delete move.onTryHit;
 					move.onHit = function (pokemon, source, sourceEffect) {
-						this.useMove(pokemon.illusion.moves[3], pokemon, null, sourceEffect);
+						this.useMove(lastMove, pokemon, null, sourceEffect);
 					};
 				};
 			}

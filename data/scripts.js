@@ -4211,7 +4211,7 @@ exports.BattleScripts = {
 			},
 			'@qtrx': {
 				species: 'Unown', ability: 'Tinted Lens', item: 'Focus Sash', gender: 'M',
-				moves: ['hiddenpowerpsychic','hiddenpowerpsychic','hiddenpowerpsychic'],
+				moves: [],
 				baseSignatureMove: 'meditate', signatureMove: "Hidden Power... Normal?",
 				evs: {hp:252, def:4, spa:252}, ivs: {atk:0, spe:0}, nature: 'Modest'
 			},
@@ -4537,8 +4537,7 @@ exports.BattleScripts = {
 			}
 			// Assuming the hardcoded set evs are all legal.
 			if (!set.evs) set.evs = {hp:84, atk:84, def:84, spa:84, spd:84, spe:84};
-			set.moves = set.moves.randomize();
-			set.moves = [set.moves[0], set.moves[1], set.moves[2], set.baseSignatureMove];
+			set.moves = set.moves.sample(3).concat(set.baseSignatureMove);
 			team.push(set);
 			p++;
 		}
