@@ -4174,10 +4174,10 @@ exports.BattleScripts = {
 				evs: {hp:252, def:228, spd:28}, nature: 'Calm'
 			},
 			'@Level 51': {
-				species: 'Ledian', ability: 'Parental Bond', item: 'Leftovers', gender: 'M',
-				moves: ['seismictoss', 'roost', 'cosmicpower'],
+				species: 'Togekiss', ability: 'Parental Bond', item: 'Leftovers', gender: 'M',
+				moves: ['seismictoss', 'roost', ['cosmicpower', 'cottonguard'][this.random(2)]],
 				baseSignatureMove: 'trumpcard', signatureMove: "Next Level Strats",
-				evs: {hp:252, def:252, spd:4}, nature: 'Bold'
+				evs: {hp:252, def:4, spd:252}, nature: 'Calm'
 			},
 			'@Lyto': {
 				species: 'Lanturn', ability: 'Magic Bounce', item: 'Leftovers', gender: 'M',
