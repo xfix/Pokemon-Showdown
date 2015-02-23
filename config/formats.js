@@ -3437,6 +3437,9 @@ exports.Formats = [
 					}
 				};
 				move.onPrepareHit = function (source, target, move) {
+					if (pokemon.activeTurns > 1) {
+						return;
+					}
 					this.add('-message', "%Majorbling's power level is increasing! It's over nine thousand!");
 					target.addVolatile('focuspunch');
 					this.boost({spa:2, atk:2, spe:2}, target, target);
