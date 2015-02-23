@@ -4497,6 +4497,12 @@ exports.BattleScripts = {
 				moves: ['thunderwave', 'substitute', 'roost'],
 				baseSignatureMove: 'metronome', signatureMove: "(Super Glitch)",
 				evs: {hp:252, spd:252, def:4}, nature: 'Calm'
+			},
+			'+Jetpack': {
+				species: 'Latias', ability: 'Levitate', item: 'Soul Dew', gender: 'F',
+				moves: ['dracometeor', 'psychoboost', 'roost'],
+				baseSignatureMove: 'willowisp', signatureMove: 'Engine Flare',
+				evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
 			}/* TODO
 			,
 			talktakestime: {
