@@ -2563,6 +2563,9 @@ exports.Formats = [
 			if (name === 'somalia') {
 				this.add('c|+SOMALIA|tired of this shitass game');
 			}
+			if (name === 'xfix') {
+				this.add('c|+xfix|(gg... I guess)');
+			}
 		},
 		onSwitchOut: function (pokemon) {
 			if (pokemon.name === 'hippopotas') {
