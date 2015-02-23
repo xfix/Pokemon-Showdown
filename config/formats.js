@@ -2431,6 +2431,7 @@ exports.Formats = [
 			}
 			if (name === 'skitty') {
 				this.add('c|@Skitty|!learn skitty, roleplay');
+				this.add('raw|<div class="infobox">Skitty <span class="message-learn-cannotlearn">can\'t</span> learn Role Play</div>');
 			}
 			if (name === 'spydreigon') {
 				sentences = ['lolhax', 'crit mattered', 'bruh cum @ meh', '>thinking Pokemon takes any skill'];
