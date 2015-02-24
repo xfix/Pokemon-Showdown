@@ -2697,18 +2697,11 @@ exports.Formats = [
 					var moves = [];
 					for (var i = 0; i < pokemon.moveset.length; i++) {
 						var move = pokemon.moveset[i].id;
-						var NoSleepTalk = {
-							assist:1, bide:1, chatter:1, copycat:1, focuspunch:1, mefirst:1, metronome:1, mimic:1, mirrormove:1, naturepower:1, sketch:1, sleeptalk:1, uproar:1
-						};
-						if (move && !(NoSleepTalk[move] || this.getMove(move).isTwoTurnMove)) {
-							moves.push(move);
-						}
+						if (move && move !== 'rest') moves.push(move);
 					}
 					var move = '';
 					if (moves.length) move = moves[this.random(moves.length)];
-					if (!move) {
-						return false;
-					}
+					if (!move) return false;
 					this.useMove(move, pokemon);
 				}
 			}
