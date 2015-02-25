@@ -2057,10 +2057,17 @@ exports.Formats = [
 
 			// Add here hacky stuff for mega abilities.
 			if (pokemon.template.isMega) {
+				if (name === 'theimmortal' && pokemon.getAbility().id !== 'cloudnine') {
+					pokemon.setAbility('cloudnine');
+				}
+				if (name === 'skitty' && pokemon.getAbility().id !== 'shedskin') {
+					pokemon.setAbility('shedskin');
+				}
 				if (name === 'trinitrotoluene' && pokemon.getAbility().id !== 'protean') {
 					pokemon.setAbility('protean');
 				}
 			}
+
 			// Add here special typings.
 			if (name === 'mikel' && !pokemon.illusion) {
 				this.add('-start', pokemon, 'typechange', 'Normal/Ghost');
@@ -2190,7 +2197,13 @@ exports.Formats = [
 				sentences = ["Steel waters run deep, they say!", "I will insteell fear in your heart!", "Man the harpuns!"].randomize();
 				this.add('c|@asgdf|' + sentences[0]);
 			}
-
+			if (name === 'bean') {
+				sentences = ["Everybody wants to be a cat", "if you KO me i'll ban u on PS", "just simply outplay the coin-toss"].randomize();
+				this.add('c|@Bean|' + sentences[0]);
+			}
+			if (name === 'beowulf') {
+				this.add('c|@Beowulf|Grovel peasant, you are in the presence of the RNGesus');
+			}
 			if (name === 'genesect') {
 				pokemon.phraseIndex = this.random(3);
 				if (pokemon.phraseIndex === 2) {
@@ -2212,12 +2225,53 @@ exports.Formats = [
 					this.add('c|@Genesect|' + sentences[0]);
 				}
 			}
+			if (name === 'hydroimpact') {
+				this.add('c|@HYDROIMPACT|Think about the name first and then the Pokemon. Look beyond the "simple" detail.');
+			}
+			if (name === 'level51') {
+				this.add('c|@Level 51|Happiness and rainbows, hurrah!');
+			}
+			if (name === 'lyto') {
+				sentences = ["This is divine retribution!", "I will handle this myself!", "Let battle commence!"].randomize();
+				this.add('c|@Lyto|' + sentences[0]);
+			}
 			if (name === 'marty') {
 				this.add('c|@Marty|Prepare yourself.');
+			}
+			if (name === 'mattl') {
+				this.add('c|@MattL|The annoyance I will cause is not well-defined.');
+			}
+			if (name === 'phil') {
+				this.add('c|@phil|GET SLUGGED');
 			}
 			if (name === 'qtrx') {
 				sentences = ["cutie are ex", "q-trix", "quarters", "cute T-rex", "Qatari", "random letters", "spammy letters", "asgdf"];
 				this.add('c|@qtrx|omg DONT call me \'' + sentences[this.random(8)] + '\' pls respect my name its very special!!1!');
+			}
+			if (name === 'reverb') {
+				this.add('c|@Reverb|How is this legal?');
+			}
+			if (name === 'scalarmotion') {
+				this.add('c|@scalarmotion|sraclrlamtio got prmotd to driier');
+			}
+			if (name === 'shaymin') {
+				this.add('c|@shaymin|Ready for hax?');
+			}
+			if (name === 'sirdonovan') {
+				this.add('c|@sirDonovan|Oh, a battle? Let me finish my tea and crumpets');
+			}
+			if (name === 'steeledges') {
+				sentences = [" In this moment, I am euphoric. Not because of any phony god's blessing. But because, I am enlightened by my own intelligence.", "Potent Potables for $200, Alex."].randomize();
+				this.add('c|@SteelEdges|' + sentences[0]);
+			}
+			if (name === 'tgmd') {
+				this.add('c|@TGMD|I\'m a dog :]');
+			}
+			if (name === 'waterbomb') {
+				this.add('c|@WaterBomb|Get off my lawn! *shakes cane*');
+			}
+			if (name === 'zdrup') {
+				this.add('c|@zdrup|This is gonna be legen... WAIT FOR IT...');
 			}
 			if (name === 'zebraiken') {
 				pokemon.phraseIndex = this.random(3); //Zeb's faint and entry phrases correspond to each other
@@ -2684,6 +2738,7 @@ exports.Formats = [
 			}
 			if (move.id === 'rest' && name === 'theimmortal') {
 				move.name = 'Sleep Walk';
+				move.pp = 20;
 				move.sleepUsable = true;
 				move.onHit = function (pokemon) {
 					if (pokemon.status !== 'slp') {
