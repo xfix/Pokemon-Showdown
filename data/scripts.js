@@ -4364,6 +4364,12 @@ exports.BattleScripts = {
 				baseSignatureMove: 'lovelykiss', signatureMove: "Star Bolt Desperation",
 				evs:{hp:4, spa:252, spd:252}, nature: 'Modest'
 			},
+			'%DTC': {
+				species: 'Charizard', ability: 'Magic Guard', item: 'Charizardite X', gender: 'M',
+				moves: ['shiftgear', 'sacredfire', 'roost'],
+				baseSignatureMove: 'dragonrush', signatureMove: "Dragon Smash",
+				evs: {hp:4, atk:252, spe:252}, nature: 'Adamant'
+			},
 			'%Eevee General': {
 				species: 'Eevee', ability: 'Magic Guard', item: 'Eviolite', gender: 'M',
 				moves: ['defendorder', 'healorder', 'attackorder', 'sacredsword', 'doubleedge', 'bellydrum'],
