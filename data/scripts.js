@@ -4062,7 +4062,7 @@ exports.BattleScripts = {
 			},
 			'@Antemortem': {
 				species: 'Clefable', ability: ['Sheer Force', 'Multiscale'][this.random(2)], item: ['Leftovers', 'Life Orb'][this.random(2)], gender: 'M',
-				moves: ['moonblast', 'earthpower', 'cosmicpower', 'recover'],
+				moves: ['earthpower', 'cosmicpower', 'recover', 'gigadrain'],
 				baseSignatureMove: 'drainingkiss', signatureMove: "Postmortem",
 				evs: {hp:252, spa:252, def:4}, nature: 'Modest'
 			},
