@@ -4128,7 +4128,7 @@ exports.BattleScripts = {
 			},
 			'@Goddess Briyella': {
 				species: 'Floette-Eternal-Flower', ability: 'Magic Bounce', item: 'Big Root', gender: 'M',
-				moves: ['cottonguard', 'quiverdance', 'drainingkiss', 'batonpass', 'storedpower'],
+				moves: ['cottonguard', 'quiverdance', 'drainingkiss'],
 				baseSignatureMove: 'earthpower', signatureMove: "Soil Recompense",
 				evs: {hp:252, spa:252, def:4}, nature: 'Modest'
 			},
@@ -4142,7 +4142,13 @@ exports.BattleScripts = {
 				species: 'Charizard', ability: 'Rivalry', item: 'Life Orb', gender: 'M',
 				moves: ['airslash', 'flamethrower', 'nobleroar', 'hydropump'],
 				baseSignatureMove: 'hydrocannon', signatureMove: "HYDRO IMPACT",
-				evs: {atk: 4, spa:252, spe:252}, nature: 'Hasty'
+				evs: {atk:4, spa:252, spe:252}, nature: 'Hasty'
+			},
+			'@imanalt': {
+				species: 'Rhydon', ability: 'Prankster', item: 'Eviolite', gender: 'M',
+				moves: ['heartswap', 'rockblast', 'stealthrock', 'substitute', 'batonpass'],
+				baseSignatureMove: 'naturepower', signatureMove: "FREE GENV BH",
+				evs: {hp:252, atk:252, spd:4}, nature: 'Adamant'
 			},
 			'@Innovamania': {
 				species: 'Arceus', ability: 'Pick Up', item: 'Black Glasses', gender: 'M',
@@ -4205,10 +4211,10 @@ exports.BattleScripts = {
 				evs: {hp:252, spa:252, def:4}, nature: 'Quirky'
 			},
 			'@qtrx': {
-				species: 'Unown', ability: 'Tinted Lens', item: 'Focus Sash', gender: 'M',
+				species: 'Unown', ability: 'Levitate', item: 'Focus Sash', gender: 'M',
 				moves: [],
 				baseSignatureMove: 'meditate', signatureMove: "Hidden Power... Normal?",
-				evs: {hp:252, def:4, spa:252}, ivs: {atk:0, spe:0}, nature: 'Modest'
+				evs: {hp:252, def:4, spa:252}, ivs: {atk:0, spe:0}, nature: 'Quiet'
 			},
 			'@Relados': {
 				species: 'Terrakion', ability: 'Guts', item: 'Flame Orb', gender: 'M',
@@ -4376,12 +4382,6 @@ exports.BattleScripts = {
 				baseSignatureMove: 'focuspunch', signatureMove: "Falcon Punch",
 				evs: {atk:252, def:4, spe:252}, nature: 'Jolly'
 			},
-			'%imanalt': {
-				species: 'Rhydon', ability: 'Prankster', item: 'Eviolite', gender: 'M',
-				moves: ['heartswap', 'rockblast', 'stealthrock', 'substitute', 'batonpass'],
-				baseSignatureMove: 'naturepower', signatureMove: "FREE GENV BH",
-				evs: {hp:252, atk:252, spd:4}, nature: 'Modest'
-			},
 			'%Jellicent': {
 				species: 'Jellicent', ability: 'Poison Heal', item: 'Toxic Orb', gender: 'M',
 				moves: ['recover', 'freezedry', 'trick', 'substitute'],
@@ -4418,7 +4418,7 @@ exports.BattleScripts = {
 				baseSignatureMove: 'scald', signatureMove: "Ban Scald",
 				evs: {hp:252, def:228, spd:28}, nature: 'Bold'
 			},
-			'%Rekeri': {
+			'%rekeri': {
 				species: 'Tyrantrum', ability: 'Tough Claws', item: 'Life Orb', gender: 'M',
 				moves: ['outrage', 'extremespeed', 'stoneedge', 'closecombat'],
 				baseSignatureMove: 'headcharge', signatureMove: "Land Before Time",
