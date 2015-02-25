@@ -2177,7 +2177,7 @@ exports.Formats = [
 				this.add('c|&verbatim|All in');
 			}
 			if (name === 'am') {
-				this.add('c|&AM|Lucky and Bad');
+				this.add('c|@AM|Lucky and Bad');
 			}
 			if (name === 'antemortem') {
 				this.add('c|@Antemortem|I Am Here To Oppress Users');
@@ -2302,7 +2302,7 @@ exports.Formats = [
 				this.add('c|@asgdf|' + ['Looks like I spoke too hasteely', 'You only won because I couldn\'t think of a penguin pun!'][this.random(2)]);
 			}
 			if (name === 'barton') {
-				this.add('c|@barton|' + ['ok', 'haha?'][this.random(2)]);
+				this.add('c|@Barton|' + ['ok', 'haha?'][this.random(2)]);
 			}
 			if (name === 'bean') {
 				sentences = ['that\'s it ur getting banned', 'meow', '(✖╭╮✖)'];
@@ -2361,9 +2361,12 @@ exports.Formats = [
 			if (name === 'hydroimpact') {
 				this.add('c|@HYDROIMPACT|Well done, you\'ve gone beyond your limits and have gained my trust. Now go and write your own destiny, don\'t let fate write it for you.');
 			}
+			if (name === 'imanalt') {
+				this.add('c|@imanalt|bshax imo');
+			}
 			if (name === 'innovamania') {
 				sentences = ['Did you rage quit?', 'How\'d you lose with this set?', 'Pm Nani Man to complain about this set ( ͡° ͜ʖ ͡°)'];
-				this.add('c|@qtrx|' + sentences[this.random(3)]);
+				this.add('c|@innovamania|' + sentences[this.random(3)]);
 			}
 			if (name === 'jinofthegale') {
 				sentences = ['ヽ༼ຈل͜ຈ༽ﾉ You\'ve upped your game ヽ༼ຈل͜ຈ༽ﾉ?', 'Please don\'t steal my bit-beast!', 'Should have used Black'];
@@ -2504,9 +2507,6 @@ exports.Formats = [
 			if (name === 'feliburn') {
 				this.add('c|%Feliburn|' + ['BHUWUUU!', 'I like shorts! They\'re comfy and easy to wear!'][this.random(2)]);
 			}
-			if (name === 'imanalt') {
-				this.add('c|%Imanalt|bshax imo');
-			}
 			if (name === 'jellicent') {
 				this.add('c|%Jellicent|X_X');
 			}
@@ -2526,7 +2526,7 @@ exports.Formats = [
 				this.add('c|%Raseri|banned');
 			}
 			if (name === 'rekeri') {
-				this.add('c|%Rekeri|lucky af :[');
+				this.add('c|%rekeri|lucky af :[');
 			}
 			if (name === 'trinitrotoluene') {
 				this.add('c|%trinitrotoluene|why hax @_@');
@@ -2552,7 +2552,7 @@ exports.Formats = [
 				this.add('c|+Redew|ud win lots');
 			}
 			if (name === 'talktakestime') {
-				this.add('c|boTTT|(Automated response: Your battle contained a banned outcome.)');
+				this.add('-message', '(Automated response: Your battle contained a banned outcome.)');
 			}
 			if (name === 'frizy') {
 				this.add('c|+Frizy|i like you frizy');
@@ -2873,7 +2873,13 @@ exports.Formats = [
 				move.basePower = 110;
 				move.accuracy = 85;
 				delete move.drain;
-				move.secondaries = [{chance: 50, self: {boosts: {spa: 1, spe: 1}}}];
+				if (pokemon.ability === 'sheerforce') { //manually activate the ability again
+					delete move.secondaries;
+					move.negateSecondary = true;
+					pokemon.addVolatile('sheerforce');
+				} else {
+					move.secondaries = [{chance: 50, self: {boosts: {spa: 1, spe: 1}}}];
+				}
 			}
 			if (move.id === 'futuresight' && name === 'asgdf') {
 				move.name = 'Obscure Pun';
