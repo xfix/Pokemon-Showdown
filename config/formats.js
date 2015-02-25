@@ -2029,9 +2029,9 @@ exports.Formats = [
 				this.add('-immune', pokemon, '[from] Irrelevant');
 				return false;
 			}
-			// qtrx is immune to Torment.
-			if ((type === 'torment' || type === 'taunt') && toId(pokemon.name) === 'qtrx') {
-				this.add('-immune', pokemon);
+			// qtrx is immune to Torment or Taunt.
+			if ((type === 'torment' || type === 'taunt') && pokemon.volatiles['unownaura']) {
+				this.add('-immune', pokemon, '[from] Unown aura');
 				return false;
 			}
 			// Somalia's Ban Spree makes it immune to some move types.-
@@ -2080,7 +2080,6 @@ exports.Formats = [
 					];
 				}
 				pokemon.addVolatile('focusenergy');
-				pokemon.addVolatile('telekinesis');
 			}
 			if (name === 'birkal' && !pokemon.illusion) {
 				pokemon.addType('Bird');
@@ -2573,6 +2572,13 @@ exports.Formats = [
 				this.add('-message', 'The sandstorm subsided.');
 			}
 		},
+		onDragOut: function (pokemon) {
+				//prevents qtrx from being red carded by chaos while in the middle of using sig move, which causes a visual glitch
+				if (pokemon.isDuringAttack) {
+					this.add('-message', "But the Unown Aura absorbed the effect!");
+					return null;
+				}
+		},
 		onAfterMoveSelf: function (source, target, move) {
 			// Make Haunter not immune to Life Orb as a means to balance.
 			if (toId(source.name) === 'haunter') {
@@ -2583,23 +2589,22 @@ exports.Formats = [
 		onResidual: function (battle) {
 			for (var s in battle.sides) {
 				for (var p in battle.sides[s].active) {
-					if (battle.sides[s].active[p].volatiles['resilience']) {
-						this.heal(battle.sides[s].active[p].maxhp / 16, battle.sides[s].active[p], battle.sides[s].active[p]);
-						this.add('-message', battle.sides[s].active[p].name + "'s resilience healed itself!");
+					var pokemon = battle.sides[s].active[p];		
+					if (pokemon.volatiles['resilience'] && !pokemon.fainted ) {
+						this.heal(pokemon.maxhp / 16, pokemon, pokemon);
+						this.add('-message', pokemon.name + "'s resilience healed itself!");
 					}
-					if (battle.sides[s].active[p].volatiles['unownaura'] && !battle.sides[s].active[p].fainted) {
-						this.add('-message', "Your keyboard is responding to " + battle.sides[s].active[p].name + "'s Unown aura!");
-						delete battle.sides[s].active[p].volatiles['telekinesis'];
-						battle.sides[s].active[p].addVolatile('telekinesis');
+					if (pokemon.volatiles['unownaura'] && !pokemon.fainted && !pokemon.illusion) {
+						this.add('-message', "Your keyboard is responding to " + pokemon.name + "'s Unown aura!");
 						if (this.random(2) === 1) {
-							this.useMove('trickroom', battle.sides[s].active[p]);
+							this.useMove('trickroom', pokemon);
 						} else {
-							this.useMove('wonderroom', battle.sides[s].active[p]);
+							this.useMove('wonderroom', pokemon);
 						}
 					}
-					if ((toId(battle.sides[s].active[p].name) === 'beowulf') && !battle.sides[s].active[p].fainted) {
-									this.add('c|@Beowulf|/me buzzes loudly!');
-								}
+					if ((toId(pokemon.name) === 'beowulf') && !pokemon.fainted && !pokemon.illusion) {
+						this.add('c|@Beowulf|/me buzzes loudly!');
+					}
 				}
 			}
 		},
@@ -2708,7 +2713,7 @@ exports.Formats = [
 			if (move.id === 'vcreate' && name === 'v4') {
 				move.name = 'V-Generate';
 				move.self.boosts = {accuracy: -2};
-				move.accuracy = 75;
+				move.accuracy = 85;
 				move.secondaries = [{chance: 50, status: 'brn'}];
 			}
 			if (move.id === 'relicsong' && name === 'zarel') {
@@ -2947,8 +2952,9 @@ exports.Formats = [
 			}
 			if (move.id === 'earthpower' && name === 'goddessbriyella') {
 				move.name = 'Soil Recompense';
-				move.basePower = 60;
-				move.accuracy = 90;
+				move.basePower = 80;
+				move.drain = [3, 4];
+				move.flags = {heal: 1};	//heal block, etc.
 				move.onModifyMove = function (move) {
 					if (move.type === 'Ground') {
 						move.affectedByImmunities = false;
@@ -2972,6 +2978,12 @@ exports.Formats = [
 				move.status = 'brn';
 				move.recoil = [35 / 100];
 				delete move.self;
+			}
+			if (move.id === 'naturepower' && name === 'imanalt') {
+				move.name = 'FREE GENV BH';
+				move.onHit = function (target, source) {
+					this.useMove('earthquake', source, target);
+				};
 			}
 			if (move.id === 'splash' && name === 'innovamania') {
 				move.name = 'Rage Quit';
@@ -3064,21 +3076,28 @@ exports.Formats = [
 			}
 			if (move.id === 'meditate' && name === 'qtrx') {
 				move.name = 'KEYBOARD SMASH';
-				move.type = 'Fighting';
 				move.target = 'normal';
 				move.boosts = null;
+				move.onPrepareHit = function (target, source, move) {
+					this.attrLastMove('[still]');
+					this.add('-anim', source, "Fairy Lock", target);
+					this.add('-anim', pokemon, "Fairy Lock", pokemon);	//DRAMATIC FLASHING
+				};
 				move.onHit = function (target, source) {
 					var gibberish = '';
 					var hps = ['hiddenpowerbug', 'hiddenpowerdark', 'hiddenpowerdragon', 'hiddenpowerelectric', 'hiddenpowerfighting', 'hiddenpowerfire', 'hiddenpowerflying', 'hiddenpowerghost', 'hiddenpowergrass', 'hiddenpowerground', 'hiddenpowerice', 'hiddenpowerpoison', 'hiddenpowerpsychic', 'hiddenpowerrock', 'hiddenpowersteel', 'hiddenpowerwater'];
 					this.add('c|@qtrx|/me slams face into keyboard!');
+					source.isDuringAttack = true;	//prevents the user from being kicked out in the middle of using Hidden Powers
 					for (var i = 0; i < 5; i++) {
 						if (target.hp !== 0) {
+							var len = 25 + this.random(16);
 							gibberish = '';
-							for (var j = 0; j < 30; j++) gibberish += String.fromCharCode(97 + this.random(26));
+							for (var j = 0; j < len; j++) gibberish += String.fromCharCode(97 + this.random(26));
 							this.add('-message', gibberish);
 							this.useMove(hps[this.random(16)], source, target);
 						}
 					}
+					source.isDuringAttack = false;
 				}
 			}
 			if (move.id === 'gravity' && name === 'relados') {
@@ -3356,7 +3375,8 @@ exports.Formats = [
 				move.type = 'Normal';
 				move.category = 'Status';
 				move.basePower = 0;
-				move.onHit = function (pokemon) {
+				move.onHit = function (pokemon, source) {
+					this.directDamage(source.maxhp / 4, source, source);
 					pokemon.addVolatile('curse');
 					pokemon.addVolatile('confusion');
 					this.add("c|%Eevee General|What's a Geneva Convention?");
@@ -3384,12 +3404,6 @@ exports.Formats = [
 						this.add('c|%Feliburn|Show me your moves!');
 					};
 				}
-			}
-			if (move.id === 'naturepower' && name === 'imanalt') {
-				move.name = 'FREE GENV BH';
-				move.onHit = function (target, source) {
-					this.useMove('earthquake', source, target);
-				};
 			}
 			if (move.id === 'surf' && name === 'jellicent') {
 				move.name = 'Shot For Shot';
