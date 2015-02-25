@@ -2312,7 +2312,7 @@ exports.Formats = [
 				this.add('c|~Joim|' + sentences[this.random(4)]);
 			}
 			if (name === 'theimmortal') {
-				this.add('c|~The Immoral|Oh how wrong we were to think immortality meant never dying.');
+				this.add('c|~The Immortal|Oh how wrong we were to think immortality meant never dying.');
 			}
 			if (name === 'v4') {
 				this.add('c|~V4|' + ['Back to irrevelance for now n_n', 'Well that was certainly a pleasant fall.'][this.random(2)]);
