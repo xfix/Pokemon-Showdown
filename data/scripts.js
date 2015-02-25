@@ -4150,7 +4150,7 @@ exports.BattleScripts = {
 				baseSignatureMove: 'naturepower', signatureMove: "FREE GENV BH",
 				evs: {hp:252, atk:252, spd:4}, nature: 'Adamant'
 			},
-			'@Innovamania': {
+			'@innovamania': {
 				species: 'Arceus', ability: 'Pick Up', item: 'Black Glasses', gender: 'M',
 				moves: [['holdhands', 'trickortreat',][this.random(2)], ['swordsdance', 'agility'][this.random(2)], 'celebrate'],
 				baseSignatureMove: 'splash', signatureMove: "Rage Quit",
