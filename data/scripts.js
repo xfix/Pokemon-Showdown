@@ -3958,7 +3958,7 @@ exports.BattleScripts = {
 	},
 	randomSeasonalStaffTeam: function (side) {
 		var team = [];
-
+		var variant = this.random[2];
 		// Hardcoded sets of the available Pokémon.
 		var sets = {
 			// Admins.
@@ -4061,7 +4061,7 @@ exports.BattleScripts = {
 				evs: {atk:252, def:4, spe: 252}, nature: 'Jolly'
 			},
 			'@Antemortem': {
-				species: 'Clefable', ability: ['Sheer Force', 'Multiscale'][this.random(2)], item: ['Leftovers', 'Life Orb'][this.random(2)], gender: 'M',
+				species: 'Clefable', ability: ['Sheer Force', 'Multiscale'][variant], item: ['Life Orb', 'Leftovers'][variant], gender: 'M',
 				moves: ['earthpower', 'cosmicpower', 'recover', 'gigadrain'],
 				baseSignatureMove: 'drainingkiss', signatureMove: "Postmortem",
 				evs: {hp:252, spa:252, def:4}, nature: 'Modest'
