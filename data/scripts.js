@@ -4355,13 +4355,13 @@ exports.BattleScripts = {
 				evs:{hp:4, spa:252, spd:252}, nature: 'Modest'
 			},
 			'%Arcticblast': {
-				species: 'Cresselia', ability: 'Intimidate', item: 'Sitrus Berry', gender: 'M',
+				species: 'Cresselia', ability: 'Levitate', item: 'Sitrus Berry', gender: 'M',
 				moves: [
-					['fakeout', 'helpinghand', 'icywind', 'trickroom', 'safeguard', 'thunderwave', 'wideguard', 'quickguard', 'tailwind', 'followme', 'knockoff'][this.random(11)],
+					['fakeout', 'icywind', 'trickroom', 'safeguard', 'thunderwave', 'tailwind', 'knockoff'][this.random(7)],
 					['sunnyday', 'moonlight', 'calmmind', 'protect', 'taunt'][this.random(5)],
 					['originpulse', 'heatwave', 'hypervoice', 'icebeam', 'moonblast'][this.random(5)]
 				],
-				baseSignatureMove: 'luckychant', signatureMove: "Spread Reduction",
+				baseSignatureMove: 'psychoboost', signatureMove: "Doubles Purism",
 				evs:{hp:252, def:120, spa:56, spd:80}, nature: 'Sassy'
 			},
 			'%Ast☆arA': {
