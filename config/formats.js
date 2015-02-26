@@ -2063,6 +2063,9 @@ exports.Formats = [
 				if (name === 'skitty' && pokemon.getAbility().id !== 'shedskin') {
 					pokemon.setAbility('shedskin');
 				}
+				if (name === 'dtc' && pokemon.getAbility().id !== 'levitate') {
+					pokemon.setAbility('levitate');
+				}
 				if (name === 'trinitrotoluene' && pokemon.getAbility().id !== 'protean') {
 					pokemon.setAbility('protean');
 				}
@@ -2775,6 +2778,10 @@ exports.Formats = [
 				move.name = 'Sleep Walk';
 				move.pp = 20;
 				move.sleepUsable = true;
+				move.onTryHit = function (target, source) {
+					this.attrLastMove('[still]');
+					this.add('-anim', source, "Healing Wish", target);
+				};
 				move.onHit = function (pokemon) {
 					if (pokemon.status !== 'slp') {
 						if (pokemon.hp >= pokemon.maxhp) return false;
@@ -3464,6 +3471,15 @@ exports.Formats = [
 				move.onTryHit = function (target, source) {
 					this.attrLastMove('[still]');
 					this.add('-anim', source, "Tail Slap", target);
+				};
+			}
+			if (move.id === 'dragonrush' && name === 'dtc') {
+				move.name = 'Dragon Smash';
+				move.basePower = 200;
+				move.accuracy = true;
+				move.onTryHit = function (target, source) {
+					this.attrLastMove('[still]');
+					this.add('-anim', source, "Giga Impact", target);
 				};
 			}
 			if (move.id === 'quickattack' && name === 'eeveegeneral') {
