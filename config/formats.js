@@ -2077,9 +2077,9 @@ exports.Formats = [
 				];
 			}
 			if (name === 'qtrx') {
-				pokemon.addVolatile('unownaura');
-				this.add('-message', pokemon.name + " is radiating an Unown aura!");
-				if (!pokemon.illusion) {
+				this.add('-message', pokemon.name + " is radiating an Unown aura!");	//even if only illusion
+				if (!pokemon.illusion) {					
+					pokemon.addVolatile('unownaura');
 					this.add('-start', pokemon, 'typechange', 'Normal/Psychic');
 					pokemon.typesData = [
 					{type: 'Normal', suppressed: false,  isAdded: false},
@@ -2251,10 +2251,10 @@ exports.Formats = [
 				this.add('c|@Reverb|How is this legal?');
 			}
 			if (name === 'scalarmotion') {
-				this.add('c|@scalarmotion|sraclrlamtio got prmotd to driier');
+				this.add('-message', 'sraclrlamtio got prmotd to driier');
 			}
 			if (name === 'shaymin') {
-				this.add('c|@shaymin|Ready for hax?');
+				this.add('c|@shaymin|Ready for hax?');			
 			}
 			if (name === 'sirdonovan') {
 				this.add('c|@sirDonovan|Oh, a battle? Let me finish my tea and crumpets');
@@ -2283,11 +2283,29 @@ exports.Formats = [
 				}
 			}
 		},
-		onBeforeMove: function (pokemon) {
+		onBeforeMove: function (pokemon, target, move) {
 			// Here the hacky mega-forme abilities stuff.
 			var name = toId(pokemon.name);
 			if (pokemon.template.isMega && name === 'trinitrotoluene' && pokemon.getAbility().id !== 'protean') {
 				pokemon.setAbility('protean');
+			}
+			
+			//shaymin forme change
+			if (name === 'shaymin' && !pokemon.illusion) {
+				
+				var targetSpecies = (move.category === 'Status') ? 'Shaymin' : 'Shaymin-Sky';
+				
+				if (targetSpecies !== pokemon.template.species) {
+					this.add('message', pokemon.name + ((move.category === 'Status') ? ' has reverted to Land Forme!' : ' took to the sky once again!'));
+					var template = this.getTemplate(targetSpecies);
+					pokemon.formeChange(targetSpecies);
+					pokemon.baseTemplate = template;
+					pokemon.setAbility(template.abilities['0']);
+					pokemon.baseAbility = template.ability;
+					pokemon.details = template.species + (pokemon.level === 100 ? '' : ', L' + pokemon.level) + (pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
+					this.add('detailschange', pokemon, pokemon.details);
+					
+				}
 			}
 		},
 		onFaint: function (pokemon) {
@@ -2622,10 +2640,22 @@ exports.Formats = [
 			}
 		},
 		onSwitchOut: function (pokemon) {
-			if (pokemon.name === 'hippopotas') {
+			if (toId(pokemon.name) === 'hippopotas') {
 				this.add('-message', 'The sandstorm subsided.');
 			}
+			//shaymin forme change
+			if (toId(pokemon.name) === 'shaymin' && !pokemon.illusion) {
+				if (pokemon.template.species === 'Shaymin') {
+					var template = this.getTemplate('Shaymin-Sky');
+					pokemon.formeChange('Shaymin-Sky');
+					pokemon.baseTemplate = template;
+					pokemon.setAbility(template.abilities['0']);
+					pokemon.baseAbility = template.ability;
+					pokemon.details = template.species + (pokemon.level === 100 ? '' : ', L' + pokemon.level) + (pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');					
+				}
+			}
 		},
+		
 		onDragOut: function (pokemon) {
 				//prevents qtrx from being red carded by chaos while in the middle of using sig move, which causes a visual glitch
 				if (pokemon.isDuringAttack) {
@@ -3204,7 +3234,15 @@ exports.Formats = [
 			}
 			if (move.id === 'protect' && name === 'shaymin') {
 				move.name = 'Flower Garden';
-				move.self = {boosts: {def:1, spa:1, spd:1}};
+				move.type = 'Grass';
+				if (this.random(2) === 1) {
+					move.self = {boosts: {spa:1, spd:1}};
+				} else {
+					move.self = {boosts: {def:1, spa:1}};
+				}
+				if (pokemon.trySetStatus('tox')) {
+						this.add('-message', 'Debug Toxic')
+				}
 			}
 			if (move.id === 'mefirst' && name === 'sirdonovan') {
 				move.name = 'Ladies First';
@@ -3291,13 +3329,13 @@ exports.Formats = [
 				move.basePower = 120;
 				move.type = 'Ghost';
 				move.onTryHit = function (target, source) {
-					this.add('-message', '*@temporaryanonymous teleports behind you*');
+					this.add('-message', '*@Temporaryanonymous teleports behind you*');
 					this.attrLastMove('[still]');
 					this.add('-anim', source, "Shadow Force", target);
 				};
 				move.onHit = function (pokemon) {
 					if (pokemon.hp <= 0 || pokemon.fainted) {
-						this.add('c|@temporaryanonymous|YOU ARE ALREADY DEAD *unsheathes glorious cursed nippon steel katana and cuts you in half with it* heh......nothing personnel.........kid......................');
+						this.add('c|@Temporaryanonymous|YOU ARE ALREADY DEAD *unsheathes glorious cursed nippon steel katana and cuts you in half with it* heh......nothing personnel.........kid......................');
 					}
 				};
 			}
@@ -3719,7 +3757,7 @@ exports.Formats = [
 			if (move.id === 'recover' && name === 'redew') {
 				move.onHit = function (pokemon) {
 					if (pokemon.trySetStatus('tox')) {
-						this.add('-message', '+Redew lost at SPL and got poisoned due to excessive trolling!')
+						this.add('-message', '+Redew lost at SPL and got badly poisoned due to excessive trolling!')
 					}
 				};
 			}
