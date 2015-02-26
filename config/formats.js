@@ -2078,7 +2078,7 @@ exports.Formats = [
 			}
 			if (name === 'qtrx') {
 				this.add('-message', pokemon.name + " is radiating an Unown aura!");	//even if only illusion
-				if (!pokemon.illusion) {					
+				if (!pokemon.illusion) {
 					pokemon.addVolatile('unownaura');
 					this.add('-start', pokemon, 'typechange', 'Normal/Psychic');
 					pokemon.typesData = [
