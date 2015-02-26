@@ -2230,6 +2230,15 @@ exports.Formats = [
 			if (name === 'hydroimpact') {
 				this.add('c|@HYDROIMPACT|Think about the name first and then the Pokemon. Look beyond the "simple" detail.');
 			}
+			if (name === 'imanalt') {
+				this.add('c|@imanalt|muh bulk');
+			}
+			if (name === 'kupo') {
+				this.add('c|@kupo|abc!');
+			}
+			if (name === 'layell') {
+				this.add('c|@Layell|Enter stage left');
+			}
 			if (name === 'level51') {
 				this.add('c|@Level 51|Happiness and rainbows, hurrah!');
 			}
@@ -2284,6 +2293,33 @@ exports.Formats = [
 				} else { //default faint
 					this.add('c|@Zebraiken|bzzt o_o');
 				}
+			}
+			if (name === 'acedia') {
+				this.add('c|%Acedia|Time for a true display of skill ( ͡° ͜ʖ ͡°)');
+			}
+			if (name === 'aelita') {
+				this.add('c|%Aelita|Transfer: Aelita. Scanner: Aelita. Virtualization!');
+			}
+			if (name === 'feliburn') {
+				this.add('c|%Feliburn|Come on!');
+			}
+			if (name === 'jellicent') {
+				this.add('c|%Jellicent|~(^.^)~');
+			}
+			if (name === 'ljdarkrai') {
+				this.add('c|%LJDarkrai|Azideias');
+			}
+			if (name === 'queez') {
+				this.add('c|%Queez|B-be gentle');
+			}
+			if (name === 'raseri') {
+				this.add('c|%raseri|ban prinplup');
+			}
+			if (name === 'rekeri') {
+				this.add('c|%rekeri|Get Rekeri\'d :]');
+			}
+			if (name === 'trinitrotoluene') {
+				this.add('c|%%trinitrotoluene|pls no hax');
 			}
 		},
 		onBeforeMove: function (pokemon, target, move) {
@@ -2449,6 +2485,9 @@ exports.Formats = [
 			}
 			if (name === 'kostitsynkun') {
 				this.add('c|@Kostitsyn-kun|Kyun ★ Kyun~');
+			}
+			if (name === 'kupo') {
+				this.add('c|@kupo|:C');
 			}
 			if (name === 'lawrenceiii') {
 				this.add('c|@Lawrence III|Fuck off.');
