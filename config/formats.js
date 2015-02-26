@@ -2177,7 +2177,7 @@ exports.Formats = [
 				this.add('c|&jdarden|Did someone call for some BALK?');
 			}
 			if (name === 'okuu') {
-				sentences = ["Current Discussion Topics: Benefits of Nuclear Energy, green raymoo worst raymoo, ...", "Current Discussion Topics: I ate the Sun - AMA, Card Games inside of Fighting Games, ...", "Current Discussion Topics: Our testing process shouldn't include Klaxons, Please remove Orin from keyboard prior to entering chat, ...", "Current Discussion Topics: Please refrain from eating crow, We'll get out of Beta once we handle all of this Alpha Decay, ...", "Current Discussion Topics: Schroedinger's Chen might still be in that box, I'm So Meta Even This Acronym, ...", "Current Discussion Topics: What kind of idiot throws knives into a thermonuclear explosion?, わからない ハハハ,"];
+				sentences = ["Current Discussion Topics: Benefits of Nuclear Energy, green raymoo worst raymoo, ...", "Current Discussion Topics: I ate the Sun - AMA, Card Games inside of Fighting Games, ...", "Current Discussion Topics: Our testing process shouldn't include Klaxons, Please remove Orin from keyboard prior to entering chat, ...", "Current Discussion Topics: Please refrain from eating crow, We'll get out of Beta once we handle all of this Alpha Decay, ...", "Current Discussion Topics: Schroedinger's Chen might still be in that box, I'm So Meta Even This Acronym, ...", "Current Discussion Topics: What kind of idiot throws knives into a thermonuclear explosion?, わからない ハハハ, ..."].randomize();
 				this.add('c|&Okuu|' + sentences[0]);
 			}
 			if (name === 'vacate') {
@@ -2299,6 +2299,10 @@ exports.Formats = [
 			}
 			if (name === 'aelita') {
 				this.add('c|%Aelita|Transfer: Aelita. Scanner: Aelita. Virtualization!');
+			}
+			if (name === 'arcticblast') {
+				sentences = ['BEAR MY ARCTIC BLAST', 'lmao what kind of team is this', 'guys guys guess what?!?!?!?!', 'Double battles are completely superior to single battles.', 'I miss the days when PS never broke 100 users and all the old auth were still around.'];
+				this.add('c|%Arcticblast|' + sentences[this.random(5)]);
 			}
 			if (name === 'feliburn') {
 				this.add('c|%Feliburn|Come on!');
@@ -3470,16 +3474,16 @@ exports.Formats = [
 				move.secondaries = [{chance:40, status:'par'}];
 				move.self = {boosts:{spa:-1, spd:-1, spe:-1}};
 			}
-			if (move.id === 'luckychant' && name === 'arcticblast') {
-				move.name = 'Spread Reduction';
-				move.type = 'Psychic';
-				move.basePower = 80;
-				move.category = 'Special';
-				move.accuracy = 100;
-				move.effect = {
-					onCriticalHit: true,
-					onBasePower: function () {
-						return this.chainModify(0.75);
+			if (move.id === 'psychoboost' && name === 'arcticblast') {
+				delete move.self;
+				move.onHit = function (target, source) {
+					if (source.hp) {
+						var sideConditions = {spikes:1, toxicspikes:1, stealthrock:1, stickyweb:1};
+						for (var i in sideConditions) {
+							target.side.removeSideCondition(i);
+							source.side.removeSideCondition(i);
+						}
+						this.add('c|%Arcticblast|HAZARDS ARE TERRIBLE IN DOUBLES');
 					}
 				};
 			}
