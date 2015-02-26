@@ -3240,9 +3240,6 @@ exports.Formats = [
 				} else {
 					move.self = {boosts: {def:1, spa:1}};
 				}
-				if (pokemon.trySetStatus('tox')) {
-						this.add('-message', 'Debug Toxic')
-				}
 			}
 			if (move.id === 'mefirst' && name === 'sirdonovan') {
 				move.name = 'Ladies First';
