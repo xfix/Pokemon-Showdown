@@ -2254,7 +2254,7 @@ exports.Formats = [
 				this.add('-message', 'sraclrlamtio got prmotd to driier');
 			}
 			if (name === 'shaymin') {
-				this.add('c|@shaymin|Ready for hax?');			
+				this.add('c|@shaymin|Ready for hax?');
 			}
 			if (name === 'sirdonovan') {
 				this.add('c|@sirDonovan|Oh, a battle? Let me finish my tea and crumpets');
