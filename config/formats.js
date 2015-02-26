@@ -2142,9 +2142,9 @@ exports.Formats = [
 					this.add('c|~Joim|░░░░▄▄▄██▀▀▀▀');
 					this.add('c|~Joim|░░░█▀▄▄▄█░▀▀');
 					this.add('c|~Joim|░░░▌░▄▄▄▐▌▀▀▀');
-					this.add('c|~Joim|▄░▐░░░▄▄░█░▀▀ U HAVE BEEN SPOOKED BY THE');
+					this.add('c|~Joim|▄░▐░░░▄▄░█░▀▀ U HAVE BEEN SPOOKED');
 					this.add('c|~Joim|▀█▌░░░▄░▀█▀░▀');
-					this.add('c|~Joim|░░░░░░░▄▄▐▌▄▄');
+					this.add('c|~Joim|░░░░░░░▄▄▐▌▄▄ BY THE');
 					this.add('c|~Joim|░░░░░░░▀███▀█░▄');
 					this.add('c|~Joim|░░░░░░▐▌▀▄▀▄▀▐▄SPOOKY SKILENTON');
 					this.add('c|~Joim|░░░░░░▐▀░░░░░░▐▌');
