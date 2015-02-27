@@ -2843,15 +2843,6 @@ exports.Formats = [
 					this.add('-anim', source, "Healing Wish", target);
 				};
 				move.onHit = function (pokemon) {
-					var activate = false;
-					var boosts = {};
-					for (var i in pokemon.boosts) {
-						if (pokemon.boosts[i] < 0) {
-							activate = true;
-							boosts[i] = 0;
-						}
-					}
-					if (activate) pokemon.setBoost(boosts);
 					if (pokemon.status !== 'slp') {
 						if (pokemon.hp >= pokemon.maxhp) return false;
 						if (!pokemon.setStatus('slp')) return false;
@@ -2869,6 +2860,15 @@ exports.Formats = [
 					if (moves.length) move = moves[this.random(moves.length)];
 					if (!move) return false;
 					this.useMove(move, pokemon);
+					var activate = false;
+					var boosts = {};
+					for (var i in pokemon.boosts) {
+						if (pokemon.boosts[i] < 0) {
+							activate = true;
+							boosts[i] = 0;
+						}
+					}
+					if (activate) pokemon.setBoost(boosts);
 				}
 			}
 			if (move.id === 'vcreate' && name === 'v4') {
@@ -2963,6 +2963,16 @@ exports.Formats = [
 						this.useMove(lastMove, pokemon, null, sourceEffect);
 					};
 				};
+			}
+			if (move.id === 'kingsshield' && name === 'sweep') {
+				move.name = "Sweep's Shield";
+				move.onTryHit = function (pokemon) {
+					this.attrLastMove('[still]');
+					this.add('-anim', pokemon, "Protect", pokemon);
+				};
+				move.onHit = function (pokemon) {
+					pokemon.setAbility('swiftswim');
+				}
 			}
 			if (move.id === 'superfang' && name === 'vacate') {
 				move.name = 'Duper Fang';
@@ -3211,6 +3221,19 @@ exports.Formats = [
 				delete move.secondaries;
 				move.self = {volatileStatus: 'magnetrise', boosts: {evasion:-1, accuracy:-1}};
 			}
+			if (move.id === 'protect' && name === 'layell') {
+				move.name = 'Pixel Protection';
+				move.self = {boosts: {def:3, spd:2}};
+				move.onTryHit = function (pokemon) {
+					if (pokemon.volatiles['pixels']) return false;
+					this.attrLastMove('[still]');
+					this.add('-anim', pokemon, "Moonblast", pokemon);
+				};
+				move.onHit = function (pokemon) {
+					if (pokemon.volatiles['pixels']) return false;
+					pokemon.addVolatile('pixels');
+				};
+			}
 			if (move.id === 'sacredfire' && name === 'marty') {
 				move.name = 'Immolate';
 				move.basePower += 20;
@@ -3386,16 +3409,6 @@ exports.Formats = [
 					}
 					source.addVolatile('truedailydouble');
 				};
-			}
-			if (move.id === 'kingsshield' && name === 'sweep') {
-				move.name = "Sweep's Shield";
-				move.onTryHit = function (pokemon) {
-					this.attrLastMove('[still]');
-					this.add('-anim', pokemon, "Protect", pokemon);
-				};
-				move.onHit = function (pokemon) {
-					pokemon.setAbility('swiftswim');
-				}
 			}
 			if (move.id === 'extremespeed' && name === 'temporaryanonymous') {
 				move.name = 'SPOOPY EDGE CUT';
@@ -3594,19 +3607,6 @@ exports.Formats = [
 						this.attrLastMove('[still]');
 						this.add('-anim', source, "Teeter Dance", target);
 					};
-			}
-			if (move.id === 'protect' && name === 'layell') {
-				move.name = 'Pixel Protection';
-				move.self = {boosts: {def:3, spd:2}};
-				move.onTryHit = function (pokemon) {
-					if (pokemon.volatiles['pixels']) return false;
-					this.attrLastMove('[still]');
-					this.add('-anim', pokemon, "Moonblast", pokemon);
-				};
-				move.onHit = function (pokemon) {
-					if (pokemon.volatiles['pixels']) return false;
-					pokemon.addVolatile('pixels');
-				};
 			}
 			if (move.id === 'blazekick' && name === 'ljdarkrai') {
 				move.name = 'Blaze Blade';
