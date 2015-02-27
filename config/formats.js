@@ -2413,6 +2413,9 @@ exports.Formats = [
 			if (name === 'slayer95') {
 				this.add('c|&Slayer95|I may be defeated this time, but that is irrevelant in the grand plot of seasonals!');
 			}
+			if (name === 'sweep') {
+				this.add('c|@Sweep|xD');
+			}
 			if (name === 'vacate') {
 				this.add('c|&Vacate|dam it');
 			}
@@ -2513,6 +2516,9 @@ exports.Formats = [
 			if (name === 'lawrenceiii') {
 				this.add('c|@Lawrence III|Fuck off.');
 			}
+			if (name === 'layell') {
+				this.add('c|%Layell|' + ['Alas poor me', 'Goodnight sweet prince'][this.random(2)]);
+			}
 			if (name === 'legitimateusername') {
 				this.add('c|@Legitimate Username|``This isn\'t brave. It\'s murder. What did I ever do to you?``');
 			}
@@ -2580,9 +2586,6 @@ exports.Formats = [
 			if (name === 'steeledges') {
 				this.add('c|@SteelEdges|' + ['You know, I never really cared for Hot Pockets.', 'Suck it, Trebek. Suck it long, and suck it hard.'][this.random(2)]);
 			}
-			if (name === 'sweep') {
-				this.add('c|@Sweep|xD');
-			}
 			if (name === 'temporaryanonymous') {
 				sentences = [';_;7', 'This kills the tempo', 'I\'m kill. rip.', 'S-senpai! Y-you\'re being too rough! >.<;;;;;;;;;;;;;;;;;', 'A-at least you checked my dubs right?', 'B-but that\'s impossible! This can\'t be! AAAAAAAAAAAAAAAAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHGH'];
 				this.add('c|@Temporaryanonymous|' + sentences[this.random(6)]);
@@ -2644,9 +2647,6 @@ exports.Formats = [
 			}
 			if (name === 'jellicent') {
 				this.add('c|%Jellicent|X_X');
-			}
-			if (name === 'layell') {
-				this.add('c|%Layell|' + ['Alas poor me', 'Goodnight sweet prince'][this.random(2)]);
 			}
 			if (name === 'ljdarkrai') {
 				this.add('c|%LJDarkrai|:<');
@@ -3258,6 +3258,25 @@ exports.Formats = [
 				move.onHit = function (target, source) {
 					this.boost({atk:1, spa:1, evasion:-1, accuracy:-1}, source, source);
 				}
+			}
+			if (move.id === 'inferno' && name === 'nixhex') {
+				move.name = 'Beautiful Disaster';
+				move.type = 'Normal';
+				move.secondaries = [{
+					chance:100,
+					onHit: function (target, source) {
+						var result = this.random(2);
+						if (result < 1) {
+							target.trySetStatus('brn', source);
+						} else {
+							target.trySetStatus('par', source);
+						}
+					}
+				}];
+				move.onTryHit = function (target, source, move) {
+					this.attrLastMove('[still]');
+					this.add('-anim', source, "Hyper Beam", target);
+				};
 			}
 			if (move.id === 'whirlpool' && name === 'phil') {
 				move.name = 'Slug Attack';
