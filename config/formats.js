@@ -2041,17 +2041,17 @@ exports.Formats = [
 			}
 		},
 		onSwitchIn: function (pokemon) {
-			var name = toId(pokemon.illusion ? pokemon.illusion.name : pokemon.name);
+			var name = toId(pokemon.illusion ? pokemon.illusion.name : pokemon.name);  //this doesn't seem to be working
 
 			// No OP pls. Balance stuff.
 			if (pokemon.getAbility().id === 'wonderguard') {
 				pokemon.addVolatile('curse', pokemon);
 				this.add('-message', pokemon.name + "'s Wonder Guard has cursed it!");
 			}
-			if (name === 'test2017') {
+			if (name === 'test2017' && !pokemon.illusion) {
 				this.boost({atk: 1}, pokemon, pokemon);
 			}
-			if (name === 'innovamania') {
+			if (name === 'innovamania' && !pokemon.illusion) {
 				this.boost({atk:6, def:6, spa:6, spd:6, spe:6, accuracy:6}, pokemon, pokemon);
 			}
 
