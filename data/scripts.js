@@ -4000,9 +4000,9 @@ exports.BattleScripts = {
 			},
 			'~The Immortal': {
 				species: 'Blastoise', ability: 'Magic Bounce', item: 'Blastoisinite', gender: 'M', shiny: true,
-				moves: ['quiverdance', 'steameruption', 'dragontail'],
+				moves: ['shellsmash', 'steameruption', 'dragontail'],
 				baseSignatureMove: 'rest', signatureMove: "Sleep Walk",
-				evs: {hp:252, def:252, spa:4}, nature: 'Relaxed'
+				evs: {hp:252, def:4, spd:252}, nature: 'Sassy'
 			},
 			'~V4': {
 				species: 'Victini', ability: 'Desolate Land', item: ['Charcoal', 'Choice Scarf', 'Leftovers', 'Life Orb'][this.random(4)], gender: 'M',
@@ -4040,6 +4040,12 @@ exports.BattleScripts = {
 				moves: ['swordsdance', 'bulletpunch', 'uturn'],
 				baseSignatureMove: 'allyswitch', signatureMove: "Spell Steal",
 				evs: {atk:252, def:252, spd: 4}, nature: 'Brave'
+			},
+			'&Sweep': {
+				species: 'Omastar', ability: 'Drizzle', item: ['Honey', 'Brick Mail'][this.random(2)], gender: 'M',
+				moves: ['shellsmash', 'originpulse', ['thunder', 'icebeam'][this.random(2)]],
+				baseSignatureMove: 'kingsshield', signatureMove: "Sweep's Shield",
+				evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
 			},
 			'&Vacate': {
 				species: 'Bibarel', ability: 'Adaptability', item: 'Leftovers', gender: 'M',
@@ -4168,6 +4174,12 @@ exports.BattleScripts = {
 				baseSignatureMove: 'rapidspin', signatureMove: "Beyblade",
 				evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
 			},
+			'@Layell': {
+				species: 'Sneasel', ability: 'Technician', item: "King's Rock", gender: 'M',
+				moves: ['iceshard', 'iciclespear', ['machpunch', 'pursuit', 'knockoff'][this.random(3)]],
+				baseSignatureMove: 'protect', signatureMove: "Pixel Protection",
+				evs: {hp:4, atk:252, spe:252}, nature: 'Adamant'
+			},
 			'@Legitimate Username': {
 				species: 'Shuckle', ability: 'Unaware', item: 'Leftovers', gender: 'M',
 				moves: ['leechseed', 'recover', 'foulplay', 'healbell'],
@@ -4287,12 +4299,6 @@ exports.BattleScripts = {
 				baseSignatureMove: 'tailglow', signatureMove: "True Daily Double",
 				evs: {hp:4, spa:252, spe:252}, nature: 'Serious'
 			},
-			'@Sweep': {
-				species: 'Omastar', ability: 'Drizzle', item: ['Honey', 'Brick Mail'][this.random(2)], gender: 'M',
-				moves: ['shellsmash', 'originpulse', ['thunder', 'icebeam'][this.random(2)]],
-				baseSignatureMove: 'kingsshield', signatureMove: "Sweep's Shield",
-				evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
-			},
 			'@temporaryanonymous': {
 				species: 'Doublade', ability: 'Tough Claws', item: 'Eviolite', gender: 'M',
 				moves: ['swordsdance', ['xscissor', 'sacredsword', 'knockoff'][this.random(3)], 'geargrind'],
@@ -4393,12 +4399,6 @@ exports.BattleScripts = {
 				moves: ['recover', 'freezedry', 'trick', 'substitute'],
 				baseSignatureMove: 'surf', signatureMove: "Shot For Shot",
 				evs: {hp:252, def:4, spd:252}, nature: 'Calm', powerlevel: 350
-			},
-			'%Layell': {
-				species: 'Sneasel', ability: 'Technician', item: "King's Rock", gender: 'M',
-				moves: ['iceshard', 'iciclespear', ['machpunch', 'pursuit', 'knockoff'][this.random(3)]],
-				baseSignatureMove: 'protect', signatureMove: "Pixel Protection",
-				evs: {hp:4, atk:252, spe:252}, nature: 'Adamant'
 			},
 			'%LJDarkrai': {
 				species: 'Garchomp', ability: 'Compound Eyes', item: 'Life Orb', gender: 'M',
