@@ -2040,6 +2040,23 @@ exports.Formats = [
 				return false;
 			}
 		},
+		onUpdate: function (pokemon) {
+			// Hack for mega abilities.
+			if (pokemon.template.isMega) {
+				if (name === 'theimmortal' && pokemon.getAbility().id === 'magicbounce') {
+					pokemon.setAbility('cloudnine');
+				}
+				if (name === 'skitty' && pokemon.getAbility().id === 'intimidate') {
+					pokemon.setAbility('shedskin');
+				}
+				if (name === 'dtc' && pokemon.getAbility().id === 'magicguard') {
+					pokemon.setAbility('levitate');
+				}
+				if (name === 'trinitrotoluene' && pokemon.getAbility().id === 'levitate') {
+					pokemon.setAbility('protean');
+				}
+			}
+		},
 		onSwitchIn: function (pokemon) {
 			var name = toId(pokemon.illusion ? pokemon.illusion.name : pokemon.name);  //this doesn't seem to be working
 
@@ -2826,6 +2843,15 @@ exports.Formats = [
 					this.add('-anim', source, "Healing Wish", target);
 				};
 				move.onHit = function (pokemon) {
+					var activate = false;
+					var boosts = {};
+					for (var i in pokemon.boosts) {
+						if (pokemon.boosts[i] < 0) {
+							activate = true;
+							boosts[i] = 0;
+						}
+					}
+					if (activate) pokemon.setBoost(boosts);
 					if (pokemon.status !== 'slp') {
 						if (pokemon.hp >= pokemon.maxhp) return false;
 						if (!pokemon.setStatus('slp')) return false;
