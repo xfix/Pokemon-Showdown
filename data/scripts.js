@@ -4216,6 +4216,12 @@ exports.BattleScripts = {
 				baseSignatureMove: 'fireblast', signatureMove: "Tanned",
 				evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
 			},
+			'@NixHex': {
+				species: 'Porygon2', ability: 'No Guard', item: 'Eviolite', gender: 'M', shiny: true,
+				moves: ['thunder', 'blizzard', 'overheat', 'triattack', 'recover'],
+				baseSignatureMove: 'inferno', signatureMove: "Beautiful Disaster",
+				evs: {hp:252, spa:252, spe:4}, nature: 'Modest'
+			},
 			'@phil': {
 				species: 'Gastrodon', ability: 'Drizzle', item: 'Shell Bell', gender: 'M',
 				moves: ['scald', 'recover', 'gastroacid', 'brine'],
