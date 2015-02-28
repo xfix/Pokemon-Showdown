@@ -2041,10 +2041,21 @@ exports.Formats = [
 			}
 		},
 		onUpdate: function (pokemon) {
+			var name = toId(pokemon.name);
+			
 			// Hack for mega abilities.
 			if (pokemon.template.isMega) {
 				if (name === 'theimmortal' && pokemon.getAbility().id === 'magicbounce') {
 					pokemon.setAbility('cloudnine');
+				}
+				if (name === 'slayer95' && pokemon.getAbility().id === 'illusion') {
+					pokemon.setAbility('technician');
+				}
+				if (name === 'dell' && pokemon.getAbility().id === 'simple') {
+					pokemon.setAbility('adaptability');
+				}
+				if (name === 'enguarde' && (pokemon.getAbility().id === 'intimidate' || pokemon.getAbility().id === 'hypercutter')) {
+					pokemon.setAbility('superluck');
 				}
 				if (name === 'skitty' && pokemon.getAbility().id === 'intimidate') {
 					pokemon.setAbility('shedskin');
@@ -2058,7 +2069,7 @@ exports.Formats = [
 			}
 		},
 		onSwitchIn: function (pokemon) {
-			var name = toId(pokemon.illusion ? pokemon.illusion.name : pokemon.name);  //this doesn't seem to be working
+			var name = toId(pokemon.illusion ? pokemon.illusion.name : pokemon.name);
 
 			// No OP pls. Balance stuff.
 			if (pokemon.getAbility().id === 'wonderguard') {
@@ -2066,16 +2077,28 @@ exports.Formats = [
 				this.add('-message', pokemon.name + "'s Wonder Guard has cursed it!");
 			}
 			if (name === 'test2017' && !pokemon.illusion) {
-				this.boost({atk: 1}, pokemon, pokemon);
+				this.boost({atk:1}, pokemon, pokemon);
 			}
 			if (name === 'innovamania' && !pokemon.illusion) {
 				this.boost({atk:6, def:6, spa:6, spd:6, spe:6, accuracy:6}, pokemon, pokemon);
+			}
+			if (name === 'blooblob' && !pokemon.illusion) {	//he's a really normal Cinccino and seems to be a bit weak
+				this.boost({def:1, spd:1, spe:2}, pokemon, pokemon);
 			}
 
 			// Add here hacky stuff for mega abilities.
 			if (pokemon.template.isMega) {
 				if (name === 'theimmortal' && pokemon.getAbility().id !== 'cloudnine') {
 					pokemon.setAbility('cloudnine');
+				}
+				if (name === 'slayer95' && pokemon.getAbility().id !== 'technician') {
+					pokemon.setAbility('technician');
+				}
+				if (name === 'dell' && pokemon.getAbility().id !== 'adaptability') {
+					pokemon.setAbility('adaptability');
+				}
+				if (name === 'enguarde' && pokemon.getAbility().id !== 'superluck') {
+					pokemon.setAbility('superluck');
 				}
 				if (name === 'skitty' && pokemon.getAbility().id !== 'shedskin') {
 					pokemon.setAbility('shedskin');
@@ -2366,6 +2389,11 @@ exports.Formats = [
 					this.add('detailschange', pokemon, pokemon.details);
 					
 				}
+			}
+			
+			// Break the secondary of Dell's sig if an attack is attempted
+			if (target.volatiles['parry'] && move.category !== 'Status') {
+				target.removeVolatile('parry');
 			}
 		},
 		onFaint: function (pokemon) {
@@ -2720,11 +2748,11 @@ exports.Formats = [
 		},
 		
 		onDragOut: function (pokemon) {
-				//prevents qtrx from being red carded by chaos while in the middle of using sig move, which causes a visual glitch
-				if (pokemon.isDuringAttack) {
-					this.add('-message', "But the Unown Aura absorbed the effect!");
-					return null;
-				}
+			//prevents qtrx from being red carded by chaos while in the middle of using sig move, which causes a visual glitch
+			if (pokemon.isDuringAttack) {
+				this.add('-message', "But the Unown Aura absorbed the effect!");
+				return null;
+			}
 		},
 		onAfterMoveSelf: function (source, target, move) {
 			// Make Haunter not immune to Life Orb as a means to balance.
@@ -2751,6 +2779,11 @@ exports.Formats = [
 					}
 					if ((toId(pokemon.name) === 'beowulf') && !pokemon.fainted && !pokemon.illusion) {
 						this.add('c|@Beowulf|/me buzzes loudly!');
+					}
+					if (pokemon.volatiles['parry']) {	//Dell hasn't been attacked
+						pokemon.removeVolatile('parry');
+						this.add('-message', "Untouched, the Aura Parry grows stronger still!");
+						this.boost({def:1, spd:1}, pokemon, pokemon, 'Aura Parry');
 					}
 				}
 			}
@@ -2921,7 +2954,7 @@ exports.Formats = [
 				};
 			}
 			if (move.id === 'dragontail' && name === 'jdarden') {
-				//move.name = 'Name Undecided';
+				move.name = 'Wyvern\'s Wind';
 				move.flags.sound = 1;
 				move.type = 'Flying';
 				move.category = 'Special';
@@ -3116,6 +3149,35 @@ exports.Formats = [
 					this.add('-anim', source, "Brave Bird", target);
 				};
 			}
+			if (move.id === 'detect' && name === 'dell') {
+				var dmg = Math.floor(pokemon.maxhp / (pokemon.ability === 'simple' ? 2 : 4))
+				move.name = 'Aura Parry';
+				move.self = {boosts: {atk:1, spa:1, spe:1, accuracy:1}};
+				move.onTryHit = function (target, source) {
+					if (source.hp <= dmg) return false;
+					this.attrLastMove('[still]');
+					this.add('-anim', source, "Amnesia", source);
+				};
+				move.onHit = function (target) {
+					this.directDamage(dmg, target, target);
+					pokemon.addVolatile('parry');
+				};
+			}
+			if (move.id === 'fakeout' && name === 'enguarde') {
+				move.name = 'Ready Stance';
+				move.type = 'Steel';
+				move.secondaries = [{chance:100, boosts:{atk:-1, spa:-1}}];
+				move.onTryHit = function (target, source) {
+					if (source.activeTurns > 1) {
+						this.add('-hint', "Ready Stance only works on your first turn out.");
+						return false;
+					}
+				};
+				move.onHit = function (target, source) {
+					source.addVolatile('focusenergy');
+					this.add('c|@Enguarde|En garde!');	//teehee
+				};
+			}
 			if (move.id === 'roleplay' && name === 'formerhope') {
 				move.volatileStatus = 'taunt';
 				move.self = {boosts: {spa:1}};
@@ -3184,7 +3246,8 @@ exports.Formats = [
 			}
 			if (move.id === 'rapidspin' && name === 'jinofthegale') {
 				move.name = 'Beyblade';
-				move.type = 'Special';
+				move.category = 'Special';	//smh @ whoever coded it as move.type = 'Special';
+				move.type = 'Electric';
 				move.basePower = 40;
 				// If we use onHit but use source, we don't have to edit self.onHit.
 				move.onHit = function (pokemon, source) {
@@ -3225,7 +3288,10 @@ exports.Formats = [
 				move.name = 'Pixel Protection';
 				move.self = {boosts: {def:3, spd:2}};
 				move.onTryHit = function (pokemon) {
-					if (pokemon.volatiles['pixels']) return false;
+					if (pokemon.volatiles['pixels']) {
+						this.add('-hint', "Pixel Protection only works once per outing.");
+						return false;
+					}
 					this.attrLastMove('[still]');
 					this.add('-anim', pokemon, "Moonblast", pokemon);
 				};
@@ -3277,6 +3343,11 @@ exports.Formats = [
 					this.attrLastMove('[still]');
 					this.add('-anim', source, "Hyper Beam", target);
 				};
+			}
+			if (move.id === 'darkvoid' && name === 'osiris') {
+				move.name = 'Restless Sleep';
+				move.accuracy = 85;
+				move.volatileStatus = 'nightmare';
 			}
 			if (move.id === 'whirlpool' && name === 'phil') {
 				move.name = 'Slug Attack';
@@ -3566,7 +3637,7 @@ exports.Formats = [
 					this.boost(boosts, source, source);
 				};
 			}
-			if (move.id === 'bulletseed' && name === 'blooblob') {
+			if (move.id === 'spikecannon' && name === 'blooblob') {	//I fear that having two moves with id 'bulletseed' would fuck the PP system up
 				move.name = 'Lava Whip';
 				move.type = 'Fire';
 				move.onTryHit = function (target, source) {
