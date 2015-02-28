@@ -4122,28 +4122,28 @@ exports.BattleScripts = {
 			},
 			'@Dell': {
 				species: 'Lucario', ability: 'Simple', item: 'Lucarionite', gender: 'M',
-				moves: ['highjumpkick', ['irontail', 'bulletpunch'][this.random(2)], 'batonpass'],
+				moves: [['highjumpkick', 'closecombat'][this.random(2)], ['irontail', 'bulletpunch'][this.random(2)], 'batonpass'],
 				baseSignatureMove: 'detect', signatureMove: "Aura Parry",
 				evs: {hp:4, atk:252, spe:252}, nature: 'Jolly'
-			},
+			},/*	SIG UNIMPLEMENTED
 			'@Electrolyte': {
 				species: 'Elekid', ability: 'Pure Power', item: 'Life Orb', gender: 'M',
 				moves: ['volttackle', ['iciclecrash', 'earthquake', 'diamondstorm'][this.random(3)]],
 				baseSignatureMove: 'entrainment', signatureMove: "Study",
 				evs: {atk:252, spd:4, spe:252}, nature: 'Adamant'
-			},
+			},*/
 			'@Enguarde': {
 				species: 'Gallade', ability: ['Intimidate', 'Hyper Cutter'][this.random(2)], item: 'Galladite', gender: 'M',
 				moves: ['psychocut', 'sacredsword', ['nightslash', 'precipiceblades', 'leafblade'][this.random(3)]],
 				baseSignatureMove: 'fakeout', signatureMove: "Ready Stance",
 				evs: {hp:4, atk:252, spe:252}, nature: 'Adamant'
-			},
+			},/*	SIG UNIMPLEMENTED
 			'@Eos': {
 				species: 'Drifblim', ability: 'Fur Coat', item: 'Assault Vest', gender: 'M',
 				moves: ['oblivionwing', 'paraboliccharge', 'gigadrain', 'drainingkiss'],
 				baseSignatureMove: 'shadowball', signatureMove: "x",	//pls check sig move name
 				evs: {hp:248, spa:252, spd:8}, nature: 'Modest'
-			},
+			},*/
 			'@Former Hope': {
 				species: 'Froslass', ability: 'Prankster', item: 'Focus Sash', gender: 'M',
 				moves: [['icebeam', 'shadowball'][this.random(2)], 'destinybond', 'thunderwave'],
@@ -4197,25 +4197,25 @@ exports.BattleScripts = {
 				moves: ['steameruption', 'hurricane', 'recover', 'psystrike', 'quiverdance'],
 				baseSignatureMove: 'rapidspin', signatureMove: "Beyblade",
 				evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
-			},
+			},/*	SIG UNIMPLEMENTED
 			'@Kostitsyn-Kun': {
 				species: 'Gothorita', ability: 'Simple', item: 'Eviolite', gender: 'M',	//I think kos is a guy, correct me otherwise
 				moves: ['calmmind', 'psystrike', ['moonblast', 'secretsword'][this.random(2)]],
 				baseSignatureMove: 'refresh', signatureMove: "Kawaii-desu uguu~",
 				evs: {hp:252, def:252, spd:4}, nature: 'Bold'
-			},
+			},	SIG UNIMPLEMENTED
 			'@kupo': {
 				species: 'Pikachu', ability: 'Prankster', item: "Light Ball", gender: 'M',
 				moves: ['substitute', 'spore', 'encore'],
 				baseSignatureMove: 'transform', signatureMove: "Kupo Nuts",
 				evs: {hp:252, def:4, spd:252}, nature: 'Jolly'
-			},
+			},	SIG UNIMPLEMENTED
 			'@Lawrence III': {
-				species: 'Lugia', ability: 'Trace' /* placeholder */, item: "Grip Claw", gender: 'M',
+				species: 'Lugia', ability: 'Scrappy' /* placeholder bc idk what is 'trance' */, item: "Grip Claw", gender: 'M',
 				moves: ['infestation', 'firespin', 'whirlpool'],
 				baseSignatureMove: 'gust', signatureMove: "Shadow Storm",
-				evs: {hp:252, def:4, spd:252}, nature: 'Jolly'
-			},
+				evs: {hp:248, def:84, spa:92, spd:84}, nature: 'Modest' //requested EV spread illegal
+			},*/
 			'@Layell': {
 				species: 'Sneasel', ability: 'Technician', item: "King's Rock", gender: 'M',
 				moves: ['iceshard', 'iciclespear', ['machpunch', 'pursuit', 'knockoff'][this.random(3)]],
@@ -4251,13 +4251,13 @@ exports.BattleScripts = {
 				moves: ['oblivionwing', 'leechseed', 'quiverdance', 'topsyturvy', 'substitute'],
 				baseSignatureMove: 'toxic', signatureMove: "Topology",
 				evs: {hp:252, def:252, spd:4}, nature: 'Bold'
-			},
+			},/*	SIG UNIMPLEMENTED
 			'@Morfent': {
 				species: 'Dusknoir', ability: 'Fur Coat', item: "Leftovers", gender: 'M',
 				moves: ['Trick Room', 'Recover', ['Acid Armour', 'Swords Dance', 'Will-O-Wisp', 'Shadow Claw', 'Earthquake', 'Ice Punch', 'Thunderpunch'][this.random(7)]],
 				baseSignatureMove: 'spikes', signatureMove: "Used Needles",
 				evs: {hp:252, atk:4, def:252}, ivs: {spe:0}, nature: 'Impish'
-			},
+			},*/
 			'@Nani Man': {
 				species: 'Gengar', ability: 'Desolate Land', item: 'Black Glasses', gender: 'M', shiny: true,
 				moves: ['eruption', 'swagger', 'shadow ball', 'attract', 'dazzlinggleam'],
@@ -4287,19 +4287,19 @@ exports.BattleScripts = {
 				moves: [],
 				baseSignatureMove: 'meditate', signatureMove: "Hidden Power... Normal?",
 				evs: {hp:252, def:4, spa:252}, ivs: {atk:0, spe:0}, nature: 'Quiet'
-			},
+			},/*	SIG UNIMPLEMENTED
 			'@Relados': {
 				species: 'Terrakion', ability: 'Guts', item: 'Flame Orb', gender: 'M',
 				moves: ['facade', 'diamondstorm', 'closecombat', 'iceshard', 'drainpunch'],
 				baseSignatureMove: 'stockpile', signatureMove: "Loyalty",
 				evs: {atk:252, def:4, spe:252}, nature: 'Adamant'
-			},
+			},	SIG UNIMPLEMENTED
 			'@Reverb': {
 				species: 'Slaking', ability: 'Scrappy', item: 'Assault Vest', gender: 'M',
 				moves: ['return', 'earthquake', 'drainpunch', 'vcreate'],
 				baseSignatureMove: 'eggbomb', signatureMove: "fat monkey",
 				evs: {atk:176, spd:80, spe:252}, nature: 'Adamant'
-			},
+			},*/
 			'@RosieTheVenusaur': {
 				species: 'Venusaur', ability: 'Moxie', item: 'Leftovers', gender: 'F',
 				moves: ['flamethrower', 'extremespeed', 'attract', 'knockoff', 'earthquake'],
@@ -4323,13 +4323,13 @@ exports.BattleScripts = {
 				moves: ['seedflare', 'airslash', ['secretsword', 'earthpower', 'roost'][this.random(3)]],
 				baseSignatureMove: 'protect', signatureMove: "Flower Garden",
 				evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
-			},
+			},/*	SIG UNIMPLEMENTED
 			'@shrang': {
 				species: 'Latias', ability: 'Pixilate', item: ['Latiasite', 'Life Orb', 'Leftovers'][this.random(3)], gender: 'M',
 				moves: ['dracometeor', 'roost', 'nastyplot', 'fireblast', 'aurasphere', 'psystrike'], //not QD again senpai >.<
 				baseSignatureMove: 'judgment', signatureMove: "XXX",	//pls check sig move name
 				evs: {hp:160, spa:96, spe:252}, ivs: {atk:0}, nature: 'Timid'
-			},
+			},*/
 			'@sirDonovan': {
 				species: 'Togetic', ability: 'Gale Wings', item: 'Eviolite', gender: 'M',
 				moves: ['roost', 'hurricane', 'afteryou', 'charm', 'dazzlinggleam'],
@@ -4447,13 +4447,13 @@ exports.BattleScripts = {
 				moves: ['psychic', 'moonblast', 'nastyplot', 'recover', 'surf'],
 				baseSignatureMove: 'lovelykiss', signatureMove: "Star Bolt Desperation",
 				evs:{hp:4, spa:252, spd:252}, nature: 'Modest'
-			},
+			},/*	SIG UNIMPLEMENTED
 			'%Audiosurfer': {
 				species: 'Audino', ability: 'Prankster', item: 'Audinite', gender: 'M',
 				moves: ['boomburst', 'slackoff', 'glare'],
 				baseSignatureMove: 'detect', signatureMove: "Audioshield",
 				evs: {hp:252, spa:252, spe:4}, nature: 'Modest'	//nice speedcreep; screw skitty
-			},
+			},*/
 			'%blooblob': {
 				species: 'Cinccino', ability: 'Skill Link', item: 'Life Orb', gender: 'M',
 				moves: ['bulletseed', 'rockblast', 'uturn', 'tailslap', 'knockoff'],
@@ -4513,13 +4513,13 @@ exports.BattleScripts = {
 				moves: ['outrage', 'extremespeed', 'stoneedge', 'closecombat'],
 				baseSignatureMove: 'headcharge', signatureMove: "Land Before Time",
 				evs: {hp:252, atk:252, def:4}, nature: 'Adamant'
-			},
+			},/*	SIG UNIMPLEMENTED
 			'%Timbuktu': {
 				species: 'Heatmor', ability: 'Contrary', item: 'Life Orb', gender: 'M',
 				moves: ['overheat', ['curse', 'substitute'][this.random(2)], ['glaciate', 'thunderbolt'][this.random(2)]],
 				baseSignatureMove: 'rockthrow', signatureMove: "Geoblast",
 				evs: {spa:252, spd:4, spe:252}, nature: 'Timid'
-			},
+			},*/
 			'%trinitrotoluene': {
 				species: 'Metagross', ability: 'Levitate', item: 'Metagrossite', gender: 'M',
 				moves: ['meteormash', 'zenheadbutt', 'hammerarm', 'grassknot', 'earthquake', 'thunderpunch', 'icepunch', 'shiftgear'],
