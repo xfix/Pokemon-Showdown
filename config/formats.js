@@ -2045,25 +2045,25 @@ exports.Formats = [
 			
 			// Hack for mega abilities.
 			if (pokemon.template.isMega) {
-				if (name === 'theimmortal' && pokemon.getAbility().id === 'magicbounce') {
+				if (name === 'theimmortal' && pokemon.getAbility().id === 'megalauncher') {
 					pokemon.setAbility('cloudnine');
 				}
-				if (name === 'slayer95' && pokemon.getAbility().id === 'illusion') {
-					pokemon.setAbility('technician');
-				}
-				if (name === 'dell' && pokemon.getAbility().id === 'simple') {
-					pokemon.setAbility('adaptability');
-				}
-				if (name === 'enguarde' && (pokemon.getAbility().id === 'intimidate' || pokemon.getAbility().id === 'hypercutter')) {
+				if (name === 'enguarde' && pokemon.getAbility().id === 'innerfocus') {
 					pokemon.setAbility('superluck');
 				}
-				if (name === 'skitty' && pokemon.getAbility().id === 'intimidate') {
+				if (name === 'shrang' && pokemon.getAbility().id === 'levitate') {
+					pokemon.setAbility('pixilate');
+				}
+				if (name === 'skitty' && pokemon.getAbility().id === 'healer') {
 					pokemon.setAbility('shedskin');
 				}
-				if (name === 'dtc' && pokemon.getAbility().id === 'magicguard') {
+				if (name === 'audiosurfer' && pokemon.getAbility().id === 'healer') {
+					pokemon.setAbility('pixilate');
+				}
+				if (name === 'dtc' && pokemon.getAbility().id === 'toughclaws') {
 					pokemon.setAbility('levitate');
 				}
-				if (name === 'trinitrotoluene' && pokemon.getAbility().id === 'levitate') {
+				if (name === 'trinitrotoluene' && pokemon.getAbility().id === 'toughclaws') {
 					pokemon.setAbility('protean');
 				}
 			}
