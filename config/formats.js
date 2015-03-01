@@ -2867,10 +2867,9 @@ exports.Formats = [
 					pokemon.addVolatile('redbull');
 				};
 			}
-			if (move.id === 'rest' && name === 'theimmortal') {
+			if (move.id === 'sleeptalk' && name === 'theimmortal') {
 				move.name = 'Sleep Walk';
 				move.pp = 20;
-				move.sleepUsable = true;
 				move.onTryHit = function (target, source) {
 					this.attrLastMove('[still]');
 					this.add('-anim', source, "Healing Wish", target);
@@ -2887,7 +2886,7 @@ exports.Formats = [
 					var moves = [];
 					for (var i = 0; i < pokemon.moveset.length; i++) {
 						var move = pokemon.moveset[i].id;
-						if (move && move !== 'rest') moves.push(move);
+						if (move && move !== 'sleeptalk') moves.push(move);
 					}
 					var move = '';
 					if (moves.length) move = moves[this.random(moves.length)];
@@ -2902,7 +2901,7 @@ exports.Formats = [
 						}
 					}
 					if (activate) pokemon.setBoost(boosts);
-				}
+				};
 			}
 			if (move.id === 'vcreate' && name === 'v4') {
 				move.name = 'V-Generate';
