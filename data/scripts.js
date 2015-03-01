@@ -4001,7 +4001,7 @@ exports.BattleScripts = {
 			'~The Immortal': {
 				species: 'Blastoise', ability: 'Magic Bounce', item: 'Blastoisinite', gender: 'M', shiny: true,
 				moves: ['shellsmash', 'steameruption', 'dragontail'],
-				baseSignatureMove: 'rest', signatureMove: "Sleep Walk",
+				baseSignatureMove: 'sleeptalk', signatureMove: "Sleep Walk",
 				evs: {hp:252, def:4, spd:252}, nature: 'Sassy'
 			},
 			'~V4': {
