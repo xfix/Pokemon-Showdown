@@ -3881,7 +3881,7 @@ exports.Formats = [
 						this.add('-anim', source, "Explosion", target);
 					};
 					move.onHit = function (target, source) {
-						target.setBoost({atk: -6, def: -6, spa: -6, spd: -6, spe: -6, accuracy: -6, evasion: -6});
+						this.boost({atk: -6, def: -6, spa: -6, spd: -6, spe: -6, accuracy: -6, evasion: -6}, target, source);
 						source.faint();
 					};
 				}
