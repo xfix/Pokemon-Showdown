@@ -2023,6 +2023,7 @@ exports.Formats = [
 				}
 			}
 		},
+		// Here we add some flavour immunities for the lulz.
 		onImmunity: function (type, pokemon) {
 			// Great Sage is immune to Attract.
 			if (type === 'attract' && toId(pokemon.name) === 'greatsage') {
@@ -2034,7 +2035,7 @@ exports.Formats = [
 				this.add('-immune', pokemon, '[from] Unown aura');
 				return false;
 			}
-			// Somalia's Ban Spree makes it immune to some move types.-
+			// Somalia's Ban Spree makes it immune to some move types.
 			if (toId(pokemon.name) === 'somalia' && type in {'Ground':1, 'Water':1, 'Fire':1, 'Grass':1, 'Poison':1, 'Normal':1, 'Electric':1}) {
 				this.add('-message', "You can't stop SOMALIA in middle of his Ban Spree!");
 				return false;
@@ -2069,6 +2070,7 @@ exports.Formats = [
 			}
 		},
 		onSwitchIn: function (pokemon) {
+			// LGI!
 			var name = toId(pokemon.illusion ? pokemon.illusion.name : pokemon.name);
 
 			// No OP pls. Balance stuff.
@@ -2082,7 +2084,8 @@ exports.Formats = [
 			if (name === 'innovamania' && !pokemon.illusion) {
 				this.boost({atk:6, def:6, spa:6, spd:6, spe:6, accuracy:6}, pokemon, pokemon);
 			}
-			if (name === 'blooblob' && !pokemon.illusion) {	//he's a really normal Cinccino and seems to be a bit weak
+			if (name === 'blooblob' && !pokemon.illusion) {
+				// He's a really normal Cinccino and seems to be a bit weak
 				this.boost({def:1, spd:1, spe:2}, pokemon, pokemon);
 			}
 
@@ -2125,8 +2128,8 @@ exports.Formats = [
 					pokemon.addVolatile('unownaura');
 					this.add('-start', pokemon, 'typechange', 'Normal/Psychic');
 					pokemon.typesData = [
-					{type: 'Normal', suppressed: false,  isAdded: false},
-					{type: 'Psychic', suppressed: false,  isAdded: false}
+						{type: 'Normal', suppressed: false,  isAdded: false},
+						{type: 'Psychic', suppressed: false,  isAdded: false}
 					];
 				}
 				pokemon.addVolatile('focusenergy');
@@ -2135,6 +2138,7 @@ exports.Formats = [
 				pokemon.addType('Bird');
 				this.add('-start', pokemon, 'typeadd', 'Bird', '[from] ability: Caw');
 			}
+
 			// Edgy sentences go here.
 			// Sentences vary in style and how they are presented, so each Pokémon has its own way of sending them.
 			var sentences = [];
@@ -2247,8 +2251,8 @@ exports.Formats = [
 				this.add('c|@Beowulf|Grovel peasant, you are in the presence of the RNGesus');
 			}
 			if (name === 'genesect') {
-				pokemon.phraseIndex = this.random(3);
-				if (pokemon.phraseIndex === 2) {
+				pokemon.phraseIndex = this.random(6);
+				if (pokemon.phraseIndex === 5) {
 					this.add('-message', '░░ ░░ ██ ██ ██ ██ ██ ░░ ░░');
 					this.add('-message', '░░ ██ ▓▓ ▓▓ ▓▓ ▓▓ ▓▓ ██ ░░');
 					this.add('-message', '██ ▓▓ ▓▓ ▓▓ ▓▓ ▓▓ ▓▓ ▓▓ ██');
@@ -2258,12 +2262,36 @@ exports.Formats = [
 					this.add('-message', '██ ▒▒ ▒▒ ▒▒ ▒▒ ▒▒ ▒▒ ▒▒ ██');
 					this.add('-message', '░░ ██ ▒▒ ▒▒ ▒▒ ▒▒ ▒▒ ██ ░░');
 					this.add('-message', '░░ ░░ ██ ██ ██ ██ ██ ░░ ░░');
-				} else if (pokemon.phraseIndex === 1) {
+				} else if (pokemon.phraseIndex === 4) {
 					this.add('c|@Genesect|┬┴┬┴┤  ʕ├┬┴┬┴');
 					this.add('c|@Genesect|┬┴┬┴┤ ʕ•├┬┴┬┴');
 					this.add('c|@Genesect|┬┴┬┴┤ʕ•ᴥ├┬┴┬┴shitposting?');
+				} else if (pokemon.phraseIndex === 3) {
+					this.add('-message', '▄ ▄▄░░░░░░░▄▄▄▄░░░░▌▄▄▄▄▄░░░░░▐▌');
+					this.add('-message', '▒▀█▌░░░▐▀▀▄▄▐▌▒░░▒▀▒▄▒█▄░░░░▐▌');
+					this.add('-message', '░░▀█▒░░▓░░█▐█▌▌░░▒░▐▌█▌▐▌░░▐▌░');
+					this.add('-message', '░░░░░░▓▀░░▒▐▀▄▀▀▀▀▒▒▀▀░░▀▌▒▀░░');
+					this.add('-message', '░░░░░░▌░░░░░░▀▄▄▄▄▀░░░░░░▌░░░░');
+					this.add('-message', '░░░░░▄▌░░░░░░░░░░░░░░░░░░▒░░░░');
+				} else if (pokemon.phraseIndex === 2) {
+					this.add('c|@Genesect|Born too early to explore the universe');
+					this.add('c|@Genesect|Born too late to explore the world');
+					this.add('c|@Genesect|Born just in time to explore ＤＡＮＫＭＥＭＥＳ');
+				} else if (pokemon.phraseIndex === 1) {
+					this.add('-message', '░░░░░░░░░░▄▄▄▄▄▄░░░░░░░░░░');
+					this.add('-message', '░░░░░░░░▄▀█▀█▄██████████▄▄');
+					this.add('-message', '░░░░░░░▐██████████████████▌');
+					this.add('-message', '░░░░░░░███████████████████▌');
+					this.add('-message', '░░░░░░▐███████████████████▌');
+					this.add('-message', '░░░░░░█████████████████████▄');
+					this.add('-message', '░░░▄█▐█▄█▀█████████████▀█▄█▐█▄');
+					this.add('-message', '░▄██▌██████▄█▄█▄█▄█▄█▄█████▌██▌');
+					this.add('-message', '████▄▀▀▀▀████████████▀▀▀▀▄███');
+					this.add('-message', '█████████▄▄▄▄▄▄▄▄▄▄▄▄██████▀');
+					this.add('-message', '░░░▀▀████████████████████▀');
+					this.add('c|@Genesect|/me tips fedora');
 				} else {
-					sentences = ["(ง ͠ ͠° ͟ل͜ ͡°)ง sᴏᴜɴᴅs ᴅᴏɴɢᴇʀᴏᴜs... ɪᴍ ɪɴ (ง ͠ ͠° ͟ل͜ ͡°)ง"].randomize();
+					sentences = ["(ง ͠ ͠° ͟ل͜ ͡°)ง sᴏᴜɴᴅs ᴅᴏɴɢᴇʀᴏᴜs... ɪᴍ ɪɴ (ง ͠ ͠° ͟ل͜ ͡°)ง", 'http://pastebin.com/8r0jgDd7 become a mod today!'].randomize();
 					this.add('c|@Genesect|' + sentences[0]);
 				}
 			}
@@ -2498,7 +2526,7 @@ exports.Formats = [
 				this.add('c|@Former Hope|This is why we can\'t have nice things.');
 			}
 			if (name === 'genesect') {
-				if (pokemon.phraseIndex === 2) {
+				if (pokemon.phraseIndex === 5 || pokemon.phraseIndex === 3 || pokemon.phraseIndex === 1) {
 					this.add('-message', '▄████▄░░░░░░░░░░░░░░░░░░░░');
 					this.add('-message', '██████▄░░░░░░▄▄▄░░░░░░░░░░');
 					this.add('-message', '░███▀▀▀▄▄▄▀▀▀░░░░░░░░░░░░░');
@@ -2506,7 +2534,7 @@ exports.Formats = [
 					this.add('-message', '░░░▄▄████░░█▀▀▄░█▄▄█░█▀▄█░');
 					this.add('-message', '░░░░██████░█▄▄▀░█░░█░█░▀█░');
 					this.add('-message', '░░░░░▀▀▀▀░░░░░░░░░░░░░░░░░');
-				} else if (pokemon.phraseIndex === 1) {
+				} else if (pokemon.phraseIndex === 4) {
 					this.add('c|@Genesect|┬┴┬┴┤ʕ•ᴥ├┬┴┬┴ well, if that\'s what you want');
 					this.add('c|@Genesect|┬┴┬┴┤ ʕ•├┬┴┬┴');
 					this.add('c|@Genesect|┬┴┬┴┤  ʕ├┬┴┬┴');
@@ -3083,7 +3111,8 @@ exports.Formats = [
 				move.basePower = 110;
 				move.accuracy = 85;
 				delete move.drain;
-				if (pokemon.ability === 'sheerforce') { //manually activate the ability again
+				// Manually activate the ability again.
+				if (pokemon.ability === 'sheerforce') {
 					delete move.secondaries;
 					move.negateSecondary = true;
 					pokemon.addVolatile('sheerforce');
