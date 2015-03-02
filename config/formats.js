@@ -4118,7 +4118,7 @@ exports.Formats = [
 				move.onHit = function (target, source) {
 					if (this.random(2)) {
 						this.add('-message', '@SteelEdges failed misserably!');
-						this.boost({spa: -2}}, source, source);
+						this.boost({spa: -2}, source, source);
 					} else {
 						this.add('-message', '@SteelEdges is the winner!');
 						this.boost({spa: 4}, source, source);
