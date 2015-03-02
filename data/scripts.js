@@ -4357,7 +4357,7 @@ exports.BattleScripts = {
 				species: 'Hydreigon', ability: 'Mega Launcher', item: 'Life Orb', gender: 'M',
 				moves: ['dragonpulse', 'darkpulse', 'aurasphere', 'originpulse', 'shiftgear'],
 				baseSignatureMove: 'waterpulse', signatureMove: "Mineral Pulse",
-				evs:{hp:4, spa:252, spe:252}, nature: 'Timid'
+				evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
 			},
 			'@Steamroll': {
 				species: 'Growlithe', ability: 'Adaptability', item: 'Life Orb', gender: 'M',
@@ -4424,13 +4424,13 @@ exports.BattleScripts = {
 				species: 'Slakoth', ability: 'Magic Bounce', item: 'Quick Claw', gender: 'F',
 				moves: ['metronome', 'sketch', 'assist', 'swagger', 'foulplay'],
 				baseSignatureMove: 'worryseed', signatureMove: "Procrastination",
-				evs:{hp:252, atk:252, def:4}, nature: 'Serious'
+				evs: {hp:252, atk:252, def:4}, nature: 'Serious'
 			},
 			'%Aelita': {
 				species: 'Porygon-Z', ability: 'Protean', item: 'Life Orb', gender: 'F',
 				moves: ['boomburst', 'quiverdance', 'chatter', 'blizzard', 'moonblast'],
 				baseSignatureMove: 'thunder', signatureMove: "Energy Field",
-				evs:{hp:4, spa:252, spd:252}, nature: 'Modest'
+				evs: {hp:4, spa:252, spd:252}, nature: 'Modest'
 			},
 			'%Arcticblast': {
 				species: 'Cresselia', ability: 'Levitate', item: 'Sitrus Berry', gender: 'M',
@@ -4440,14 +4440,21 @@ exports.BattleScripts = {
 					['originpulse', 'heatwave', 'hypervoice', 'icebeam', 'moonblast'][this.random(5)]
 				],
 				baseSignatureMove: 'psychoboost', signatureMove: "Doubles Purism",
-				evs:{hp:252, def:120, spa:56, spd:80}, nature: 'Sassy'
+				evs: {hp:252, def:120, spa:56, spd:80}, nature: 'Sassy'
 			},
 			'%Ast☆arA': {
 				species: 'Jirachi', ability: 'Cursed Body', item: ['Leftovers', 'Sitrus Berry'][this.random(2)], gender: 'F',
 				moves: ['psychic', 'moonblast', 'nastyplot', 'recover', 'surf'],
 				baseSignatureMove: 'lovelykiss', signatureMove: "Star Bolt Desperation",
-				evs:{hp:4, spa:252, spd:252}, nature: 'Modest'
-			},/*	SIG UNIMPLEMENTED
+				evs: {hp:4, spa:252, spd:252}, nature: 'Modest'
+			},
+			'%Astyanax': {
+				species: 'Seismitoad', ability: 'Sap Sipper', item: 'Red Card', gender: 'M',
+				moves: ['earthquake', 'recover', 'icepunch'],
+				baseSignatureMove: 'toxic', signatureMove: "Amphibnian Toxin",
+				evs: {atk:252, spd:252, spe:4}, nature: 'Adamant'
+			},
+			/*	SIG UNIMPLEMENTED
 			'%Audiosurfer': {
 				species: 'Audino', ability: 'Prankster', item: 'Audinite', gender: 'M',
 				moves: ['boomburst', 'slackoff', 'glare'],
@@ -4579,7 +4586,7 @@ exports.BattleScripts = {
 				species: 'Minun', ability: 'Wonder Guard', item: 'Air Balloon', gender: 'M',
 				moves: ['nastyplot', 'thunderbolt', 'icebeam'],
 				baseSignatureMove: 'recover', signatureMove: "Recover",
-				evs:{hp:4, spa:252, spe:252}, nature: 'Modest'
+				evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
 			},
 			'+SOMALIA': {
 				species: 'Gastrodon', ability: 'Anger Point', item: 'Leftovers', gender: 'M',

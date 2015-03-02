@@ -2041,6 +2041,7 @@ exports.Formats = [
 				return false;
 			}
 		},
+		// Hack for megas changed abilities.
 		onUpdate: function (pokemon) {
 			var name = toId(pokemon.name);
 			
@@ -2353,7 +2354,8 @@ exports.Formats = [
 				this.add('c|@zdrup|This is gonna be legen... WAIT FOR IT...');
 			}
 			if (name === 'zebraiken') {
-				pokemon.phraseIndex = this.random(3); //Zeb's faint and entry phrases correspond to each other
+				pokemon.phraseIndex = this.random(3);
+				// Zeb's faint and entry phrases correspond to each other.
 				if (pokemon.phraseIndex === 2) {
 					this.add('c|@Zebraiken|bzzt n_n');
 				} else if (pokemon.phraseIndex === 1) {
@@ -2371,6 +2373,9 @@ exports.Formats = [
 			if (name === 'arcticblast') {
 				sentences = ['BEAR MY ARCTIC BLAST', 'lmao what kind of team is this', 'guys guys guess what?!?!?!?!', 'Double battles are completely superior to single battles.', 'I miss the days when PS never broke 100 users and all the old auth were still around.'];
 				this.add('c|%Arcticblast|' + sentences[this.random(5)]);
+			}
+			if (name === 'astyanax') {
+				this.add('c|%Astyanax|:^) Top kek');
 			}
 			if (name === 'feliburn') {
 				this.add('c|%Feliburn|Come on!');
@@ -2698,6 +2703,9 @@ exports.Formats = [
 				sentences = ['/me twerks into oblivion', 'good night ♥', 'Astara Vista Baby'];
 				this.add('c|%Ast☆ara|' + sentences[this.random(3)]);
 			}
+			if (name === 'astyanax') {
+				this.add('c|%Astyanax|:^( Bottom kek');
+			}
 			if (name === 'blooblob') {
 				this.add('c|%blooblob|I won\t die! Even if I\'m killed!');
 			}
@@ -2768,7 +2776,7 @@ exports.Formats = [
 			if (toId(pokemon.name) === 'hippopotas') {
 				this.add('-message', 'The sandstorm subsided.');
 			}
-			//shaymin forme change
+			// Shaymin forme change.
 			if (toId(pokemon.name) === 'shaymin' && !pokemon.illusion) {
 				if (pokemon.template.species === 'Shaymin') {
 					var template = this.getTemplate('Shaymin-Sky');
@@ -2780,9 +2788,8 @@ exports.Formats = [
 				}
 			}
 		},
-		
 		onDragOut: function (pokemon) {
-			//prevents qtrx from being red carded by chaos while in the middle of using sig move, which causes a visual glitch
+			// Prevents qtrx from being red carded by chaos while in the middle of using sig move, which causes a visual glitch.
 			if (pokemon.isDuringAttack) {
 				this.add('-message', "But the Unown Aura absorbed the effect!");
 				return null;
@@ -2823,7 +2830,7 @@ exports.Formats = [
 				}
 			}
 		},
-		// A thousand lines of gibberish
+		// A thousand lines of gibberish. I mean, this is to make the signature moves.
 		onModifyMove: function (move, pokemon) {
 			var name = toId(pokemon.illusion && move.sourceEffect === 'allyswitch' ? pokemon.illusion.name : pokemon.name);
 			// Kek
@@ -2892,6 +2899,7 @@ exports.Formats = [
 			if (move.id === 'milkdrink' && name === 'joim') {
 				move.name = 'Red Bull Drink';
 				move.boosts = {spa:1, spe:1, accuracy:1, evasion:-1};
+				delete move.heal;
 				move.onTryHit = function (pokemon) {
 					if (pokemon.volatiles['redbull']) return false;
 					this.attrLastMove('[still]');
@@ -3210,7 +3218,7 @@ exports.Formats = [
 				};
 				move.onHit = function (target, source) {
 					source.addVolatile('focusenergy');
-					this.add('c|@Enguarde|En garde!');	//teehee
+					this.add('c|@Enguarde|En garde!'); // teehee
 				};
 			}
 			if (move.id === 'roleplay' && name === 'formerhope') {
@@ -3603,6 +3611,9 @@ exports.Formats = [
 				move.basePower = 140;
 				move.isContact = false;
 				// todo: effect
+				// ignores all field effects and abilities
+				// seismic toss graphic
+				// not boosted by rain
 			}
 			if (move.id === 'protect' && name === 'zebraiken') {
 				move.name = 'bzzt';
@@ -3675,6 +3686,14 @@ exports.Formats = [
 					boosts[increase] = 1;
 					boosts[decrease] = -1;
 					this.boost(boosts, source, source);
+				};
+			}
+			if (move.id === 'toxic' && name === 'astyanax') {
+				move.name = 'Amphibian Toxin';
+				move.self = {boosts: {atk:-1, spa:-1}};
+				move.onHit = function (target, source) {
+					pokemon.side.addSideCondition('toxicspikes');
+					pokemon.side.addSideCondition('toxicspikes');
 				};
 			}
 			if (move.id === 'spikecannon' && name === 'blooblob') {	//I fear that having two moves with id 'bulletseed' would fuck the PP system up
