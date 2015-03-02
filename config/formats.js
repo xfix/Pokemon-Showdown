@@ -4190,8 +4190,8 @@ exports.Formats = [
 				move.basePower = 140;
 				move.isContact = false;
 				// todo: effect
-				// ignores all field effects and abilities		
-				// seismic toss graphic		
+				// ignores all field effects and abilities
+				// seismic toss graphic
 				// not boosted by rain
 			}
 			if (move.id === 'protect' && name === 'zebraiken') {
