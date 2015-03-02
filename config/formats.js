@@ -2567,7 +2567,7 @@ exports.Formats = [
 				this.add('c|@Morfent|' + sentences[this.random(3)]);
 			}
 			if (name === 'naniman') {
-				sentences = ['rof', 'deck\'d', '**praise** TI'];
+				sentences = ['rof', "deck'd", '**praise** TI'];
 				this.add('c|@Nani Man|' + sentences[this.random(3)]);
 			}
 			if (name === 'phil') {
@@ -2609,7 +2609,13 @@ exports.Formats = [
 				this.add('c|@Spydreigon|' + sentences[this.random(4)]);
 			}
 			if (name === 'steamroll') {
-				//exceeds my capacity. based junama pls help.
+				if (pokemon.killedSome) {
+					var sentence = 'Goddamn I feel useless.';
+				} else {
+					sentences = ['...And I saw, as it were... Spaghetti.', "Agh, shouldn't of been that easy.", 'Hope that was enough.'];
+					var sentence = sentences[this.random(3)];
+				}
+				this.add('c|@Steamroll|' + sentence);
 			}
 			if (name === 'steeledges') {
 				this.add('c|@SteelEdges|' + ['You know, I never really cared for Hot Pockets.', 'Suck it, Trebek. Suck it long, and suck it hard.'][this.random(2)]);
@@ -2648,7 +2654,7 @@ exports.Formats = [
 				}
 			}
 
-			//drivers
+			// Drivers
 			if (name === 'acedia') {
 				this.add('c|%Acedia|My dad smoked his whole life. One day my mom told him "If you want to see your children graduate, you have to stop". 3 years later he died of lung cancer. My mom told me "Dont smoke; dont put your family through this". At 24, I have never touched a cigarette. I must say, I feel a sense of regret, because watching you play Pokemon gave me cancer anyway ( ͝° ͜ʖ͡°)');
 			}
@@ -2780,7 +2786,8 @@ exports.Formats = [
 					if ((toId(pokemon.name) === 'beowulf') && !pokemon.fainted && !pokemon.illusion) {
 						this.add('c|@Beowulf|/me buzzes loudly!');
 					}
-					if (pokemon.volatiles['parry']) {	//Dell hasn't been attacked
+					if (pokemon.volatiles['parry']) {
+						// Dell hasn't been attacked.
 						pokemon.removeVolatile('parry');
 						this.add('-message', "Untouched, the Aura Parry grows stronger still!");
 						this.boost({def:1, spd:1}, pokemon, pokemon, 'Aura Parry');
@@ -3467,17 +3474,22 @@ exports.Formats = [
 				move.type = 'Steel';
 				move.accuracy = 100;
 			}
-			if (move.id === 'protect' && name === 'steamroll') {
-				move.name = 'Conflagration';
-				move.onTryHit = function (pokemon) {
-					if (pokemon.activeTurns > 1) {
-						this.add('-hint', "Conflagration only works on your first turn out.");
-						return false;
-					}
-					this.attrLastMove('[still]');
-					this.add('-anim', pokemon, "Fire Blast", pokemon);
+			if (name === 'steamroll') {
+				if (move.id === 'protect') {
+					move.name = 'Conflagration';
+					move.onTryHit = function (pokemon) {
+						if (pokemon.activeTurns > 1) {
+							this.add('-hint', "Conflagration only works on your first turn out.");
+							return false;
+						}
+						this.attrLastMove('[still]');
+						this.add('-anim', pokemon, "Fire Blast", pokemon);
+					};
+					move.self = {boosts: {atk:2, def:2, spa:2, spd:2, spe:2}};
+				}
+				move.onHit = function (target, pokemon) {
+					if (target.fainted || target.hp <= 0) pokemon.killedSome = 1;
 				};
-				move.self = {boosts: {atk:2, def:2, spa:2, spd:2, spe:2}};
 			}
 			if (move.id === 'tailglow' && name === 'steeledges') {
 				delete move.boosts;
@@ -3491,10 +3503,10 @@ exports.Formats = [
 				move.onHit = function (target, source) {
 					if (this.random(2)) {
 						this.add('-message', '@SteelEdges failed misserably!');
-						this.boost({atk:1, def:1, spa:1, spd:1, spe:1, accuracy:1}, target, source);
+						this.boost({spa: -2}}, source, source);
 					} else {
 						this.add('-message', '@SteelEdges is the winner!');
-						this.boost({spa:3}, source, source);
+						this.boost({spa: 4}, source, source);
 					}
 					source.addVolatile('truedailydouble');
 				};
