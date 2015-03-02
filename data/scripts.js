@@ -4211,7 +4211,7 @@ exports.BattleScripts = {
 				evs: {hp:252, def:4, spd:252}, nature: 'Jolly'
 			},	SIG UNIMPLEMENTED
 			'@Lawrence III': {
-				species: 'Lugia', ability: 'Scrappy' /* placeholder bc idk what is 'trance' */, item: "Grip Claw", gender: 'M',
+				species: 'Lugia', ability: 'Scrappy' placeholder bc idk what is 'trance', item: "Grip Claw", gender: 'M',
 				moves: ['infestation', 'firespin', 'whirlpool'],
 				baseSignatureMove: 'gust', signatureMove: "Shadow Storm",
 				evs: {hp:248, def:84, spa:92, spd:84}, nature: 'Modest' //requested EV spread illegal
