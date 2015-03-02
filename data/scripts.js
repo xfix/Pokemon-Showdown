@@ -4482,7 +4482,7 @@ exports.BattleScripts = {
 				species: 'Jellicent', ability: 'Poison Heal', item: 'Toxic Orb', gender: 'M',
 				moves: ['recover', 'freezedry', 'trick', 'substitute'],
 				baseSignatureMove: 'surf', signatureMove: "Shot For Shot",
-				evs: {hp:252, def:4, spd:252}, nature: 'Calm', powerlevel: 350
+				evs: {hp:252, def:4, spd:252}, nature: 'Calm'
 			},
 			'%LJDarkrai': {
 				species: 'Garchomp', ability: 'Compound Eyes', item: 'Life Orb', gender: 'M',
@@ -4555,7 +4555,7 @@ exports.BattleScripts = {
 				species: 'Aegislash', ability: 'Stance Change', item: 'Life Orb', gender: 'F',
 				moves: ['kingsshield', 'shadowsneak', ['calmmind', 'shadowball', 'shadowclaw', 'flashcannon', 'dragontail', 'hyperbeam'][this.random(5)]],
 				baseSignatureMove: 'memento', signatureMove: "HP Display Policy",
-				evs: {hp:4, atk:252, spa:252}, nature: 'Quiet', powerlevel: 700
+				evs: {hp:4, atk:252, spa:252}, nature: 'Quiet'
 			},
 			'+Limi': {
 				species: 'Primeape', ability: 'Poison Heal', item: 'Leftovers', gender: 'M',
@@ -4567,8 +4567,7 @@ exports.BattleScripts = {
 				species: 'Giratina', ability: 'Prankster', item: 'Lum Berry', gender: 'M',
 				moves: ['rest', 'recycle', ['toxic', 'willowisp'][this.random(2)]],
 				baseSignatureMove: 'swagger', signatureMove: "Trolling Lobby",
-				evs: {hp:252, def:128, spd:128}, ivs: {atk:0}, nature: 'Calm',
-				powerlevel: 700
+				evs: {hp:252, def:128, spd:128}, ivs: {atk:0}, nature: 'Calm'
 			},
 			'+Great Sage': {
 				species: 'Shuckle', ability: 'Harvest', item: 'Leppa Berry', gender: '',
@@ -4580,7 +4579,7 @@ exports.BattleScripts = {
 				species: 'Minun', ability: 'Wonder Guard', item: 'Air Balloon', gender: 'M',
 				moves: ['nastyplot', 'thunderbolt', 'icebeam'],
 				baseSignatureMove: 'recover', signatureMove: "Recover",
-				evs:{hp:4, spa:252, spe:252}, nature: 'Modest', powerlevel: 650
+				evs:{hp:4, spa:252, spe:252}, nature: 'Modest'
 			},
 			'+SOMALIA': {
 				species: 'Gastrodon', ability: 'Anger Point', item: 'Leftovers', gender: 'M',
@@ -4610,20 +4609,9 @@ exports.BattleScripts = {
 		var pool = Object.keys(sets).randomize();
 		var ranks = {'~':'admins', '&':'leaders', '@':'mods', '%':'drivers', '+':'voices'};
 		var levels = {'~':99, '&':97, '@':96, '%':96, '+':95};
-		var powerlevels = {'~':600, '&':550, '@':525, '%':500, '+':475};
-		var totalPower = 0;
-		var p = 0;
-		var avgPower = 0;
-		for (var i = 0; p<6; i++) {
+		for (var i = 0; i++) {
 			var rank = pool[i].charAt(0);
 			var set = sets[pool[i]];
-			// Slight power level balance.
-			if (!set.powerlevel) set.powerlevel = powerlevels[rank];
-			//if (totalPower + set.powerlevel > 3175 && 3175 - totalPower > 475 && 6-p < pool.length-i) break;
-			//if ((avgPower + set.powerlevel) / 2 > 545) break;
-			avgPower = Math.ceil((avgPower + set.powerlevel) / 2);
-			totalPower += set.powerlevel;
-			delete set.powerlevel;
 			set.level = levels[rank];
 			set.name = pool[i];
 			if (!set.ivs) {
@@ -4637,7 +4625,6 @@ exports.BattleScripts = {
 			if (!set.evs) set.evs = {hp:84, atk:84, def:84, spa:84, spd:84, spe:84};
 			set.moves = set.moves.sample(3).concat(set.baseSignatureMove);
 			team.push(set);
-			p++;
 		}
 
 		// Check for Illusion.
