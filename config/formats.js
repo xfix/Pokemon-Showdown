@@ -3063,7 +3063,7 @@ exports.Formats = [
 			if (move.id === 'triattack' && name === 'ascriptmaster') {
 				move.name = 'Spectrum Beam';
 				move.affectedByImmunities = false;
-				move.basePower = 10;
+				move.basePower = 5;
 				move.typechart = Object.keys(Tools.data.TypeChart);
 				move.hitcount = 0;
 				move.type = move.typechart[0];
@@ -3192,7 +3192,7 @@ exports.Formats = [
 				move.name = "Grind you're mum";
 				move.basePower = 30;
 				move.onHit = function (target, pokemon) {
-					if (target.fainted || target.hp <= 0) this.boost({atk:1, spa:1, spe:1}, pokemon, pokemon, move);
+					if (target.fainted || target.hp <= 0) this.boost({atk:2, spa:2, spe:1}, pokemon, pokemon, move);
 				};
 			}
 			if (move.id === 'earthpower' && name === 'goddessbriyella') {
