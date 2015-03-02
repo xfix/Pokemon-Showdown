@@ -4310,7 +4310,7 @@ exports.BattleScripts = {
 				species: 'Cryogonal', ability: 'Magic Guard', item: 'Focus Sash', gender: 'M',
 				moves: ['rapidspin', 'willowisp', 'taunt', 'recover', 'voltswitch'],
 				baseSignatureMove: 'icebeam', signatureMove: "Eroding Frost",
-				evs: {hp:252, spa:4, spe:252}, nature: 'Timid'
+				evs: {hp:252, def:252, spd:4}, nature: 'Bold'
 			},
 			'@Scotteh': {
 				species: 'Suicune', ability: 'Fur Coat', item: 'Leftovers', gender: 'M',
