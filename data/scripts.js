@@ -4510,7 +4510,7 @@ exports.BattleScripts = {
 			},
 			'@Dell': {
 				species: 'Lucario', ability: 'Simple', item: 'Lucarionite', gender: 'M',
-				moves: [['highjumpkick', 'closecombat'][this.random(2)], ['irontail', 'bulletpunch'][this.random(2)], 'batonpass'],
+				moves: ['jumpkick', ['irontail', 'bulletpunch'][this.random(2)], 'batonpass'],
 				baseSignatureMove: 'detect', signatureMove: "Aura Parry",
 				evs: {hp:4, atk:252, spe:252}, nature: 'Jolly'
 			},
