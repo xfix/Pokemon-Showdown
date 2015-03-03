@@ -3072,7 +3072,7 @@ exports.Formats = [
 			if (name === 'astyanax') {
 				this.add('c|%Astyanax|:^( Bottom kek');
 			}
-			if (name === 'zebraiken') {
+			if (name === 'audiosurfer') {
 				if (pokemon.phraseIndex === 2) {
 					this.add('c|%Audiosurfer|No? Well you should check it out.');
 				} else if (pokemon.phraseIndex === 1) {
@@ -3892,7 +3892,7 @@ exports.Formats = [
 					}
 					this.attrLastMove('[still]');
 					this.add('-anim', pokemon, "Moonblast", pokemon);
-					return !!this.willAct() && this.runEvent('StallMove', target);
+					return !!this.willAct() && this.runEvent('StallMove', pokemon);
 				};
 				move.onHit = function (pokemon) {
 					if (pokemon.volatiles['pixels']) return false;
