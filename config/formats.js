@@ -4653,12 +4653,6 @@ exports.Formats = [
 				move.name = '(Super Glitch)';
 				move.multihit = [2, 5];
 			}
-			if (move.id === 'willowisp' && name === 'jetpack') {
-				move.isBounceable = false;
-				move.name = 'Engine Flare';
-				move.accuracy = 100;
-				move.self = {boosts: {spe:1}};
-			}
 		}
 	},
 
