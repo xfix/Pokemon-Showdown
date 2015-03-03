@@ -3892,7 +3892,7 @@ exports.Formats = [
 					}
 					this.attrLastMove('[still]');
 					this.add('-anim', pokemon, "Moonblast", pokemon);
-					return !!this.willAct() && this.runEvent('StallMove', target);
+					return !!this.willAct() && this.runEvent('StallMove', pokemon);
 				};
 				move.onHit = function (pokemon) {
 					if (pokemon.volatiles['pixels']) return false;
