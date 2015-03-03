@@ -2091,7 +2091,7 @@ exports.Formats = [
 				this.boost({atk:1}, pokemon, pokemon);
 			}
 			if (name === 'okuu' && !pokemon.illusion) {
-				this.boost({def:2, spd:2}, pokemon, pokemon);
+				this.boost({def:2, spd:1}, pokemon, pokemon);
 			}
 			if (name === 'innovamania' && !pokemon.illusion) {
 				this.boost({atk:6, def:6, spa:6, spd:6, spe:6, accuracy:6}, pokemon, pokemon);
@@ -2101,7 +2101,7 @@ exports.Formats = [
 				this.boost({def:1, spd:1, spe:2, accuracy:1}, pokemon, pokemon);
 			}
 			if (name === 'timbuktu' && !pokemon.illusion) {
-				this.boost({def:-2, spe:-1}, pokemon, pokemon);
+				this.boost({def:-2, spd:-1}, pokemon, pokemon);
 			}
 			if (name === 'electrolyte') {
 				pokemon.lastAttackType = 'None';
@@ -3241,7 +3241,7 @@ exports.Formats = [
 							'this is just the internet -- nothing matters!',
 							'let\'s have fun ALL NIGHT LONG!!!!!!!!!!!!!!!!!!!!!!'
 						];
-						this.add('c|fimes|' + messages[this.random(15)]);
+						this.add('c|HappyFunTimes|' + messages[this.random(15)]);
 					}
 					if (pokemon.volatiles['parry']) {
 						//Dell hasn't been attacked
@@ -4213,8 +4213,8 @@ exports.Formats = [
 				move.basePower = 140;
 				move.isContact = false;
 				// todo: effect
-				// ignores all field effects and abilities		
-				// seismic toss graphic		
+				// ignores all field effects and abilities
+				// seismic toss graphic
 				// not boosted by rain
 			}
 			if (move.id === 'protect' && name === 'zebraiken') {
