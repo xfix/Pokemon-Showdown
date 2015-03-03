@@ -52,6 +52,18 @@ exports.BattleScripts = {
 			}
 
 			return stat;
+		},
+		cureStatus: function () {
+			if (!this.hp) return false;
+			// unlike clearStatus, gives cure message
+			if (this.status) {
+				this.battle.add('-curestatus', this, this.status);
+				if (this.status === 'slp' && this.volatiles['nightmare']) {
+					// Nightmare status is removed here on gen 2.
+					this.removeVolatile('nightmare');
+				}
+				this.setStatus('');
+			}
 		}
 	},
 	// Battle scripts.
@@ -366,8 +378,8 @@ exports.BattleScripts = {
 		var defender = target;
 		if (move.useTargetOffensive) attacker = target;
 		if (move.useSourceDefensive) defender = pokemon;
-		var atkType = (move.category === 'Physical')? 'atk' : 'spa';
-		var defType = (move.defensiveCategory === 'Physical')? 'def' : 'spd';
+		var atkType = (move.category === 'Physical') ? 'atk' : 'spa';
+		var defType = (move.defensiveCategory === 'Physical') ? 'def' : 'spd';
 		var unboosted = false;
 		var noburndrop = false;
 
@@ -451,7 +463,6 @@ exports.BattleScripts = {
 		if (damage > 1) {
 			damage *= this.random(217, 256);
 			damage = Math.floor(damage / 255);
-			if (damage > target.hp && !target.volatiles['substitute']) damage = target.hp;
 		}
 
 		// If damage is less than 1, we return 1
@@ -863,7 +874,6 @@ exports.BattleScripts = {
 			this.debug('instafaint: ' + this.faintQueue.map('target').map('name'));
 			this.faintMessages(true);
 			target.faint();
-			this.queue = [];
 		} else {
 			damage = this.runEvent('AfterDamage', target, source, effect, damage);
 		}

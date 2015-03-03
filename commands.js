@@ -112,11 +112,11 @@ var commands = exports.commands = {
 		if (targetUser.locked && !user.can('lock')) {
 			return this.popupReply("This user is locked and cannot PM.");
 		}
-		if (targetUser.ignorePMs && !user.can('lock')) {
+		if (targetUser.ignorePMs && targetUser.ignorePMs !== user.group && !user.can('lock')) {
 			if (!targetUser.can('lock')) {
-				return this.popupReply("This user is blocking Private Messages right now.");
+				return this.popupReply("This user is blocking private messages right now.");
 			} else if (targetUser.can('bypassall')) {
-				return this.popupReply("This admin is too busy to answer Private Messages right now. Please contact a different staff member.");
+				return this.popupReply("This admin is too busy to answer private messages right now. Please contact a different staff member.");
 			}
 		}
 
@@ -125,29 +125,28 @@ var commands = exports.commands = {
 
 		if (target.charAt(0) === '/' && target.charAt(1) !== '/') {
 			// PM command
-			var targetCmdIndex = target.indexOf(' ');
-			var targetCmd = (targetCmdIndex >= 0 ? target.slice(1, targetCmdIndex) : target.slice(1));
-			switch (targetCmd) {
+			var innerCmdIndex = target.indexOf(' ');
+			var innerCmd = (innerCmdIndex >= 0 ? target.slice(1, innerCmdIndex) : target.slice(1));
+			var innerTarget = (innerCmdIndex >= 0 ? target.slice(innerCmdIndex + 1) : '');
+			switch (innerCmd) {
 			case 'me':
 			case 'announce':
 				break;
 			case 'invite':
-				var targetRoomid = toId(target.substr(8));
-				if (targetRoomid === 'global') return false;
-
-				var targetRoom = Rooms.search(targetRoomid);
-				if (!targetRoom) return connection.send('|pm|' + user.getIdentity() + '|' + targetUser.getIdentity() + '|/text The room "' + targetRoomid + '" does not exist.');
+			case 'inv':
+				var targetRoom = Rooms.search(innerTarget);
+				if (!targetRoom || targetRoom === Rooms.global) return connection.send('|pm|' + user.getIdentity() + '|' + targetUser.getIdentity() + '|/text The room "' + innerTarget + '" does not exist.');
 				if (targetRoom.staffRoom && !targetUser.isStaff) return connection.send('|pm|' + user.getIdentity() + '|' + targetUser.getIdentity() + '|/text User "' + this.targetUsername + '" requires global auth to join room "' + targetRoom.id + '".');
-				if (targetRoom.isPrivate && targetRoom.modjoin && targetRoom.auth) {
-					if (Config.groupsranking.indexOf(targetRoom.auth[targetUser.userid] || ' ') < Config.groupsranking.indexOf(targetRoom.modjoin) || !targetUser.can('bypassall')) {
-						return connection.send('|pm|' + user.getIdentity() + '|' + targetUser.getIdentity() + '|/text The room "' + targetRoomid + '" does not exist.');
+				if (targetRoom.isPrivate === true && targetRoom.modjoin && targetRoom.auth) {
+					if (Config.groupsranking.indexOf(targetRoom.auth[targetUser.userid] || ' ') < Config.groupsranking.indexOf(targetRoom.modjoin) && !targetUser.can('bypassall')) {
+						return connection.send('|pm|' + user.getIdentity() + '|' + targetUser.getIdentity() + '|/text The room "' + innerTarget + '" does not exist.');
 					}
 				}
 
 				target = '/invite ' + targetRoom.id;
 				break;
 			default:
-				return connection.send('|pm|' + user.getIdentity() + '|' + targetUser.getIdentity() + "|/text The command '/" + targetCmd + "' was unrecognized or unavailable in private messages. To send a message starting with '/" + targetCmd + "', type '//" + targetCmd + "'.");
+				return connection.send('|pm|' + user.getIdentity() + '|' + targetUser.getIdentity() + "|/text The command '/" + innerCmd + "' was unrecognized or unavailable in private messages. To send a message starting with '/" + innerCmd + "', type '//" + innerCmd + "'.");
 			}
 		}
 
@@ -158,23 +157,30 @@ var commands = exports.commands = {
 		user.lastPM = targetUser.userid;
 	},
 
+	away: 'ignorepms',
+	idle: 'ignorepms',
 	blockpm: 'ignorepms',
 	blockpms: 'ignorepms',
 	ignorepm: 'ignorepms',
 	ignorepms: function (target, room, user) {
-		if (user.ignorePMs) return this.sendReply("You are already blocking Private Messages!");
-		if (user.can('lock') && !user.can('bypassall')) return this.sendReply("You are not allowed to block Private Messages.");
+		if (user.ignorePMs === (target || true)) return this.sendReply("You are already blocking private messages!");
+		if (user.can('lock') && !user.can('bypassall')) return this.sendReply("You are not allowed to block private messages.");
 		user.ignorePMs = true;
-		return this.sendReply("You are now blocking Private Messages.");
+		if (target in Config.groups) {
+			user.ignorePMs = target;
+			return this.sendReply("You are now blocking private messages, except from staff and " + target + ".");
+		}
+		return this.sendReply("You are now blocking private messages, except from staff.");
 	},
 
+	back: 'unignorepms',
 	unblockpm: 'unignorepms',
 	unblockpms: 'unignorepms',
 	unignorepm: 'unignorepms',
 	unignorepms: function (target, room, user) {
-		if (!user.ignorePMs) return this.sendReply("You are not blocking Private Messages!");
+		if (!user.ignorePMs) return this.sendReply("You are not blocking private messages!");
 		user.ignorePMs = false;
-		return this.sendReply("You are no longer blocking Private Messages.");
+		return this.sendReply("You are no longer blocking private messages.");
 	},
 
 	makechatroom: function (target, room, user) {
@@ -261,7 +267,7 @@ var commands = exports.commands = {
 				return false;
 			}
 			if (room.chatRoomData) {
-				room.chatRoomData.modjoin = true;
+				room.chatRoomData.modjoin = room.modjoin;
 				Rooms.global.writeChatRoomData();
 			}
 			if (!room.modchat) this.parse('/modchat ' + Config.groupsranking[1]);
@@ -321,6 +327,7 @@ var commands = exports.commands = {
 		}
 	},
 
+	topic: 'roomintro',
 	roomintro: function (target, room, user) {
 		if (!target) {
 			if (!this.canBroadcast()) return;
@@ -734,7 +741,7 @@ var commands = exports.commands = {
 			return this.sendReply("User " + this.targetUsername + " is not in the room " + room.id + ".");
 		}
 		if (targetUser.joinRoom(targetRoom.id) === false) return this.sendReply("User " + targetUser.name + " could not be joined to room " + targetRoom.title + ". They could be banned from the room.");
-		var roomName = (targetRoom.isPrivate)? "a private room" : "room " + targetRoom.title;
+		var roomName = (targetRoom.isPrivate) ? "a private room" : "room " + targetRoom.title;
 		this.addModCommand("" + targetUser.name + " was redirected to " + roomName + " by " + user.name + ".");
 		targetUser.leaveRoom(room);
 	},
@@ -955,26 +962,27 @@ var commands = exports.commands = {
 
 	rangelock: function (target, room, user) {
 		if ((user.locked || user.mutedRooms[room.id]) && !user.can('bypassall')) return this.sendReply("You cannot do this while unable to talk.");
-		if (!target) return this.sendReply("Please specify a domain to lock.");
+		if (!target) return this.sendReply("Please specify a range to lock.");
 		if (!this.can('rangeban')) return false;
 
-		var domain = Users.shortenHost(target);
-		if (Users.lockedDomains[domain]) return this.sendReply("The domain " + domain + " has already been temporarily locked.");
+		var isIp = (target.slice(-1) === '*' ? true : false);
+		var range = (isIp ? target : Users.shortenHost(target));
+		if (Users.lockedRanges[range]) return this.sendReply("The range " + range + " has already been temporarily locked.");
 
-		Users.lockDomain(domain);
-		this.addModCommand("" + user.name + " temporarily locked the domain " + domain + ".");
+		Users.lockRange(range, isIp);
+		this.addModCommand("" + user.name + " temporarily locked the range " + range + ".");
 	},
 
 	rangeunlock: function (target, room, user) {
 		if ((user.locked || user.mutedRooms[room.id]) && !user.can('bypassall')) return this.sendReply("You cannot do this while unable to talk.");
-		if (!target) return this.sendReply("Please specify a domain to unlock.");
+		if (!target) return this.sendReply("Please specify a range to unlock.");
 		if (!this.can('rangeban')) return false;
 
-		var domain = Users.shortenHost(target);
-		if (!Users.lockedDomains[domain]) return this.sendReply("The domain " + domain + " is not locked.");
+		var range = (target.slice(-1) === '*' ? target : Users.shortenHost(target));
+		if (!Users.lockedRanges[range]) return this.sendReply("The range " + range + " is not locked.");
 
-		Users.unlockDomain(domain);
-		this.addModCommand("" + user.name + " unlocked the domain " + domain + ".");
+		Users.unlockRange(range);
+		this.addModCommand("" + user.name + " unlocked the range " + range + ".");
 	},
 
 	/*********************************************************
@@ -1765,9 +1773,25 @@ var commands = exports.commands = {
 		room.decision(user, 'choose', 'team ' + target);
 	},
 
+	addplayer: function (target, room, user) {
+		if (!target) return this.parse('/help addplayer');
+
+		target = this.splitTarget(target);
+		var targetUser = this.targetUser;
+
+		if (!targetUser) {
+			return this.sendReply("User " + this.targetUsername + " not found.");
+		}
+
+		if (!room.joinBattle) return this.sendReply("You can only do this in battle rooms.");
+		if (!this.can('roomvoice', this.targetUser, room)) return;
+
+		room.auth[targetUser.userid] = '\u2605';
+	},
+
 	joinbattle: function (target, room, user) {
 		if (!room.joinBattle) return this.sendReply("You can only do this in battle rooms.");
-		if (!user.can('joinbattle', null, room)) return this.popupReply("You must be a roomvoice to join a battle you didn't start. Ask a player to use /roomvoice on you to join this battle.");
+		if (!user.can('joinbattle', null, room)) return this.popupReply("You must be a set as a player to join a battle you didn't start. Ask a player to use /addplayer on you to join this battle.");
 
 		room.joinBattle(user);
 	},
@@ -1886,7 +1910,7 @@ var commands = exports.commands = {
 		if (!targetUser || !targetUser.connected) {
 			return this.popupReply("The user '" + this.targetUsername + "' was not found.");
 		}
-		if (targetUser.blockChallenges && !user.can('bypassblocks', targetUser)) {
+		if ((targetUser.blockChallenges || targetUser.ignorePMs) && !user.can('bypassblocks', targetUser)) {
 			return this.popupReply("The user '" + this.targetUsername + "' is not accepting challenges right now.");
 		}
 		if (Config.pmmodchat) {
@@ -1902,15 +1926,13 @@ var commands = exports.commands = {
 		});
 	},
 
-	away: 'blockchallenges',
-	idle: 'blockchallenges',
 	blockchallenges: function (target, room, user) {
 		if (user.blockChallenges) return this.sendReply("You are already blocking challenges!");
 		user.blockChallenges = true;
 		this.sendReply("You are now blocking all incoming challenge requests.");
 	},
 
-	back: 'allowchallenges',
+	unblockchallenges: 'allowchallenges',
 	allowchallenges: function (target, room, user) {
 		if (!user.blockChallenges) return this.sendReply("You are already available for challenges!");
 		user.blockChallenges = false;

@@ -694,8 +694,8 @@ exports.BattleMovedex = {
 		affectedByImmunities: false
 	},
 	/******************************************************************
-	Bonemerang, Bone Rush moves:
-	- not affected by immunities
+	Bonemerang, Bone Rush, Bone Club moves:
+	- not affected by Ground immunities
 	- Bone Rush nerfed to 20 base power so it's not viable on Lucario
 
 	Justification:
@@ -711,6 +711,11 @@ exports.BattleMovedex = {
 		basePower: 20,
 		affectedByImmunities: false,
 		accuracy: true
+	},
+	boneclub: {
+		inherit: true,
+		affectedByImmunities: false,
+		accuracy: 90
 	},
 	/******************************************************************
 	Relic Song:
@@ -1010,10 +1015,6 @@ exports.BattleMovedex = {
 		accuracy: true
 	},
 	tailslap: {
-		inherit: true,
-		accuracy: true
-	},
-	triplekick: {
 		inherit: true,
 		accuracy: true
 	},
@@ -1385,6 +1386,13 @@ exports.BattleMovedex = {
 			if (user.template.id === 'eelektross') return this.chainModify(1.5);
 		}
 	},
+	triplekick: {
+		inherit: true,
+		onBasePower: function (power, user) {
+			if (user.template.id === 'hitmontop') return this.chainModify(1.5);
+		},
+		accuracy: true
+	},
 	bubblebeam: {
 		inherit: true,
 		onBasePower: function (power, user) {
@@ -1691,10 +1699,6 @@ exports.BattleMovedex = {
 		accuracy: 90
 	},
 	takedown: {
-		inherit: true,
-		accuracy: 90
-	},
-	boneclub: {
 		inherit: true,
 		accuracy: 90
 	},
