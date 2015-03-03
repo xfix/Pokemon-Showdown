@@ -4026,13 +4026,13 @@ exports.BattleScripts = {
 			'&jdarden': {
 				species: 'Dragonair', ability: 'Fur Coat', item: 'Eviolite', gender: 'M',
 				moves: ['rest', 'sleeptalk', 'quiverdance'], name: 'jdarden',
-				baseSignatureMove: 'dragontail', signatureMove: "Name Undecided",
+				baseSignatureMove: 'dragontail', signatureMove: "Wyvern's Wind",
 				evs: {hp:252, def:4, spd:252}, nature: 'Calm'
 			},
 			'&Okuu': {
 				species: 'Honchkrow', ability: 'Desolate Land', item: 'Life Orb', gender: 'F',
 				moves: ['sacredfire', ['bravebird', 'punishment', 'flamecharge'][this.random(3)], 'roost'],
-				baseSignatureMove: 'extremespeed', signatureMove: "Blazing Star - Ten Evil Stars",
+				baseSignatureMove: 'firespin', signatureMove: "Blazing Star - Ten Evil Stars",
 				evs: {atk:252, spa:4, spe:252}, nature: 'Quirky'
 			},
 			'&Slayer95': {
@@ -4056,7 +4056,7 @@ exports.BattleScripts = {
 			'&verbatim': {
 				species: 'Archeops', ability: 'Reckless', item: 'Life Orb', gender: 'M',
 				moves: ['headsmash', 'highjumpkick', 'flareblitz', 'volttackle', 'woodhammer'],
-				baseSignatureMove: 'dragonascent', signatureMove: "Glass Cannon",
+				baseSignatureMove: 'bravebird', signatureMove: "Glass Cannon",
 				evs: {hp:4, atk:252, spe:252}, nature: 'Jolly'
 			},
 			// Mods.
@@ -4296,9 +4296,9 @@ exports.BattleScripts = {
 			},
 			'@Reverb': {
 				species: 'Slaking', ability: 'Scrappy', item: 'Assault Vest', gender: 'M',
-				moves: ['return', 'earthquake', 'drainpunch', 'vcreate'],
+				moves: ['feint', 'earthquake', 'drainpunch', 'blazekick'], // Feint as a countermeasure to the abundance of Protect-based set-up moves.
 				baseSignatureMove: 'eggbomb', signatureMove: "fat monkey",
-				evs: {atk:176, spd:80, spe:252}, nature: 'Adamant'
+				evs: {hp:252, atk:4, spe:252}, nature: 'Adamant' // EV-nerf.
 			},
 			'@RosieTheVenusaur': {
 				species: 'Venusaur', ability: 'Moxie', item: 'Leftovers', gender: 'F',
@@ -4310,7 +4310,7 @@ exports.BattleScripts = {
 				species: 'Cryogonal', ability: 'Magic Guard', item: 'Focus Sash', gender: 'M',
 				moves: ['rapidspin', 'willowisp', 'taunt', 'recover', 'voltswitch'],
 				baseSignatureMove: 'icebeam', signatureMove: "Eroding Frost",
-				evs: {hp:252, spa:4, spe:252}, nature: 'Timid'
+				evs: {spa:252, spd:4, spe:252}, nature: 'Timid'
 			},
 			'@Scotteh': {
 				species: 'Suicune', ability: 'Fur Coat', item: 'Leftovers', gender: 'M',
@@ -4468,7 +4468,7 @@ exports.BattleScripts = {
 			},
 			'%DTC': {
 				species: 'Charizard', ability: 'Magic Guard', item: 'Charizardite X', gender: 'M',
-				moves: ['shiftgear', 'sacredfire', 'roost'],
+				moves: ['shiftgear', 'blazekick', 'roost'],
 				baseSignatureMove: 'dragonrush', signatureMove: "Dragon Smash",
 				evs: {hp:4, atk:252, spe:252}, nature: 'Adamant'
 			},
