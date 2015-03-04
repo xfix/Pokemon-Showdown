@@ -4588,9 +4588,9 @@ exports.BattleScripts = {
 			},
 			'@Kostitsyn-Kun': {
 				species: 'Gothorita', ability: 'Simple', item: 'Eviolite', gender: 'F', //requested
-				moves: ['calmmind', 'psystrike', ['moonblast', 'secretsword'][this.random(2)]],
+				moves: ['calmmind', 'psyshock', ['dazzlinggleam', 'secretsword'][this.random(2)]],
 				baseSignatureMove: 'refresh', signatureMove: "Kawaii-desu uguu~",
-				evs: {hp:252, def:252, spd:4}, nature: 'Bold'
+				evs: {hp:252, def:136, spe:120}, nature: 'Bold'
 			},
 			'@kupo': {
 				species: 'Pikachu', ability: 'Prankster', item: "Light Ball", gender: 'M',
