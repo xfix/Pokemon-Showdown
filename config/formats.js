@@ -3922,17 +3922,18 @@ exports.Formats = [
 					source.addVolatile('needles');
 				};
 			}
-			if (move.id === 'fireblast' && name === 'naniman') {
-				move.name = 'Tanned';
-				move.accuracy = 100;
-				move.secondaries = [{status:'brn', chance:100}];
-				move.onTryHit = function (target, source, move) {
-					this.attrLastMove('[still]');
-					this.add('-anim', source, "Eruption", target);
-				};
-				move.onHit = function (target, source) {
-					this.boost({atk:1, spa:1, evasion:-1, accuracy:-1}, source, source);
-				}
+			if (name === 'naniman') {
+				if (move.id === 'fireblast') {
+					move.name = 'Tanned';
+					move.accuracy = 100;
+					move.secondaries = [{status:'brn', chance:100}];
+					move.onTryHit = function (target, source, move) {
+						this.attrLastMove('[still]');
+						this.add('-anim', source, "Eruption", target);
+					};
+					move.onHit = function (target, source) {
+						this.boost({atk:1, spa:1, evasion:-1, accuracy:-1}, source, source);
+				} else if (move.id === 'topsyturvy') move.name = 'rof';
 			}
 			if (move.id === 'inferno' && name === 'nixhex') {
 				move.name = 'Beautiful Disaster';
