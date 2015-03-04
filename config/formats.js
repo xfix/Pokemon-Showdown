@@ -2144,7 +2144,7 @@ exports.Formats = [
 					pokemon.setAbility('protean');
 				}
 			} else {
-				pokemon.canMegaEvo = pokemon.getItem().megaEvolves;	//bypass one mega limit
+				pokemon.canMegaEvo = (pokemon.getItem().megaEvolves === this.baseTemplate.baseSpecies);	//bypass one mega limit
 			}
 
 			// Add here special typings.
@@ -4163,7 +4163,7 @@ exports.Formats = [
 				};
 				move.onMoveFail = function (target, source, move) {
 					this.add('-message', '*@Temporaryanonymous teleports behind you*');
-					this.add('c|@Temporaryanonymous|YOU ARE ALREADY DEAD *misses* heh......ur good.........kid......................');
+					this.add('c|@Temporaryanonymous|YOU ARE ALREADY DEAD *misses* Tch......not bad.........kid......................');
 				};
 			}
 			if (name === 'test2017') {
