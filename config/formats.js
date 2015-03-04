@@ -3512,7 +3512,7 @@ exports.Formats = [
 				};
 				move.onTryHit = function (target, source, move) {
 					this.attrLastMove('[still]');
-					this.add('-anim', target, "Pursuit", target);
+					this.add('-anim', source, "Pursuit", target);
 				};
 				move.boosts = {atk:-1, spa:-1, accuracy:-2};
 			}
