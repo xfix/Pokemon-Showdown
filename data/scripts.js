@@ -4674,7 +4674,7 @@ exports.BattleScripts = {
 				species: 'Unown', ability: 'Levitate', item: 'Focus Sash', gender: 'M',
 				moves: [],
 				baseSignatureMove: 'meditate', signatureMove: "Hidden Power... Normal?",
-				evs: {hp:252, def:4, spa:252}, ivs: {atk:0, spe:0}, nature: 'Quiet'
+				evs: {hp:252, def:40, spa:216}, ivs: {atk:0, spe:0}, nature: 'Quiet'
 			},
 			'@Relados': {
 				species: 'Terrakion', ability: 'Guts', item: 'Flame Orb', gender: 'M',
@@ -4921,7 +4921,7 @@ exports.BattleScripts = {
 				evs: {atk:252, def:4, spe:252}, nature: 'Jolly'
 			},
 			'%uselesstrainer': {
-				species: 'Scatterbug', ability: 'Skill Link', item: 'Altarianite', gender: 'M',
+				species: 'Scatterbug', ability: 'Skill Link', item: 'Mail', gender: 'M',
 				moves: ['explosion', 'stringshot', 'stickyweb', 'spiderweb', 'mist'],
 				baseSignatureMove: 'bulletpunch', signatureMove: "Ranting",
 				evs: {atk:252, def:4, spe:252}, nature: 'Jolly'
