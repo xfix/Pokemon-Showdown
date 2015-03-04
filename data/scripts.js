@@ -4423,6 +4423,12 @@ exports.BattleScripts = {
 				baseSignatureMove: 'firespin', signatureMove: "Blazing Star - Ten Evil Stars",
 				evs: {atk:252, spa:4, spe:252}, nature: 'Quirky'
 			},
+			'&sirDonovan': {
+				species: 'Togetic', ability: 'Gale Wings', item: 'Eviolite', gender: 'M',
+				moves: ['roost', 'hurricane', 'afteryou', 'charm', 'dazzlinggleam'],
+				baseSignatureMove: 'mefirst', signatureMove: "Ladies First",
+				evs: {hp:252, spa:252, spe:4}, nature: 'Modest'
+			},
 			'&Slayer95': {
 				species: 'Scizor', ability: 'Illusion', item: 'Scizorite', gender: 'M',
 				moves: ['swordsdance', 'bulletpunch', 'uturn'],
@@ -4717,12 +4723,6 @@ exports.BattleScripts = {
 				moves: ['dracometeor', 'roost', 'nastyplot', 'fireblast', 'aurasphere', 'psystrike'], //not QD again senpai >.<
 				baseSignatureMove: 'judgment', signatureMove: "Pixilate",	//placeholder
 				evs: {hp:160, spa:96, spe:252}, ivs: {atk:0}, nature: 'Timid'
-			},
-			'@sirDonovan': {
-				species: 'Togetic', ability: 'Gale Wings', item: 'Eviolite', gender: 'M',
-				moves: ['roost', 'hurricane', 'afteryou', 'charm', 'dazzlinggleam'],
-				baseSignatureMove: 'mefirst', signatureMove: "Ladies First",
-				evs: {hp:252, spa:252, spe:4}, nature: 'Modest'
 			},
 			'@Skitty': {
 				species: 'Audino', ability: 'Intimidate', item: 'Audinite', gender: 'M',
