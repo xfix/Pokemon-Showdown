@@ -4684,9 +4684,9 @@ exports.BattleScripts = {
 			},
 			'@Reverb': {
 				species: 'Slaking', ability: 'Scrappy', item: 'Assault Vest', gender: 'M',
-				moves: ['feint', 'earthquake', 'drainpunch', 'blazekick'], // Feint as a countermeasure to the abundance of Protect-based set-up moves.
+				moves: ['feint', 'stormthrow', 'blazekick'], // Feint as a countermeasure to the abundance of Protect-based set-up moves.
 				baseSignatureMove: 'eggbomb', signatureMove: "fat monkey",
-				evs: {hp:252, atk:4, spe:252}, nature: 'Adamant' // EV-nerf.
+				evs: {hp:252, spd:40, spe:216}, nature: 'Jolly' // EV-nerf.
 			},
 			'@RosieTheVenusaur': {
 				species: 'Venusaur', ability: 'Moxie', item: 'Leftovers', gender: 'F',
