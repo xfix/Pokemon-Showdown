@@ -3783,7 +3783,7 @@ exports.Formats = [
 					source.removeVolatile('confusion');
 					source.removeVolatile('curse');
 					source.removeVolatile('attract');
-					if (this.random(4) === 1) {
+					if (this.random(7) === 1) {
 						pokemon.side.foe.active[0].addVolatile('attract');
 					}
 				};
