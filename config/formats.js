@@ -3933,6 +3933,7 @@ exports.Formats = [
 					};
 					move.onHit = function (target, source) {
 						this.boost({atk:1, spa:1, evasion:-1, accuracy:-1}, source, source);
+					};
 				} else if (move.id === 'topsyturvy') move.name = 'rof';
 			}
 			if (move.id === 'inferno' && name === 'nixhex') {
