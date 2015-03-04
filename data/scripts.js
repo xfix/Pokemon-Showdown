@@ -4709,7 +4709,7 @@ exports.BattleScripts = {
 			'@shaymin': {
 				species: 'Shaymin-Sky', ability: 'Serene Grace', item: 'Expert Belt', gender: 'F',
 				moves: ['seedflare', 'airslash', ['secretsword', 'earthpower', 'roost'][this.random(3)]],
-				baseSignatureMove: 'protect', signatureMove: "Flower Garden",
+				baseSignatureMove: 'detect', signatureMove: "Flower Garden",
 				evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
 			},
 			'@shrang': {
