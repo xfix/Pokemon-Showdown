@@ -4224,8 +4224,8 @@ exports.Formats = [
 					this.attrLastMove('[still]');
 					this.add('-anim', source, "Seismic Toss", target);
 				};
-				// todo: effect
-				// ignores all field effects and abilities
+				move.accuracy = true;
+				move.affectedByImmunities = false;
 			}
 			if (move.id === 'detect' && name === 'zebraiken') {
 				move.name = 'bzzt';
