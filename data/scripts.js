@@ -4648,7 +4648,7 @@ exports.BattleScripts = {
 			},
 			'@Nani Man': {
 				species: 'Gengar', ability: 'Desolate Land', item: 'Black Glasses', gender: 'M', shiny: true,
-				moves: ['eruption', 'swagger', 'shadow ball', 'attract', 'dazzlinggleam'],
+				moves: ['eruption', 'swagger', 'shadow ball', 'topsyturvy', 'dazzlinggleam'],
 				baseSignatureMove: 'fireblast', signatureMove: "Tanned",
 				evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
 			},
@@ -4671,7 +4671,7 @@ exports.BattleScripts = {
 				evs: {hp:252, spa:252, def:4}, nature: 'Quirky'
 			},
 			'@qtrx': {
-				species: 'Unown', ability: 'Levitate', item: 'Focus Sash', gender: 'M',
+				species: 'Unown', ability: 'Technician', item: 'Focus Sash', gender: 'M',
 				moves: [],
 				baseSignatureMove: 'meditate', signatureMove: "Hidden Power... Normal?",
 				evs: {hp:252, def:4, spa:252}, ivs: {atk:0, spe:0}, nature: 'Quiet'
@@ -4709,7 +4709,7 @@ exports.BattleScripts = {
 			'@shaymin': {
 				species: 'Shaymin-Sky', ability: 'Serene Grace', item: 'Expert Belt', gender: 'F',
 				moves: ['seedflare', 'airslash', ['secretsword', 'earthpower', 'roost'][this.random(3)]],
-				baseSignatureMove: 'protect', signatureMove: "Flower Garden",
+				baseSignatureMove: 'detect', signatureMove: "Flower Garden",
 				evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
 			},
 			'@shrang': {
@@ -4921,7 +4921,7 @@ exports.BattleScripts = {
 				evs: {atk:252, def:4, spe:252}, nature: 'Jolly'
 			},
 			'%uselesstrainer': {
-				species: 'Scatterbug', ability: 'Skill Link', item: 'Altarianite', gender: 'M',
+				species: 'Scatterbug', ability: 'Skill Link', item: 'Mail', gender: 'M',
 				moves: ['explosion', 'stringshot', 'stickyweb', 'spiderweb', 'mist'],
 				baseSignatureMove: 'bulletpunch', signatureMove: "Ranting",
 				evs: {atk:252, def:4, spe:252}, nature: 'Jolly'
