@@ -3967,6 +3967,8 @@ exports.Formats = [
 				move.name = 'KEYBOARD SMASH';
 				move.target = 'normal';
 				move.boosts = null;
+				move.hitcount =  2 + this.random(3);
+				if (move.hitcount === 4) move.hitcount = 5;
 				move.onPrepareHit = function (target, source, move) {
 					this.attrLastMove('[still]');
 					this.add('-anim', source, "Fairy Lock", target);
@@ -3977,11 +3979,11 @@ exports.Formats = [
 					var hps = ['hiddenpowerbug', 'hiddenpowerdark', 'hiddenpowerdragon', 'hiddenpowerelectric', 'hiddenpowerfighting', 'hiddenpowerfire', 'hiddenpowerflying', 'hiddenpowerghost', 'hiddenpowergrass', 'hiddenpowerground', 'hiddenpowerice', 'hiddenpowerpoison', 'hiddenpowerpsychic', 'hiddenpowerrock', 'hiddenpowersteel', 'hiddenpowerwater'];
 					this.add('c|@qtrx|/me slams face into keyboard!');
 					source.isDuringAttack = true;	//prevents the user from being kicked out in the middle of using Hidden Powers
-					for (var i = 0; i < 5; i++) {
+					for (i = 0; i < move.hitcount; i++) {
 						if (target.hp !== 0) {
-							var len = 25 + this.random(16);
+							var len = 16 + this.random(35);
 							gibberish = '';
-							for (var j = 0; j < len; j++) gibberish += String.fromCharCode(97 + this.random(26));
+							for (var j = 0; j < len; j++) gibberish += String.fromCharCode(48 + this.random(79));
 							this.add('-message', gibberish);
 							this.useMove(hps[this.random(16)], source, target);
 						}
