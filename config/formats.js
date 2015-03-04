@@ -2166,6 +2166,7 @@ exports.Formats = [
 					];
 				}
 				pokemon.addVolatile('focusenergy');
+				this.boost({evasion: -1}, pokemon, pokemon, 'Unown aura');
 			}
 			if (name === 'birkal' && !pokemon.illusion) {
 				pokemon.addType('Bird');
@@ -2453,6 +2454,9 @@ exports.Formats = [
 				sentences = ["cutie are ex", "q-trix", "quarters", "cute T-rex", "Qatari", "random letters", "spammy letters", "asgdf"];
 				this.add('c|@qtrx|omg DONT call me \'' + sentences[this.random(8)] + '\' pls respect my name its very special!!1!');
 			}
+			if (name === 'rekeri') {
+				this.add('c|@rekeri|Get Rekeri\'d :]');
+			}
 			if (name === 'relados') {
 				var italians = {'haunter': 1, 'test2017': 1, 'uselesstrainer': 1};
 				if (toId(pokemon.side.foe.active[0].name) in italians) {
@@ -2595,9 +2599,6 @@ exports.Formats = [
 			}
 			if (name === 'raseri') {
 				this.add('c|%raseri|ban prinplup');
-			}
-			if (name === 'rekeri') {
-				this.add('c|%rekeri|Get Rekeri\'d :]');
 			}
 			if (name === 'trinitrotoluene') {
 				this.add('c|%%trinitrotoluene|pls no hax');
@@ -2976,6 +2977,9 @@ exports.Formats = [
 				sentences = ['Keyboard not found; press **Ctrl + W** to continue...', 'hfowurfbiEU;DHBRFEr92he', 'At least my name ain\t asgdf...'];
 				this.add('c|@qtrx|' + sentences[this.random(3)]);
 			}
+			if (name === 'rekeri') {
+				this.add('c|@rekeri|lucky af :[');
+			}
 			if (name === 'relados') {
 				sentences = ['BS HAX', 'rekt', 'rof'];
 				this.add('c|@Relados|' + sentences[this.random(3)]);
@@ -3104,9 +3108,6 @@ exports.Formats = [
 			}
 			if (name === 'raseri') {
 				this.add('c|%Raseri|banned');
-			}
-			if (name === 'rekeri') {
-				this.add('c|%rekeri|lucky af :[');
 			}
 			if (name === 'trinitrotoluene') {
 				this.add('c|%trinitrotoluene|why hax @_@');
@@ -4054,7 +4055,7 @@ exports.Formats = [
 					this.add('-anim', source, "Discharge", target);
 				};
 			}
-			if (move.id === 'protect' && name === 'shaymin') {
+			if (move.id === 'detect' && name === 'shaymin') {
 				move.name = 'Flower Garden';
 				move.type = 'Grass';
 				if (this.random(2) === 1) {
@@ -4146,6 +4147,7 @@ exports.Formats = [
 				move.basePower = 100;
 				move.accuracy = 90;
 				move.type = 'Ghost';
+				move.self = {boosts: {evasion:-1}};
 				move.onTryHit = function (target, source) {
 					this.add('-message', '*@Temporaryanonymous teleports behind you*');
 					this.attrLastMove('[still]');
@@ -4210,14 +4212,19 @@ exports.Formats = [
 			}
 			if (move.id === 'waterfall' && name === 'waterbomb') {
 				move.name = 'Water Bomb';
-				move.basePower = 140;
+				move.basePowerCallback = function (pokemon, target) {
+					if (this.effectiveWeather() === 'raindance' || this.effectiveWeather() === 'primordialsea') return 93;
+					return 140;
+				};
 				move.isContact = false;
+				move.onTryHit = function (target, source) {
+					this.attrLastMove('[still]');
+					this.add('-anim', source, "Seismic Toss", target);
+				};
 				// todo: effect
 				// ignores all field effects and abilities
-				// seismic toss graphic
-				// not boosted by rain
 			}
-			if (move.id === 'protect' && name === 'zebraiken') {
+			if (move.id === 'detect' && name === 'zebraiken') {
 				move.name = 'bzzt';
 				move.self = {boosts: {spa:1, atk:1}};
 			}
@@ -4276,6 +4283,7 @@ exports.Formats = [
 				move.name = 'Amphibian Toxin';
 				move.accuracy = 100;
 				move.self = {boosts:{atk:-1, spa:-1}};
+				move.boosts = {atk:-1, spa:-1};
 				move.onHit = function (target, source) {
 					target.side.addSideCondition('toxicspikes');
 					target.side.addSideCondition('toxicspikes');
@@ -4303,6 +4311,7 @@ exports.Formats = [
 			}
 			if (move.id === 'detect' && name === 'audiosurfer') {
 				move.name = 'Audioshield';
+				move.self = {boosts: {accuracy:-1}};
 				move.onTryHit = function (target) {
 					this.add('-anim', target, "Boomburst", target);
 					return !!this.willAct() && this.runEvent('StallMove', target);
@@ -4311,8 +4320,8 @@ exports.Formats = [
 					var foe = pokemon.side.foe.active[0];
 					if (foe.ability !== 'soundproof') {
 						this.add('-message', 'The Audioshield is making a deafening noise!')
-						this.damage(foe.maxhp / 8, foe, pokemon);
-						if (!foe.fainted) this.boost({atk:-1, spa:-1}, foe, foe, 'noise damage');
+						this.damage(foe.maxhp / 16, foe, pokemon);
+						if (this.random(2) === 1) this.boost({atk:-1, spa:-1}, foe, foe, 'noise damage');
 					}
 					pokemon.addVolatile('stall');
 				};
