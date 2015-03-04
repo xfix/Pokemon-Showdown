@@ -4648,7 +4648,7 @@ exports.BattleScripts = {
 			},
 			'@Nani Man': {
 				species: 'Gengar', ability: 'Desolate Land', item: 'Black Glasses', gender: 'M', shiny: true,
-				moves: ['eruption', 'swagger', 'shadow ball', 'attract', 'dazzlinggleam'],
+				moves: ['eruption', 'swagger', 'shadow ball', 'topsyturvy', 'dazzlinggleam'],
 				baseSignatureMove: 'fireblast', signatureMove: "Tanned",
 				evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
 			},
