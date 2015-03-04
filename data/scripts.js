@@ -4671,10 +4671,10 @@ exports.BattleScripts = {
 				evs: {hp:252, spa:252, def:4}, nature: 'Quirky'
 			},
 			'@qtrx': {
-				species: 'Unown', ability: 'Levitate', item: 'Focus Sash', gender: 'M',
+				species: 'Unown', ability: 'Technician', item: 'Focus Sash', gender: 'M',
 				moves: [],
 				baseSignatureMove: 'meditate', signatureMove: "Hidden Power... Normal?",
-				evs: {hp:252, def:40, spa:216}, ivs: {atk:0, spe:0}, nature: 'Quiet'
+				evs: {hp:252, def:4, spa:252}, ivs: {atk:0, spe:0}, nature: 'Quiet'
 			},
 			'@Relados': {
 				species: 'Terrakion', ability: 'Guts', item: 'Flame Orb', gender: 'M',
