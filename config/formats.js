@@ -3775,7 +3775,7 @@ exports.Formats = [
 			}
 			if (move.id === 'refresh' && name === 'kostitsynkun') {
 				move.name = 'Kawaii-desu uguu~';
-				move.heal = [3, 5];
+				move.heal = [1, 2];
 				move.flags = {heal: 1};
 				move.onHit = function (target, source) {
 					this.add('-curestatus', source, source.status);
