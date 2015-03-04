@@ -2144,7 +2144,7 @@ exports.Formats = [
 					pokemon.setAbility('protean');
 				}
 			} else {
-				pokemon.canMegaEvo = (pokemon.getItem().megaEvolves === pokemon.baseTemplate.baseSpecies);	//bypass one mega limit
+				pokemon.canMegaEvo = this.canMegaEvo(pokemon); //bypass one mega limit
 			}
 
 			// Add here special typings.
