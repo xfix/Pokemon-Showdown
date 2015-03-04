@@ -2260,6 +2260,9 @@ exports.Formats = [
 				sentences = ["Current Discussion Topics: Benefits of Nuclear Energy, green raymoo worst raymoo, ...", "Current Discussion Topics: I ate the Sun - AMA, Card Games inside of Fighting Games, ...", "Current Discussion Topics: Our testing process shouldn't include Klaxons, Please remove Orin from keyboard prior to entering chat, ...", "Current Discussion Topics: Please refrain from eating crow, We'll get out of Beta once we handle all of this Alpha Decay, ...", "Current Discussion Topics: Schroedinger's Chen might still be in that box, I'm So Meta Even This Acronym, ...", "Current Discussion Topics: What kind of idiot throws knives into a thermonuclear explosion?, わからない ハハハ, ..."].randomize();
 				this.add('c|&Okuu|' + sentences[0]);
 			}
+			if (name === 'sirdonovan') {
+				this.add('c|&sirDonovan|Oh, a battle? Let me finish my tea and crumpets');
+			}
 			if (name === 'sweep') {
 				this.add('c|&Sweep|xD');
 			}
@@ -2483,9 +2486,6 @@ exports.Formats = [
 			}
 			if (name === 'shaymin') {
 				this.add('c|@shaymin|Ready for hax?');
-			}
-			if (name === 'sirdonovan') {
-				this.add('c|@sirDonovan|Oh, a battle? Let me finish my tea and crumpets');
 			}
 			if (name === 'skitty') {
 				this.add('c|@Skitty|\\_$-_-$_/');
@@ -2781,6 +2781,9 @@ exports.Formats = [
 			if (name === 'okuu') {
 				this.add('c|&Okuu|...and Smooth Jazz.');
 			}
+			if (name === 'sirdonovan') {
+				this.add('-message', 'RIP sirDonovan');
+			}
 			if (name === 'slayer95') {
 				this.add('c|&Slayer95|I may be defeated this time, but that is irrevelant in the grand plot of seasonals!');
 			}
@@ -2999,9 +3002,6 @@ exports.Formats = [
 			}
 			if (name === 'shaymin') {
 				this.add('c|@shaymin|You\'ve done well, perhaps...too well, even beating the odds!');
-			}
-			if (name === 'sirdonovan') {
-				this.add('-message', 'RIP sirDonovan');
 			}
 			if (name === 'skitty') {
 				this.add('c|@Skitty|!learn skitty, roleplay');
@@ -3442,6 +3442,22 @@ exports.Formats = [
 					if (oldAbility) {
 						this.add('-ability', target, target.ability, '[from] move: Blazing Star - Ten Evil Stars');
 						this.runEvent('EndAbility', target, oldAbility);
+					}
+				};
+			}
+			if (move.id === 'mefirst' && name === 'sirdonovan') {
+				move.name = 'Ladies First';
+				move.category = 'Special';
+				move.type = 'Fairy';
+				move.basePower = 120;
+				move.accuracy = 100;
+				move.self = {boosts: {spe:1}};
+				move.onHit = function (target, pokemon) {
+					var decision = this.willMove(pokemon);
+					if (decision && target.gender === 'F') {
+						this.cancelMove(pokemon);
+						this.queue.unshift(decision);
+						this.add('-activate', pokemon, 'move: Ladies First');
 					}
 				};
 			}
@@ -4070,22 +4086,6 @@ exports.Formats = [
 			}
 			if (move.id === 'judgment' && name === 'shrang') {
 				move.name = 'Pixilate';	//placeholder
-			}
-			if (move.id === 'mefirst' && name === 'sirdonovan') {
-				move.name = 'Ladies First';
-				move.category = 'Special';
-				move.type = 'Fairy';
-				move.basePower = 120;
-				move.accuracy = 100;
-				move.self = {boosts: {spe:1}};
-				move.onHit = function (target, pokemon) {
-					var decision = this.willMove(pokemon);
-					if (decision && target.gender === 'F') {
-						this.cancelMove(pokemon);
-						this.queue.unshift(decision);
-						this.add('-activate', pokemon, 'move: Ladies First');
-					}
-				};
 			}
 			if (move.id === 'storedpower' && name === 'skitty') {
 				move.name = 'Ultimate Dismissal';
