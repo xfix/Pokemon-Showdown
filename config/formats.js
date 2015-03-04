@@ -4297,7 +4297,7 @@ exports.Formats = [
 				delete move.status;
 				move.category = 'Special';
 				move.damageCallback = function (pokemon) {
-					return pokemon.hp;
+					return pokemon.hp * 7 / 8;
 				};
 				move.onHit = function (target, source) {
 					if (this.random(2) === 1) target.addVolatile('confusion');
