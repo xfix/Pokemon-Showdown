@@ -4393,7 +4393,7 @@ exports.BattleScripts = {
 				evs: {hp:252, def:4, spd:252}, nature: 'Sassy'
 			},
 			'~V4': {
-				species: 'Victini', ability: 'Desolate Land', item: ['Charcoal', 'Choice Scarf', 'Leftovers', 'Life Orb'][this.random(4)], gender: 'M',
+				species: 'Victini', ability: 'Desolate Land', item: ['Charcoal', 'Leftovers', 'Life Orb'][this.random(3)], gender: 'M',
 				moves: ['thousandarrows', 'bolt strike', 'shiftgear', 'dragonascent', 'closecombat', 'substitute'],
 				baseSignatureMove: 'vcreate', signatureMove: "V-Generate",
 				evs: {hp:4, atk:252, spe:252}, nature: 'Jolly'
@@ -4516,9 +4516,9 @@ exports.BattleScripts = {
 			},
 			'@Dell': {
 				species: 'Lucario', ability: 'Simple', item: 'Lucarionite', gender: 'M',
-				moves: ['jumpkick', ['irontail', 'bulletpunch'][this.random(2)], 'batonpass'],
+				moves: ['jumpkick', ['flashcannon', 'bulletpunch'][this.random(2)], 'batonpass'],
 				baseSignatureMove: 'detect', signatureMove: "Aura Parry",
-				evs: {hp:4, atk:252, spe:252}, nature: 'Jolly'
+				evs: {hp:4, atk:216, spa:36, spe:252}, nature: 'Naive'
 			},
 			'@Electrolyte': {
 				species: 'Elekid', ability: 'Pure Power', item: 'Life Orb', gender: 'M',
