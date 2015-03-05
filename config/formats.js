@@ -3145,7 +3145,17 @@ exports.Formats = [
 				this.add('c|+SOMALIA|tired of this shitass game');
 			}
 			if (name === 'xfix') {
-				this.add('c|+xfix|(gg... I guess)');
+				var foe = pokemon.side.foe.active[0];
+				if (foe.name === '+xfix') {
+					this.add('c|+xfix|(annoying Dittos...)')
+				}
+				else if (foe.ability === 'magicbounce') {
+					this.add('c|+xfix|(why ' + foe.name + ' has Magic Bounce...)');
+					this.add('c|+xfix|(gg... why...)');
+				}
+				else {
+					this.add('c|+xfix|(gg... I guess)');
+				}
 			}
 		},
 		onSwitchOut: function (pokemon) {
