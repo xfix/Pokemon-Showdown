@@ -2533,7 +2533,7 @@ exports.Formats = [
 				this.add('c|@WaterBomb|Get off my lawn! *shakes cane*');
 			}
 			if (name === 'zdrup') {
-				this.add('c|@zdrup|This is gonna be legen... WAIT FOR IT...');
+				this.add('c|@zdrup|Wait for it...');
 			}
 			if (name === 'zebraiken') {
 				pokemon.phraseIndex = this.random(3); 
@@ -2574,6 +2574,9 @@ exports.Formats = [
 					this.add('c|%Audiosurfer| Just came back from surfing. Don\'t believe me? Here\'s a pic: http://fc02.deviantart.net/fs70/i/2011/352/d/3/surf_all_the_oceans_by_dawn_shade-d4jga6b.png');
 				}
 			}
+			if (name === 'birkal') {
+				this.add('c|%birkal|caw');
+			}
 			if (name === 'bloobblob') {
 				this.add('c|%bloobblob|Contract?');
 			}
@@ -2610,9 +2613,6 @@ exports.Formats = [
 			//voices
 			if (name === 'aldaron') {
 				this.add('c|+Aldaron|indefatigable workhorse');
-			}
-			if (name === 'birkal') {
-				this.add('c|+birkal|caw');
 			}
 			if (name === 'bmelts') {
 				this.add('c|+bmelts|zero post hero');
@@ -3085,6 +3085,9 @@ exports.Formats = [
 					this.add('c|%Audiosurfer|Back to catching waves.');
 				}
 			}
+			if (name === 'birkal') {
+				this.add('c|%birkal|//birkal');
+			}
 			if (name === 'bloobblob') {
 				this.add('c|%bloobblob|I won\t die! Even if I\'m killed!');
 			}
@@ -3118,9 +3121,6 @@ exports.Formats = [
 			}
 
 			//ex-staff voice
-			if (name === 'birkal') {
-				this.add('c|+birkal|//birkal');
-			}
 			if (name === 'bmelts') {
 				this.add('c|+bmelts|retired now');
 			}
@@ -3205,10 +3205,25 @@ exports.Formats = [
 		// Specific residual events for custom moves.
 		onResidual: function (battle) {
 			for (var s in battle.sides) {
-				for (var p in battle.sides[s].active) {
-					var pokemon = battle.sides[s].active[p];
+				var thisSide = battle.sides[s];
+				if (thisSide.premonTimer > 4) {
+					thisSide.premonTimer = 0;
+					thisSide.premonEffect = true;
+				} else if (thisSide.premonTimer > 0) {
+					if (thisSide.premonTimer == 4) thisSide.addSideCondition('safeguard');
+					thisSide.premonTimer++;
+				}
+				for (var p in thisSide.active) {
+					var pokemon = thisSide.active[p];
 					var name = toId(pokemon.name);
 					
+					if (pokemon.side.premonEffect) {
+						pokemon.side.premonEffect = false;
+						this.add('c|@zdrup|...dary! __**LEGENDARY!**__');
+						this.boost({atk:1, def:1, spa:1, spd:1, spe:1, accuracy:1}, pokemon, pokemon, 'legendary premonition');
+						pokemon.addVolatile('aquaring');
+						pokemon.addVolatile('focusenergy');
+					}
 					if (pokemon.volatiles['resilience'] && !pokemon.fainted ) {
 						this.heal(pokemon.maxhp / 16, pokemon, pokemon);
 						this.add('-message', pokemon.name + "'s resilience healed itself!");
@@ -3603,6 +3618,16 @@ exports.Formats = [
 				move.basePower = 100;
 				move.type = 'Normal';
 				move.self = {boosts: {evasion:-1}};
+			}
+			if (move.id === 'quickattack' && name === 'birkal') {
+				move.name = 'Caw';
+				move.type = 'Bird';
+				move.category = 'Status';
+				move.onHit = function (target) {
+					if (!target.setType('Bird')) return false;
+					this.add('-start', target, 'typechange', 'Bird');
+					this.add('c|%Birkal|caw');
+				};
 			}
 			if (move.id === 'oblivionwing' && name === 'blitzamirin') {
 				move.name = 'Pneuma Relinquish';
@@ -4235,15 +4260,17 @@ exports.Formats = [
 			}
 			if (move.id === 'wish' && name === 'zdrup') {
 				move.name = 'Premonition';
-				move.effect = {
-					duration: 5,
-					onResidualOrder: 4,
-					onEnd: function (side) {
-						var target = side.active[this.effectData.sourcePosition];
-						if (!target.fainted) {
-							target.boost({atk:1, def:1, spa:1, spd:1, spe:1, accuracy:1});
-						}
+				delete move.flags;
+				move.sideCondition = 'mist';
+				move.onTryHit = function (pokemon) {
+					if (pokemon.side.premonTimer) {
+						this.add ('-hint', 'Premonition\'s effect is already underway!');
+						return false;
 					}
+				};
+				move.onHit = function (pokemon) {
+					pokemon.side.premonTimer = 1;
+					this.add('c|@zdrup|WAIT FOR IT... This is gonna be legen... ');
 				};
 			}
 
@@ -4274,11 +4301,16 @@ exports.Formats = [
 				move.onHit = function (target, source) {
 					if (source.hp) {
 						var hasRemovedHazards = false;
-						var sideConditions = {spikes:1, toxicspikes:1, stealthrock:1, stickyweb:1};
+						var sideConditions = {'spikes': 1, 'toxicspikes': 1, 'stealthrock': 1, 'stickyweb': 1};
 						for (var i in sideConditions) {
-							target.side.removeSideCondition(i);
-							source.side.removeSideCondition(i);
-							hasRemovedHazards = true;
+							if (target.side.removeSideCondition(i)) {
+								hasRemovedHazards = true;
+								this.add('-sideend', target.side, this.getEffect(i).name, '[from] move: Doubles Purism', '[of] ' + source);
+							}
+							if (source.side.removeSideCondition(i)) {
+								hasRemovedHazards = true;
+								this.add('-sideend', source.side, this.getEffect(i).name, '[from] move: Doubles Purism', '[of] ' + source);
+							}
 						}
 						if (hasRemovedHazards) this.add('c|%Arcticblast|HAZARDS ARE TERRIBLE IN DOUBLES');
 					}
@@ -4508,16 +4540,6 @@ exports.Formats = [
 				move.onTryHit = function (target, source) {
 					this.attrLastMove('[still]');
 					this.add('-anim', source, "Simple Beam", target);
-				};
-			}
-			if (move.id === 'quickattack' && name === 'birkal') {
-				move.name = 'Caw';
-				move.type = 'Bird';
-				move.category = 'Status';
-				move.onHit = function (target) {
-					if (!target.setType('Bird')) return false;
-					this.add('-start', target, 'typechange', 'Bird');
-					this.add('c|+Birkal|caw');
 				};
 			}
 			if (move.id === 'partingshot' && name === 'bmelts') {
