@@ -2258,7 +2258,7 @@ exports.Formats = [
 			}
 			if (name === 'okuu') {
 				sentences = ["Current Discussion Topics: Benefits of Nuclear Energy, green raymoo worst raymoo, ...", "Current Discussion Topics: I ate the Sun - AMA, Card Games inside of Fighting Games, ...", "Current Discussion Topics: Our testing process shouldn't include Klaxons, Please remove Orin from keyboard prior to entering chat, ...", "Current Discussion Topics: Please refrain from eating crow, We'll get out of Beta once we handle all of this Alpha Decay, ...", "Current Discussion Topics: Schroedinger's Chen might still be in that box, I'm So Meta Even This Acronym, ...", "Current Discussion Topics: What kind of idiot throws knives into a thermonuclear explosion?, わからない ハハハ, ..."].randomize();
-				this.add('c|&Okuu|' + sentences[0]);
+				this.add("raw|<div class=\"broadcast-blue\"><b>" + sentences[0] + "</b></div>");
 			}
 			if (name === 'sirdonovan') {
 				this.add('c|&sirDonovan|Oh, a battle? Let me finish my tea and crumpets');
@@ -2779,7 +2779,7 @@ exports.Formats = [
 				this.add('c|&jdarden|;-;7');
 			}
 			if (name === 'okuu') {
-				this.add('c|&Okuu|...and Smooth Jazz.');
+				this.add("raw|<div class=\"broadcast-blue\"><b>...and Smooth Jazz.</b></div>");
 			}
 			if (name === 'sirdonovan') {
 				this.add('-message', 'RIP sirDonovan');
@@ -3436,6 +3436,7 @@ exports.Formats = [
 				move.accuracy = true;
 				move.type = 'Fire';
 				move.priority = 2;
+				move.status = 'brn';
 				move.self = {boosts: {spa:-1}};
 				move.onHit = function (target, source) {
 					var oldAbility = target.setAbility('solarpower');
@@ -3968,7 +3969,7 @@ exports.Formats = [
 				}];
 				move.onTryHit = function (target, source, move) {
 					this.attrLastMove('[still]');
-					this.add('-anim', source, "Hyper Beam", target);
+					this.add('-anim', source, "Simple Beam", target);
 				};
 			}
 			if (move.id === 'hypnosis' && name === 'osiris') {
@@ -4315,7 +4316,7 @@ exports.Formats = [
 			}
 			if (move.id === 'detect' && name === 'audiosurfer') {
 				move.name = 'Audioshield';
-				move.self = {boosts: {accuracy:-1}};
+				move.secondary = {chance: 50, self: {boosts: {accuracy:-1}}};
 				move.onTryHit = function (target) {
 					this.add('-anim', target, "Boomburst", target);
 					return !!this.willAct() && this.runEvent('StallMove', target);
@@ -4324,7 +4325,7 @@ exports.Formats = [
 					var foe = pokemon.side.foe.active[0];
 					if (foe.ability !== 'soundproof') {
 						this.add('-message', 'The Audioshield is making a deafening noise!')
-						this.damage(foe.maxhp / 16, foe, pokemon);
+						this.damage(foe.maxhp / 12, foe, pokemon);
 						if (this.random(2) === 1) this.boost({atk:-1, spa:-1}, foe, foe, 'noise damage');
 					}
 					pokemon.addVolatile('stall');
@@ -4344,8 +4345,7 @@ exports.Formats = [
 				move.recoil = [3, 4];
 				move.onTryHit = function (target, source) {
 					this.attrLastMove('[still]');
-					this.add('-anim', source, "Giga Impact", target);
-					source.removeVolatile('mustrecharge');
+					this.add('-anim', source, "Head Charge", target);
 				};
 			}
 			if (move.id === 'quickattack' && name === 'eeveegeneral') {
@@ -4507,8 +4507,7 @@ exports.Formats = [
 				};
 				move.onTryHit = function (target, source) {
 					this.attrLastMove('[still]');
-					this.add('-anim', source, "Hyper Beam", target);
-					source.removeVolatile('mustrecharge');
+					this.add('-anim', source, "Simple Beam", target);
 				};
 			}
 			if (move.id === 'quickattack' && name === 'birkal') {
@@ -4551,8 +4550,7 @@ exports.Formats = [
 					move.name = 'Ion Ray of Fun';
 					move.onTryHit = function (target, source) {
 						this.attrLastMove('[still]');
-						this.add('-anim', source, "Hyper Beam", target);
-						source.removeVolatile('mustrecharge');
+						this.add('-anim', source, "Simple Beam", target);
 					};
 				}
 				if (move.id === 'shadowclaw') {
