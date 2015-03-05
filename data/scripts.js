@@ -4455,8 +4455,8 @@ exports.BattleScripts = {
 			},
 			// Mods.
 			'@AM': {
-				species: 'Tyranitar', ability: 'Adaptability', item: ['Lum Berry', 'Choice Scarf'][this.random(2)], gender: 'M',
-				moves: ['knockoff', 'diamondstorm', ['swordsdance', 'meanlook', 'earthquake'][this.random(3)]],
+				species: 'Tyranitar', ability: 'Adaptability', item: ['Lum Berry', 'Choice Scarf'][variant], gender: 'M',
+				moves: ['knockoff', 'diamondstorm', [['swordsdance', 'meanlook'][this.random(2)], 'earthquake'][variant]],
 				baseSignatureMove: 'pursuit', signatureMove: "Predator",
 				evs: {atk:252, def:4, spe: 252}, nature: 'Jolly'
 			},
