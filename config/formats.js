@@ -3610,7 +3610,7 @@ exports.Formats = [
 				move.name = 'Coin Toss';
 				move.accuracy = true;
 				move.category = 'Status';
-				move.priority = (pokemon.ability === 'prankster'? 1 : 0);	//Prankster is not boosting it.
+				move.priority = 1;	//Prankster is not boosting it.
 				move.onHit = function (pokemon) {
 					pokemon.trySetStatus('par');
 					pokemon.addVolatile('confusion');
