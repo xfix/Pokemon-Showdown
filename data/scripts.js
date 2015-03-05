@@ -4848,6 +4848,12 @@ exports.BattleScripts = {
 				baseSignatureMove: 'detect', signatureMove: "Audioshield",
 				evs: {hp:252, spa:252, spe:4}, nature: 'Modest'
 			},
+			'%birkal': {
+				species: 'Rotom-Fan', ability: 'Magic Guard', item: 'Choice Scarf', gender: 'M',
+				moves: ['trick', 'aeroblast', ['discharge', 'partingshot', 'recover', 'tailglow'][this.random(4)]],
+				baseSignatureMove: 'quickattack', signatureMove: "Caw",
+				evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
+			},
 			'%bloobblob': {
 				species: 'Cinccino', ability: 'Skill Link', item: 'Life Orb', gender: 'M',
 				moves: ['bulletseed', 'rockblast', 'uturn', 'tailslap', 'knockoff'],
@@ -4933,12 +4939,6 @@ exports.BattleScripts = {
 				baseSignatureMove: 'superpower', signatureMove: "Admin Decision",
 				evs: {hp:252, atk:252, def:4}, nature: 'Adamant'
 			},
-			'+birkal': {
-				species: 'Rotom-Fan', ability: 'Magic Guard', item: 'Choice Scarf', gender: 'M',
-				moves: ['trick', 'aeroblast', ['discharge', 'partingshot', 'recover', 'tailglow'][this.random(4)]],
-				baseSignatureMove: 'quickattack', signatureMove: "Caw",
-				evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
-			},
 			'+bmelts': {
 				species: 'Mewtwo', ability: 'Regenerator', item: 'Mewtwonite X', gender: 'M',
 				moves: ['batonpass', 'uturn', 'voltswitch'],
@@ -4989,7 +4989,6 @@ exports.BattleScripts = {
 			}/* TODO
 			,
 			talktakestime: {
-
 			}*/
 			//also Jac, Frizy, Diatom, Kenny, Coronis!
 		};
