@@ -4423,6 +4423,12 @@ exports.BattleScripts = {
 				baseSignatureMove: 'firespin', signatureMove: "Blazing Star - Ten Evil Stars",
 				evs: {atk:252, spa:4, spe:252}, nature: 'Quirky'
 			},
+			'&sirDonovan': {
+				species: 'Togetic', ability: 'Gale Wings', item: 'Eviolite', gender: 'M',
+				moves: ['roost', 'hurricane', 'afteryou', 'charm', 'dazzlinggleam'],
+				baseSignatureMove: 'mefirst', signatureMove: "Ladies First",
+				evs: {hp:252, spa:252, spe:4}, nature: 'Modest'
+			},
 			'&Slayer95': {
 				species: 'Scizor', ability: 'Illusion', item: 'Scizorite', gender: 'M',
 				moves: ['swordsdance', 'bulletpunch', 'uturn'],
@@ -4588,9 +4594,9 @@ exports.BattleScripts = {
 			},
 			'@Kostitsyn-Kun': {
 				species: 'Gothorita', ability: 'Simple', item: 'Eviolite', gender: 'F', //requested
-				moves: ['calmmind', 'psystrike', ['moonblast', 'secretsword'][this.random(2)]],
+				moves: ['calmmind', 'psyshock', ['dazzlinggleam', 'secretsword'][this.random(2)]],
 				baseSignatureMove: 'refresh', signatureMove: "Kawaii-desu uguu~",
-				evs: {hp:252, def:252, spd:4}, nature: 'Bold'
+				evs: {hp:252, def:136, spe:120}, nature: 'Bold'
 			},
 			'@kupo': {
 				species: 'Pikachu', ability: 'Prankster', item: "Light Ball", gender: 'M',
@@ -4684,9 +4690,9 @@ exports.BattleScripts = {
 			},
 			'@Reverb': {
 				species: 'Slaking', ability: 'Scrappy', item: 'Assault Vest', gender: 'M',
-				moves: ['feint', 'earthquake', 'drainpunch', 'blazekick'], // Feint as a countermeasure to the abundance of Protect-based set-up moves.
+				moves: ['feint', 'stormthrow', 'blazekick'], // Feint as a countermeasure to the abundance of Protect-based set-up moves.
 				baseSignatureMove: 'eggbomb', signatureMove: "fat monkey",
-				evs: {hp:252, atk:4, spe:252}, nature: 'Adamant' // EV-nerf.
+				evs: {hp:252, spd:40, spe:216}, nature: 'Jolly' // EV-nerf.
 			},
 			'@RosieTheVenusaur': {
 				species: 'Venusaur', ability: 'Moxie', item: 'Leftovers', gender: 'F',
@@ -4717,12 +4723,6 @@ exports.BattleScripts = {
 				moves: ['dracometeor', 'roost', 'nastyplot', 'fireblast', 'aurasphere', 'psystrike'], //not QD again senpai >.<
 				baseSignatureMove: 'judgment', signatureMove: "Pixilate",	//placeholder
 				evs: {hp:160, spa:96, spe:252}, ivs: {atk:0}, nature: 'Timid'
-			},
-			'@sirDonovan': {
-				species: 'Togetic', ability: 'Gale Wings', item: 'Eviolite', gender: 'M',
-				moves: ['roost', 'hurricane', 'afteryou', 'charm', 'dazzlinggleam'],
-				baseSignatureMove: 'mefirst', signatureMove: "Ladies First",
-				evs: {hp:252, spa:252, spe:4}, nature: 'Modest'
 			},
 			'@Skitty': {
 				species: 'Audino', ability: 'Intimidate', item: 'Audinite', gender: 'M',
@@ -4848,6 +4848,12 @@ exports.BattleScripts = {
 				baseSignatureMove: 'detect', signatureMove: "Audioshield",
 				evs: {hp:252, spa:252, spe:4}, nature: 'Modest'
 			},
+			'%birkal': {
+				species: 'Rotom-Fan', ability: 'Magic Guard', item: 'Choice Scarf', gender: 'M',
+				moves: ['trick', 'aeroblast', ['discharge', 'partingshot', 'recover', 'tailglow'][this.random(4)]],
+				baseSignatureMove: 'quickattack', signatureMove: "Caw",
+				evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
+			},
 			'%bloobblob': {
 				species: 'Cinccino', ability: 'Skill Link', item: 'Life Orb', gender: 'M',
 				moves: ['bulletseed', 'rockblast', 'uturn', 'tailslap', 'knockoff'],
@@ -4933,12 +4939,6 @@ exports.BattleScripts = {
 				baseSignatureMove: 'superpower', signatureMove: "Admin Decision",
 				evs: {hp:252, atk:252, def:4}, nature: 'Adamant'
 			},
-			'+birkal': {
-				species: 'Rotom-Fan', ability: 'Magic Guard', item: 'Choice Scarf', gender: 'M',
-				moves: ['trick', 'aeroblast', ['discharge', 'partingshot', 'recover', 'tailglow'][this.random(4)]],
-				baseSignatureMove: 'quickattack', signatureMove: "Caw",
-				evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
-			},
 			'+bmelts': {
 				species: 'Mewtwo', ability: 'Regenerator', item: 'Mewtwonite X', gender: 'M',
 				moves: ['batonpass', 'uturn', 'voltswitch'],
@@ -4989,7 +4989,6 @@ exports.BattleScripts = {
 			}/* TODO
 			,
 			talktakestime: {
-
 			}*/
 			//also Jac, Frizy, Diatom, Kenny, Coronis!
 		};
