@@ -2604,7 +2604,7 @@ exports.Formats = [
 				this.add('c|%raseri|ban prinplup');
 			}
 			if (name === 'trinitrotoluene') {
-				this.add('c|%%trinitrotoluene|pls no hax');
+				this.add('c|%trinitrotoluene|pls no hax');
 			}
 			if (name === 'uselesstrainer') {
 				sentences = ['huehuehuehue', 'PIZA', 'SPAGUETI', 'RAVIOLI RAVIOLI GIVE ME THE FORMUOLI', 'get ready for PUN-ishment'];
