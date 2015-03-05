@@ -4695,6 +4695,39 @@ exports.Formats = [
 			if (move.id === 'metronome' && name === 'xfix') {
 				move.name = '(Super Glitch)';
 				move.multihit = [2, 5];
+				move.onModifyMove = function (source) {
+					if (this.random(777) !== 42) return;
+					var opponent = pokemon.side.foe.active[0];
+					opponent.setStatus('brn');
+					var possibleStatuses = ['confusion', 'flinch', 'attract', 'focusenergy', 'foresight', 'healblock'];
+					for (var i = 0; i < possibleStatuses.length; i++) {
+						if (this.random(3) === 1) {
+							opponent.addVolatile(possibleStatuses[i]);
+						}
+					}
+
+					function generateNoise() {
+						var noise = '';
+						var random = this.random(40, 81);
+						for (var i = 0; i < random; i++) {
+							if (this.random(4) !== 0) {
+								// Non-breaking space
+								noise += '\u00A0';
+							}
+							else {
+								noise += String.fromCharCode(this.random(0xA0, 0x3040));
+							}
+						}
+						return noise;
+					}
+					this.add('-message', "(Enemy " + generateNoise.call(this) + " TMTRAINER " + opponent.name + " is frozen solid?)");
+					this.add('-message', "(Enemy " + generateNoise.call(this) + " TMTRAINER " + opponent.name + " is hurt by its burn!)");
+					this.damage(opponent.maxhp * this.random(42, 96) * 0.01, opponent, opponent);
+					var exclamation = source.status === 'brn' ? '!' : '?';
+					this.add('-message', "(Enemy " + generateNoise.call(this) + " TMTRAINER +xfix is hurt by its burn" + exclamation + ")");
+					this.damage(source.maxhp * this.random(24, 48) * 0.01, source, source);
+					return null;
+				};
 			}
 		}
 	},
