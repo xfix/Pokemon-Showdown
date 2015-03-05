@@ -4693,9 +4693,8 @@ exports.Formats = [
 				};
 			}
 			if (move.id === 'metronome' && name === 'xfix') {
-				// I'm not going to increase PP of this move, Aelita.
 				if (pokemon.moveset[3] && pokemon.moveset[3].pp) {
-					pokemon.moveset[3].pp = Math.round(pokemon.moveset[3].pp * 100 + 42) / 100;
+					pokemon.moveset[3].pp = Math.round(pokemon.moveset[3].pp * 10 + 6) / 10;
 				}
 				move.name = '(Super Glitch)';
 				move.multihit = [2, 5];
