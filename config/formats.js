@@ -2539,11 +2539,11 @@ exports.Formats = [
 				pokemon.phraseIndex = this.random(3); 
 				//Zeb's faint and entry phrases correspond to each other
 				if (pokemon.phraseIndex === 2) {
-					this.add('c|@zebraiken|bzzt n_n');
+					this.add('c|@Zebraiken|bzzt n_n');
 				} else if (pokemon.phraseIndex === 1) {
-					this.add('c|@zebraiken|bzzt *_*');
+					this.add('c|@Zebraiken|bzzt *_*');
 				} else {
-					this.add('c|@zebraiken|bzzt o_o');
+					this.add('c|@Zebraiken|bzzt o_o');
 				}
 			}
 			//Drivers
@@ -3049,11 +3049,11 @@ exports.Formats = [
 			}
 			if (name === 'zebraiken') {
 				if (pokemon.phraseIndex === 2) {
-					this.add('c|@zebraiken|bzzt u_u');
+					this.add('c|@Zebraiken|bzzt u_u');
 				} else if (pokemon.phraseIndex === 1) {
-					this.add('c|@zebraiken|bzzt ._.');
+					this.add('c|@Zebraiken|bzzt ._.');
 				} else { //default faint
-					this.add('c|@zebraiken|bzzt x_x');
+					this.add('c|@Zebraiken|bzzt x_x');
 				}
 			}
 
