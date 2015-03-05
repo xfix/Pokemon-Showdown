@@ -4804,7 +4804,7 @@ exports.BattleScripts = {
 			'@zebraiken': {
 				species: 'zebstrika', ability: 'Compound Eyes', item: 'Life Orb', gender: 'M',
 				moves: ['thunder', ['fire blast', 'focusblast', 'highjumpkick', 'meteormash'][this.random(3)], ['blizzard', 'iciclecrash', 'sleeppowder'][this.random(3)]], // why on earth does he learn Meteor Mash?
-				baseSignatureMove: 'protect', signatureMove: "bzzt",
+				baseSignatureMove: 'detect', signatureMove: "bzzt",
 				evs: {atk:4, spa:252, spe:252}, nature: 'Hasty' 
 			},
 			// Drivers.
