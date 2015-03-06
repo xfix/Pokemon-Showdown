@@ -4346,7 +4346,7 @@ exports.BattleScripts = {
 	},
 	randomSeasonalStaffTeam: function (side) {
 		var team = [];
-		var variant = this.random[2];
+		var variant = this.random(2);
 		// Hardcoded sets of the available Pokémon.
 		var sets = {
 			// Admins.
@@ -4393,8 +4393,8 @@ exports.BattleScripts = {
 				evs: {hp:252, def:4, spd:252}, nature: 'Sassy'
 			},
 			'~V4': {
-				species: 'Victini', ability: 'Desolate Land', item: ['Charcoal', 'Choice Scarf', 'Leftovers', 'Life Orb'][this.random(4)], gender: 'M',
-				moves: ['thousandarrows', 'bolt strike', 'shiftgear', 'dragonascent', 'closecombat', 'substitute'],
+				species: 'Victini', ability: 'Desolate Land', item: (variant === 0 ? ['Life Orb', 'Charcoal', 'Leftovers'][this.random(3)] : ['Life Orb', 'Choice Scarf', 'Leftovers'][this.random(3)]), gender: 'M',
+				moves: (variant === 0 ? ['thousandarrows', 'bolt strike', 'shiftgear', 'dragonascent', 'closecombat', 'substitute'] : ['thousandarrows', 'bolt strike', 'dragonascent', 'closecombat']),
 				baseSignatureMove: 'vcreate', signatureMove: "V-Generate",
 				evs: {hp:4, atk:252, spe:252}, nature: 'Jolly'
 			},
@@ -4455,13 +4455,13 @@ exports.BattleScripts = {
 			},
 			// Mods.
 			'@AM': {
-				species: 'Tyranitar', ability: 'Adaptability', item: ['Lum Berry', 'Choice Scarf'][variant], gender: 'M',
-				moves: ['knockoff', 'diamondstorm', [['swordsdance', 'meanlook'][this.random(2)], 'earthquake'][variant]],
+				species: 'Tyranitar', ability: 'Adaptability', item: (variant === 1 ? 'Lum Berry' : 'Choice Scarf'), gender: 'M',
+				moves: (variant === 1 ? ['earthquake', 'diamondstorm', 'swordsdance', 'meanlook'] : ['knockoff', 'diamondstorm', 'earthquake']),
 				baseSignatureMove: 'pursuit', signatureMove: "Predator",
 				evs: {atk:252, def:4, spe: 252}, nature: 'Jolly'
 			},
 			'@Antemortem': {
-				species: 'Clefable', ability: ['Sheer Force', 'Multiscale'][variant], item: ['Life Orb', 'Leftovers'][variant], gender: 'M',
+				species: 'Clefable', ability: (variant === 1 ? 'Sheer Force' : 'Multiscale'), item: (variant === 1 ? 'Life Orb' : 'Leftovers'), gender: 'M',
 				moves: ['earthpower', 'cosmicpower', 'recover', 'gigadrain'],
 				baseSignatureMove: 'drainingkiss', signatureMove: "Postmortem",
 				evs: {hp:252, spa:252, def:4}, nature: 'Modest'
@@ -4516,9 +4516,9 @@ exports.BattleScripts = {
 			},
 			'@Dell': {
 				species: 'Lucario', ability: 'Simple', item: 'Lucarionite', gender: 'M',
-				moves: ['jumpkick', ['irontail', 'bulletpunch'][this.random(2)], 'batonpass'],
+				moves: ['jumpkick', ['flashcannon', 'bulletpunch'][this.random(2)], 'batonpass'],
 				baseSignatureMove: 'detect', signatureMove: "Aura Parry",
-				evs: {hp:4, atk:252, spe:252}, nature: 'Jolly'
+				evs: {hp:4, atk:216, spa:36, spe:252}, nature: 'Naive'
 			},
 			'@Electrolyte': {
 				species: 'Elekid', ability: 'Pure Power', item: 'Life Orb', gender: 'M',

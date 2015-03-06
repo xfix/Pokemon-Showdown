@@ -3562,6 +3562,7 @@ exports.Formats = [
 				move.name = 'Spectrum Beam';
 				move.affectedByImmunities = false;
 				move.basePower = 8;
+				move.critRatio = 2;
 				move.accuracy = 95;
 				move.typechart = Object.keys(Tools.data.TypeChart);
 				move.hitcount = 0;
@@ -3667,7 +3668,7 @@ exports.Formats = [
 				};
 			}
 			if (move.id === 'detect' && name === 'dell') {
-				var dmg = Math.floor(pokemon.maxhp / (pokemon.ability === 'simple' ? 2 : 4))
+				var dmg = Math.ceil(pokemon.maxhp / (pokemon.ability === 'simple' ? 2 : 4))
 				move.name = 'Aura Parry';
 				move.self = {boosts: {atk:1, spa:1, spe:1, accuracy:1}};
 				move.onTryHit = function (target, source) {
@@ -4030,18 +4031,21 @@ exports.Formats = [
 				};
 				move.onHit = function (target, source) {
 					var gibberish = '';
+					var hits = 0;
 					var hps = ['hiddenpowerbug', 'hiddenpowerdark', 'hiddenpowerdragon', 'hiddenpowerelectric', 'hiddenpowerfighting', 'hiddenpowerfire', 'hiddenpowerflying', 'hiddenpowerghost', 'hiddenpowergrass', 'hiddenpowerground', 'hiddenpowerice', 'hiddenpowerpoison', 'hiddenpowerpsychic', 'hiddenpowerrock', 'hiddenpowersteel', 'hiddenpowerwater'];
 					this.add('c|@qtrx|/me slams face into keyboard!');
 					source.isDuringAttack = true;	//prevents the user from being kicked out in the middle of using Hidden Powers
-					for (i = 0; i < move.hitcount; i++) {
+					for (var i = 0; i < move.hitcount; i++) {
 						if (target.hp !== 0) {
 							var len = 16 + this.random(35);
 							gibberish = '';
 							for (var j = 0; j < len; j++) gibberish += String.fromCharCode(48 + this.random(79));
 							this.add('-message', gibberish);
 							this.useMove(hps[this.random(16)], source, target);
+							hits++;
 						}
 					}
+					this.add('-message', 'Hit ' + hits + ' times!');
 					source.isDuringAttack = false;
 				}
 			}
