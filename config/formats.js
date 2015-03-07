@@ -2217,9 +2217,6 @@ exports.Formats = [
 			if (name === 'haunter') {
 				this.add("c|~Haunter|Dux mea lux");
 			}
-			if (name === 'hugendugen') {
-				this.add("c|~Hugendugen|4-1-0 let's go for it");
-			}
 			if (name === 'jasmine') {
 				var sentence = '';
 				if (pokemon.battle[((pokemon.side.id === 'p1') ? 'p2' : 'p1')].active[0].name.charAt(0) === '%') {
@@ -2620,6 +2617,9 @@ exports.Formats = [
 			}
 			if (name === 'jellicent') {
 				this.add('c|%Jellicent|~(^.^)~');
+			}
+			if (name === 'hugendugen') {
+				this.add("c|%Hugendugen|4-1-0 let's go for it");
 			}
 			if (name === 'ljdarkrai') {
 				this.add('c|%LJDarkrai|Azideias');
@@ -3347,21 +3347,6 @@ exports.Formats = [
 				move.onHit = function (pokemon) {
 					if (pokemon.volatiles['haunterino']) return false;
 					pokemon.addVolatile('haunterino');
-				};
-			}
-			if (move.id === 'psychup' && name === 'hugendugen') {
-				move.name = 'Policy Decision';
-				move.onHit = function (target, source) {
-					var targetBoosts = {};
-					var targetDeboosts = {};
-					for (var i in target.boosts) {
-						targetBoosts[i] = target.boosts[i];
-						targetDeboosts[i] = -target.boosts[i];
-					}
-					source.setBoost(targetBoosts);
-					target.setBoost(targetDeboosts);
-					this.add('-copyboost', source, target, '[from] move: Policy Decision');
-					this.add('-invertboost', target, '[from] move: Policy Decision');
 				};
 			}
 			if (move.id === 'bellydrum' && name === 'jasmine') {
@@ -4455,6 +4440,21 @@ exports.Formats = [
 						this.add('c|%Feliburn|Show me your moves!');
 					};
 				}
+			}
+			if (move.id === 'psychup' && name === 'hugendugen') {
+				move.name = 'Policy Decision';
+				move.onHit = function (target, source) {
+					var targetBoosts = {};
+					var targetDeboosts = {};
+					for (var i in target.boosts) {
+						targetBoosts[i] = target.boosts[i];
+						targetDeboosts[i] = -target.boosts[i];
+					}
+					source.setBoost(targetBoosts);
+					target.setBoost(targetDeboosts);
+					this.add('-copyboost', source, target, '[from] move: Policy Decision');
+					this.add('-invertboost', target, '[from] move: Policy Decision');
+				};
 			}
 			if (move.id === 'surf' && name === 'jellicent') {
 				move.name = 'Shot For Shot';

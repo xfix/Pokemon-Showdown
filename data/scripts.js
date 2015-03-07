@@ -4368,12 +4368,6 @@ exports.BattleScripts = {
 				baseSignatureMove: 'quiverdance', signatureMove: "Genius Dance",
 				evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
 			},
-			'~Hugendugen': {
-				species: 'Latios', ability: 'Prankster', item: 'Life Orb', gender: 'M',
-				moves: ['taunt', 'dracometeor', 'surf', 'earthpower', 'recover', 'thunderbolt', 'icebeam'],
-				baseSignatureMove: 'psychup', signatureMove: "Policy Decision",
-				evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
-			},
 			'~Jasmine': {
 				species: 'Mew', ability: 'Speed Boost', item: 'Focus Sash', gender: 'F',
 				moves: ['explosion', 'transform', 'milkdrink', 'storedpower'],
@@ -4877,6 +4871,12 @@ exports.BattleScripts = {
 				moves: ['highjumpkick', 'sacredfire', 'taunt', 'fusionbolt', 'machpunch'],
 				baseSignatureMove: 'focuspunch', signatureMove: "Falcon Punch",
 				evs: {atk:252, def:4, spe:252}, nature: 'Jolly'
+			},
+			'%Hugendugen': {
+				species: 'Latios', ability: 'Prankster', item: 'Life Orb', gender: 'M',
+				moves: ['taunt', 'dracometeor', 'surf', 'earthpower', 'recover', 'thunderbolt', 'icebeam'],
+				baseSignatureMove: 'psychup', signatureMove: "Policy Decision",
+				evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
 			},
 			'%Jellicent': {
 				species: 'Jellicent', ability: 'Poison Heal', item: 'Toxic Orb', gender: 'M',
