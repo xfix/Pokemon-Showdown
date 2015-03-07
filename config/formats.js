@@ -1980,7 +1980,7 @@ exports.Formats = [
 		section: "Seasonal",
 
 		team: 'randomSeasonalStaff',
-		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod'],
+		ruleset: ['Sleep Clause Mod', 'HP Percentage Mod', 'Cancel Mod'],
 		onBegin: function () {
 			this.add('-message', "GET READY FOR THE NEXT BATTLE!");
 			if (toId(this.p1.pokemon[0].name) === 'steamroll') {
