@@ -2720,6 +2720,21 @@ exports.Formats = [
 			if (name === 'somalia') {
 				this.add('c|+SOMALIA|stupidest shit ever');
 			}
+			if (name === 'xfix') {
+				var hazards = {stealthrock: 1, spikes: 1, toxicspikes: 1, stickyweb: 1};
+				var hasHazards = false;
+				for (var hazard in hazards) {
+					if (pokemon.side.getSideCondition(hazard)) {
+						hasHazards = true;
+						break;
+					}
+				}
+				if (hasHazards) {
+					this.add('c|+xfix|(no haz... too late)');
+				} else {
+					this.add('c|+xfix|(no hazards, attacks only, final destination)');
+				}
+			}
 		},
 		onBeforeMove: function (pokemon, target, move) {
 			var name = toId(pokemon.name);
