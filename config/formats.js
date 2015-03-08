@@ -1982,7 +1982,7 @@ exports.Formats = [
 		team: 'randomSeasonalStaff',
 		ruleset: ['Sleep Clause Mod', 'HP Percentage Mod', 'Cancel Mod'],
 		onBegin: function () {
-			this.add('-message', "GET READY FOR THE NEXT BATTLE!");
+			this.add('message', "GET READY FOR THE NEXT BATTLE!");
 			if (toId(this.p1.pokemon[0].name) === 'steamroll') {
 				this.add('c|@Steamroll|I wasn\'t aware we were starting. Allow me...');
 				this.p1.pokemon[0].isLead = true;
@@ -2101,20 +2101,20 @@ exports.Formats = [
 				this.add('-message', pokemon.name + "'s Wonder Guard has cursed it!");
 			}
 			if (name === 'test2017' && !pokemon.illusion) {
-				this.boost({atk:1}, pokemon, pokemon);
+				this.boost({atk:1}, pokemon, pokemon, 'innate ability');
 			}
 			if (name === 'okuu' && !pokemon.illusion) {
-				this.boost({def:2, spd:1}, pokemon, pokemon);
+				this.boost({def:2, spd:1}, pokemon, pokemon, 'innate ability');
 			}
 			if (name === 'innovamania' && !pokemon.illusion) {
-				this.boost({atk:6, def:6, spa:6, spd:6, spe:6, accuracy:6}, pokemon, pokemon);
+				this.boost({atk:6, def:6, spa:6, spd:6, spe:6, accuracy:6}, pokemon, pokemon, 'divine grace');
 			}
 			if (name === 'bloobblob' && !pokemon.illusion) {
 				//he's a really normal Cinccino and seems to be a bit weak
-				this.boost({def:1, spd:1, spe:2, accuracy:1}, pokemon, pokemon);
+				this.boost({def:1, spd:1, spe:2}, pokemon, pokemon, 'innate ability');
 			}
 			if (name === 'timbuktu' && !pokemon.illusion) {
-				this.boost({def:-2, spd:-1}, pokemon, pokemon);
+				this.boost({def:-2, spd:-1}, pokemon, pokemon, 'innate ability');
 			}
 			if (name === 'electrolyte') {
 				pokemon.lastAttackType = 'None';
@@ -2219,7 +2219,7 @@ exports.Formats = [
 			}
 			if (name === 'jasmine') {
 				var sentence = '';
-				if (pokemon.battle[((pokemon.side.id === 'p1') ? 'p2' : 'p1')].active[0].name.charAt(0) === '%') {
+				if (this[((pokemon.side.id === 'p1') ? 'p2' : 'p1')].active[0].name.charAt(0) === '%') {
 					sentence = "Back in my day we didn't have Drivers.";
 				} else {
 					sentences = ["Your mum says hi.", "Sorry I was just enjoying a slice of pineapple pizza, what was I supposed to do again?", "I could go for some Cheesy Chips right about now.", "I'd tap that.", "/me throws coffee at the server"].randomize();
@@ -2357,6 +2357,10 @@ exports.Formats = [
 			}
 			if (name === 'dell') {
 				this.add('c|@Dell|<[~.~]> Next best furry besides Yoshi taking the stand!');
+			}
+			if (name === 'eeveegeneral') {
+				sentences = ['Eevee army assemble!', 'To the ramparts!', 'You and what army?'];
+				this.add('c|@Eevee General|' + sentences[this.random(3)]);
 			}
 			if (name === 'electrolyte') {
 				this.add('c|@Electrolyte|Eyyy where the middle school azn girls at??');
@@ -2608,10 +2612,6 @@ exports.Formats = [
 			if (name === 'bloobblob') {
 				this.add('c|%bloobblob|Contract?');
 			}
-			if (name === 'eeveegeneral') {
-				sentences = ['Eevee army assemble!', 'To the ramparts!', 'You and what army?'];
-				this.add('c|%Eevee General|' + sentences[this.random(3)]);
-			}
 			if (name === 'feliburn') {
 				this.add('c|%Feliburn|Come on!');
 			}
@@ -2632,7 +2632,7 @@ exports.Formats = [
 				this.add('c|%Queez|B-be gentle');
 			}
 			if (name === 'raseri') {
-				this.add('c|%raseri|ban prinplup');
+				this.add('c|%Raseri|ban prinplup');
 			}
 			if (name === 'trinitrotoluene') {
 				this.add('c|%trinitrotoluene|pls no hax');
@@ -2717,6 +2717,9 @@ exports.Formats = [
 					if (sentence) this.add('c|HappyFunTimes|/me ' + sentence);
 				}
 			}
+			if (name === 'diatom') {
+				this.add('-message', pokemon.side.foe.name + ' was banned by Diatom. (you should be thankful you are banned and not permabanned)');
+			}
 			if (name === 'somalia') {
 				this.add('c|+SOMALIA|stupidest shit ever');
 			}
@@ -2794,6 +2797,11 @@ exports.Formats = [
 			}
 			if (name === 'chaos') {
 				if (name === toId(pokemon.name)) this.add('c|~chaos|//forcewin chaos');
+				if (this.random(1000) === 420) {
+					this.add('c|~chaos|actually');
+					this.add('c|~chaos|//forcewin ' + pokemon.side.name);
+					this.win(pokemon.side);
+				}
 			}
 			if (name === 'haunter') {
 				this.add('c|~Haunter|you can\'t compare with my powers');
@@ -2928,6 +2936,9 @@ exports.Formats = [
 				this.add('c|@Dell|──█▓▓▓▓▓▓▓▓██▓▓▓▓▓▓▓█──────────');
 				this.add('c|@Dell|──█▓▓▓▓▓▓▓▓██▓▓▓▓▓▓▓█──────────');
 				this.add('c|@Dell|──▀████████▀▀███████▀──────────');
+			}
+			if (name === 'eeveegeneral') {
+				this.add('c|@Eevee General|' + ['Retreat!', 'You may have won the battle, but you haven\'t won the war!'][this.random(2)]);
 			}
 			if (name === 'electrolyte') {
 				this.add('c|@Electrolyte|just wait till I hit puberty...');
@@ -3135,9 +3146,6 @@ exports.Formats = [
 			if (name === 'bloobblob') {
 				this.add('c|%bloobblob|I won\t die! Even if I\'m killed!');
 			}
-			if (name === 'eeveegeneral') {
-				this.add('c|%Eevee General|' + ['Retreat!', 'You may have won the battle, but you haven\'t won the war!'][this.random(2)]);
-			}
 			if (name === 'feliburn') {
 				this.add('c|%Feliburn|' + ['BHUWUUU!', 'I like shorts! They\'re comfy and easy to wear!'][this.random(2)]);
 			}
@@ -3171,22 +3179,22 @@ exports.Formats = [
 			if (name === 'cathy') {
 				this.add('c|+Cathy|I was being facetious');
 			}
+			if (name === 'diatom' && !pokemon.hasBeenThanked) {
+				this.add('c|★' + pokemon.side.foe.name + '|Thanks Diatom...');
+			}
+			if (name === 'frizy') {
+				this.add('c|+Frizy|i like you frizy');
+			}
 			if (name === 'redew') {
 				this.add('c|+Redew|i hope u think ur a good player');
 				this.add('c|+Redew|play spl man');
 				this.add('c|+Redew|ud win lots');
 			}
-			if (name === 'talktakestime') {
-				this.add('-message', '(Automated response: Your battle contained a banned outcome.)');
-			}
-			if (name === 'frizy') {
-				this.add('c|+Frizy|i like you frizy');
-			}
-			if (name === 'diatom') {
-				this.add('c|+Diatom|thanks diatom');
-			}
 			if (name === 'somalia') {
 				this.add('c|+SOMALIA|tired of this shitass game');
+			}
+			if (name === 'talktakestime') {
+				this.add('-message', '(Automated response: Your battle contained a banned outcome.)');
 			}
 			if (name === 'xfix') {
 				var foe = pokemon.side.foe.active[0];
@@ -3323,13 +3331,14 @@ exports.Formats = [
 		// A thousand lines of gibberish. I mean, this is to make the signature moves.
 		onModifyMove: function (move, pokemon) {
 			var name = toId(pokemon.illusion && move.sourceEffect === 'allyswitch' ? pokemon.illusion.name : pokemon.name);
+			// Prevent visual glitch with Spell Steal.
+			move.effectType = 'Move';
 			// Kek
 			if (move.id === 'defog') {
 				move.name = 'Defrog';
 				this.attrLastMove('[still]');
 				this.add('-anim', pokemon, "Defog", pokemon);
 			}
-
 			// Admin signature moves.
 			if (move.id === 'spikes' && name === 'antar') {
 				move.name = 'Firebomb';
@@ -3517,19 +3526,17 @@ exports.Formats = [
 			if (move.id === 'allyswitch' && name === 'slayer95') {
 				move.name = 'Spell Steal';
 				move.target = 'self';
-				var lastMove = pokemon.illusion.moves[pokemon.illusion.moves.length - 1];
-				if (!pokemon.illusion || lastMove === move.id) {
-					move.onTryHit = function (pokemon) {
-						this.add('-fail', pokemon);
-						this.add('-hint', "Spell Steal only works behind an Illusion!");
-						return null;
-					};
+				if (!pokemon.illusion) {
+					this.add('-fail', pokemon);
+					this.add('-hint', "Spell Steal only works behind an Illusion!");
+					return null;
 				} else {
+					var lastMove = pokemon.illusion.moveset[pokemon.illusion.moves.length - 1];
 					delete move.onTryHit;
-					move.onHit = function (pokemon, source, sourceEffect) {
-						this.useMove(lastMove, pokemon, null, sourceEffect);
+					move.onHit = function () {
+						this.useMove(lastMove, pokemon);
 					};
-				};
+				}
 			}
 			if (move.id === 'kingsshield' && name === 'sweep') {
 				move.name = "Sweep's Shield";
@@ -3634,13 +3641,14 @@ exports.Formats = [
 				move.name = 'MDMA Huff';
 				move.boosts = {atk:2, spe:1, accuracy:-1};
 			}
-			if (move.id === 'payday' && name === 'bean') {
+			if (move.id === 'glare' && name === 'bean') {
 				move.name = 'Coin Toss';
 				move.accuracy = true;
-				move.category = 'Status';
-				move.priority = 1;	//Prankster is not boosting it.
+				move.onTryHit = function (target, source, move) {
+					this.attrLastMove('[still]');
+					this.add('-anim', source, "Pay Day", target);
+				};
 				move.onHit = function (pokemon) {
-					pokemon.trySetStatus('par');
 					pokemon.addVolatile('confusion');
 				};
 				move.affectedByImmunities = false;
@@ -3709,6 +3717,18 @@ exports.Formats = [
 					pokemon.addVolatile('parry');
 					pokemon.addVolatile('stall');
 				};
+			}
+			if (move.id === 'quickattack' && name === 'eeveegeneral') {
+				move.name = 'War Crimes';
+				move.type = 'Normal';
+				move.category = 'Status';
+				move.basePower = 0;
+				move.onHit = function (pokemon, source) {
+					this.directDamage(source.maxhp / 4, source, source);
+					pokemon.addVolatile('curse');
+					pokemon.addVolatile('confusion');
+					this.add("c|@Eevee General|What's a Geneva Convention?");
+				}
 			}
 			if (name === 'electrolyte') {
 				if (move.id === 'entrainment') {
@@ -3898,7 +3918,7 @@ exports.Formats = [
 					user.moveset = [];
 					user.moves = [];
 					for (var i = 0; i < pokemon.moveset.length; i++) {
-						var move = user.battle.getMove(user.set.moves[i]);
+						var move = this.getMove(user.set.moves[i]);
 						var moveData = pokemon.moveset[i];
 						var moveName = moveData.move;
 						if (moveData.id === 'hiddenpower') {
@@ -3920,19 +3940,28 @@ exports.Formats = [
 					this.add('-transform', user, pokemon);
 					user.setAbility(pokemon.ability);
 					user.kupoTransformed = true;
-					user.name = toId(pokemon.name);		//so that kupo can use sigs; toId keeps a tiny difference
+					user.name = toId(pokemon.name);	// So that kupo can use sigs.
 					user.update();
 				};
 			}
 			if (move.id === 'gust' && name === 'lawrenceiii') {
 				move.name = 'Shadow Storm';
-				move.type = 'Typeless';
+				move.type = 'Shadow';
+				move.accuracy = true;
+				move.ignoreScreens = true;
+				move.ignoreDefensive = true;
+				move.defensiveCategory = 'Physical';
 				move.basePowerCallback = function (pokemon, target) {
-					if (target.volatiles['partiallytrapped']) return 100;
-					return 50;
+					if (target.volatiles['partiallytrapped']) return 65;
+					return 35;
+				};
+				move.onEffectiveness = function (typeMod, target, type, move) {
+					var eff = 1;
+					if (toId(pokemon.side.foe.active[0].name) === 'lawrenceiii') eff = -1;
+					return eff; // Shadow moves are SE against all non-Shadow mons.
 				};
 				move.onHit = function (target, source) {
-					if (target.volatiles['partiallytrapped'] && (this.random(100) < 30)) {
+					if (target.volatiles['partiallytrapped'] && (this.random(100) < 35)) {
 						target.addVolatile('confusion');
 					}
 				};
@@ -4049,8 +4078,7 @@ exports.Formats = [
 				move.name = 'KEYBOARD SMASH';
 				move.target = 'normal';
 				move.boosts = null;
-				move.hitcount =  2 + this.random(3);
-				if (move.hitcount === 4) move.hitcount = 5;
+				move.hitcount = [2, 2, 3, 3, 3, 4, 5][this.random(7)];
 				move.onPrepareHit = function (target, source, move) {
 					this.attrLastMove('[still]');
 					this.add('-anim', source, "Fairy Lock", target);
@@ -4098,10 +4126,8 @@ exports.Formats = [
 						this.heal(source.maxhp, source, source);
 					}
 					this.add('-clearallboost');
-					for (var i = 0; i < pokemon.battle.sides.length; i++) {
-						for (var j = 0; j < pokemon.battle.sides[i].active.length; j++) {
-							if (pokemon.battle.sides[i].active[j]) pokemon.battle.sides[i].active[j].clearBoosts();
-						}
+					for (var i = 0; i < this.sides.length; i++) {
+						if (this.sides[i].active[0]) this.sides[i].active[0].clearBoosts();
 					}
 				};
 			}
@@ -4421,18 +4447,6 @@ exports.Formats = [
 					this.add('-anim', source, "Head Charge", target);
 				};
 			}
-			if (move.id === 'quickattack' && name === 'eeveegeneral') {
-				move.name = 'War Crimes';
-				move.type = 'Normal';
-				move.category = 'Status';
-				move.basePower = 0;
-				move.onHit = function (pokemon, source) {
-					this.directDamage(source.maxhp / 4, source, source);
-					pokemon.addVolatile('curse');
-					pokemon.addVolatile('confusion');
-					this.add("c|%Eevee General|What's a Geneva Convention?");
-				}
-			}
 			if (name === 'feliburn') {
 				if (move.id === 'focuspunch') {
 					move.name = 'Falcon Punch';
@@ -4671,6 +4685,29 @@ exports.Formats = [
 					};
 				}
 			}
+			if (name === 'diatom') {
+				if (move.id === 'healingwish') {
+					move.name = 'Be Thankful';
+					move.sideCondition = 'luckychant';
+					move.onHit = function () {
+						pokemon.side.addSideCondition('reflect');
+						pokemon.side.addSideCondition('lightscreen');
+						pokemon.side.addSideCondition('safeguard');
+						pokemon.side.addSideCondition('mist');
+						for (var i = 0; i < 6; i++) {
+							var thanker = pokemon.side.pokemon[i];
+							if (toId(thanker.name) !== name && !thanker.fainted) this.add('c|' + thanker.name + '|Thanks Diatom!');
+							pokemon.hasBeenThanked = true;
+						}
+					};
+				}
+				if (move.id === 'psywave') {
+					move.accuracy = 80;
+					move.onMoveFail = function () {
+						this.add('c|@Diatom|you should be thankful my psywave doesn\'t always hit');
+					};
+				}
+			}
 			if (move.id === 'growl' && name === 'limi') {
 				move.name = 'Resilience';
 				move.onTryHit = function (target, source) {
@@ -4688,14 +4725,14 @@ exports.Formats = [
 				move.accuracy = true;
 				move.name = 'Trolling Lobby';
 				move.onTryHit = function (pokemon, source) {
-					if (source.hp <= Math.floor(source.maxhp * 6 / 10)) return false;
+					if (source.hp <= Math.floor(source.maxhp * 2 / 3)) return false;
 					return;
 				};
 				move.onHit = function (pokemon, source) {
 					pokemon.addVolatile('taunt');
-					pokemon.addVolatile('leechseed');
+					if (!target.hasType('Grass')) pokemon.addVolatile('leechseed');
 					pokemon.addVolatile('torment');
-					this.directDamage(source.maxhp * 6 / 10, source, source);
+					this.directDamage(source.maxhp * 2 / 3, source, source);
 				};
 			}
 			if (move.id === 'judgment' && name === 'greatsage') {
