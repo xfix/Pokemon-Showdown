@@ -2111,7 +2111,7 @@ exports.Formats = [
 			}
 			if (name === 'bloobblob' && !pokemon.illusion) {
 				//he's a really normal Cinccino and seems to be a bit weak
-				this.boost({def:1, spd:1, spe:2, accuracy:1}, pokemon, pokemon, 'innate ability');
+				this.boost({def:1, spd:1, spe:2}, pokemon, pokemon, 'innate ability');
 			}
 			if (name === 'timbuktu' && !pokemon.illusion) {
 				this.boost({def:-2, spd:-1}, pokemon, pokemon, 'innate ability');
@@ -3330,8 +3330,8 @@ exports.Formats = [
 		},
 		// A thousand lines of gibberish. I mean, this is to make the signature moves.
 		onModifyMove: function (move, pokemon) {
-			// Slayer95's move comes first due to technical reasons!
 			var name = toId(pokemon.illusion && move.sourceEffect === 'allyswitch' ? pokemon.illusion.name : pokemon.name);
+			// Prevent visual glitch with Spell Steal.
 			move.effectType = 'Move';
 			// Kek
 			if (move.id === 'defog') {
