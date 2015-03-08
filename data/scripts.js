@@ -4481,7 +4481,7 @@ exports.BattleScripts = {
 			'@bean': {
 				species: 'Liepard', ability: 'Prankster', item: 'Leftovers', gender: 'M',
 				moves: ['knockoff', 'encore', 'substitute', 'gastroacid', 'leechseed'],
-				baseSignatureMove: 'payday', signatureMove: "Coin Toss",
+				baseSignatureMove: 'glare', signatureMove: "Coin Toss",
 				evs: {hp:252, def:252, spd:4}, nature: 'Calm'
 			},
 			'@Beowulf': {
