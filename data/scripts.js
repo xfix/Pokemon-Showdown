@@ -4514,6 +4514,12 @@ exports.BattleScripts = {
 				baseSignatureMove: 'detect', signatureMove: "Aura Parry",
 				evs: {hp:4, atk:216, spa:36, spe:252}, nature: 'Naive'
 			},
+			'@Eevee General': {
+				species: 'Eevee', ability: 'Magic Guard', item: 'Eviolite', gender: 'M',
+				moves: ['defendorder', 'healorder', 'attackorder', 'sacredsword', 'doubleedge', 'bellydrum'],
+				baseSignatureMove: 'quickattack', signatureMove: "War Crimes",
+				evs: {hp:252, atk:252, def:4}, nature: 'Impish'
+			},
 			'@Electrolyte': {
 				species: 'Elekid', ability: 'Pure Power', item: 'Life Orb', gender: 'M',
 				moves: ['volttackle', 'earthquake', ['iciclecrash', 'diamondstorm'][this.random(2)]],
@@ -4860,12 +4866,6 @@ exports.BattleScripts = {
 				baseSignatureMove: 'dragonrush', signatureMove: "Dragon Smash",
 				evs: {hp:4, atk:252, spe:252}, nature: 'Adamant'
 			},
-			'%Eevee General': {
-				species: 'Eevee', ability: 'Magic Guard', item: 'Eviolite', gender: 'M',
-				moves: ['defendorder', 'healorder', 'attackorder', 'sacredsword', 'doubleedge', 'bellydrum'],
-				baseSignatureMove: 'quickattack', signatureMove: "War Crimes",
-				evs: {hp:252, atk:252, def:4}, nature: 'Impish'
-			},
 			'%Feliburn': {
 				species: 'Infernape', ability: 'Adaptability', item: 'Expert Belt', gender: 'M',
 				moves: ['highjumpkick', 'sacredfire', 'taunt', 'fusionbolt', 'machpunch'],
@@ -4951,6 +4951,12 @@ exports.BattleScripts = {
 				baseSignatureMove: 'memento', signatureMove: "HP Display Policy",
 				evs: {hp:4, atk:252, spa:252}, nature: 'Quiet'
 			},
+			'+Diatom': {
+				species: 'Spiritomb', ability: 'Parental Bond', item: 'Custap Berry', gender: 'M',
+				moves: ['psywave', ['poisonfang', 'shadowstrike'][this.random(2)], ['uturn', 'rapidspin'][this.random(2)]],
+				baseSignatureMove: 'healingwish', signatureMove: "Be Thankful I Sacrificed Myself",
+				evs: {hp:252, def:136, spd:120}, nature: 'Impish'
+			},
 			'+Limi': {
 				species: 'Primeape', ability: 'Poison Heal', item: 'Leftovers', gender: 'M',
 				moves: ['ingrain', 'doubleedge', 'leechseed'],
@@ -4990,7 +4996,7 @@ exports.BattleScripts = {
 			,
 			talktakestime: {
 			}*/
-			//also Jac, Frizy, Diatom, Kenny, Coronis!
+			//also Jac, Frizy, Kenny, Coronis!
 		};
 		// Generate the team randomly.
 		var pool = Object.keys(sets).randomize();
