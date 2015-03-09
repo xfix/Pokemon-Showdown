@@ -4999,7 +4999,6 @@ exports.BattleScripts = {
 				baseSignatureMove: 'taunt', signatureMove: "Bot Mute",
 				evs: {hp:252, atk:252, def:4}, nature: 'Adamant'
 			}
-			//also Jac, Frizy, Kenny, Coronis!
 		};
 		// Generate the team randomly.
 		var pool = Object.keys(sets).randomize();

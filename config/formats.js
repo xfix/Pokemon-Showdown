@@ -2797,16 +2797,15 @@ exports.Formats = [
 				];
 			}
 		},
+		// Add here salty tears.
 		onFaint: function (pokemon) {
-			// Add here salty tears
 			if (pokemon.kupoTransformed) {
 				pokemon.name = '@kupo';
 				pokemon.kupoTransformed = false;
 			}
-
 			var name = toId(pokemon.name);
 
-			// admins
+			// Admins.
 			if (name === 'antar') {
 				this.add('c|~Antar|Should\'ve been an Umbreon.');
 			}
@@ -2836,10 +2835,11 @@ exports.Formats = [
 			}
 			if (name === 'zarel') {
 				this.add('c|~Zarel|your mom');
-				this.add('-message', '~Zarel used your mom!') //followed by the usual '~Zarel fainted'
+				// followed by the usual '~Zarel fainted'
+				this.add('-message', '~Zarel used your mom!');
 			}
 
-			// leaders
+			// Leaders.
 			if (name === 'hollywood') {
 				this.add('c|&hollywood|BibleThump');
 			}
@@ -2865,7 +2865,7 @@ exports.Formats = [
 				this.add('c|&verbatim|Crash and Burn');
 			}
 
-			//mods
+			// Mods.
 			if (name === 'am') {
 				this.add('c|@AM|RIP');
 			}
@@ -3127,7 +3127,7 @@ exports.Formats = [
 				}
 			}
 
-			//drivers
+			// Drivers.
 			if (name === 'acedia') {
 				this.add('c|%Acedia|My dad smoked his whole life. One day my mom told him "If you want to see your children graduate, you have to stop". 3 years later he died of lung cancer. My mom told me "Dont smoke; dont put your family through this". At 24, I have never touched a cigarette. I must say, I feel a sense of regret, because watching you play Pokemon gave me cancer anyway ( ͝° ͜ʖ͡°)');
 			}
@@ -3187,7 +3187,7 @@ exports.Formats = [
 				this.add('c|%useless trainer|' + sentences[this.random(4)]);
 			}
 
-			//ex-staff voice
+			// Ex-staff voice.
 			if (name === 'bmelts') {
 				this.add('c|+bmelts|retired now');
 			}
@@ -3196,9 +3196,6 @@ exports.Formats = [
 			}
 			if (name === 'diatom' && !pokemon.hasBeenThanked) {
 				this.add('c|★' + pokemon.side.foe.name + '|Thanks Diatom...');
-			}
-			if (name === 'frizy') {
-				this.add('c|+Frizy|i like you frizy');
 			}
 			if (name === 'redew') {
 				this.add('c|+Redew|i hope u think ur a good player');
