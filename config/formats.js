@@ -3830,8 +3830,10 @@ exports.Formats = [
 				move.accuracy = 90;
 				move.category = 'Physical';
 				move.status = 'brn';
-				move.recoil = [35 / 100];
 				delete move.self;
+				move.onHit = function (target, source) {
+					this.directDamage(source.maxhp * 0.35, source, source);
+				};
 			}
 			if (move.id === 'naturepower' && name === 'imanalt') {
 				move.name = 'FREE GENV BH';
