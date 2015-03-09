@@ -4696,7 +4696,7 @@ exports.BattleScripts = {
 			},
 			'@RosieTheVenusaur': {
 				species: 'Venusaur', ability: 'Moxie', item: 'Leftovers', gender: 'F',
-				moves: ['flamethrower', 'extremespeed', 'attract', 'knockoff', 'earthquake'],
+				moves: ['flamethrower', 'extremespeed', 'sacredfire', 'knockoff', 'closecombat'],
 				baseSignatureMove: 'frenzyplant', signatureMove: "Swag Plant",
 				evs: {hp:252, atk:252, def:4}, nature: 'Adamant'
 			},

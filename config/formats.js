@@ -4163,7 +4163,7 @@ exports.Formats = [
 			if (move.id === 'frenzyplant' && name === 'rosiethevenusaur') {
 				move.name = 'Swag Plant';
 				move.volatileStatus = 'confusion';
-				move.self = {boosts: {def:1}};
+				move.self = {boosts: {atk:1, def:1}};
 			}
 			if (move.id === 'icebeam' && name === 'scalarmotion') {
 				move.name = 'Eroding Frost';
