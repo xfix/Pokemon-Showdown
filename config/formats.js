@@ -2228,7 +2228,7 @@ exports.Formats = [
 				this.add('c|~Jasmine|' + sentence);
 			}
 			if (name === 'joim') {
-				var dice = this.random(3);
+				var dice = this.random(4);
 				if (dice === 1) {
 					// Fullscreen toucan!
 					this.add('-message', '░░░░░░░░▄▄▄▀▀▀▄▄███▄');
@@ -2256,11 +2256,23 @@ exports.Formats = [
 					this.add('c|~Joim|▀█▌░░░▄░▀█▀░▀');
 					this.add('c|~Joim|░░░░░░░▄▄▐▌▄▄ BY THE');
 					this.add('c|~Joim|░░░░░░░▀███▀█░▄');
-					this.add('c|~Joim|░░░░░░▐▌▀▄▀▄▀▐▄SPOOKY SKILENTON');
+					this.add('c|~Joim|░░░░░░▐▌▀▄▀▄▀▐▄ SPOOKY SKILENTON');
 					this.add('c|~Joim|░░░░░░▐▀░░░░░░▐▌');
 					this.add('c|~Joim|░░░░░░█░░░░░░░░█');
 					this.add('c|~Joim|░░░░░▐▌░░░░░░░░░█');
 					this.add('c|~Joim|░░░░░█░░░░░░░░░░▐▌SEND THIS TO 7 PPL OR SKELINTONS WILL EAT YOU');
+				} else if (dice === 3) {
+					this.add('-message', '░░░░░░░░░░░░▄▄▄▄░░░░░░░░░░░░░░░░░░░░░░░▄▄▄▄▄');
+					this.add('-message', '░░░█░░░░▄▀█▀▀▄░░▀▀▀▄░░░░▐█░░░░░░░░░▄▀█▀▀▄░░░▀█▄');
+					this.add('-message', '░░█░░░░▀░▐▌░░▐▌░░░░░▀░░░▐█░░░░░░░░▀░▐▌░░▐▌░░░░█▀');
+					this.add('-message', '░▐▌░░░░░░░▀▄▄▀░░░░░░░░░░▐█▄▄░░░░░░░░░▀▄▄▀░░░░░▐▌');
+					this.add('-message', '░█░░░░░░░░░░░░░░░░░░░░░░░░░▀█░░░░░░░░░░░░░░░░░░█');
+					this.add('-message', '▐█░░░░░░░░░░░░░░░░░░░░░░░░░░█▌░░░░░░░░░░░░░░░░░█');
+					this.add('-message', '▐█░░░░░░░░░░░░░░░░░░░░░░░░░░█▌░░░░░░░░░░░░░░░░░█');
+					this.add('-message', '░█░░░░░░░░░░░░░░░░░░░░█▄░░░▄█░░░░░░░░░░░░░░░░░░█');
+					this.add('-message', '░▐▌░░░░░░░░░░░░░░░░░░░░▀███▀░░░░░░░░░░░░░░░░░░▐▌');
+					this.add('-message', '░░█░░░░░░░░░░░░░░░░░▀▄░░░░░░░░░░▄▀░░░░░░░░░░░░█');
+					this.add('-message', '░░░█░░░░░░░░░░░░░░░░░░▀▄▄▄▄▄▄▄▀▀░░░░░░░░░░░░░█');
 				} else {
 					sentences = ["Gen 1 OU is a true skill metagame.", "Finally a good reason to punch a teenager in the face!", "So here we are again, it's always such a pleasure.", "( ͝° ͜ʖ͡°)"].randomize();
 					var sentence = sentences[0];
@@ -2722,6 +2734,9 @@ exports.Formats = [
 			}
 			if (name === 'somalia') {
 				this.add('c|+SOMALIA|stupidest shit ever');
+			}
+			if (name === 'talktakestime') {
+				this.add('c|+TalkTakesTime|Welcome to BoTTT!');
 			}
 			if (name === 'xfix') {
 				var hazards = {stealthrock: 1, spikes: 1, toxicspikes: 1, stickyweb: 1};
@@ -3228,7 +3243,6 @@ exports.Formats = [
 				pokemon.kupoTransformed = false;
 			}
 		},
-
 		onDragOut: function (pokemon) {
 			// Prevents qtrx from being red carded by chaos while in the middle of using sig move, which causes a visual glitch.
 			if (pokemon.isDuringAttack) {
@@ -4432,7 +4446,8 @@ exports.Formats = [
 					pokemon.addVolatile('stall');
 				};
 			}
-			if (move.id === 'spikecannon' && name === 'bloobblob') {	//I fear that having two moves with id 'bulletseed' would mess with PP
+			if (move.id === 'spikecannon' && name === 'bloobblob') {
+				// I fear that having two moves with id 'bulletseed' would mess with PP.
 				move.name = 'Lava Whip';
 				move.type = 'Fire';
 				move.onTryHit = function (target, source) {
@@ -4775,6 +4790,14 @@ exports.Formats = [
 				};
 				move.onMoveFail = function (target, source, move) {
 					source.faint();
+				};
+			}
+			if (move.id === 'taunt' && name === 'talktakestime') {
+				move.name = 'Bot Mute';
+				move.onHit = function (target) {
+					target.addVolatile('embargo');
+					target.addVolatile('torment');
+					target.addVolatile('healblock');
 				};
 			}
 			if (move.id === 'metronome' && name === 'xfix') {

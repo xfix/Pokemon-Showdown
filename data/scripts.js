@@ -4992,10 +4992,13 @@ exports.BattleScripts = {
 				moves: ['thunderwave', 'substitute', 'roost'],
 				baseSignatureMove: 'metronome', signatureMove: "(Super Glitch)",
 				evs: {hp:252, spd:252, def:4}, nature: 'Calm'
-			}/* TODO
-			,
-			talktakestime: {
-			}*/
+			},
+			'+talktakestime': {
+				species: 'Registeel', ability: 'Flash Fire', item: 'Leftovers', gender: 'M',
+				moves: ['recover', 'ironhead', 'bellydrum'],
+				baseSignatureMove: 'taunt', signatureMove: "Bot Mute",
+				evs: {hp:252, atk:252, def:4}, nature: 'Adamant'
+			}
 			//also Jac, Frizy, Kenny, Coronis!
 		};
 		// Generate the team randomly.
