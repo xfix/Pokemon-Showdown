@@ -4576,7 +4576,7 @@ exports.BattleScripts = {
 			},
 			'@innovamania': {
 				species: 'Arceus', ability: 'Pick Up', item: 'Black Glasses', gender: 'M',
-				moves: [['holdhands', 'trickortreat',][this.random(2)], ['swordsdance', 'agility'][this.random(2)], 'celebrate'],
+				moves: [['holdhands', 'trickortreat'][this.random(2)], ['swordsdance', 'agility'][this.random(2)], 'celebrate'],
 				baseSignatureMove: 'splash', signatureMove: "Rage Quit",
 				evs: {hp:4, atk:252, spe:252}, nature: 'Jolly'
 			},
@@ -4805,7 +4805,7 @@ exports.BattleScripts = {
 				species: 'zebstrika', ability: 'Compound Eyes', item: 'Life Orb', gender: 'M',
 				moves: ['thunder', ['fire blast', 'focusblast', 'highjumpkick', 'meteormash'][this.random(3)], ['blizzard', 'iciclecrash', 'sleeppowder'][this.random(3)]], // why on earth does he learn Meteor Mash?
 				baseSignatureMove: 'detect', signatureMove: "bzzt",
-				evs: {atk:4, spa:252, spe:252}, nature: 'Hasty' 
+				evs: {atk:4, spa:252, spe:252}, nature: 'Hasty'
 			},
 			// Drivers.
 			'%Acedia': {
