@@ -1245,7 +1245,7 @@ exports.BattleScripts = {
 					if ((hasMove['flareblitz'] || hasMove['lavaplume']) && !setupType && !counter['speedsetup']) rejected = true;
 					break;
 				case 'firepunch': case 'sacredfire':
-					if (hasMove['flareblitz']) rejected = true;
+					if (hasMove['flareblitz'] || hasMove['firepunch']) rejected = true;
 					break;
 				case 'lavaplume':
 					if (hasMove['fireblast'] && (setupType || !!counter['speedsetup'])) rejected = true;
