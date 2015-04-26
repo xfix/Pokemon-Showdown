@@ -4071,20 +4071,13 @@ exports.Formats = [
 			pokemon.illusion.fullname = pokemon.side.id + ': ' + 'Pokémon ' + (1 + pokemon.position);
 		},
 		
-		onFaint: function (pokemon) {
-			pokemon.illusion = null;
-			this.add('replace', pokemon, pokemon.getDetails);
-		},
-		
-		onSwitchIn: function (pokemon) {
-			this.add('-hint', '...');
-			
+		onSwitchIn: function (pokemon) {			
 			if (pokemon.moves.length > 1) {
-				var showmoves = pokemon.side.name + '\'s Pokémon knows ';
+				var showmoves = pokemon.side.name + '\'s Pokémon ' + (1 + pokemon.position) + ' knows ';
 
 				for (var i = 0; i < pokemon.moves.length - 1; i++) {
 					if (i > 0) showmoves += (i < pokemon.moves.length - 2 ? ', ' : ' and ');				
-					showmoves += pokemon.moveset[i].name;				
+					showmoves += pokemon.moves[i];				
 				}
 
 				this.add('-hint', showmoves + '.');
