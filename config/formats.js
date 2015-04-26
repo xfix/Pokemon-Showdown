@@ -4059,6 +4059,48 @@ exports.Formats = [
 		searchShow: false,
 		ruleset: ['HP Percentage Mod', 'Cancel Mod']
 	},
+	{
+		name: "Movemons",
+		section: "Other Metagames",
+
+		searchShow: false,
+		mod: "movemons",
+
+		onBeforeSwitchIn: function (pokemon) {
+			pokemon.illusion = pokemon;
+			pokemon.illusion.fullname = pokemon.side.id + ': ' + 'Pokémon ' + (1 + pokemon.position);
+		},
+		
+		onFaint: function (pokemon) {
+			pokemon.illusion = null;
+			this.add('replace', pokemon, pokemon.getDetails);
+		},
+		
+		onSwitchIn: function (pokemon) {
+			this.add('-hint', '...');
+			
+			if (pokemon.moves.length > 1) {
+				var showmoves = pokemon.side.name + '\'s Pokémon knows ';
+
+				for (var i = 0; i < pokemon.moves.length - 1; i++) {
+					if (i > 0) showmoves += (i < pokemon.moves.length - 2 ? ', ' : ' and ');				
+					showmoves += pokemon.moveset[i].name;				
+				}
+
+				this.add('-hint', showmoves + '.');
+			}
+		},
+
+		ruleset: ['Pokemon', 'Species Clause', 'Moody Clause', 'Baton Pass Clause', 'Evasion Moves Clause', 'OHKO Clause',
+			'Swagger Clause', 'Endless Battle Clause', 'HP Percentage Mod', 'Sleep Clause Mod', 'Cancel Mod'
+		],
+		banlist: ['Soul Dew', 'Gengarite', 'Kangaskhanite', 'Lucarionite', 'Mawilite', 'Salamencite',
+			'Arceus', 'Blaziken', 'Darkrai', 'Deoxys', 'Deoxys-Attack', 'Deoxys-Defense', 'Deoxys-Speed', 'Dialga',
+			'Genesect', 'Giratina', 'Giratina-Origin', 'Greninja', 'Groudon', 'Ho-Oh', 'Kyogre', 'Kyurem-White',
+			'Lugia', 'Mewtwo', 'Palkia', 'Rayquaza', 'Reshiram', 'Shaymin-Sky', 'Xerneas', 'Yveltal', 'Zekrom',
+			'Zoroark', 'Zorua'
+		],
+	},
 
 	// BW2 Singles
 	///////////////////////////////////////////////////////////////////
