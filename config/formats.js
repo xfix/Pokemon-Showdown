@@ -4840,6 +4840,14 @@ exports.Formats = [
 			}
 		}
 	},
+	{
+		name: "May Seasonal",
+		section: 'Seasonal',
+		team: 'randomSeasonalMay2015',
+		mod: 'seasonal',
+		gameType: 'triples',
+		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod']
+	},
 
 	// Other Metagames
 	///////////////////////////////////////////////////////////////////
