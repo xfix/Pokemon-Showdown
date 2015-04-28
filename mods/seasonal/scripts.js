@@ -250,13 +250,13 @@ exports.BattleScripts = {
 		// Final modifier. Modifiers that modify damage after min damage check, such as Life Orb.
 		baseDamage = this.runEvent('ModifyDamage', pokemon, target, move, baseDamage);
 
-		// Check for damage
-		baseDamage = this.runEvent('Damage', target, pokemon, move, baseDamage);
-
 		// Minimum is 1
 		if (basePower && !Math.floor(baseDamage)) {
 			return 1;
 		}
+
+		// Check for damage
+		baseDamage = this.runEvent('Damage', target, pokemon, move, baseDamage);
 
 		return Math.floor(baseDamage);
 	}
