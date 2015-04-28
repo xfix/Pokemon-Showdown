@@ -364,7 +364,7 @@ exports.BattleMovedex = {
 		accuracy: 100,
 		basePower: 30,
 		basePowerCallback: function (pokemon, target) {
-			if (target.status === 'brn') return 60;
+			if (target.status === 'brn') return 45;
 			return 30;
 		},
 		category: "Special",
@@ -425,7 +425,7 @@ exports.BattleMovedex = {
 		accuracy: 100,
 		basePower: 30,
 		basePowerCallback: function (pokemon, target) {
-			if (target.volatiles['moonfire']) return 50;
+			if (target.volatiles['moonfire']) return 40;
 			return 30;
 		},
 		category: "Special",
@@ -494,7 +494,7 @@ exports.BattleMovedex = {
 		accuracy: 100,
 		basePower: 30,
 		basePowerCallback: function (pokemon, target) {
-			if (target.volatiles['chilled']) return 60;
+			if (target.volatiles['chilled']) return 45;
 			return 30;
 		},
 		category: "Special",
@@ -558,7 +558,7 @@ exports.BattleMovedex = {
 		accuracy: 100,
 		basePower: 15,
 		basePowerCallback: function (pokemon, target) {
-			if (pokemon.volatiles['furycharge']) return 200;
+			if (pokemon.volatiles['furycharge']) return 100;
 			return 15;
 		},
 		category: "Physical",
@@ -593,9 +593,9 @@ exports.BattleMovedex = {
 	slash: {
 		num: -28,
 		accuracy: 100,
-		basePower: 35,
+		basePower: 30,
 		basePowerCallback: function (pokemon, target) {
-			var bP = 35;
+			var bP = 30;
 			if (target.volatiles['bleed']) bP += 10;
 			if (target.status === 'psn') bP += 10;
 			return bP;
