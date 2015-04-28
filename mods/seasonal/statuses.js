@@ -95,9 +95,12 @@ exports.BattleStatuses = {
 			this.add('-sidestart', side, 'Wild Growth');
 		},
 		onResidualOrder: 21,
-		onResidual: function (pokemon) {
-			this.heal(pokemon.maxhp * 0.0615);
-			this.add('-message', 'The wild growth recovered some of ' + pokemon.name + "'s HP!");
+		onResidual: function (side) {
+			for (var i = 0; i < side.active.length; i++) {
+				var pokemon = side.active[i];
+				this.heal(pokemon.maxhp * 0.0615);
+				this.add('-message', 'The wild growth recovered some of ' + pokemon.name + "'s HP!");
+			}
 		},
 		onEnd: function (side) {
 			this.add('-sideend', side, 'Wild Growth');

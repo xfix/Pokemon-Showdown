@@ -131,7 +131,7 @@ exports.BattleScripts = {
 				['acupressure', 'spite', 'healbell', 'protect']
 			],
 			'dps': [
-				['flamethrower', 'fireblast', 'aircutter', 'freezeshock'],
+				['fireblast', 'flamethrower', 'aircutter', 'freezeshock'],
 				['freezeshock', 'icebeam', 'aircutter', 'muddywater'],
 				['thunderbolt', 'thunder', 'aircutter', 'freezeshock'],
 				['toxic', 'leechseed', 'muddywater', 'aircutter'],
