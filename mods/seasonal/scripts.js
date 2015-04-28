@@ -216,7 +216,7 @@ exports.BattleScripts = {
 		var baseDamage = Math.floor(pokemon.maxhp * basePower / 100);
 
 		// Now this is varied by stats slightly.
-		baseDamage += Math.floor(baseDamage * (attack - defense * 1.2) / 100);
+		baseDamage += Math.floor(baseDamage * (attack - defense * 0.9) / 100);
 
 		// Randomizer. Doesn't change much.
 		baseDamage = Math.floor(baseDamage * (95 + this.random(6)) / 100);

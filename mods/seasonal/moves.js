@@ -72,7 +72,7 @@ exports.BattleMovedex = {
 		num: -4,
 		accuracy: 100,
 		basePower: 0,
-		category: "acupressure",
+		category: "Status",
 		id: "acupressure",
 		name: "Acupressure",
 		pp: 16,
@@ -347,7 +347,7 @@ exports.BattleMovedex = {
 		accuracy: 100,
 		basePower: 0,
 		damageCallback: function (pokemon) {
-			return pokemon.hp / 2;
+			return pokemon.hp / 3;
 		},
 		category: "Physical",
 		id: "seismictoss",
@@ -655,7 +655,7 @@ exports.BattleMovedex = {
 			}
 		},
 		secondary: false,
-		target: "normal",
+		target: "self",
 		type: "Fighting"
 	}
 };
