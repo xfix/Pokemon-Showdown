@@ -88,7 +88,7 @@ exports.BattleMovedex = {
 		basePower: 0,
 		category: "acupressure",
 		id: "acupressure",
-		name: "Aycupressure",
+		name: "Acupressure",
 		pp: 16,
 		priority: 0,
 		flags: {snatch: 1},
@@ -97,9 +97,10 @@ exports.BattleMovedex = {
 			onStart: function (pokemon) {
 				this.add('-start', pokemon, 'Power Shield');
 			},
-			onDamagePriority: -10,
 			onDamage: function (damage, target, source, effect) {
-				this.heal(Math.ceil(damage / 4), target, target);
+				var h = Math.ceil(damage / 4);
+				this.heal(h, target, target);
+				this.add('-message', target.name + "'s Power Shield healed it for " + h + "!");
 				target.removeVolatile('powershield');
 			},
 			onEnd: function (pokemon) {
@@ -114,8 +115,8 @@ exports.BattleMovedex = {
 	holdhands: {
 		num: -5,
 		accuracy: 100,
-		basePower: 20,
-		category: "Special",
+		basePower: 0,
+		category: "Status",
 		id: "holdhands",
 		name: "Hold Hands",
 		pp: 16,
@@ -137,7 +138,7 @@ exports.BattleMovedex = {
 			}
 		},
 		secondary: false,
-		target: "any",
+		target: "adjacentAlly",
 		type: "Grass"
 	},
 	// Fairy Ward
@@ -304,7 +305,9 @@ exports.BattleMovedex = {
 			},
 			onDamagePriority: -10,
 			onDamage: function (damage, target, source, effect) {
-				this.heal(Math.ceil(damage * 0.0615), target, target);
+				var d = Math.ceil(damage * 0.0615);
+				this.heal(d, target, target);
+				this.add('-message', target.name + "'s Penance healed it for " + d + "!");
 				target.removeVolatile('penance');
 			},
 			onEnd: function (pokemon) {
@@ -360,10 +363,11 @@ exports.BattleMovedex = {
 			onStart: function (target) {
 				this.add('-singleturn', target, 'move: Last Stand');
 			},
-			onDamagePriority: -10,
 			onDamage: function (damage, target, source, effect) {
+				var originalDamage = damage;
 				damage = Math.ceil(damage / 2);
 				if (damage >= target.hp) damage = target.hp - 1;
+				this.add('-message', target.name + "'s Last Stand made it take " + (originalDamage-damage) + " damage less!");
 				return damage;
 			}
 		},
@@ -391,8 +395,8 @@ exports.BattleMovedex = {
 			onEnd: function (target) {
 				this.add('-end', target, 'move: Barkskin');
 			},
-			onDamagePriority: -10,
 			onDamage: function (damage, target, source, effect) {
+				this.add('-message', target.name + "'s Barkskin reduced the damage!");
 				return Math.ceil(damage * 0.75);
 			}
 		},
@@ -406,7 +410,7 @@ exports.BattleMovedex = {
 		accuracy: 100,
 		basePower: 0,
 		damageCallback: function (pokemon) {
-			return pokemon.hp;
+			return pokemon.hp / 2;
 		},
 		category: "Physical",
 		id: "seismictoss",
@@ -510,18 +514,6 @@ exports.BattleMovedex = {
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
 		volatileStatus: 'corruption',
-		effect: {
-			duration: 4,
-			onStart: function (target) {
-				this.add('-start', target, 'move: Corruption');
-			},
-			onEnd: function (target) {
-				this.add('-end', target, 'move: Corruption');
-			},
-			onResidual: function (pokemon) {
-				this.damage(pokemon.maxhp * 0.1);
-			}
-		},
 		target: "any",
 		type: "Dark"
 	},
@@ -536,7 +528,7 @@ exports.BattleMovedex = {
 		pp: 16,
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
-		volatileStatus: 'soulleech',
+		volatileStatus: 'leechseed',
 		effect: {
 			duration: 4,
 			onStart: function (target) {
@@ -547,7 +539,7 @@ exports.BattleMovedex = {
 			},
 			onResidualOrder: 8,
 			onResidual: function (pokemon) {
-				var target = this.effectData.source.side.active[pokemon.volatiles['soulleech'].sourcePosition];
+				var target = this.effectData.source.side.active[pokemon.volatiles['leechseed'].sourcePosition];
 				if (!target || target.fainted || target.hp <= 0) {
 					this.debug('Nothing to leech into');
 					return;
@@ -581,18 +573,18 @@ exports.BattleMovedex = {
 		type: "Ice"
 	},
 	// Frostbite
-	blizzard: {
+	freezeshock: {
 		num: -23,
 		accuracy: 100,
 		basePower: 10,
 		category: "Special",
-		id: "blizzard",
-		name: "Blizzard",
+		id: "freezeshock",
+		name: "Freeze Shock",
 		pp: 8,
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
 		secondary: {chance: 100, volatileStatus: 'chilled'},
-		target: "any",
+		target: "normal",
 		type: "Ice"
 	},
 	// Hurricane

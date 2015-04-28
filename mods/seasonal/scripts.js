@@ -1,9 +1,9 @@
 exports.BattleScripts = {
 	init: function () {
-		var tankStats = {hp:100, atk:30, def:30, spa:150, spd:150, spe:50};
-		var healerStats = {hp:30, atk:10, def:50, spa:250, spd:100, spe:10};
-		var supportStats = {hp:70, atk:50, def:80, spa:50, spd:80, spe:100};
-		var dpsStats = {hp:50, atk:200, def:60, spa:200, spd:60, spe:150};
+		var tankStats = {hp:90, atk:30, def:30, spa:150, spd:150, spe:50};
+		var healerStats = {hp:50, atk:10, def:50, spa:250, spd:100, spe:10};
+		var supportStats = {hp:75, atk:50, def:80, spa:50, spd:80, spe:100};
+		var dpsStats = {hp:65, atk:200, def:60, spa:200, spd:60, spe:150};
 		// Modify tanks
 		this.modData('Pokedex', 'registeel').baseStats = tankStats;
 		this.modData('Pokedex', 'golurk').baseStats = tankStats;
@@ -131,9 +131,9 @@ exports.BattleScripts = {
 				['acupressure', 'spite', 'healbell', 'protect']
 			],
 			'dps': [
-				['flamethrower', 'fireblast', 'aircutter', 'blizzard'],
-				['icebeam', 'blizzard', 'aircutter', 'muddywater'],
-				['thunderbolt', 'thunder', 'aircutter', 'blizzard'],
+				['flamethrower', 'fireblast', 'aircutter', 'freezeshock'],
+				['freezeshock', 'icebeam', 'aircutter', 'muddywater'],
+				['thunderbolt', 'thunder', 'aircutter', 'freezeshock'],
 				['toxic', 'leechseed', 'muddywater', 'aircutter'],
 				['furyswipes', 'scratch', 'slash', 'smog']
 			],
@@ -216,7 +216,7 @@ exports.BattleScripts = {
 		var baseDamage = Math.floor(pokemon.maxhp * basePower / 100);
 
 		// Now this is varied by stats slightly.
-		baseDamage += Math.floor(baseDamage * (attack - defense) / 100);
+		baseDamage += Math.floor(baseDamage * (attack - defense * 1.2) / 100);
 
 		// Randomizer. Doesn't change much.
 		baseDamage = Math.floor(baseDamage * (95 + this.random(6)) / 100);
@@ -249,6 +249,9 @@ exports.BattleScripts = {
 
 		// Final modifier. Modifiers that modify damage after min damage check, such as Life Orb.
 		baseDamage = this.runEvent('ModifyDamage', pokemon, target, move, baseDamage);
+
+		// Check for damage
+		baseDamage = this.runEvent('Damage', target, pokemon, move, baseDamage);
 
 		// Minimum is 1
 		if (basePower && !Math.floor(baseDamage)) {

@@ -5039,13 +5039,17 @@ exports.Formats = [
 				helpinghand: "Cooperation", spite: "Slow Down", aromaticmist: "Healing Touch", healbell: "Penance",
 				fakeout: "Stop", endure: "Last Stand", withdraw: "Barkskin", seismictoss: "Punishment",
 				flamethrower: "Flamestrike", fireblast: "Conflagration", thunderbolt: "Moonfire", thunder: "Starfire",
-				toxic: "Corruption", leechseed: "Soul Leech", icebeam: "Ice Lance", blizzard: "Frostbite",
+				toxic: "Corruption", leechseed: "Soul Leech", icebeam: "Ice Lance", freezeshock: "Frostbite",
 				aircutter: "Hurricane", muddywater: "Storm", furyswipes: "Fury", scratch: "Garrote", slash: "Mutilate",
 				smog: "Poison Gas", protect: "Evasion"
 			};
 			if (move.id in legitNames) {
 				move.name = legitNames[move.id];
 			}
+		},
+		onSwitchIn: function (pokemon) {
+			// Avoid immunities...
+			pokemon.setType('Grass');
 		}
 	},
 
