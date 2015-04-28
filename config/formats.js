@@ -5031,7 +5031,7 @@ exports.Formats = [
 		onBegin: function () {
 			this.add('-message', "Zankoku na tenshi no teeze!");
 		},
-		onModifyMove: function (move) {
+		onModifyMove: function (move, pokemon) {
 			// Shows legit name after use...
 			var legitNames = {
 				recover: "Cura", softboiled: "Curaga", reflect: "Wild Growth", acupressure: "Power Shield",
@@ -5043,8 +5043,17 @@ exports.Formats = [
 				aircutter: "Hurricane", muddywater: "Storm", furyswipes: "Fury", scratch: "Garrote", slash: "Mutilate",
 				smog: "Poison Gas", protect: "Evasion"
 			};
-			if (move.id in legitNames) {
-				move.name = legitNames[move.id];
+			var legitName = legitNames[move.id];
+			if (!legitName) return;
+
+			var allPokemon = pokemon.side.pokemon;
+			for (var i = 0; i < allPokemon.length; i++) {
+				var pokemon = allPokemon[i];
+				var moveset = pokemon.moveset;
+				for (var j = 0; j < moveset.length; j++) {
+					if (move.id !== moveset[j].id) continue;
+					pokemon.moves[j] = moveset[j].move = pokemon.baseMoveset[j].move = legitName;
+				}
 			}
 		},
 		onSwitchIn: function (pokemon) {
