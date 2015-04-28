@@ -98,8 +98,10 @@ exports.BattleStatuses = {
 		onResidual: function (side) {
 			for (var i = 0; i < side.active.length; i++) {
 				var pokemon = side.active[i];
-				this.heal(pokemon.maxhp * 0.0615);
-				this.add('-message', 'The wild growth recovered some of ' + pokemon.name + "'s HP!");
+				if (pokemon.hp < pokemon.maxhp) {
+					this.heal(pokemon.maxhp * 0.0615, pokemon, pokemon);
+					this.add('-message', 'The wild growth recovered some of ' + pokemon.name + "'s HP!");
+				}
 			}
 		},
 		onEnd: function (side) {
