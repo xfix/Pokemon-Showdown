@@ -188,7 +188,6 @@ exports.BattleMovedex = {
 			if (target.deductPP(target.lastMove, 8)) {
 				this.add("-activate", target, 'move: Slow Down', target.lastMove, 8);
 				target.addVolatile('disable');
-				target.volatiles.disable.effectData.duration = 2;
 				return;
 			}
 			return false;
@@ -268,7 +267,6 @@ exports.BattleMovedex = {
 		flags: {contact: 1, protect: 1, mirror: 1},
 		onHit: function (target, source) {
 			source.addVolatile('disable');
-			source.volatiles.disable.effectData.duration = 8;
 		},
 		secondary: {
 			chance: 100,
