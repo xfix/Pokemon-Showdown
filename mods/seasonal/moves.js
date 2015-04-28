@@ -63,20 +63,6 @@ exports.BattleMovedex = {
 		priority: 0,
 		flags: {snatch: 1},
 		sideCondition: 'wildgrowth',
-		effect: {
-			duration: 5,
-			onStart: function (side) {
-				this.add('-sidestart', side, 'Wild Growth');
-			},
-			onResidualOrder: 21,
-			onResidual: function (pokemon) {
-				this.heal(pokemon.maxhp * 0.0615);
-				this.add('-message', 'The wild growth recovered some of ' + pokemon.name + "'s HP!");
-			},
-			onEnd: function (side) {
-				this.add('-sideend', side, 'Wild Growth');
-			}
-		},
 		secondary: false,
 		target: "allySide",
 		type: "Grass"
@@ -93,20 +79,6 @@ exports.BattleMovedex = {
 		priority: 0,
 		flags: {snatch: 1},
 		volatileStatus: 'powershield',
-		effect: {
-			onStart: function (pokemon) {
-				this.add('-start', pokemon, 'Power Shield');
-			},
-			onDamage: function (damage, target, source, effect) {
-				var h = Math.ceil(damage / 4);
-				this.heal(h, target, target);
-				this.add('-message', target.name + "'s Power Shield healed it for " + h + "!");
-				target.removeVolatile('powershield');
-			},
-			onEnd: function (pokemon) {
-				this.add('-end', pokemon, 'Power Shield');
-			}
-		},
 		secondary: false,
 		target: "adjacentAllyOrSelf",
 		type: "Fairy"
@@ -123,20 +95,6 @@ exports.BattleMovedex = {
 		priority: 0,
 		flags: {protect: 1, reflectable: 1, distance: 1, heal: 1},
 		volatileStatus: 'rejuvenation',
-		effect: {
-			duration: 3,
-			onStart: function (pokemon) {
-				this.add('-start', pokemon, 'Rejuvenation');
-			},
-			onResidualOrder: 5,
-			onResidualSubOrder: 2,
-			onResidual: function (pokemon) {
-				this.heal(pokemon.maxhp * 0.125);
-			},
-			onEnd: function (pokemon) {
-				this.add('-end', pokemon, 'Rejuvenation');
-			}
-		},
 		secondary: false,
 		target: "adjacentAlly",
 		type: "Grass"
@@ -153,27 +111,6 @@ exports.BattleMovedex = {
 		priority: 0,
 		flags: {snatch: 1},
 		sideCondition: 'fairyward',
-		effect: {
-			duration: 3,
-			onSetStatus: function (status, target, source, effect) {
-				if (source && target !== source && effect && (!effect.infiltrates || target.side === source.side)) {
-					return false;
-				}
-			},
-			onTryConfusion: function (target, source, effect) {
-				if (source && target !== source && effect && (!effect.infiltrates || target.side === source.side)) {
-					return false;
-				}
-			},
-			onStart: function (side) {
-				this.add('-sidestart', side, 'Fairy Ward');
-			},
-			onResidualOrder: 21,
-			onResidualSubOrder: 2,
-			onEnd: function (side) {
-				this.add('-sideend', side, 'Fairy Ward');
-			}
-		},
 		secondary: false,
 		target: "allySide",
 		type: "Normal"

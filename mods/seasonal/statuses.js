@@ -88,5 +88,71 @@ exports.BattleStatuses = {
 			this.damage(pokemon.maxhp * 0.1);
 			this.add('-message', pokemon.name + ' took Corruption damage!');
 		}
+	},
+	wildgrowth: {
+		duration: 5,
+		onStart: function (side) {
+			this.add('-sidestart', side, 'Wild Growth');
+		},
+		onResidualOrder: 21,
+		onResidual: function (pokemon) {
+			this.heal(pokemon.maxhp * 0.0615);
+			this.add('-message', 'The wild growth recovered some of ' + pokemon.name + "'s HP!");
+		},
+		onEnd: function (side) {
+			this.add('-sideend', side, 'Wild Growth');
+		}
+	},
+	powershield: {
+		onStart: function (pokemon) {
+			this.add('-start', pokemon, 'Power Shield');
+			this.add('-message', pokemon.name + ' has been shielded!');
+		},
+		onDamage: function (damage, target, source, effect) {
+			var h = Math.ceil(damage / 4);
+			this.heal(h, target, target);
+			this.add('-message', target.name + "'s Power Shield healed it for " + h + "!");
+			target.removeVolatile('powershield');
+		},
+		onEnd: function (pokemon) {
+			this.add('-end', pokemon, 'Power Shield');
+		}
+	},
+	rejuvenation: {
+		duration: 3,
+		onStart: function (pokemon) {
+			this.add('-start', pokemon, 'Rejuvenation');
+			this.add('-message', pokemon.name + ' is rejuvenating!');
+		},
+		onResidualOrder: 5,
+		onResidualSubOrder: 2,
+		onResidual: function (pokemon) {
+			this.heal(pokemon.maxhp * 0.125);
+			this.add('-message', pokemon.name + ' healed due to its rejuvenation!');
+		},
+		onEnd: function (pokemon) {
+			this.add('-end', pokemon, 'Rejuvenation');
+		}
+	},
+	fairyward: {
+		duration: 3,
+		onSetStatus: function (status, target, source, effect) {
+			if (source && target !== source && effect && (!effect.infiltrates || target.side === source.side)) {
+				return false;
+			}
+		},
+		onTryConfusion: function (target, source, effect) {
+			if (source && target !== source && effect && (!effect.infiltrates || target.side === source.side)) {
+				return false;
+			}
+		},
+		onStart: function (side) {
+			this.add('-sidestart', side, 'Fairy Ward');
+		},
+		onResidualOrder: 21,
+		onResidualSubOrder: 2,
+		onEnd: function (side) {
+			this.add('-sideend', side, 'Fairy Ward');
+		}
 	}
 };
