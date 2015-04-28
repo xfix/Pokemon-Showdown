@@ -5049,7 +5049,9 @@ exports.Formats = [
 		},
 		onSwitchIn: function (pokemon) {
 			// Avoid immunities...
-			pokemon.setType('Grass');
+			pokemon.typesData = [
+				{type: 'Grass', suppressed: false,  isAdded: false}
+			];
 		}
 	},
 

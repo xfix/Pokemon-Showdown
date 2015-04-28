@@ -268,7 +268,7 @@ exports.BattleMovedex = {
 		flags: {contact: 1, protect: 1, mirror: 1},
 		onHit: function (target, source) {
 			source.addVolatile('disable');
-			target.volatiles.disable.effectData.duration = 8;
+			source.volatiles.disable.effectData.duration = 8;
 		},
 		secondary: {
 			chance: 100,
