@@ -1,15 +1,17 @@
 exports.BattleMovedex = {
-	cura: {
+	// Cura
+	recover: {
 		num: -1,
 		accuracy: 100,
 		basePower: 0,
 		category: "Special",
-		id: "cura",
-		name: "Cura",
+		id: "recover",
+		name: "Recover",
 		pp: 16,
 		priority: 0,
 		flags: {heal: 1},
 		onHitSide: function (side, source) {
+			this.add('-message', source.name + "'s Cura heals its team!");
 			var targets = [];
 			for (var p in side.active) {
 				targets.push(side.active[p]);
@@ -23,17 +25,19 @@ exports.BattleMovedex = {
 		target: "allySide",
 		type: "Normal"
 	},
-	curaga: {
+	// Curaga
+	softboiled: {
 		num: -2,
 		accuracy: 100,
 		basePower: 0,
 		category: "Special",
-		id: "curaga",
-		name: "Curaga",
+		id: "softboiled",
+		name: "Softboiled",
 		pp: 16,
 		priority: 0,
 		flags: {heal: 1},
 		onHitSide: function (side, source) {
+			this.add('-message', source.name + "'s Curaga greatly heals its team!");
 			var targets = [];
 			for (var p in side.active) {
 				targets.push(side.active[p]);
@@ -47,13 +51,14 @@ exports.BattleMovedex = {
 		target: "allySide",
 		type: "Normal"
 	},
-	wildgrowth: {
+	// Wild Growth
+	reflect: {
 		num: -3,
 		accuracy: 100,
 		basePower: 0,
 		category: "Special",
-		id: "wildgrowth",
-		name: "Wild Growth",
+		id: "reflect",
+		name: "Reflect",
 		pp: 16,
 		priority: 0,
 		flags: {snatch: 1},
@@ -66,6 +71,7 @@ exports.BattleMovedex = {
 			onResidualOrder: 21,
 			onResidual: function (pokemon) {
 				this.heal(pokemon.maxhp * 0.0615);
+				this.add('-message', 'The wild growth recovered some of ' + pokemon.name + "'s HP!");
 			},
 			onEnd: function (side) {
 				this.add('-sideend', side, 'Wild Growth');
@@ -75,13 +81,14 @@ exports.BattleMovedex = {
 		target: "allySide",
 		type: "Grass"
 	},
-	powershield: {
+	// Power Shield
+	acupressure: {
 		num: -4,
 		accuracy: 100,
 		basePower: 0,
-		category: "Special",
-		id: "powershield",
-		name: "Power Shield",
+		category: "acupressure",
+		id: "acupressure",
+		name: "Aycupressure",
 		pp: 16,
 		priority: 0,
 		flags: {snatch: 1},
@@ -100,16 +107,17 @@ exports.BattleMovedex = {
 			}
 		},
 		secondary: false,
-		target: "any",
+		target: "adjacentAllyOrSelf",
 		type: "Fairy"
 	},
-	rejuvenation: {
+	// Rejuvenation
+	holdhands: {
 		num: -5,
 		accuracy: 100,
 		basePower: 20,
 		category: "Special",
-		id: "rejuvenation",
-		name: "Rejuvenation",
+		id: "holdhands",
+		name: "Hold Hands",
 		pp: 16,
 		priority: 0,
 		flags: {protect: 1, reflectable: 1, distance: 1, heal: 1},
@@ -132,13 +140,14 @@ exports.BattleMovedex = {
 		target: "any",
 		type: "Grass"
 	},
-	fairyward: {
+	// Fairy Ward
+	luckychant: {
 		num: -6,
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
-		id: "fairyward",
-		name: "Fairy Ward",
+		id: "luckychant",
+		name: "Lucky Chant",
 		pp: 25,
 		priority: 0,
 		flags: {snatch: 1},
@@ -168,63 +177,46 @@ exports.BattleMovedex = {
 		target: "allySide",
 		type: "Normal"
 	},
-	taunt: {
+	// Taunt
+	followe: {
 		num: -7,
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
-		id: "taunt",
-		name: "Taunt",
+		id: "followe",
+		name: "Follow Me",
 		pp: 20,
 		priority: 3,
 		flags: {},
-		volatileStatus: 'taunt',
-		effect: {
-			duration: 4,
-			onFoeRedirectTarget: function (target, source, source2, move) {
-				if (this.validTarget(this.effectData.target, source, move.target)) {
-					return this.effectData.target;
-				}
-			}
-		},
+		volatileStatus: 'taunting',
 		secondary: false,
 		target: "self",
 		type: "Normal"
 	},
-	sacrifice: {
+	// Sacrifice
+	meditate: {
 		num: -7,
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
-		id: "sacrifice",
-		name: "Sacrifice",
+		id: "meditate",
+		name: "meditate",
 		pp: 20,
 		priority: 3,
 		flags: {},
 		volatileStatus: 'sacrifice',
-		effect: {
-			duration: 4,
-			onAnyModifyDamage: function (damage, source, target, move) {
-				for (var i = 0; i < target.side.active.length; i++) {
-					if (target !== target.side.active[i] && target.side.active[i].volatiles['sacrifice']) {
-						this.directDamage(damage, target, source, {id: 'sacrifice'});
-						return 0;
-					}
-				}
-				return;
-			}
-		},
 		secondary: false,
 		target: "self",
 		type: "Normal"
 	},
-	cooperation: {
+	// Cooperation
+	helpinghand: {
 		num: -8,
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
-		id: "cooperation",
-		name: "Cooperation",
+		id: "helpinghand",
+		name: "Helping Hand",
 		pp: 15,
 		priority: 1,
 		flags: {},
@@ -240,16 +232,17 @@ exports.BattleMovedex = {
 			this.swapPosition(source, newPosition, '[from] move: Cooperation');
 		},
 		secondary: false,
-		target: "any",
+		target: "adjacentAlly",
 		type: "Psychic"
 	},
-	slowdown: {
+	// Slow Down
+	spite: {
 		num: -9,
 		accuracy: 100,
 		basePower: 0,
 		category: "Status",
-		id: "slowdown",
-		name: "Slow Down",
+		id: "spite",
+		name: "Spite",
 		pp: 10,
 		priority: 0,
 		flags: {protect: 1, reflectable: 1, mirror: 1, authentic: 1},
@@ -266,15 +259,14 @@ exports.BattleMovedex = {
 		target: "normal",
 		type: "Ghost"
 	},
-	healingtouch: {
+	// Healing Touch
+	aromaticmist: {
 		num: -10,
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
-		desc: "The target restores 1/2 of its maximum HP, rounded half up. If the user has the Ability Mega Launcher, the target instead restores 3/4 of its maximum HP, rounded half down.",
-		shortDesc: "Heals the target by 50% of its max HP.",
-		id: "healingtouch",
-		name: "Healing Touch",
+		id: "aromaticmist",
+		name: "Aromatic Mist",
 		pp: 10,
 		priority: 0,
 		flags: {protect: 1, reflectable: 1, distance: 1, heal: 1},
@@ -288,16 +280,17 @@ exports.BattleMovedex = {
 			this.heal(Math.ceil(target.maxhp * 0.6));
 		},
 		secondary: false,
-		target: "any",
+		target: "adjacentAlly",
 		type: "Grass"
 	},
-	penance: {
+	// Penance
+	healbell: {
 		num: -11,
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
-		id: "penance",
-		name: "Penance",
+		id: "healbell",
+		name: "Heal Bell",
 		pp: 10,
 		priority: 0,
 		flags: {protect: 1, reflectable: 1, distance: 1, heal: 1},
@@ -319,17 +312,17 @@ exports.BattleMovedex = {
 			}
 		},
 		secondary: false,
-		target: "any",
+		target: "allyTeam",
 		type: "Grass"
 	},
-	stop: {
+	// Stop
+	fakeout: {
 		num: -12,
 		accuracy: 100,
 		basePower: 0,
 		category: "Status",
-		id: "stop",
-		isViable: true,
-		name: "Stop",
+		id: "fakeout",
+		name: "Fake Out",
 		pp: 10,
 		priority: 10,
 		flags: {contact: 1, protect: 1, mirror: 1},
@@ -344,13 +337,14 @@ exports.BattleMovedex = {
 		target: "normal",
 		type: "Psychic"
 	},
-	laststand: {
+	// Last Stand
+	endure: {
 		num: -13,
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
-		id: "laststand",
-		name: "Last Stand",
+		id: "endure",
+		name: "Endure",
 		pp: 10,
 		priority: 4,
 		flags: {},
@@ -377,13 +371,14 @@ exports.BattleMovedex = {
 		target: "self",
 		type: "Fighting"
 	},
-	barkskin: {
+	// Barkskin
+	withdraw: {
 		num: -14,
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
-		id: "barkskin",
-		name: "Barkskin",
+		id: "withdraw",
+		name: "Withdraw",
 		pp: 10,
 		priority: 4,
 		flags: {},
@@ -405,7 +400,8 @@ exports.BattleMovedex = {
 		target: "self",
 		type: "Grass"
 	},
-	punishment: {
+	// Punishment
+	seismictoss: {
 		num: -15,
 		accuracy: 100,
 		basePower: 0,
@@ -413,9 +409,9 @@ exports.BattleMovedex = {
 			return pokemon.hp;
 		},
 		category: "Physical",
-		id: "punishment",
+		id: "seismictoss",
 		isViable: true,
-		name: "Punishment",
+		name: "Seismic Toss",
 		pp: 20,
 		priority: -1,
 		flags: {contact: 1, protect: 1, mirror: 1, nonsky: 1},
@@ -423,7 +419,8 @@ exports.BattleMovedex = {
 		target: "normal",
 		type: "Fighting"
 	},
-	firestrike: {
+	// Flamestrike
+	flamethrower: {
 		num: -16,
 		accuracy: 100,
 		basePower: 30,
@@ -432,36 +429,38 @@ exports.BattleMovedex = {
 			return 30;
 		},
 		category: "Special",
-		id: "firestrike",
-		name: "Firestrike",
+		id: "flamethrower",
+		name: "Flamethrower",
 		pp: 8,
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
 		secondary: false,
-		target: "normal",
+		target: "any",
 		type: "Fire"
 	},
-	conflagration: {
+	// Conflagration
+	fireblast: {
 		num: -17,
 		accuracy: 100,
 		basePower: 20,
 		category: "Special",
-		id: "conflagration",
-		name: "Conflagration",
+		id: "fireblast",
+		name: "Fire Blast",
 		pp: 16,
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
 		secondary: {chance: 100, status: 'brn'},
-		target: "normal",
+		target: "any",
 		type: "Fire"
 	},
-	moonfire: {
+	// Moonfire
+	thunderbolt: {
 		num: -18,
 		accuracy: 100,
 		basePower: 5,
 		category: "Special",
-		id: "moonfire",
-		name: "Moonfire",
+		id: "thunderbolt",
+		name: "Thunderbolt",
 		pp: 16,
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
@@ -478,10 +477,11 @@ exports.BattleMovedex = {
 				this.damage(pokemon.maxhp * 0.03);
 			}
 		},
-		target: "normal",
+		target: "any",
 		type: "Grass"
 	},
-	starfire: {
+	// Starfire
+	thunder: {
 		num: -19,
 		accuracy: 100,
 		basePower: 30,
@@ -490,21 +490,22 @@ exports.BattleMovedex = {
 			return 30;
 		},
 		category: "Special",
-		id: "starfire",
-		name: "Starfire",
+		id: "thunder",
+		name: "Thunder",
 		pp: 16,
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
-		target: "normal",
+		target: "any",
 		type: "Grass"
 	},
-	corruption: {
+	// Corruption
+	toxic: {
 		num: -20,
 		accuracy: 100,
 		basePower: 0,
 		category: "Status",
-		id: "corruption",
-		name: "Corruption",
+		id: "toxic",
+		name: "Toxic",
 		pp: 16,
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
@@ -521,16 +522,17 @@ exports.BattleMovedex = {
 				this.damage(pokemon.maxhp * 0.1);
 			}
 		},
-		target: "normal",
+		target: "any",
 		type: "Dark"
 	},
-	soulleech: {
+	// Soul Leech
+	leechseed: {
 		num: -21,
 		accuracy: 100,
 		basePower: 0,
 		category: "Status",
-		id: "soulleech",
-		name: "Soul Leech",
+		id: "leechseed",
+		name: "Leech Seed",
 		pp: 16,
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
@@ -556,10 +558,11 @@ exports.BattleMovedex = {
 				}
 			}
 		},
-		target: "normal",
+		target: "any",
 		type: "Dark"
 	},
-	icelance: {
+	// Ice Lance
+	icebeam: {
 		num: -22,
 		accuracy: 100,
 		basePower: 30,
@@ -568,8 +571,8 @@ exports.BattleMovedex = {
 			return 30;
 		},
 		category: "Special",
-		id: "icelance",
-		name: "Ice Lance",
+		id: "icebeam",
+		name: "Ice Beam",
 		pp: 8,
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
@@ -577,49 +580,53 @@ exports.BattleMovedex = {
 		target: "normal",
 		type: "Ice"
 	},
-	frostbite: {
+	// Frostbite
+	blizzard: {
 		num: -23,
 		accuracy: 100,
 		basePower: 10,
 		category: "Special",
-		id: "frostbite",
-		name: "Frostbite",
+		id: "blizzard",
+		name: "Blizzard",
 		pp: 8,
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
 		secondary: {chance: 100, volatileStatus: 'chilled'},
-		target: "normal",
+		target: "any",
 		type: "Ice"
 	},
-	hurricanewinds: {
+	// Hurricane
+	aircutter: {
 		num: -24,
 		accuracy: 100,
 		basePower: 25,
 		category: "Special",
-		id: "hurricanewinds",
+		id: "aircutter",
 		isViable: true,
-		name: "Hurricane Winds",
+		name: "Air Cutter",
 		pp: 10,
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
 		target: "allAdjacentFoes",
 		type: "Flying"
 	},
-	storm: {
+	// Storm
+	muddywater: {
 		num: -25,
 		accuracy: 100,
 		basePower: 25,
 		category: "Special",
-		id: "storm",
+		id: "muddywater",
 		isViable: true,
-		name: "Storm",
+		name: "Muddy water",
 		pp: 10,
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
 		target: "allAdjacentFoes",
 		type: "Electric"
 	},
-	fury: {
+	// Fury
+	bide: {
 		num: -26,
 		accuracy: 100,
 		basePower: 15,
@@ -628,9 +635,9 @@ exports.BattleMovedex = {
 			return 15;
 		},
 		category: "Physical",
-		id: "fury",
+		id: "bide",
 		isViable: true,
-		name: "Fury",
+		name: "Bide",
 		pp: 10,
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
@@ -640,13 +647,14 @@ exports.BattleMovedex = {
 		target: "normal",
 		type: "Fighting"
 	},
-	garrote: {
+	// Garrote
+	scratch: {
 		num: -27,
 		accuracy: 100,
 		basePower: 20,
 		category: "Physical",
-		id: "garrote",
-		name: "Garrote",
+		id: "scratch",
+		name: "Scratch",
 		pp: 16,
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
@@ -654,7 +662,8 @@ exports.BattleMovedex = {
 		target: "normal",
 		type: "Dark"
 	},
-	mutilate: {
+	// Mutilate
+	slash: {
 		num: -28,
 		accuracy: 100,
 		basePower: 35,
@@ -665,8 +674,8 @@ exports.BattleMovedex = {
 			return bP;
 		},
 		category: "Physical",
-		id: "mutilate",
-		name: "Mutilate",
+		id: "slash",
+		name: "Slash",
 		pp: 8,
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
@@ -674,13 +683,14 @@ exports.BattleMovedex = {
 		target: "normal",
 		type: "Dark"
 	},
-	envenom: {
+	// Poison Gas
+	smog: {
 		num: 30,
 		accuracy: 100,
 		basePower: 0,
 		category: "Status",
-		id: "poisongas",
-		name: "Poison Gas",
+		id: "smog",
+		name: "Smog",
 		pp: 40,
 		priority: 0,
 		flags: {protect: 1, reflectable: 1, mirror: 1},
@@ -689,13 +699,14 @@ exports.BattleMovedex = {
 		target: "normal",
 		type: "Poison"
 	},
-	evasion: {
+	// Evasion
+	protect: {
 		num: 31,
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
-		id: "evasion",
-		name: "Evasion",
+		id: "protect",
+		name: "Protect",
 		pp: 8,
 		priority: 5,
 		flags: {},

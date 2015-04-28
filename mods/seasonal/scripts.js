@@ -16,7 +16,7 @@ exports.BattleScripts = {
 			var healers = ['Amy', 'Princess Leia', 'Scruffy', 'Yoda'].randomize();
 			var tanks = ['Bender', 'Gurren Lagann', 'Lagann', 'Rei Ayanami', 'Slurms McKenzie'].randomize();
 			var supports = ['C3PO', 'Hermes', 'Professor Farnsworth', 'Kif', 'Jar Jar Binks', 'R2D2'].randomize();
-			var dps = ['Asuka', 'Chewy', 'Fry', 'Han Solo', 'Leela', 'Luke Skywalker', 'Nibbler', 'Shinji Ikari', 'Zoidberg'].randomize();
+			var dps = ['Asuka Langley', 'Chewy', 'Fry', 'Han Solo', 'Leela', 'Luke Skywalker', 'Nibbler', 'Shinji Ikari', 'Zoidberg'].randomize();
 		} else {
 			var healers = ['Anti-Spiral', 'Gendo Ikari', 'Kaworu Nagisa'].randomize();
 			var tanks = ['Jabba the Hut', 'Lilith', 'Lrrr', 'Mommy'].randomize();
@@ -66,28 +66,29 @@ exports.BattleScripts = {
 		};
 		var movesets = {
 			'healer': [
-				['curaga', 'icelance', 'wildgrowth', 'rejuvenation'],
-				['curaga', 'icelance', 'fairyward', 'rejuvenation'],
-				['curaga', 'icelance', 'wildgrowth', 'healingtouch']
+				['softboiled', 'icebeam', 'reflect', 'holdhands'],
+				['softboiled', 'icebeam', 'luckychant', 'holdhands'],
+				['softboiled', 'icebeam', 'reflect', 'aromaticmist']
 			],
 			'tank': [
-				['taunt', 'sacrifice', 'cooperation', 'punishment'],
-				['taunt', 'laststand', 'barkskin', 'punishment'],
-				['taunt', 'sacrifice', 'laststand', 'punishment'],
-				['sacrifice', 'cooperation', 'evasion', 'punishment']
+				['followe', 'meditate', 'helpinghand', 'seismictoss'],
+				['followe', 'endure', 'withdraw', 'seismictoss'],
+				['followe', 'meditate', 'endure', 'seismictoss'],
+				['meditate', 'helpinghand', 'protect', 'seismictoss']
 			],
 			'support': [
-				['cura', 'powershield', 'penance', 'barkskin'],
-				['slowdown', 'stop', 'evasion', 'barkskin'],
-				['cura', 'powershield', 'slowdown', 'penance'],
-				['cura', 'powershield', 'penance', 'stop'],
-				['powershield', 'slowdown', 'penance', 'evasion']
+				['recover', 'acupressure', 'healbell', 'withdraw'],
+				['spite', 'fakeout', 'protect', 'withdraw'],
+				['recover', 'acupressure', 'spite', 'healbell'],
+				['recover', 'acupressure', 'healbell', 'fakeout'],
+				['acupressure', 'spite', 'healbell', 'protect']
 			],
 			'dps': [
-				['flamestrike', 'conflagration', 'hurricanewinds', 'storm'],
-				['moonfire', 'starfire', 'hurricanewinds', 'blizzard'],
-				['corruption', 'soulleech', 'storm', 'blizzard'],
-				['fury', 'garrote', 'mutilate', 'envenom']
+				['flamethrower', 'fireblast', 'aircutter', 'blizzard'],
+				['icebeam', 'blizzard', 'aircutter', 'muddywater'],
+				['thunderbolt', 'thunder', 'aircutter', 'blizzard'],
+				['toxic', 'leechseed', 'muddywater', 'aircutter'],
+				['bide', 'scratch', 'slash', 'smog']
 			],
 		};
 		for (var i = 0; i < 6; i++) {

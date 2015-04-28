@@ -5027,7 +5027,26 @@ exports.Formats = [
 		team: 'randomSeasonalMay2015',
 		mod: 'seasonal',
 		gameType: 'triples',
-		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod', 'Cancel Mod']
+		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod', 'Cancel Mod'],
+		onBegin: function () {
+			this.add('-message', "Zankoku na tenshi no teeze!");
+		},
+		onModifyMove: function (move) {
+			// Shows legit name after use...
+			var legitNames = {
+				recover: "Cura", softboiled: "Curaga", reflect: "Wild Growth", acupressure: "Power Shield",
+				holdhands: "Rejuvenation", luckychant: "Fairy Ward", followe: "Taunt", meditate: "Sacrifice",
+				helpinghand: "Cooperation", spite: "Slow Down", aromaticmist: "Healing Touch", healbell: "Penance",
+				fakeout: "Stop", endure: "Last Stand", withdraw: "Barkskin", seismictoss: "Punishment",
+				flamethrower: "Flamestrike", fireblast: "Conflagration", thunderbolt: "Moonfire", thunder: "Starfire",
+				toxic: "Corruption", leechseed: "Soul Leech", icebeam: "Ice Lance", blizzard: "Frostbite",
+				aircutter: "Hurricane", muddywater: "Storm", bide: "Fury", scratch: "Garrote", slash: "Mutilate",
+				smog: "Poison Gas", protect: "Evasion"
+			};
+			if (move.id in legitNames) {
+				move.name = legitNames[move.id];
+			}
+		}
 	},
 
 	// Other Metagames

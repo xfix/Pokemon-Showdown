@@ -38,5 +38,25 @@ exports.BattleStatuses = {
 		onResidual: function (pokemon) {
 			this.damage(pokemon.maxhp * 0.04);
 		}
+	},
+	taunting: {
+		duration: 4,
+		onFoeRedirectTarget: function (target, source, source2, move) {
+			if (this.validTarget(this.effectData.target, source, move.target)) {
+				return this.effectData.target;
+			}
+		}
+	},
+	sacrifice: {
+		duration: 4,
+		onAnyModifyDamage: function (damage, source, target, move) {
+			for (var i = 0; i < target.side.active.length; i++) {
+				if (target !== target.side.active[i] && target.side.active[i].volatiles['sacrifice']) {
+					this.directDamage(damage, target, source, {id: 'sacrifice'});
+					return 0;
+				}
+			}
+			return;
+		}
 	}
 };
