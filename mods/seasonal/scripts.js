@@ -1,4 +1,51 @@
 exports.BattleScripts = {
+	init: function () {
+		var tankStats = {hp:100, atk:30, def:30, spa:150, spd:150, spe:50};
+		var healerStats = {hp:30, atk:10, def:50, spa:250, spd:100, spe:10};
+		var supportStats = {hp:70, atk:50, def:80, spa:50, spd:80, spe:100};
+		var dpsStats = {hp:50, atk:200, def:60, spa:200, spd:60, spe:150};
+		// Modify tanks
+		this.modData('Pokedex', 'registeel').baseStats = tankStats;
+		this.modData('Pokedex', 'golurk').baseStats = tankStats;
+		this.modData('Pokedex', 'golett').baseStats = tankStats;
+		this.modData('Pokedex', 'palkia').baseStats = tankStats;
+		this.modData('Pokedex', 'slugma').baseStats = tankStats;
+		this.modData('Pokedex', 'snorlax').baseStats = tankStats;
+		this.modData('Pokedex', 'xerneas').baseStats = tankStats;
+		this.modData('Pokedex', 'muk').baseStats = tankStats;
+		this.modData('Pokedex', 'gothitelle').baseStats = tankStats;
+		// Modify healers
+		this.modData('Pokedex', 'jynx').baseStats = healerStats;
+		this.modData('Pokedex', 'gardevoir').baseStats = healerStats;
+		this.modData('Pokedex', 'alakazam').baseStats = healerStats;
+		this.modData('Pokedex', 'celebi').baseStats = healerStats;
+		this.modData('Pokedex', 'bisharp').baseStats = healerStats;
+		this.modData('Pokedex', 'machoke').baseStats = healerStats;
+		this.modData('Pokedex', 'treecko').baseStats = healerStats;
+		// Modify supporters
+		this.modData('Pokedex', 'regirock').baseStats = supportStats;
+		this.modData('Pokedex', 'scrafty').baseStats = supportStats;
+		this.modData('Pokedex', 'mrmime').baseStats = supportStats;
+		this.modData('Pokedex', 'elgyem').baseStats = supportStats;
+		this.modData('Pokedex', 'heliolisk').baseStats = supportStats;
+		this.modData('Pokedex', 'regigigas').baseStats = supportStats;
+		this.modData('Pokedex', 'genesect').baseStats = supportStats;
+		this.modData('Pokedex', 'delphox').baseStats = supportStats;
+		// Modify DPSs
+		this.modData('Pokedex', 'groudon').baseStats = dpsStats;
+		this.modData('Pokedex', 'ursaring').baseStats = dpsStats;
+		this.modData('Pokedex', 'magmar').baseStats = dpsStats;
+		this.modData('Pokedex', 'sawk').baseStats = dpsStats;
+		this.modData('Pokedex', 'hitmonlee').baseStats = dpsStats;
+		this.modData('Pokedex', 'throh').baseStats = dpsStats;
+		this.modData('Pokedex', 'monferno').baseStats = dpsStats;
+		this.modData('Pokedex', 'dialga').baseStats = dpsStats;
+		this.modData('Pokedex', 'yveltal').baseStats = dpsStats;
+		this.modData('Pokedex', 'dusknoir').baseStats = dpsStats;
+		this.modData('Pokedex', 'cofagrigus').baseStats = dpsStats;
+		this.modData('Pokedex', 'toxicroak').baseStats = dpsStats;
+		this.modData('Pokedex', 'raticate').baseStats = dpsStats;
+	},
 	randomSeasonalMay2015Team: function (side) {
 		var team = [];
 		// Teams on this seasonal have: A tank. A healer. A dps. A support. An off-tank. Another dps.
@@ -61,7 +108,7 @@ exports.BattleScripts = {
 			'An angel': {species: 'Yveltal', gender: 'N', role: 'dps'},
 			'Darth Vader': {species: 'Dusknoir', gender: 'M', role: 'dps'},
 			'Emperor Palpatine': {species: 'Cofagrigus', gender: 'M', role: 'dps'},
-			'Fender': {species: 'Registeel', gender: 'M', role: 'dps'},
+			'Fender': {species: 'Toxicroak', gender: 'M', role: 'dps'},
 			'Storm Trooper': {species: 'Raticate', gender: 'M', role: 'dps'}
 		};
 		var movesets = {
@@ -88,7 +135,7 @@ exports.BattleScripts = {
 				['icebeam', 'blizzard', 'aircutter', 'muddywater'],
 				['thunderbolt', 'thunder', 'aircutter', 'blizzard'],
 				['toxic', 'leechseed', 'muddywater', 'aircutter'],
-				['bide', 'scratch', 'slash', 'smog']
+				['furyswipes', 'scratch', 'slash', 'smog']
 			],
 		};
 		for (var i = 0; i < 6; i++) {
@@ -100,5 +147,114 @@ exports.BattleScripts = {
 		}
 
 		return team;
+	},
+	getDamage: function (pokemon, target, move, suppressMessages) {
+		if (typeof move === 'string') move = this.getMove(move);
+
+		if (typeof move === 'number') move = {
+			basePower: move,
+			type: '???',
+			category: 'Physical',
+			flags: {}
+		};
+
+		if (move.damageCallback) {
+			return move.damageCallback.call(this, pokemon, target);
+		}
+		if (move.damage === 'level') {
+			return pokemon.level;
+		}
+		if (move.damage) {
+			return move.damage;
+		}
+
+		if (!move) move = {};
+		if (!move.type) move.type = '???';
+		var type = move.type;
+		var category = this.getCategory(move);
+		var defensiveCategory = move.defensiveCategory || category;
+
+		var basePower = move.basePower;
+		if (move.basePowerCallback) {
+			basePower = move.basePowerCallback.call(this, pokemon, target, move);
+		}
+		if (!basePower) {
+			if (basePower === 0) return; // returning undefined means not dealing damage
+			return basePower;
+		}
+		basePower = this.clampIntRange(basePower, 1);
+		basePower = this.runEvent('BasePower', pokemon, target, move, basePower, true);
+
+		if (!basePower) return 0;
+		basePower = this.clampIntRange(basePower, 1);
+
+		var level = pokemon.level;
+		var attacker = pokemon;
+		var defender = target;
+		var attackStat = category === 'Physical' ? 'atk' : 'spa';
+		var defenseStat = defensiveCategory === 'Physical' ? 'def' : 'spd';
+		var statTable = {atk:'Atk', def:'Def', spa:'SpA', spd:'SpD', spe:'Spe'};
+		var attack;
+		var defense;
+		var atkBoosts = move.useTargetOffensive ? defender.boosts[attackStat] : attacker.boosts[attackStat];
+		var defBoosts = move.useSourceDefensive ? attacker.boosts[defenseStat] : defender.boosts[defenseStat];
+		var ignoreNegativeOffensive = !!move.ignoreNegativeOffensive;
+		var ignorePositiveDefensive = !!move.ignorePositiveDefensive;
+
+		if (move.useTargetOffensive) attack = defender.calculateStat(attackStat, atkBoosts);
+		else attack = attacker.calculateStat(attackStat, atkBoosts);
+
+		if (move.useSourceDefensive) defense = attacker.calculateStat(defenseStat, defBoosts);
+		else defense = defender.calculateStat(defenseStat, defBoosts);
+
+		// Apply Stat Modifiers
+		attack = this.runEvent('Modify' + statTable[attackStat], attacker, defender, move, attack);
+		defense = this.runEvent('Modify' + statTable[defenseStat], defender, attacker, move, defense);
+
+		// In this mod, basePower is the %HP of the caster that is used on the damage calcualtion.
+		//var baseDamage = Math.floor(Math.floor(Math.floor(2 * level / 5 + 2) * basePower * attack / defense) / 50) + 2;
+		var baseDamage = Math.floor(pokemon.maxhp * basePower / 100);
+
+		// Now this is varied by stats slightly.
+		baseDamage += Math.floor(baseDamage * (attack - defense) / 100);
+
+		// Randomizer. Doesn't change much.
+		baseDamage = Math.floor(baseDamage * (95 + this.random(6)) / 100);
+
+		/** Add effectiveness?
+		// types
+		move.typeMod = 0;
+		if (target.negateImmunity[move.type] !== 'IgnoreEffectiveness' || this.getImmunity(move.type, target)) {
+			move.typeMod = target.runEffectiveness(move);
+		}
+		move.typeMod = this.clampIntRange(move.typeMod, -6, 6);
+		if (move.typeMod > 0) {
+			if (!suppressMessages) this.add('-supereffective', target);
+
+			for (var i = 0; i < move.typeMod; i++) {
+				baseDamage *= 2;
+			}
+		}
+		if (move.typeMod < 0) {
+			if (!suppressMessages) this.add('-resisted', target);
+
+			for (var i = 0; i > move.typeMod; i--) {
+				baseDamage = Math.floor(baseDamage / 2);
+			}
+		}*/
+
+		if (pokemon.volatiles['chilled']) {
+			baseDamage = Math.floor(baseDamage * 0.9);
+		}
+
+		// Final modifier. Modifiers that modify damage after min damage check, such as Life Orb.
+		baseDamage = this.runEvent('ModifyDamage', pokemon, target, move, baseDamage);
+
+		// Minimum is 1
+		if (basePower && !Math.floor(baseDamage)) {
+			return 1;
+		}
+
+		return Math.floor(baseDamage);
 	}
 };

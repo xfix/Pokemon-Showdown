@@ -5040,7 +5040,7 @@ exports.Formats = [
 				fakeout: "Stop", endure: "Last Stand", withdraw: "Barkskin", seismictoss: "Punishment",
 				flamethrower: "Flamestrike", fireblast: "Conflagration", thunderbolt: "Moonfire", thunder: "Starfire",
 				toxic: "Corruption", leechseed: "Soul Leech", icebeam: "Ice Lance", blizzard: "Frostbite",
-				aircutter: "Hurricane", muddywater: "Storm", bide: "Fury", scratch: "Garrote", slash: "Mutilate",
+				aircutter: "Hurricane", muddywater: "Storm", furyswipes: "Fury", scratch: "Garrote", slash: "Mutilate",
 				smog: "Poison Gas", protect: "Evasion"
 			};
 			if (move.id in legitNames) {

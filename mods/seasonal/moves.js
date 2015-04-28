@@ -626,7 +626,7 @@ exports.BattleMovedex = {
 		type: "Electric"
 	},
 	// Fury
-	bide: {
+	furyswipes: {
 		num: -26,
 		accuracy: 100,
 		basePower: 15,
@@ -635,9 +635,9 @@ exports.BattleMovedex = {
 			return 15;
 		},
 		category: "Physical",
-		id: "bide",
+		id: "furyswipes",
 		isViable: true,
-		name: "Bide",
+		name: "Fury Swipes",
 		pp: 10,
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
