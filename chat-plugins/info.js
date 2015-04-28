@@ -1,187 +1,11 @@
 /**
- * Commands
+ * Informational Commands
  * Pokemon Showdown - https://pokemonshowdown.com/
  *
- * These are commands. For instance, you can define the command 'whois'
- * here, then use it by typing /whois into Pokemon Showdown.
+ * These are informational commands. For instance, you can define the command
+ * 'whois' here, then use it by typing /whois into Pokemon Showdown.
  *
- * A command can be in the form:
- *   ip: 'whois',
- * This is called an alias: it makes it so /ip does the same thing as
- * /whois.
- *
- * But to actually define a command, it's a function:
- *
- *   allowchallenges: function (target, room, user) {
- *     user.blockChallenges = false;
- *     this.sendReply("You are available for challenges from now on.");
- *   }
- *
- * Commands are actually passed five parameters:
- *   function (target, room, user, connection, cmd, message)
- * Most of the time, you only need the first three, though.
- *
- * target = the part of the message after the command
- * room = the room object the message was sent to
- *   The room name is room.id
- * user = the user object that sent the message
- *   The user's name is user.name
- * connection = the connection that the message was sent from
- * cmd = the name of the command
- * message = the entire message sent by the user
- *
- * If a user types in "/msg zarel, hello"
- *   target = "zarel, hello"
- *   cmd = "msg"
- *   message = "/msg zarel, hello"
- *
- * Commands return the message the user should say. If they don't
- * return anything or return something falsy, the user won't say
- * anything.
- *
- * A command can also be an object, in which case is treated like
- * a namespace:
- *
- *   game: {
- *     play: function (target, room, user) {
- *       user.isPlaying = true;
- *       this.sendReply("Playing.");
- *     },
- *     stop: function (target, room, user) {
- *       user.isPlaying = false;
- *       this.sendReply("Stopped.");
- *     }
- *   }
- *
- * These commands can be called by '/game play' and '/game stop'.
- * Namespaces help organise commands, and nest them under
- * one main command.
- * Note: Multiple namespaces can be nested, but the final (innermost)
- *       command must be a function.
- *
- * Commands have access to the following functions:
- *
- * this.sendReply(message)
- *   Sends a message back to the room the user typed the command into.
- *
- * this.sendReplyBox(html)
- *   Same as sendReply, but shows it in a box, and you can put HTML in
- *   it.
- *
- * this.popupReply(message)
- *   Shows a popup in the window the user typed the command into.
- *
- * this.add(message)
- *   Adds a message to the room so that everyone can see it.
- *   This is like this.sendReply, except everyone in the room gets it,
- *   instead of just the user that typed the command.
- *
- * this.send(message)
- *   Sends a message to the room so that everyone can see it.
- *   This is like this.add, except it's not logged, and users who join
- *   the room later won't see it in the log, and if it's a battle, it
- *   won't show up in saved replays.
- *   You USUALLY want to use this.add instead.
- *
- * this.logEntry(message)
- *   Log a message to the room's log without sending it to anyone. This
- *   is like this.add, except no one will see it.
- *
- * this.addModCommand(message)
- *   Like this.add, but also logs the message to the moderator log
- *   which can be seen with /modlog.
- *
- * this.logModCommand(message)
- *   Like this.addModCommand, except users in the room won't see it.
- *
- * this.can(permission)
- * this.can(permission, targetUser)
- *   Checks if the user has the permission to do something, or if a
- *   targetUser is passed, check if the user has permission to do
- *   it to that user. Will automatically give the user an "Access
- *   denied" message if the user doesn't have permission: use
- *   user.can() if you don't want that message.
- *
- *   Should usually be near the top of the command, like:
- *     if (!this.can('potd')) return false;
- *
- * this.canBroadcast()
- *   Signifies that a message can be broadcast, as long as the user
- *   has permission to. This will check to see if the user used
- *   "!command" instead of "/command". If so, it will check to see
- *   if the user has permission to broadcast (by default, voice+ can),
- *   and return false if not. Otherwise, it will add the message to
- *   the room, and turn on the flag this.broadcasting, so that
- *   this.sendReply and this.sendReplyBox will broadcast to the room
- *   instead of just the user that used the command.
- *
- *   Should usually be near the top of the command, like:
- *     if (!this.canBroadcast()) return false;
- *
- * this.canBroadcast(suppressMessage)
- *   Functionally the same as this.canBroadcast(). However, it
- *   will look as if the user had written the text suppressMessage.
- *
- * this.canTalk()
- *   Checks to see if the user can speak in the room. Returns false
- *   if the user can't speak (is muted, the room has modchat on, etc),
- *   or true otherwise.
- *
- *   Should usually be near the top of the command, like:
- *     if (!this.canTalk()) return false;
- *
- * this.canTalk(message, room)
- *   Checks to see if the user can say the message in the room.
- *   If a room is not specified, it will default to the current one.
- *   If it has a falsy value, the check won't be attached to any room.
- *   In addition to running the checks from this.canTalk(), it also
- *   checks to see if the message has any banned words, is too long,
- *   or was just sent by the user. Returns the filtered message, or a
- *   falsy value if the user can't speak.
- *
- *   Should usually be near the top of the command, like:
- *     target = this.canTalk(target);
- *     if (!target) return false;
- *
- * this.parse(message, inNamespace)
- *   Runs the message as if the user had typed it in.
- *
- *   Mostly useful for giving help messages, like for commands that
- *   require a target:
- *     if (!target) return this.parse('/help msg');
- *
- *   If `inNamespace` is true, then the message is parsed in that
- *   corresponding namespace:
- *     // command msg is in namespace test. (ie. /test msg)
- *     this.parse('/help', true); // is parsed as if the user said
- *                                // '/test help'
- *
- *   After 10 levels of recursion (calling this.parse from a command
- *   called by this.parse from a command called by this.parse etc)
- *   we will assume it's a bug in your command and error out.
- *
- * this.targetUserOrSelf(target, exactName)
- *   If target is blank, returns the user that sent the message.
- *   Otherwise, returns the user with the username in target, or
- *   a falsy value if no user with that username exists.
- *   By default, this will track users across name changes. However,
- *   if exactName is true, it will enforce exact matches.
- *
- * this.getLastIdOf(user)
- *   Returns the last userid of an specified user.
- *
- * this.splitTarget(target, exactName)
- *   Splits a target in the form "user, message" into its
- *   constituent parts. Returns message, and sets this.targetUser to
- *   the user, and this.targetUsername to the username.
- *   By default, this will track users across name changes. However,
- *   if exactName is true, it will enforce exact matches.
- *
- *   Remember to check if this.targetUser exists before going further.
- *
- * Unless otherwise specified, these functions will return undefined,
- * so you can return this.sendReply or something to send a reply and
- * stop the command there.
+ * For the API, see chat-plugins/COMMANDS.md
  *
  * @license MIT license
  */
@@ -268,6 +92,8 @@ var commands = exports.commands = {
 			this.sendReply('|raw|' + hiddenrooms);
 		}
 	},
+	whoishelp: ["/whois - Get details on yourself: alts, group, IP address, and rooms.",
+		"/whois [username] - Get details on a username: alts (Requires: % @ & ~), group, IP address (Requires: @ & ~), and rooms."],
 
 	ipsearchall: 'ipsearch',
 	ipsearch: function (target, room, user, connection, cmd) {
@@ -319,17 +145,16 @@ var commands = exports.commands = {
 		}
 		return this.parse('/msg ' + this.targetUsername + ', /invite ' + targetRoom.id);
 	},
+	invitehelp: ["/invite [username], [roomname] - Invites the player [username] to join the room [roomname]."],
 
 	/*********************************************************
-	 * Informational commands
+	 * Data Search Tools
 	 *********************************************************/
 
 	pstats: 'data',
 	stats: 'data',
 	dex: 'data',
 	pokedex: 'data',
-	details: 'data',
-	dt: 'data',
 	data: function (target, room, user, connection, cmd) {
 		if (!this.canBroadcast()) return;
 
@@ -460,6 +285,15 @@ var commands = exports.commands = {
 		}
 		this.sendReply(buffer);
 	},
+	datahelp: ["/data [pokemon/item/move/ability] - Get details on this pokemon/item/move/ability/nature.",
+		"!data [pokemon/item/move/ability] - Show everyone these details. Requires: + % @ & ~"],
+
+	dt: 'details',
+	details: function () {
+		CommandParser.commands.data.apply(this, arguments);
+	},
+	detailshelp: ["/details [pokemon] - Get additional details on this pokemon/item/move/ability/nature.",
+		"!details [pokemon] - Show everyone these details. Requires: + % @ & ~"],
 
 	ds: 'dexsearch',
 	dsearch: 'dexsearch',
@@ -474,11 +308,10 @@ var commands = exports.commands = {
 		var allStats = {'hp':1, 'atk':1, 'def':1, 'spa':1, 'spd':1, 'spe':1};
 		var showAll = false;
 		var megaSearch = null;
-		var recoverySearch = null;
 		var output = 10;
-		var categories = ['gen', 'tier', 'color', 'types', 'ability', 'stats', 'moves', 'recovery'];
+		var categories = ['gen', 'tier', 'color', 'types', 'ability', 'stats', 'compileLearnsets', 'moves', 'recovery', 'priority'];
 
-		for (var i in targets) {
+		for (var i = 0; i < targets.length; i++) {
 			var isNotSearch = false;
 			target = targets[i].trim().toLowerCase();
 			if (target.charAt(0) === '!') {
@@ -531,9 +364,14 @@ var commands = exports.commands = {
 			}
 
 			if (target === 'recovery') {
-				if ((recoverySearch && isNotSearch) || (recoverySearch === false && !isNotSearch)) return this.sendReplyBox('A search cannot both exclude and recovery moves.');
-				if (!searches['recovery']) searches['recovery'] = {};
-				recoverySearch = !isNotSearch;
+				if ((searches['recovery'] && isNotSearch) || (searches['recovery'] === false && !isNotSearch)) return this.sendReplyBox('A search cannot both exclude and recovery moves.');
+				searches['recovery'] = !isNotSearch;
+				continue;
+			}
+
+			if (target === 'priority') {
+				if ((searches['priority'] && isNotSearch) || (searches['priority'] === false && !isNotSearch)) return this.sendReplyBox('A search cannot both exclude and recovery moves.');
+				searches['priority'] = !isNotSearch;
 				continue;
 			}
 
@@ -541,8 +379,8 @@ var commands = exports.commands = {
 			if (targetMove.exists) {
 				if (!searches['moves']) searches['moves'] = {};
 				if (Object.count(searches['moves'], true) === 4 && !isNotSearch) return this.sendReplyBox("Specify a maximum of 4 moves.");
-				if ((searches['moves'][targetMove.name] && isNotSearch) || (searches['moves'][targetMove.name] === false && !isNotSearch)) return this.sendReplyBox("A search cannot both exclude and include a move.");
-				searches['moves'][targetMove.name] = !isNotSearch;
+				if ((searches['moves'][targetMove.id] && isNotSearch) || (searches['moves'][targetMove.id] === false && !isNotSearch)) return this.sendReplyBox("A search cannot both exclude and include a move.");
+				searches['moves'][targetMove.id] = !isNotSearch;
 				continue;
 			}
 
@@ -615,11 +453,13 @@ var commands = exports.commands = {
 		for (var pokemon in Tools.data.Pokedex) {
 			var template = Tools.getTemplate(pokemon);
 			var megaSearchResult = (megaSearch === null || (megaSearch === true && template.isMega) || (megaSearch === false && !template.isMega));
-			if (template.tier !== 'Unreleased' && template.tier !== 'Illegal' && (template.tier !== 'CAP' || (searches['tier'] && searches['tier']['cap'])) &&
-				megaSearchResult) {
+			if (template.tier !== 'Unreleased' && template.tier !== 'Illegal' && (template.tier !== 'CAP' || (searches['tier'] && searches['tier']['cap'])) && megaSearchResult) {
 				dex[pokemon] = template;
 			}
 		}
+
+		//Only construct full learnsets for Pokemon if learnsets are used in the search
+		if (searches.moves || searches.recovery || searches.priority) searches['compileLearnsets'] = true;
 
 		for (var cat = 0; cat < categories.length; cat++) {
 			var search = categories[cat];
@@ -675,37 +515,60 @@ var commands = exports.commands = {
 					}
 					break;
 
-				case 'moves':
+				case 'compileLearnsets':
 					for (var mon in dex) {
-						var template = Tools.getTemplate(dex[mon].id);
+						var template = dex[mon];
 						if (!template.learnset) template = Tools.getTemplate(template.baseSpecies);
 						if (!template.learnset) continue;
-						for (var i in searches[search]) {
-							var move = Tools.getMove(i);
-							if (!move.exists) return this.sendReplyBox("'" + move + "' is not a known move.");
-							var prevoTemp = Tools.getTemplate(template.id);
-							while (prevoTemp.prevo && prevoTemp.learnset && !(prevoTemp.learnset[move.id])) {
-								prevoTemp = Tools.getTemplate(prevoTemp.prevo);
+						var fullLearnset = template.learnset;
+						while (template.prevo) {
+							template = Tools.getTemplate(template.prevo);
+							for (var move in template.learnset) {
+								if (!fullLearnset[move]) fullLearnset[move] = template.learnset[move];
 							}
-							var canLearn = (prevoTemp.learnset.sketch && !(move.id in {'chatter':1, 'struggle':1, 'magikarpsrevenge':1})) || prevoTemp.learnset[move.id];
-							if ((!canLearn && searches[search][i]) || (searches[search][i] === false && canLearn)) delete dex[mon];
+						}
+						dex[mon].learnset = fullLearnset;
+					}
+					break;
+
+				case 'moves':
+					for (var mon in dex) {
+						if (!dex[mon].learnset) continue;
+						for (var move in searches[search]) {
+							var canLearn = (dex[mon].learnset.sketch && ['chatter', 'struggle', 'magikarpsrevenge'].indexOf(move) === -1) || dex[mon].learnset[move];
+							if ((!canLearn && searches[search][move]) || (searches[search][move] === false && canLearn)) {
+								delete dex[mon];
+								break;
+							}
 						}
 					}
 					break;
 
 				case 'recovery':
 					for (var mon in dex) {
-						var template = Tools.getTemplate(dex[mon].id);
-						if (!template.learnset) template = Tools.getTemplate(template.baseSpecies);
-						if (!template.learnset) continue;
+						if (!dex[mon].learnset) continue;
 						var recoveryMoves = ["recover", "roost", "moonlight", "morningsun", "synthesis", "milkdrink", "slackoff", "softboiled", "wish", "healorder"];
 						var canLearn = false;
 						for (var i = 0; i < recoveryMoves.length; i++) {
-							var prevoTemp = Tools.getTemplate(template.id);
-							while (prevoTemp.prevo && prevoTemp.learnset && !(prevoTemp.learnset[recoveryMoves[i]])) {
-								prevoTemp = Tools.getTemplate(prevoTemp.prevo);
-							}
-							canLearn = (prevoTemp.learnset.sketch) || prevoTemp.learnset[recoveryMoves[i]];
+							canLearn = (dex[mon].learnset.sketch) || dex[mon].learnset[recoveryMoves[i]];
+							if (canLearn) break;
+						}
+						if ((!canLearn && searches[search]) || (searches[search] === false && canLearn)) delete dex[mon];
+					}
+					break;
+
+				case 'priority':
+					var priorityMoves = [];
+					for (var move in Tools.data.Movedex) {
+						var moveData = Tools.getMove(move);
+						if (moveData.category === "Status") continue;
+						if (moveData.priority > 0) priorityMoves.push(move);
+					}
+					for (var mon in dex) {
+						if (!dex[mon].learnset) continue;
+						var canLearn = false;
+						for (var i = 0; i < priorityMoves.length; i++) {
+							canLearn = (dex[mon].learnset.sketch) || dex[mon].learnset[priorityMoves[i]];
 							if (canLearn) break;
 						}
 						if ((!canLearn && searches[search]) || (searches[search] === false && canLearn)) delete dex[mon];
@@ -715,17 +578,16 @@ var commands = exports.commands = {
 				case 'stats':
 					for (var stat in searches[search]) {
 						for (var mon in dex) {
-							for (var ineq in searches[search][stat]) {
-								if (ineq === "less") {
-									if (dex[mon].baseStats[stat] > searches[search][stat][ineq]) {
-										delete dex[mon];
-										break;
-									}
-								} else {
-									if (dex[mon].baseStats[stat] < searches[search][stat][ineq]) {
-										delete dex[mon];
-										break;
-									}
+							if (typeof searches[search][stat].less === 'number') {
+								if (dex[mon].baseStats[stat] > searches[search][stat].less) {
+									delete dex[mon];
+									continue;
+								}
+							}
+							if (typeof searches[search][stat].greater === 'number') {
+								if (dex[mon].baseStats[stat] < searches[search][stat].greater) {
+									delete dex[mon];
+									continue;
 								}
 							}
 						}
@@ -737,25 +599,33 @@ var commands = exports.commands = {
 			}
 		}
 
-		var results = Object.keys(dex).map(function (speciesid) {return dex[speciesid].species;});
-		results = results.filter(function (species) {
-			var template = Tools.getTemplate(species);
-			return !(species !== template.baseSpecies && results.indexOf(template.baseSpecies) > -1);
-		});
+		var results = [];
+		for (var mon in dex) {
+			if (dex[mon].baseSpecies && results.indexOf(dex[mon].baseSpecies) > -1) continue;
+			results.push(dex[mon].species);
+		}
+
 		var resultsStr = "";
 		if (results.length > 0) {
 			if (showAll || results.length <= output + 5) {
 				results.sort();
 				resultsStr = results.join(", ");
 			} else {
-				results.randomize();
-				resultsStr = results.slice(0, 10).join(", ") + ", and " + string(results.length - output) + " more. <font color=#999999>Redo the search with 'all' as a search parameter to show all results.</font>";
+				resultsStr = results.slice(0, output).join(", ") + ", and " + string(results.length - output) + " more. <font color=#999999>Redo the search with 'all' as a search parameter to show all results.</font>";
 			}
 		} else {
-			resultsStr = "No Pokémon found.";
+			resultsStr = "No Pok&eacute;mon found.";
 		}
 		return this.sendReplyBox(resultsStr);
 	},
+	dexsearchhelp: ["/dexsearch [type], [move], [move], ... - Searches for Pokemon that fulfill the selected criteria",
+		"Search categories are: type, tier, color, moves, ability, gen.",
+		"Valid colors are: green, red, blue, white, brown, yellow, purple, pink, gray and black.",
+		"Valid tiers are: Uber/OU/BL/UU/BL2/RU/BL3/NU/PU/NFE/LC/CAP.",
+		"Types must be followed by ' type', e.g., 'dragon type'.",
+		"Parameters can be excluded through the use of '!', e.g., '!water type' excludes all water types.",
+		"The parameter 'mega' can be added to search for Mega Evolutions only, and the parameters 'FE' or 'NFE' can be added to search fully or not-fully evolved Pokemon only.",
+		"The order of the parameters does not matter."],
 
 	ms: 'movesearch',
 	msearch: 'movesearch',
@@ -773,8 +643,10 @@ var commands = exports.commands = {
 		var allBoosts = {'hp':1, 'atk':1, 'def':1, 'spa':1, 'spd':1, 'spe':1, 'accuracy':1, 'evasion':1};
 		var showAll = false;
 		var output = 10;
+		var lsetData = {};
+		var targetMon = '';
 
-		for (var i in targets) {
+		for (var i = 0; i < targets.length; i++) {
 			var isNotSearch = false;
 			target = targets[i].toLowerCase().trim();
 			if (target.charAt(0) === '!') {
@@ -817,6 +689,21 @@ var commands = exports.commands = {
 					searches['recovery'] = !isNotSearch;
 				} else if ((searches['recovery'] && isNotSearch) || (searches['recovery'] === false && !isNotSearch)) {
 					return this.sendReplyBox('A search cannot both exclude and include recovery moves.');
+				}
+				continue;
+			}
+
+			var template = Tools.getTemplate(target);
+			if (template.exists) {
+				if (Object.size(lsetData) !== 0) return this.sendReplyBox("A search can only include one Pokemon learnset.");
+				if (!template.learnset) template = Tools.getTemplate(template.baseSpecies);
+				lsetData = template.learnset;
+				targetMon = template.name;
+				while (template.prevo) {
+					template = Tools.getTemplate(template.prevo);
+					for (var move in template.learnset) {
+						if (!lsetData[move]) lsetData[move] = template.learnset[move];
+					}
 				}
 				continue;
 			}
@@ -941,13 +828,19 @@ var commands = exports.commands = {
 			return this.sendReplyBox("'" + Tools.escapeHTML(oldTarget) + "' could not be found in any of the search categories.");
 		}
 
-		if (showAll && Object.size(searches) === 0) return this.sendReplyBox("No search parameters other than 'all' were found. Try '/help movesearch' for more information on this command.");
+		if (showAll && Object.size(searches) === 0 && !targetMon) return this.sendReplyBox("No search parameters other than 'all' were found. Try '/help movesearch' for more information on this command.");
 
 		var dex = {};
-		for (var move in Tools.data.Movedex) {
-			dex[move] = Tools.getMove(move);
+		if (targetMon) {
+			for (var move in lsetData) {
+				dex[move] = Tools.getMove(move);
+			}
+		} else {
+			for (var move in Tools.data.Movedex) {
+				dex[move] = Tools.getMove(move);
+			}
+			delete dex.magikarpsrevenge;
 		}
-		delete dex.magikarpsrevenge;
 
 		for (var search in searches) {
 			switch (search) {
@@ -986,27 +879,24 @@ var commands = exports.commands = {
 				case 'property':
 					for (var prop in searches[search]) {
 						for (var move in dex) {
-							for (var ineq in searches[search][prop]) {
-								if (ineq === "less") {
-									if (dex[move][prop] === true) {
-										delete dex[move];
-										break;
-									}
-									if (dex[move][prop] > searches[search][prop][ineq]) {
-										delete dex[move];
-										break;
-									}
-								} else {
-									if (dex[move][prop] === true) {
-										if (dex[move].category === "Status") {
-											delete dex[move];
-											break;
-										}
-									}
-									if (dex[move][prop] < searches[search][prop][ineq]) {
-										delete dex[move];
-										break;
-									}
+							if (typeof searches[search][prop].less === "number") {
+								if (dex[move][prop] === true) {
+									delete dex[move];
+									continue;
+								}
+								if (dex[move][prop] > searches[search][prop].less) {
+									delete dex[move];
+									continue;
+								}
+							}
+							if (typeof searches[search][prop].greater === "number") {
+								if (dex[move][prop] === true) {
+									if (dex[move].category === "Status") delete dex[move];
+									continue;
+								}
+								if (dex[move][prop] < searches[search][prop].greater) {
+									delete dex[move];
+									continue;
 								}
 							}
 						}
@@ -1058,24 +948,32 @@ var commands = exports.commands = {
 					return this.sendReplyBox("Something broke! PM SolarisFox here or on the Smogon forums with the command you tried.");
 			}
 		}
+
 		var results = [];
-		var resultsStr = "";
 		for (var move in dex) {
 			results.push(dex[move].name);
 		}
+
+		var resultsStr = targetMon ? ("<font color=#999999>Matching moves found in learnset for</font> " + targetMon + ":<br>") : "";
 		if (results.length > 0) {
 			if (showAll || results.length <= output + 5) {
 				results.sort();
-				resultsStr = results.join(", ");
+				resultsStr += results.join(", ");
 			} else {
-				results.randomize();
-				resultsStr = results.slice(0, 10).join(", ") + ", and " + string(results.length - output) + " more. <font color=#999999>Redo the search with 'all' as a search parameter to show all results.</font>";
+				resultsStr += results.slice(0, output).join(", ") + ", and " + string(results.length - output) + " more. <font color=#999999>Redo the search with 'all' as a search parameter to show all results.</font>";
 			}
 		} else {
 			resultsStr = "No moves found.";
 		}
 		return this.sendReplyBox(resultsStr);
 	},
+	movesearchhelp: ["/movesearch [parameter], [parameter], [parameter], ... - Searches for moves that fulfill the selected criteria.",
+		"Search categories are: type, category, flag, status inflicted, type boosted, and numeric range for base power, pp, and accuracy.",
+		"Types must be followed by ' type', e.g., 'dragon type'.",
+		"Stat boosts must be preceded with 'boosts ', e.g., 'boosts attack' searches for moves that boost the attack stat.",
+		"Inequality ranges use the characters '>' and '<' though they behave as '≥' and '≤', e.g., 'bp > 100' searches for all moves equal to and greater than 100 base power.",
+		"Parameters can be excluded through the use of '!', e.g., !water type' excludes all water type moves.",
+		"The order of the parameters does not matter."],
 
 	learnset: 'learn',
 	learnall: 'learn',
@@ -1158,6 +1056,8 @@ var commands = exports.commands = {
 		}
 		this.sendReplyBox(buffer);
 	},
+	learnhelp: ["/learn [pokemon], [move, move, ...] - Displays how a Pokemon can learn the given moves, if it can at all.",
+		"!learn [pokemon], [move, move, ...] - Show everyone that information. Requires: + % @ & ~"],
 
 	weaknesses: 'weakness',
 	weak: 'weakness',
@@ -1216,6 +1116,10 @@ var commands = exports.commands = {
 		buffer.push('<span class=\"message-effect-immune\">Immunities</span>: ' + (immunities.join(', ') || 'None'));
 		this.sendReplyBox(buffer.join('<br>'));
 	},
+	weaknesshelp: ["/weakness [pokemon] - Provides a Pokemon's resistances, weaknesses, and immunities, ignoring abilities.",
+		"/weakness [type 1]/[type 2] - Provides a type or type combination's resistances, weaknesses, and immunities, ignoring abilities.",
+		"!weakness [pokemon] - Shows everyone a Pokemon's resistances, weaknesses, and immunities, ignoring abilities. Requires: + % @ & ~",
+		"!weakness [type 1]/[type 2] - Shows everyone a type or type combination's resistances, weaknesses, and immunities, ignoring abilities. Requires: + % @ & ~"],
 
 	eff: 'effectiveness',
 	type: 'effectiveness',
@@ -1227,11 +1131,8 @@ var commands = exports.commands = {
 		var searchMethods = {'getType':1, 'getMove':1, 'getTemplate':1};
 		var sourceMethods = {'getType':1, 'getMove':1};
 		var targetMethods = {'getType':1, 'getTemplate':1};
-		var source;
-		var defender;
-		var foundData;
-		var atkName;
-		var defName;
+		var source, defender, foundData, atkName, defName;
+
 		for (var i = 0; i < 2; ++i) {
 			var method;
 			for (method in searchMethods) {
@@ -1263,10 +1164,9 @@ var commands = exports.commands = {
 		if (!this.canBroadcast()) return;
 
 		var factor = 0;
-		if (source.category === "Status" && !source.affectedByImmunities) factor = 1;
-		if (Tools.getImmunity(source.type || source, defender) || source.affectedByImmunities === false) {
+		if (Tools.getImmunity(source, defender) || source.ignoreImmunity && (source.ignoreImmunity === true || source.ignoreImmunity[source.type])) {
 			var totalTypeMod = 0;
-			if (source.effectType !== 'Move' || source.basePower || source.basePowerCallback) {
+			if (source.effectType !== 'Move' || source.category === 'Status' || source.basePower || source.basePowerCallback) {
 				for (var i = 0; i < defender.types.length; i++) {
 					var baseMod = Tools.getEffectiveness(source, defender.types[i]);
 					var moveMod = source.onEffectiveness && source.onEffectiveness.call(Tools, baseMod, defender.types[i], source);
@@ -1278,6 +1178,12 @@ var commands = exports.commands = {
 
 		this.sendReplyBox("" + atkName + " is " + factor + "x effective against " + defName + ".");
 	},
+	effectivenesshelp: ["/effectiveness [attack], [defender] - Provides the effectiveness of a move or type on another type or a Pokémon.",
+		"!effectiveness [attack], [defender] - Shows everyone the effectiveness of a move or type on another type or a Pokémon."],
+
+	/*********************************************************
+	 * Informational commands
+	 *********************************************************/
 
 	uptime: function (target, room, user) {
 		if (!this.canBroadcast()) return;
@@ -1305,6 +1211,8 @@ var commands = exports.commands = {
 			"~ <b>Administrator</b> - They can do anything, like change what this message says"
 		);
 	},
+	groupshelp: ["/groups - Explains what the + % @ & next to people's names mean.",
+		"!groups - Show everyone that information. Requires: + % @ & ~"],
 
 	repo: 'opensource',
 	repository: 'opensource',
@@ -1319,6 +1227,8 @@ var commands = exports.commands = {
 			"- <a href=\"https://github.com/Zarel/Pokemon-Showdown-Client\">Client source code</a>"
 		);
 	},
+	opensourcehelp: ["/opensource - Links to PS's source code repository.",
+		"!opensource - Show everyone that information. Requires: + % @ & ~"],
 
 	staff: function (target, room, user) {
 		if (!this.canBroadcast()) return;
@@ -1329,36 +1239,8 @@ var commands = exports.commands = {
 		if (!this.canBroadcast()) return;
 		this.sendReplyBox('You can <button name="avatars">change your avatar</button> by clicking on it in the <button name="openOptions"><i class="icon-cog"></i> Options</button> menu in the upper right. Custom avatars are only obtainable by staff.');
 	},
-
-	bofrocket: function (target, room, user) {
-		if (room.id !== 'bof') return this.sendReply("The command '/bofrocket' was unrecognized. To send a message starting with '/bofrocket', type '//bofrocket'.");
-		if (!this.can('modchat', null, room)) return;
-		target = this.splitTarget(target);
-		if (!this.targetUser) return this.sendReply("User not found");
-		if (!room.users[this.targetUser.userid]) return this.sendReply("Not in bof");
-		this.targetUser.avatar = '#bofrocket';
-		room.add("" + user.name + " applied bofrocket to " + this.targetUser.name);
-	},
-
-	showtan: function (target, room, user) {
-		if (room.id !== 'showderp') return this.sendReply("The command '/showtan' was unrecognized. To send a message starting with '/showtan', type '//showtan'.");
-		if (!this.can('modchat', null, room)) return;
-		target = this.splitTarget(target);
-		if (!this.targetUser) return this.sendReply("User not found");
-		if (!room.users[this.targetUser.userid]) return this.sendReply("Not a showderper");
-		this.targetUser.avatar = '#showtan';
-		room.add("" + user.name + " applied showtan to affected area of " + this.targetUser.name);
-	},
-
-	cpgtan: function (target, room, user) {
-		if (room.id !== 'cpg') return this.sendReply("The command '/cpgtan' was unrecognized. To send a message starting with '/cpgtan', type '//cpgtan'.");
-		if (!this.can('modchat', null, room)) return;
-		target = this.splitTarget(target);
-		if (!this.targetUser) return this.sendReply("User not found");
-		if (!room.users[this.targetUser.userid]) return this.sendReply("Not a cpger");
-		this.targetUser.avatar = '#cpgtan';
-		room.add("" + user.name + " applied cpgtan to affected area of " + this.targetUser.name);
-	},
+	avatarshelp: ["/avatars - Explains how to change avatars.",
+		"!avatars - Show everyone that information. Requires: + % @ & ~"],
 
 	introduction: 'intro',
 	intro: function (target, room, user) {
@@ -1371,6 +1253,8 @@ var commands = exports.commands = {
 			"- <a href=\"https://www.smogon.com/xyhub/tiers\">What are the rules for each format? What is 'Sleep Clause'?</a>"
 		);
 	},
+	introhelp: ["/intro - Provides an introduction to competitive pokemon.",
+		"!intro - Show everyone that information. Requires: + % @ & ~"],
 
 	mentoring: 'smogintro',
 	smogonintro: 'smogintro',
@@ -1393,6 +1277,8 @@ var commands = exports.commands = {
 			"- <a href=\"https://pokemonshowdown.com/damagecalc/\">Damage Calculator</a>"
 		);
 	},
+	calchelp: ["/calc - Provides a link to a damage calculator",
+		"!calc - Shows everyone a link to a damage calculator. Requires: + % @ & ~"],
 
 	capintro: 'cap',
 	cap: function (target, room, user) {
@@ -1405,6 +1291,8 @@ var commands = exports.commands = {
 			"- <a href=\"https://www.smogon.com/forums/threads/3512318/#post-5594694\">Sample XY CAP teams</a>"
 		);
 	},
+	caphelp: ["/cap - Provides an introduction to the Create-A-Pokemon project.",
+		"!cap - Show everyone that information. Requires: + % @ & ~"],
 
 	gennext: function (target, room, user) {
 		if (!this.canBroadcast()) return;
@@ -1465,6 +1353,7 @@ var commands = exports.commands = {
 			matched = true;
 			if (target !== 'all') buffer += "Bring three Pokémon to Team Preview and choose one to battle.<br />";
 			buffer += "- <a href=\"https://www.smogon.com/forums/threads/3496773/\">1v1</a><br />";
+			buffer += "- <a href=\"https://www.smogon.com/forums/threads/3536109/\">1v1 Viability Ranking</a><br />";
 		}
 		if (target === 'all' || target === 'monotype') {
 			matched = true;
@@ -1476,7 +1365,7 @@ var commands = exports.commands = {
 			matched = true;
 			if (target !== 'all') buffer += "Pokémon below OU/BL get all their stats boosted. UU/BL2 get +5, RU/BL3 get +10, and NU or lower get +15.<br />";
 			buffer += "- <a href=\"https://www.smogon.com/forums/threads/3532973/\">Tier Shift</a><br />";
-			buffer += "- <a href=\"https://www.smogon.com/forums/threads/3514386/\">Tier Shift Viability Ranking</a><br />";
+			buffer += "- <a href=\"https://www.smogon.com/forums/threads/3536719/\">Tier Shift Viability Ranking</a><br />";
 		}
 		if (target === 'all' || target === 'pu') {
 			matched = true;
@@ -1508,11 +1397,11 @@ var commands = exports.commands = {
 			matched = true;
 			buffer += "- <a href=\"https://www.smogon.com/forums/threads/3526481/\">Averagemons</a><br />";
 		}
-		if (target === 'all' || target === 'classichackmons' || target === 'hackmons') {
+		if (target === 'all' || target === 'classichackmons' || target === 'hackmons' || target === 'ch') {
 			matched = true;
 			buffer += "- <a href=\"https://www.smogon.com/forums/threads/3521887/\">Classic Hackmons</a><br />";
 		}
-		if (target === 'all' || target === 'hiddentype') {
+		if (target === 'all' || target === 'hiddentype' || target === 'ht') {
 			matched = true;
 			if (target !== 'all') buffer += "Pokémon have an added type determined by their IVs. Same as the Hidden Power type.<br />";
 			buffer += "- <a href=\"https://www.smogon.com/forums/threads/3516349/\">Hidden Type</a><br />";
@@ -1523,13 +1412,15 @@ var commands = exports.commands = {
 		}
 		if (target === 'all' || target === 'outheorymon' || target === 'theorymon') {
 			matched = true;
-			buffer += "- <a href=\"https://www.smogon.com/forums/threads/3532902/\">OU Theorymon</a><br />";
+			buffer += "- <a href=\"https://www.smogon.com/forums/threads/3536615/\">OU Theorymon</a><br />";
 		}
 		if (!matched) {
 			return this.sendReply("The Other Metas entry '" + target + "' was not found. Try /othermetas or /om for general help.");
 		}
 		this.sendReplyBox(buffer);
 	},
+	othermetashelp: ["/om - Provides links to information on the Other Metagames.",
+		"!om - Show everyone that information. Requires: + % @ & ~"],
 
 	/*formats: 'formathelp',
 	formatshelp: 'formathelp',
@@ -1694,6 +1585,8 @@ var commands = exports.commands = {
 		}
 		this.sendReplyBox(buffer);
 	},
+	faqhelp: ["/faq [theme] - Provides a link to the FAQ. Add deviation, doubles, randomcap, restart, or staff for a link to these questions. Add all for all of them.",
+		"!faq [theme] - Shows everyone a link to the FAQ. Add deviation, doubles, randomcap, restart, or staff for a link to these questions. Add all for all of them. Requires: + % @ & ~"],
 
 	banlists: 'tiers',
 	tier: 'tiers',
@@ -1748,11 +1641,11 @@ var commands = exports.commands = {
 			buffer += "- <a href=\"https://www.smogon.com/forums/threads/3490462/\">LC Banlist</a><br />";
 			buffer += "- <a href=\"https://www.smogon.com/forums/threads/3496013/\">LC Viability Ranking</a><br />";
 		}
-		if (target === 'all' || target === 'smogondoubles' || target === 'doubles') {
+		if (target === 'all' || target === 'doublesou' || target === 'doubles' || target === 'smogondoubles') {
 			matched = true;
-			buffer += "- <a href=\"https://www.smogon.com/forums/threads/3525739/\">np: Doubles Stage 1.5</a><br />";
-			buffer += "- <a href=\"https://www.smogon.com/forums/threads/3498688/\">Doubles Banlist</a><br />";
-			buffer += "- <a href=\"https://www.smogon.com/forums/threads/3522814/\">Doubles Viability Ranking</a><br />";
+			buffer += "- <a href=\"https://www.smogon.com/forums/threads/3525739/\">np: Doubles OU Stage 1.5</a><br />";
+			buffer += "- <a href=\"https://www.smogon.com/forums/threads/3498688/\">Doubles OU Banlist</a><br />";
+			buffer += "- <a href=\"https://www.smogon.com/forums/threads/3522814/\">Doubles OU Viability Ranking</a><br />";
 		}
 		if (!matched) {
 			return this.sendReply("The Tiers entry '" + target + "' was not found. Try /tiers for general help.");
@@ -1849,6 +1742,13 @@ var commands = exports.commands = {
 			return this.sendReplyBox("Pokemon, item, move, or ability not found for generation " + generation.toUpperCase() + ".");
 		}
 	},
+	smogdexhelp: ["/analysis [pokemon], [generation] - Links to the Smogon University analysis for this Pokemon in the given generation.",
+		"!analysis [pokemon], [generation] - Shows everyone this link. Requires: + % @ & ~"],
+
+	register: function () {
+		if (!this.canBroadcast()) return;
+		this.sendReplyBox('You will be prompted to register upon winning a rated battle. Alternatively, there is a register button in the <button name="openOptions"><i class="icon-cog"></i> Options</button> menu in the upper right.');
+	},
 
 	/*********************************************************
 	 * Miscellaneous commands
@@ -1926,6 +1826,8 @@ var commands = exports.commands = {
 		var rand = Math.floor(maxRoll * Math.random()) + 1;
 		return this.sendReplyBox("Random number (1 - " + maxRoll + "): " + rand);
 	},
+	dicehelp: ["/dice [max number] - Randomly picks a number between 1 and the number you choose.",
+		"/dice [number of dice]d[number of sides] - Simulates rolling a number of dice, e.g., /dice 2d4 simulates rolling two 4-sided dice."],
 
 	pr: 'pickrandom',
 	pick: 'pickrandom',
@@ -1935,24 +1837,7 @@ var commands = exports.commands = {
 		if (!this.canBroadcast()) return false;
 		return this.sendReplyBox('<em>We randomly picked:</em> ' + Tools.escapeHTML(options.sample().trim()));
 	},
-
-	register: function () {
-		if (!this.canBroadcast()) return;
-		this.sendReplyBox('You will be prompted to register upon winning a rated battle. Alternatively, there is a register button in the <button name="openOptions"><i class="icon-cog"></i> Options</button> menu in the upper right.');
-	},
-
-	lobbychat: function (target, room, user, connection) {
-		if (!Rooms.lobby) return this.popupReply("This server doesn't have a lobby.");
-		target = toId(target);
-		if (target === 'off') {
-			user.leaveRoom(Rooms.lobby, connection.socket);
-			connection.send('|users|');
-			this.sendReply("You are now blocking lobby chat.");
-		} else {
-			user.joinRoom(Rooms.lobby, connection);
-			this.sendReply("You are now receiving lobby chat.");
-		}
-	},
+	pickrandomhelp: ["/pick [option], [option], ... - Randomly selects an item from a list containing 2 or more elements."],
 
 	showimage: function (target, room, user) {
 		if (!target) return this.parse('/help showimage');
@@ -1966,6 +1851,7 @@ var commands = exports.commands = {
 
 		this.sendReply('|raw|<img src="' + Tools.escapeHTML(targets[0]) + '" alt="" width="' + toId(targets[1]) + '" height="' + toId(targets[2]) + '" />');
 	},
+	showimagehelp: ["/showimage [url], [width], [height] - Show an image. Requires: # & ~"],
 
 	htmlbox: function (target, room, user, connection, cmd, message) {
 		if (!target) return this.parse('/help htmlbox');
@@ -2353,5 +2239,4 @@ var commands = exports.commands = {
 			this.sendReply("Help for the command '" + target + "' was not found. Try /help for general help");
 		}
 	}
-
 };
