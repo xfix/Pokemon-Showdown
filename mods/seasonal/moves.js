@@ -625,35 +625,5 @@ exports.BattleMovedex = {
 		secondary: false,
 		target: "normal",
 		type: "Poison"
-	},
-	// Evasion
-	protect: {
-		num: 31,
-		accuracy: true,
-		basePower: 0,
-		category: "Status",
-		id: "protect",
-		name: "Protect",
-		pp: 8,
-		priority: 5,
-		flags: {},
-		onHit: function (target, source) {
-			source.addVolatile('disable');
-		},
-		effect: {
-			duration: 1,
-			onStart: function (target) {
-				this.add('-singleturn', target, 'Protect');
-			},
-			onTryHitPriority: 3,
-			onTryHit: function (target, source, move) {
-				this.add('-activate', target, 'Protect');
-				var lockedmove = source.getVolatile('lockedmove');
-				return null;
-			}
-		},
-		secondary: false,
-		target: "self",
-		type: "Fighting"
 	}
 };
