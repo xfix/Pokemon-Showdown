@@ -1,5 +1,5 @@
 exports.BattleScripts = {
-	randomSeasonalMay2015: function (side) {
+	randomSeasonalMay2015Team: function (side) {
 		var team = [];
 		// Teams on this seasonal have: A tank. A healer. A dps. A support. An off-tank. Another dps.
 		// We have a pool of them, depending on the team, and give them.
@@ -26,117 +26,43 @@ exports.BattleScripts = {
 		var pool = [healers[0], tanks[0], dps[0], supports[0], dps[1], supports[1]];
 		var sets = {
 			'Amy': {species: 'Jynx', role: 'healer'},
-			'Princess Leia': {
-				species: 'Gardevoir', gender: 'F', role: 'healer'
-			},
-			'Scruffy': {
-				species: 'Alakazam', gender: 'M', role: 'healer'
-			},
-			'Yoda': {
-				species: 'Celebi', gender: 'M', role: 'healer'
-			},
-			'Bender': {
-				species: 'Registeel', gender: 'M', role: 'tank'
-			},
-			'Gurren Lagann': {
-				species: 'Golurk', gender: 'N', role: 'tank'
-			},
-			'Lagann': {
-				species: 'Golett', gender: 'N', role: 'tank'
-			},
-			'Rei Ayanami': {
-				species: 'Palkia', gender: 'F', role: 'tank'
-			},
-			'Slurms McKenzie': {
-				species: 'Slugma', gender: 'M', role: 'tank'
-			},
-			'C3PO': {
-				species: 'Regirock', gender: 'N', role: 'support'
-			},
-			'Hermes': {
-				species: 'Scrafty', gender: 'M', role: 'support'
-			},
-			'Professor Farnsworth': {
-				species: 'Mr. Mime', gender: 'M', role: 'support'
-			},
-			'Kif': {
-				species: 'Elgyem', gender: 'N', role: 'support'
-			},
-			'Jar Jar Binks': {
-				species: 'Heliolisk', gender: 'N', role: 'support'
-			},
-			'R2D2': {
-				species: 'Regigigas', gender: 'N', role: 'support'
-			},
-			'Asuka Langley': {
-				species: 'Groudon', gender: 'F', role: 'dps'
-			},
-			'Chewy': {
-				species: 'Ursaring', gender: 'N', role: 'dps'
-			},
-			'Fry': {
-				species: 'Magmar', gender: 'M', role: 'dps'
-			},
-			'Han Solo': {
-				species: 'Sawk', gender: 'M', role: 'dps'
-			},
-			'Leela': {
-				species: 'Hitmonlee', gender: 'F', role: 'dps'
-			},
-			'Luke Skywalker': {
-				species: 'Throh', gender: 'M', role: 'dps'
-			},
-			'Nibbler': {
-				species: 'Monferno', gender: 'N', role: 'dps'
-			},
-			'Shinji Ikari': {
-				species: 'Dialga', gender: 'F', role: 'dps'
-			},
-			'Zoidberg': {
-				species: 'Clawitzer', gender: 'M', role: 'dps', shiny: true
-			},
-			'Anti-Spiral': {
-				species: 'Bisharp', gender: 'N', role: 'healer'
-			},
-			'Gendo Ikari': {
-				species: 'Machoke', gender: 'M', role: 'healer'
-			},
-			'Kaworu Nagisa': {
-				species: 'Treecko', gender: 'N', role: 'healer'
-			},
-			'Jabba the Hut': {
-				species: 'Snorlax', gender: 'N', role: 'tank'
-			},
-			'Lilith': {
-				species: 'Xerneas', gender: 'F', role: 'tank'
-			},
-			'Lrrr': {
-				species: 'Muk', gender: 'M', role: 'tank'
-			},
-			'Mommy': {
-				species: 'Gothitelle', gender: 'F', role: 'tank'
-			},
-			'Bobba Fett': {
-				species: 'Genesect', gender: 'M', role: 'support'
-			},
-			'Zapp Brannigan': {
-				species: 'Delphox', gender: 'M', role: 'support'
-			},
-			'An angel': {
-				species: 'Yveltal', gender: 'N', role: 'dps'
-			},
-			'Darth Vader': {
-				species: 'Dusknoir', gender: 'M', role: 'dps'
-			},
-			'Emperor Palpatine': {
-				species: 'Cofagrigus', gender: 'M', role: 'dps'
-			},
-			'Fender': {
-				species: 'Registeel', gender: 'M', role: 'dps'
-			},
-			'Storm Trooper': {
-				species: 'Raticate', gender: 'M', role: 'dps'
-			}
+			'Princess Leia': {species: 'Gardevoir', gender: 'F', role: 'healer'},
+			'Scruffy': {species: 'Alakazam', gender: 'M', role: 'healer'},
+			'Yoda': {species: 'Celebi', gender: 'M', role: 'healer'},
+			'Bender': {species: 'Registeel', gender: 'M', role: 'tank'},
+			'Gurren Lagann': {species: 'Golurk', gender: 'N', role: 'tank'},
+			'Lagann': {species: 'Golett', gender: 'N', role: 'tank'},
+			'Rei Ayanami': {species: 'Palkia', gender: 'F', role: 'tank'},
+			'Slurms McKenzie': {species: 'Slugma', gender: 'M', role: 'tank'},
+			'C3PO': {species: 'Regirock', gender: 'N', role: 'support'},
+			'Hermes': {species: 'Scrafty', gender: 'M', role: 'support'},
+			'Professor Farnsworth': {species: 'Mr. Mime', gender: 'M', role: 'support'},
+			'Kif': {species: 'Elgyem', gender: 'N', role: 'support'},
+			'Jar Jar Binks': {species: 'Heliolisk', gender: 'N', role: 'support'},
+			'R2D2': {species: 'Regigigas', gender: 'N', role: 'support'},
+			'Asuka Langley': {species: 'Groudon', gender: 'F', role: 'dps'},
+			'Chewy': {species: 'Ursaring', gender: 'N', role: 'dps'},
+			'Fry': {species: 'Magmar', gender: 'M', role: 'dps'},
+			'Han Solo': {species: 'Sawk', gender: 'M', role: 'dps'},
+			'Leela': {species: 'Hitmonlee', gender: 'F', role: 'dps'},
+			'Luke Skywalker': {species: 'Throh', gender: 'M', role: 'dps'},
+			'Nibbler': {species: 'Monferno', gender: 'N', role: 'dps'},
+			'Shinji Ikari': {species: 'Dialga', gender: 'F', role: 'dps'},
+			'Zoidberg': {species: 'Clawitzer', gender: 'M', role: 'dps', shiny: true},
+			'Anti-Spiral': {species: 'Bisharp', gender: 'N', role: 'healer'},
+			'Gendo Ikari': {species: 'Machoke', gender: 'M', role: 'healer'},
+			'Kaworu Nagisa': {species: 'Treecko', gender: 'N', role: 'healer'},
+			'Jabba the Hut': {species: 'Snorlax', gender: 'N', role: 'tank'},
+			'Lilith': {species: 'Xerneas', gender: 'F', role: 'tank'},
+			'Lrrr': {species: 'Muk', gender: 'M', role: 'tank'},
+			'Mommy': {species: 'Gothitelle', gender: 'F', role: 'tank'},
+			'Bobba Fett': {species: 'Genesect', gender: 'M', role: 'support'},
+			'Zapp Brannigan': {species: 'Delphox', gender: 'M', role: 'support'},
+			'An angel': {species: 'Yveltal', gender: 'N', role: 'dps'},
+			'Darth Vader': {species: 'Dusknoir', gender: 'M', role: 'dps'},
+			'Emperor Palpatine': {species: 'Cofagrigus', gender: 'M', role: 'dps'},
+			'Fender': {species: 'Registeel', gender: 'M', role: 'dps'},
+			'Storm Trooper': {species: 'Raticate', gender: 'M', role: 'dps'}
 		};
 		var movesets = {
 			'healer': [

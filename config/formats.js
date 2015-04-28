@@ -5027,7 +5027,7 @@ exports.Formats = [
 		team: 'randomSeasonalMay2015',
 		mod: 'seasonal',
 		gameType: 'triples',
-		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod']
+		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod', 'Cancel Mod']
 	},
 
 	// Other Metagames

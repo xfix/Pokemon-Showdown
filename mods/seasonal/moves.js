@@ -206,7 +206,7 @@ exports.BattleMovedex = {
 			duration: 4,
 			onAnyModifyDamage: function (damage, source, target, move) {
 				for (var i = 0; i < target.side.active.length; i++) {
-					if (target !== target.side.active[i]) && target.side.active[i].volatiles['sacrifice']) {
+					if (target !== target.side.active[i] && target.side.active[i].volatiles['sacrifice']) {
 						this.directDamage(damage, target, source, {id: 'sacrifice'});
 						return 0;
 					}
@@ -230,7 +230,7 @@ exports.BattleMovedex = {
 		flags: {},
 		onTryHit: function (target, source) {
 			if (source.side.active.length === 1) return false;
-			if (target.side !== source.side !==) return false;
+			if (target.side !== source.side) return false;
 		},
 		onHit: function (target, source) {
 			if (!target) return false;
