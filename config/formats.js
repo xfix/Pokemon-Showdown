@@ -5446,11 +5446,11 @@ exports.Formats = [
 		}
 	},
 	{
-		name: "Movemons",
+		name: "Blindmons",
 		section: "Other Metagames",
 
 		searchShow: false,
-		mod: "movemons",
+		mod: "blindmons",
 
 		onBeforeSwitchIn: function (pokemon) {
 			pokemon.illusion = pokemon;
