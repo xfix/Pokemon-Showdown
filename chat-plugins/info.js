@@ -1074,7 +1074,8 @@ var commands = exports.commands = {
 	weakness: function (target, room, user) {
 		if (!target) return this.parse('/help weakness');
 		if (!this.canBroadcast()) return;
-		var targets = target.split(/[ ,\/]/);
+		target = target.trim();
+		var targets = target.split(/ ?[,\/ ] ?/);
 
 		var pokemon = Tools.getTemplate(target);
 		var type1 = Tools.getType(targets[0]);
@@ -1082,7 +1083,7 @@ var commands = exports.commands = {
 
 		if (pokemon.exists) {
 			target = pokemon.species;
-		} else if (type1.exists && type2.exists) {
+		} else if (type1.exists && type2.exists && type1 !== type2) {
 			pokemon = {types: [type1.id, type2.id]};
 			target = type1.id + "/" + type2.id;
 		} else if (type1.exists) {
@@ -1225,6 +1226,7 @@ var commands = exports.commands = {
 			}
 			move = Tools.getMove(move);
 			if (move.exists) {
+				if (!move.basePower && !move.basePowerCallback) continue;
 				sources.push(move);
 				for (var type in bestCoverage) {
 					if (!Tools.getImmunity(move.type, type) && !move.ignoreImmunity) continue;
@@ -1238,6 +1240,7 @@ var commands = exports.commands = {
 
 			return this.sendReply("No type or move '" + targets[i] + "' found.");
 		}
+		if (sources.length === 0) return this.sendReply("No moves using a type table for determining damage were specified.");
 		if (sources.length > 4) return this.sendReply("Specify a maximum of 4 moves or types.");
 
 		// converts to fractional effectiveness, 0 for immune

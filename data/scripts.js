@@ -1688,7 +1688,11 @@ exports.BattleScripts = {
 		} else if (template.evos.length) {
 			item = 'Eviolite';
 		} else if (hasMove['shellsmash']) {
-			item = 'White Herb';
+			if (ability === 'Solid Rock' && counter['priority']) {
+				item = 'Weakness Policy';
+			} else {
+				item = 'White Herb';
+			}
 		} else if (ability === 'Magic Guard' || ability === 'Sheer Force') {
 			item = 'Life Orb';
 		} else if (hasMove['bellydrum']) {
@@ -2823,7 +2827,11 @@ exports.BattleScripts = {
 		} else if (hasMove['reflect'] && hasMove['lightscreen']) {
 			item = 'Light Clay';
 		} else if (hasMove['shellsmash']) {
-			item = 'White Herb';
+			if (ability === 'Solid Rock' && counter['priority']) {
+				item = 'Weakness Policy';
+			} else {
+				item = 'White Herb';
+			}
 		} else if (hasMove['facade'] || ability === 'Poison Heal' || ability === 'Toxic Boost') {
 			item = 'Toxic Orb';
 		} else if (hasMove['raindance']) {
@@ -4562,12 +4570,6 @@ exports.BattleScripts = {
 				moves: ['bugbuzz', 'closecombat', 'extremespeed', 'thunderbolt', 'uturn'],
 				baseSignatureMove: 'geargrind', signatureMove: "Grind you're mum",
 				evs: {atk:252, spa:252, spe:4}, nature: 'Quiet'
-			},
-			'@Goddess Briyella': {
-				species: 'Floette-Eternal-Flower', ability: 'Magic Bounce', item: 'Big Root', gender: 'M',
-				moves: ['cottonguard', 'quiverdance', 'drainingkiss'],
-				baseSignatureMove: 'earthpower', signatureMove: "Earth Drain",
-				evs: {hp:252, spa:252, def:4}, nature: 'Modest'
 			},
 			'@Hippopotas': {
 				species: 'Hippopotas', ability: 'Regenerator', item: 'Eviolite', gender: 'M',
