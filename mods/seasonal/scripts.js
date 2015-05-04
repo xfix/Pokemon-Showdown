@@ -40,6 +40,7 @@ exports.BattleScripts = {
 		this.modData('Pokedex', 'throh').baseStats = dpsStats;
 		this.modData('Pokedex', 'monferno').baseStats = dpsStats;
 		this.modData('Pokedex', 'dialga').baseStats = dpsStats;
+		this.modData('Pokedex', 'clawitzer').baseStats = dpsStats;
 		this.modData('Pokedex', 'yveltal').baseStats = dpsStats;
 		this.modData('Pokedex', 'dusknoir').baseStats = dpsStats;
 		this.modData('Pokedex', 'cofagrigus').baseStats = dpsStats;
