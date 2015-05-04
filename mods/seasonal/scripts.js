@@ -49,6 +49,7 @@ exports.BattleScripts = {
 	},
 	randomSeasonalMay2015Team: function (side) {
 		var team = [];
+		var healers, tanks, supports, dps = [];
 		// Teams on this seasonal have: A tank. A healer. A dps. A support. An off-tank. Another dps.
 		// We have a pool of them, depending on the team, and give them.
 		// If the other team has been chosen, we get its opposing force.
@@ -61,15 +62,15 @@ exports.BattleScripts = {
 		}
 
 		if (side === 'heroes') {
-			var healers = ['Amy', 'Princess Leia', 'Scruffy', 'Yoda'].randomize();
-			var tanks = ['Bender', 'Gurren Lagann', 'Lagann', 'Rei Ayanami', 'Slurms McKenzie'].randomize();
-			var supports = ['C3PO', 'Hermes', 'Professor Farnsworth', 'Kif', 'Jar Jar Binks', 'R2D2'].randomize();
-			var dps = ['Asuka Langley', 'Chewy', 'Fry', 'Han Solo', 'Leela', 'Luke Skywalker', 'Nibbler', 'Shinji Ikari', 'Zoidberg'].randomize();
+			healers = ['Amy', 'Princess Leia', 'Scruffy', 'Yoda'].randomize();
+			tanks = ['Bender', 'Gurren Lagann', 'Lagann', 'Rei Ayanami', 'Slurms McKenzie'].randomize();
+			supports = ['C3PO', 'Hermes', 'Professor Farnsworth', 'Kif', 'Jar Jar Binks', 'R2D2'].randomize();
+			dps = ['Asuka Langley', 'Chewy', 'Fry', 'Han Solo', 'Leela', 'Luke Skywalker', 'Nibbler', 'Shinji Ikari', 'Zoidberg'].randomize();
 		} else {
-			var healers = ['Anti-Spiral', 'Gendo Ikari', 'Kaworu Nagisa'].randomize();
-			var tanks = ['Jabba the Hut', 'Lilith', 'Lrrr', 'Mommy'].randomize();
-			var supports = ['Bobba Fett', 'Zapp Brannigan'].randomize();
-			var dps = ['An angel', 'Darth Vader', 'Emperor Palpatine', 'Fender', 'Storm Trooper'].randomize();
+			healers = ['Anti-Spiral', 'Gendo Ikari', 'Kaworu Nagisa'].randomize();
+			tanks = ['Jabba the Hut', 'Lilith', 'Lrrr', 'Mommy'].randomize();
+			supports = ['Bobba Fett', 'Zapp Brannigan'].randomize();
+			dps = ['An angel', 'Darth Vader', 'Emperor Palpatine', 'Fender', 'Storm Trooper'].randomize();
 		}
 		var pool = [healers[0], tanks[0], dps[0], supports[0], dps[1], supports[1]];
 		var sets = {
@@ -137,7 +138,7 @@ exports.BattleScripts = {
 				['thunderbolt', 'thunder', 'aircutter', 'freezeshock'],
 				['toxic', 'leechseed', 'muddywater', 'aircutter'],
 				['furyswipes', 'scratch', 'slash', 'smog']
-			],
+			]
 		};
 		for (var i = 0; i < 6; i++) {
 			var set = sets[pool[i]];
@@ -221,28 +222,6 @@ exports.BattleScripts = {
 
 		// Randomizer. Doesn't change much.
 		baseDamage = Math.floor(baseDamage * (95 + this.random(6)) / 100);
-
-		/** Add effectiveness?
-		// types
-		move.typeMod = 0;
-		if (target.negateImmunity[move.type] !== 'IgnoreEffectiveness' || this.getImmunity(move.type, target)) {
-			move.typeMod = target.runEffectiveness(move);
-		}
-		move.typeMod = this.clampIntRange(move.typeMod, -6, 6);
-		if (move.typeMod > 0) {
-			if (!suppressMessages) this.add('-supereffective', target);
-
-			for (var i = 0; i < move.typeMod; i++) {
-				baseDamage *= 2;
-			}
-		}
-		if (move.typeMod < 0) {
-			if (!suppressMessages) this.add('-resisted', target);
-
-			for (var i = 0; i > move.typeMod; i--) {
-				baseDamage = Math.floor(baseDamage / 2);
-			}
-		}*/
 
 		if (pokemon.volatiles['chilled']) {
 			baseDamage = Math.floor(baseDamage * 0.9);

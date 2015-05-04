@@ -5032,125 +5032,28 @@ exports.Formats = [
 			}
 		},
 		onFaint: function (pokemon) {
-			var message = '';
-			switch (pokemon.name) {
-			case 'Amy':
-				message = 'French?';
-				break;
-			case 'Princess Leia':
-				message = 'Why, you stuck up, half-witted, scruffy-looking Nerf herder.';
-				break;
-			case 'Scruffy':
-				message = "Scruffy's gonna die the way he lived. [Turns page of Zero-G Juggs magazine.] Mmhm.";
-				break;
-			case 'Yoda':
-				message = 'Wrath leads to the dark side.';
-				break;
-			case 'Bender':
-				message = 'DEATH TO ALL HUMANS!';
-				break;
-			case 'Gurren Lagann':
-				message = 'Later, buddy.';
-				break;
-			case 'Lagann':
-				message = '';
-				break;
-			case 'Rei Ayanami':
-				message = 'Man fears the darkness, and so he scrapes away at the edges of it with fire.';
-				break;
-			case 'Slurms McKenzie':
-				message = 'I will keep partying until the end.';
-				break;
-			case 'C3PO':
-				message = 'Oh, dear!';
-				break;
-			case 'Hermes':
-				message = 'I can still... limbo...';
-				break;
-			case 'Professor Farnsworth':
-				message = 'Bad news, everyone!';
-				break;
-			case 'Kif':
-				message = 'Sigh.';
-				break;
-			case 'Jar Jar Binks':
-				message = "Better dead here than deader in the Core. Ye gods, whatta meesa sayin'?";
-				break;
-			case 'R2D2':
-				message = '*beep boop*';
-				break;
-			case 'Asuka Langley':
-				message = 'Disgusting.';
-				break;
-			case 'Chewy':
-				message = 'GRARARWOOWRALWRL';
-				break;
-			case 'Fry':
-				message = 'Huh. Did everything just taste purple for a second?';
-				break;
-			case 'Han Solo':
-				message = 'I should have shot first...';
-				break;
-			case 'Leela':
-				message = 'Heeee-yAW!';
-				break;
-			case 'Luke Skywalker':
-				message = 'I could not use the force...';
-				break;
-			case 'Nibbler':
-				message = 'I hereby place an order for one cheese pizza.';
-				break;
-			case 'Shinji Ikari':
-				message = 'It would be better if I never existed. I should just die too.';
-				break;
-			case 'Zoidberg':
-				message = 'Why not Zoidberg?';
-				break;
-			case 'Anti-Spiral':
-				message = '';
-				break;
-			case 'Gendo Ikari':
-				message = 'Everything goes according to the plan.';
-				break;
-			case 'Kaworu Nagisa':
-				message = 'Dying of your own will. That is the one and only absolute freedom there is.';
-				break;
-			case 'Jabba the Hut':
-				message = 'Han, ma bukee.';
-				break;
-			case 'Lilith':
-				message = '...';
-				break;
-			case 'Lrrr':
-				message = "But I'm emperor of Omicron Persei 8!";
-				break;
-			case 'Mommy':
-				message = 'Stupid!';
-				break;
-			case 'Bobba Fett':
-				message = "I see now I've done terrible things.";
-				break;
-			case 'Zapp Brannigan':
-				message = "Oh, God, I'm pathetic. Sorry. Just go...";
-				break;
-			case 'An angel':
-				message = ',,,';
-				break;
-			case 'Darth Vader':
-				message = "I'm sorry, son.";
-				break;
-			case 'Emperor Palpatine':
-				message = 'What the hell is an "Aluminum Falcon"?';
-				break;
-			case 'Fender':
-				message = '*beeps*';
-				break;
-			case 'Storm Trooper':
-				message = 'But my aim is perfect!';
-				break;
-			}
-			this.add('-message', message);
-		},
+			var message = {
+				'Amy': 'French?', 'Princess Leia': 'Why, you stuck up, half-witted, scruffy-looking Nerf herder.',
+				'Scruffy': "Scruffy's gonna die the way he lived. [Turns page of Zero-G Juggs magazine.] Mmhm.",
+				'Yoda': 'Wrath leads to the dark side.', 'Bender': 'DEATH TO ALL HUMANS!', 'Gurren Lagann': 'Later, buddy.',
+				'Lagann': "Eh, I guess I'm no one.", 'Rei Ayanami': 'Man fears the darkness, and so he scrapes away at the edges of it with fire.',
+				'Slurms McKenzie': 'I will keep partying until the end.', 'C3PO': 'Oh, dear!',
+				'Hermes': 'I can still... limbo...', 'Professor Farnsworth': 'Bad news, everyone!', 'Kif': 'Sigh.',
+				'Jar Jar Binks': "Better dead here than deader in the Core. Ye gods, whatta meesa sayin'?",
+				'R2D2': '*beep boop*', 'Asuka Langley': 'Disgusting.', 'Chewy': 'GRARARWOOWRALWRL',
+				'Fry': 'Huh. Did everything just taste purple for a second?', 'Han Solo': 'I should have shot first...',
+				'Leela': 'Yeeee-hAW!', 'Luke Skywalker': 'I could not use the force...',
+				'Nibbler': 'I hereby place an order for one cheese pizza.',
+				'Shinji Ikari': 'It would be better if I never existed. I should just die too.', 'Zoidberg': 'Why not Zoidberg?',
+				'Anti-Spiral': 'If this is how it must be, protect the universe at all costs.', 'Gendo Ikari': 'Everything goes according to the plan.',
+				'Kaworu Nagisa': 'Dying of your own will. That is the one and only absolute freedom there is.',
+				'Jabba the Hut': 'Han, ma bukee.', 'Lilith': '...', 'Lrrr': "But I'm emperor of Omicron Persei 8!",
+				'Mommy': 'Stupid!', 'Bobba Fett': "I see now I've done terrible things.", 'Zapp Brannigan': "Oh, God, I'm pathetic. Sorry. Just go...",
+				'An angel': ',,,', 'Darth Vader': "I'm sorry, son.", 'Emperor Palpatine': 'What the hell is an "Aluminum Falcon"?',
+				'Fender': '*beeps*', 'Storm Trooper': 'But my aim is perfect!'
+			}[pokemon.name];
+			this.add('-message', pokemon.name + ': ' + message);
+		}
 	},
 
 	// Other Metagames

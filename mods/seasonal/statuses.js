@@ -201,7 +201,7 @@ exports.BattleStatuses = {
 			var originalDamage = damage;
 			damage = Math.ceil(damage / 2);
 			if (damage >= target.hp) damage = target.hp - 1;
-			this.add('-message', target.name + "'s Last Stand made it take " + (originalDamage-damage) + " damage less!");
+			this.add('-message', target.name + "'s Last Stand made it take " + (originalDamage - damage) + " damage less!");
 			return damage;
 		}
 	},
