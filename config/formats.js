@@ -5005,14 +5005,15 @@ exports.Formats = [
 		}
 	},
 	{
-		name: "May Seasonal",
+		name: "You are (not) prepared",
 		section: 'Seasonal',
 		team: 'randomSeasonalMay2015',
 		mod: 'seasonal',
 		gameType: 'triples',
 		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod', 'Cancel Mod'],
 		onBegin: function () {
-			this.add('-message', "Zankoku na tenshi no teeze!");
+			this.add("raw|<b><font color='red'>IMPORTANT!</font></b> All moves on this seasonal are custom. Use the command /seasonaldata or /sdata to know what they do.");
+			this.add("raw|More information can be found <a href='https://www.smogon.com/forums/threads/3491902/page-6#post-6093168'>here</a>");
 		},
 		onModifyMove: function (move) {
 			// Shows legit name after use...

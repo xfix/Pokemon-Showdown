@@ -184,10 +184,10 @@ exports.BattleMovedex = {
 		pp: 10,
 		priority: 0,
 		flags: {protect: 1, reflectable: 1, mirror: 1, authentic: 1},
-		onHit: function (target) {
+		onHit: function (target, source) {
 			if (target.deductPP(target.lastMove, 8)) {
 				this.add("-activate", target, 'move: Slow Down', target.lastMove, 8);
-				target.addVolatile('disable');
+				source.addVolatile('disable');
 				return;
 			}
 			return false;
@@ -207,12 +207,6 @@ exports.BattleMovedex = {
 		pp: 10,
 		priority: 0,
 		flags: {protect: 1, reflectable: 1, distance: 1, heal: 1},
-		onTryHit: function (target, source) {
-			if (target.lastMove === 'healingtouch') {
-				this.add('-hint', 'You can only used Healing Touch every other turn!');
-				return false;
-			}
-		},
 		onHit: function (target, source) {
 			this.heal(Math.ceil(target.maxhp * 0.6));
 		},
@@ -234,21 +228,6 @@ exports.BattleMovedex = {
 		onHit: function (target, source) {
 			this.heal(Math.ceil(target.maxhp * 0.125));
 			target.addVolatile('penance');
-		},
-		effect: {
-			onStart: function (pokemon) {
-				this.add('-start', pokemon, 'Penance');
-			},
-			onDamagePriority: -10,
-			onDamage: function (damage, target, source, effect) {
-				var d = Math.ceil(damage * 0.0615);
-				this.heal(d, target, target);
-				this.add('-message', target.name + "'s Penance healed it for " + d + "!");
-				target.removeVolatile('penance');
-			},
-			onEnd: function (pokemon) {
-				this.add('-end', pokemon, 'Penance');
-			}
 		},
 		secondary: false,
 		target: "allyTeam",
@@ -293,19 +272,6 @@ exports.BattleMovedex = {
 		onHit: function (pokemon) {
 			pokemon.addVolatile('disable');
 		},
-		effect: {
-			duration: 1,
-			onStart: function (target) {
-				this.add('-singleturn', target, 'move: Last Stand');
-			},
-			onDamage: function (damage, target, source, effect) {
-				var originalDamage = damage;
-				damage = Math.ceil(damage / 2);
-				if (damage >= target.hp) damage = target.hp - 1;
-				this.add('-message', target.name + "'s Last Stand made it take " + (originalDamage-damage) + " damage less!");
-				return damage;
-			}
-		},
 		secondary: false,
 		target: "self",
 		type: "Fighting"
@@ -322,19 +288,6 @@ exports.BattleMovedex = {
 		priority: 4,
 		flags: {},
 		volatileStatus: 'barkskin',
-		effect: {
-			duration: 2,
-			onStart: function (target) {
-				this.add('-start', target, 'move: Barkskin');
-			},
-			onEnd: function (target) {
-				this.add('-end', target, 'move: Barkskin');
-			},
-			onDamage: function (damage, target, source, effect) {
-				this.add('-message', target.name + "'s Barkskin reduced the damage!");
-				return Math.ceil(damage * 0.75);
-			}
-		},
 		secondary: false,
 		target: "self",
 		type: "Grass"
@@ -364,7 +317,7 @@ exports.BattleMovedex = {
 		accuracy: 100,
 		basePower: 30,
 		basePowerCallback: function (pokemon, target) {
-			if (target.status === 'brn') return 45;
+			if (target.status === 'brn') return 40;
 			return 30;
 		},
 		category: "Special",
@@ -396,7 +349,7 @@ exports.BattleMovedex = {
 	thunderbolt: {
 		num: -18,
 		accuracy: 100,
-		basePower: 5,
+		basePower: 20,
 		category: "Special",
 		id: "thunderbolt",
 		name: "Thunderbolt",
@@ -404,18 +357,6 @@ exports.BattleMovedex = {
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
 		secondary: {chance: 100, volatileStatus: 'moonfire'},
-		effect: {
-			duration: 4,
-			onStart: function (target) {
-				this.add('-start', target, 'move: Moonfire');
-			},
-			onEnd: function (target) {
-				this.add('-end', target, 'move: Moonfire');
-			},
-			onResidual: function (pokemon) {
-				this.damage(pokemon.maxhp * 0.03);
-			}
-		},
 		target: "any",
 		type: "Grass"
 	},
@@ -479,7 +420,7 @@ exports.BattleMovedex = {
 					this.debug('Nothing to leech into');
 					return;
 				}
-				var damage = this.damage(pokemon.maxhp * 0.06, pokemon, target);
+				var damage = this.damage(pokemon.maxhp * 0.08, pokemon, target);
 				if (damage) {
 					this.heal(damage, target, pokemon);
 				}
@@ -494,7 +435,7 @@ exports.BattleMovedex = {
 		accuracy: 100,
 		basePower: 30,
 		basePowerCallback: function (pokemon, target) {
-			if (target.volatiles['chilled']) return 45;
+			if (target.volatiles['chilled']) return 40;
 			return 30;
 		},
 		category: "Special",
@@ -511,7 +452,7 @@ exports.BattleMovedex = {
 	freezeshock: {
 		num: -23,
 		accuracy: 100,
-		basePower: 10,
+		basePower: 20,
 		category: "Special",
 		id: "freezeshock",
 		name: "Freeze Shock",
@@ -585,7 +526,7 @@ exports.BattleMovedex = {
 		pp: 16,
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
-		secondary: {chance: 100, volatileStatus: 'bleed'},
+		secondary: {chance: 100, volatileStatus: 'bleeding'},
 		target: "normal",
 		type: "Dark"
 	},
@@ -593,9 +534,9 @@ exports.BattleMovedex = {
 	slash: {
 		num: -28,
 		accuracy: 100,
-		basePower: 30,
+		basePower: 35,
 		basePowerCallback: function (pokemon, target) {
-			var bP = 30;
+			var bP = 35;
 			if (target.volatiles['bleed']) bP += 10;
 			if (target.status === 'psn') bP += 10;
 			return bP;

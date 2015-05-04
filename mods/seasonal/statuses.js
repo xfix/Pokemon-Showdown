@@ -38,7 +38,7 @@ exports.BattleStatuses = {
 			this.add('-end', target, 'bleeding');
 		},
 		onResidual: function (pokemon) {
-			this.damage(pokemon.maxhp * 0.04);
+			this.damage(pokemon.maxhp * 0.0615);
 		}
 	},
 	taunting: {
@@ -99,7 +99,7 @@ exports.BattleStatuses = {
 			for (var i = 0; i < side.active.length; i++) {
 				var pokemon = side.active[i];
 				if (pokemon.hp < pokemon.maxhp) {
-					this.heal(pokemon.maxhp * 0.0615, pokemon, pokemon);
+					this.heal(pokemon.maxhp * 0.125, pokemon, pokemon);
 					this.add('-message', 'The wild growth recovered some of ' + pokemon.name + "'s HP!");
 				}
 			}
@@ -132,7 +132,7 @@ exports.BattleStatuses = {
 		onResidualOrder: 5,
 		onResidualSubOrder: 2,
 		onResidual: function (pokemon) {
-			this.heal(pokemon.maxhp * 0.125);
+			this.heal(pokemon.maxhp * 0.18);
 			this.add('-message', pokemon.name + ' healed due to its rejuvenation!');
 		},
 		onEnd: function (pokemon) {
@@ -158,6 +158,64 @@ exports.BattleStatuses = {
 		onResidualSubOrder: 2,
 		onEnd: function (side) {
 			this.add('-sideend', side, 'Fairy Ward');
+		},
+		onDamagePriority: -10,
+		onDamage: function (damage, target, source, effect) {
+			return Math.ceil(damage * 0.95);
+		}
+	},
+	penance: {
+		onStart: function (pokemon) {
+			this.add('-start', pokemon, 'Penance');
+		},
+		onDamagePriority: -10,
+		onDamage: function (damage, target, source, effect) {
+			var d = Math.ceil(damage * 0.0615);
+			this.heal(d, target, target);
+			this.add('-message', target.name + "'s Penance healed it for " + d + "!");
+			target.removeVolatile('penance');
+		},
+		onEnd: function (pokemon) {
+			this.add('-end', pokemon, 'Penance');
+		}
+	},
+	barkskin: {
+		duration: 2,
+		onStart: function (target) {
+			this.add('-start', target, 'move: Barkskin');
+		},
+		onEnd: function (target) {
+			this.add('-end', target, 'move: Barkskin');
+		},
+		onDamage: function (damage, target, source, effect) {
+			this.add('-message', target.name + "'s Barkskin reduced the damage!");
+			return Math.ceil(damage * 0.75);
+		}
+	},
+	laststand: {
+		duration: 1,
+		onStart: function (target) {
+			this.add('-singleturn', target, 'move: Last Stand');
+		},
+		onDamage: function (damage, target, source, effect) {
+			var originalDamage = damage;
+			damage = Math.ceil(damage / 2);
+			if (damage >= target.hp) damage = target.hp - 1;
+			this.add('-message', target.name + "'s Last Stand made it take " + (originalDamage-damage) + " damage less!");
+			return damage;
+		}
+	},
+	moonfire: {
+		duration: 4,
+		onStart: function (target) {
+			this.add('-start', target, 'move: Moonfire');
+		},
+		onEnd: function (target) {
+			this.add('-end', target, 'move: Moonfire');
+		},
+		onResidual: function (pokemon) {
+			this.damage(pokemon.maxhp * 0.06);
+			this.add('-message', pokemon.name + ' took Moonfire damage!');
 		}
 	}
 };
