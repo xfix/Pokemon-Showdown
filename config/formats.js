@@ -5013,7 +5013,7 @@ exports.Formats = [
 		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod', 'Cancel Mod'],
 		onBegin: function () {
 			this.add("raw|<b><font color='red'>IMPORTANT!</font></b> All moves on this seasonal are custom. Use the command /seasonaldata or /sdata to know what they do.");
-			this.add("raw|More information can be found <a href='https://www.smogon.com/forums/threads/3491902/page-6#post-6093168'>here</a>");
+			this.add("raw|More information can be found <a href='http://www.smogon.com/forums/threads/3491902/page-12#post-6202283'>here</a>");
 		},
 		onModifyMove: function (move) {
 			// Shows legit name after use...
@@ -5031,12 +5031,126 @@ exports.Formats = [
 				move.name = legitNames[move.id];
 			}
 		},
-		onSwitchIn: function (pokemon) {
-			// Avoid immunities...
-			pokemon.typesData = [
-				{type: 'Grass', suppressed: false,  isAdded: false}
-			];
-		}
+		onFaint: function (pokemon) {
+			var message = '';
+			switch (pokemon.name) {
+			case 'Amy':
+				message = 'French?';
+				break;
+			case 'Princess Leia':
+				message = 'Why, you stuck up, half-witted, scruffy-looking Nerf herder.';
+				break;
+			case 'Scruffy':
+				message = "Scruffy's gonna die the way he lived. [Turns page of Zero-G Juggs magazine.] Mmhm.";
+				break;
+			case 'Yoda':
+				message = 'Wrath leads to the dark side.';
+				break;
+			case 'Bender':
+				message = 'DEATH TO ALL HUMANS!';
+				break;
+			case 'Gurren Lagann':
+				message = 'Later, buddy.';
+				break;
+			case 'Lagann':
+				message = '';
+				break;
+			case 'Rei Ayanami':
+				message = 'Man fears the darkness, and so he scrapes away at the edges of it with fire.';
+				break;
+			case 'Slurms McKenzie':
+				message = 'I will keep partying until the end.';
+				break;
+			case 'C3PO':
+				message = 'Oh, dear!';
+				break;
+			case 'Hermes':
+				message = 'I can still... limbo...';
+				break;
+			case 'Professor Farnsworth':
+				message = 'Bad news, everyone!';
+				break;
+			case 'Kif':
+				message = 'Sigh.';
+				break;
+			case 'Jar Jar Binks':
+				message = "Better dead here than deader in the Core. Ye gods, whatta meesa sayin'?";
+				break;
+			case 'R2D2':
+				message = '*beep boop*';
+				break;
+			case 'Asuka Langley':
+				message = 'Disgusting.';
+				break;
+			case 'Chewy':
+				message = 'GRARARWOOWRALWRL';
+				break;
+			case 'Fry':
+				message = 'Huh. Did everything just taste purple for a second?';
+				break;
+			case 'Han Solo':
+				message = 'I should have shot first...';
+				break;
+			case 'Leela':
+				message = 'Heeee-yAW!';
+				break;
+			case 'Luke Skywalker':
+				message = 'I could not use the force...';
+				break;
+			case 'Nibbler':
+				message = 'I hereby place an order for one cheese pizza.';
+				break;
+			case 'Shinji Ikari':
+				message = 'It would be better if I never existed. I should just die too.';
+				break;
+			case 'Zoidberg':
+				message = 'Why not Zoidberg?';
+				break;
+			case 'Anti-Spiral':
+				message = '';
+				break;
+			case 'Gendo Ikari':
+				message = 'Everything goes according to the plan.';
+				break;
+			case 'Kaworu Nagisa':
+				message = 'Dying of your own will. That is the one and only absolute freedom there is.';
+				break;
+			case 'Jabba the Hut':
+				message = 'Han, ma bukee.';
+				break;
+			case 'Lilith':
+				message = '...';
+				break;
+			case 'Lrrr':
+				message = "But I'm emperor of Omicron Persei 8!";
+				break;
+			case 'Mommy':
+				message = 'Stupid!';
+				break;
+			case 'Bobba Fett':
+				message = "I see now I've done terrible things.";
+				break;
+			case 'Zapp Brannigan':
+				message = "Oh, God, I'm pathetic. Sorry. Just go...";
+				break;
+			case 'An angel':
+				message = ',,,';
+				break;
+			case 'Darth Vader':
+				message = "I'm sorry, son.";
+				break;
+			case 'Emperor Palpatine':
+				message = 'What the hell is an "Aluminum Falcon"?';
+				break;
+			case 'Fender':
+				message = '*beeps*';
+				break;
+			case 'Storm Trooper':
+				message = 'But my aim is perfect!';
+				break;
+			}
+			this.add('-message', message);
+		},
 	},
 
 	// Other Metagames
