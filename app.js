@@ -56,16 +56,17 @@ function runNpm(command) {
 	process.exit(0);
 }
 
-var isLegacyEngine = !global.Map;
+var isLegacyEngine = !(''.includes);
 
 var fs = require('fs');
+var path = require('path');
 try {
 	require('sugar');
 	if (isLegacyEngine) require('es6-shim');
 } catch (e) {
 	runNpm('install --production');
 }
-if (isLegacyEngine && !new Map().set()) {
+if (isLegacyEngine && !(''.includes)) {
 	runNpm('update --production');
 }
 
@@ -80,14 +81,14 @@ try {
 
 	// Copy it over synchronously from config-example.js since it's needed before we can start the server
 	console.log("config.js doesn't exist - creating one with default settings...");
-	fs.writeFileSync('./config/config.js',
-		fs.readFileSync('./config/config-example.js')
+	fs.writeFileSync(path.resolve(__dirname, 'config/config.js'),
+		fs.readFileSync(path.resolve(__dirname, 'config/config-example.js'))
 	);
 	global.Config = require('./config/config.js');
 }
 
 if (Config.watchconfig) {
-	fs.watchFile('./config/config.js', function (curr, prev) {
+	fs.watchFile(path.resolve(__dirname, 'config/config.js'), function (curr, prev) {
 		if (curr.mtime <= prev.mtime) return;
 		try {
 			delete require.cache[require.resolve('./config/config.js')];
@@ -99,9 +100,11 @@ if (Config.watchconfig) {
 }
 
 // Autoconfigure the app when running in cloud hosting environments:
-var cloudenv = require('cloud-env');
-Config.bindaddress = cloudenv.get('IP', Config.bindaddress || '');
-Config.port = cloudenv.get('PORT', Config.port);
+try {
+	var cloudenv = require('cloud-env');
+	Config.bindaddress = cloudenv.get('IP', Config.bindaddress || '');
+	Config.port = cloudenv.get('PORT', Config.port);
+} catch (e) {}
 
 if (require.main === module && process.argv[2] && parseInt(process.argv[2])) {
 	Config.port = parseInt(process.argv[2]);
@@ -127,16 +130,20 @@ global.ResourceMonitor = {
 	 */
 	log: function (text) {
 		console.log(text);
-		if (Rooms.rooms.staff) {
-			Rooms.rooms.staff.add('||' + text);
-			Rooms.rooms.staff.update();
+		if (Rooms.get('staff')) {
+			Rooms.get('staff').add('|c|~|' + text).update();
+		}
+	},
+	adminlog: function (text) {
+		console.log(text);
+		if (Rooms.get('upperstaff')) {
+			Rooms.get('upperstaff').add('|c|~|' + text).update();
 		}
 	},
 	logHTML: function (text) {
 		console.log(text);
-		if (Rooms.rooms.staff) {
-			Rooms.rooms.staff.add('|html|' + text);
-			Rooms.rooms.staff.update();
+		if (Rooms.get('staff')) {
+			Rooms.get('staff').add('|html|' + text).update();
 		}
 	},
 	countConnection: function (ip, name) {
@@ -145,16 +152,15 @@ global.ResourceMonitor = {
 		name = (name ? ': ' + name : '');
 		if (ip in this.connections && duration < 30 * 60 * 1000) {
 			this.connections[ip]++;
-			if (this.connections[ip] < 500 && duration < 5 * 60 * 1000 && this.connections[ip] % 30 === 0) {
-				this.log('[ResourceMonitor] IP ' + ip + ' has connected ' + this.connections[ip] + ' times in the last ' + duration.duration() + name);
-			} else if (this.connections[ip] < 500 && this.connections[ip] % 90 === 0) {
-				this.log('[ResourceMonitor] IP ' + ip + ' has connected ' + this.connections[ip] + ' times in the last ' + duration.duration() + name);
-			} else if (this.connections[ip] === 500) {
-				this.log('[ResourceMonitor] IP ' + ip + ' has been banned for connection flooding (' + this.connections[ip] + ' times in the last ' + duration.duration() + name + ')');
+			if (this.connections[ip] === 500) {
+				this.adminlog('[ResourceMonitor] IP ' + ip + ' has been banned for connection flooding (' + this.connections[ip] + ' times in the last ' + duration.duration() + name + ')');
 				return true;
 			} else if (this.connections[ip] > 500) {
-				if (this.connections[ip] % 250 === 0) {
-					this.log('[ResourceMonitor] Banned IP ' + ip + ' has connected ' + this.connections[ip] + ' times in the last ' + duration.duration() + name);
+				if (this.connections[ip] % 500 === 0) {
+					var c = this.connections[ip] / 500;
+					if (c < 5 || c % 2 === 0 && c < 10 || c % 5 === 0) {
+						this.adminlog('[ResourceMonitor] Banned IP ' + ip + ' has connected ' + this.connections[ip] + ' times in the last ' + duration.duration() + name);
+					}
 				}
 				return true;
 			}
@@ -215,7 +221,7 @@ global.ResourceMonitor = {
 		for (var i in this.networkUse) {
 			buf += '' + this.networkUse[i] + '\t' + this.networkCount[i] + '\t' + i + '\n';
 		}
-		fs.writeFile('logs/networkuse.tsv', buf);
+		fs.writeFile(path.resolve(__dirname, 'logs/networkuse.tsv'), buf);
 	},
 	clearNetworkUse: function () {
 		this.networkUse = {};
@@ -231,10 +237,13 @@ global.ResourceMonitor = {
 
 		while (stack.length) {
 			var value = stack.pop();
-			if (typeof value === 'boolean') bytes += 4;
-			else if (typeof value === 'string') bytes += value.length * 2;
-			else if (typeof value === 'number') bytes += 8;
-			else if (typeof value === 'object' && objectList.indexOf(value) === -1) {
+			if (typeof value === 'boolean') {
+				bytes += 4;
+			} else if (typeof value === 'string') {
+				bytes += value.length * 2;
+			} else if (typeof value === 'number') {
+				bytes += 8;
+			} else if (typeof value === 'object' && objectList.indexOf(value) < 0) {
 				objectList.push(value);
 				for (var i in value) stack.push(value[i]);
 			}
@@ -291,54 +300,28 @@ global.ResourceMonitor = {
  * Otherwise, an empty string will be returned.
  */
 global.toId = function (text) {
-	if (text && text.id) text = text.id;
-	else if (text && text.userid) text = text.userid;
-
-	return string(text).toLowerCase().replace(/[^a-z0-9]+/g, '');
+	if (text && text.id) {
+		text = text.id;
+	} else if (text && text.userid) {
+		text = text.userid;
+	}
+	if (typeof text !== 'string' && typeof text !== 'number') return '';
+	return ('' + text).toLowerCase().replace(/[^a-z0-9]+/g, '');
 };
 
-/**
- * Sanitizes a username or Pokemon nickname
- *
- * Returns the passed name, sanitized for safe use as a name in the PS
- * protocol.
- *
- * Such a string must uphold these guarantees:
- * - must not contain any ASCII whitespace character other than a space
- * - must not start or end with a space character
- * - must not contain any of: | , [ ]
- * - must not be the empty string
- *
- * If no such string can be found, returns the empty string. Calling
- * functions are expected to check for that condition and deal with it
- * accordingly.
- *
- * toName also enforces that there are not multiple space characters
- * in the name, although this is not strictly necessary for safety.
- */
-global.toName = function (name) {
-	name = string(name);
-	name = name.replace(/[\|\s\[\]\,]+/g, ' ').trim();
-	if (name.length > 18) name = name.substr(0, 18).trim();
-	return name;
-};
-
-/**
- * Safely ensures the passed variable is a string
- * Simply doing '' + str can crash if str.toString crashes or isn't a function
- * If we're expecting a string and being given anything that isn't a string
- * or a number, it's safe to assume it's an error, and return ''
- */
-global.string = function (str) {
-	if (typeof str === 'string' || typeof str === 'number') return '' + str;
-	return '';
-};
+global.Tools = require('./tools.js').includeFormats();
 
 global.LoginServer = require('./loginserver.js');
+
+global.Ladders = require('./ladders-remote.js');
 
 global.Users = require('./users.js');
 
 global.Rooms = require('./rooms.js');
+
+// Generate and cache the format list.
+Rooms.global.formatListText = Rooms.global.getFormatListText();
+
 
 delete process.send; // in case we're a child process
 global.Verifier = require('./verifier.js');
@@ -362,7 +345,7 @@ if (Config.crashguard) {
 	var lastCrash = 0;
 	process.on('uncaughtException', function (err) {
 		var dateNow = Date.now();
-		var quietCrash = require('./crashlogger.js')(err, 'The main process');
+		var quietCrash = require('./crashlogger.js')(err, 'The main process', true);
 		quietCrash = quietCrash || ((dateNow - lastCrash) <= 1000 * 60 * 5);
 		lastCrash = Date.now();
 		if (quietCrash) return;
@@ -371,7 +354,6 @@ if (Config.crashguard) {
 			Rooms.lobby.addRaw('<div class="broadcast-red"><b>THE SERVER HAS CRASHED:</b> ' + stack + '<br />Please restart the server.</div>');
 			Rooms.lobby.addRaw('<div class="broadcast-red">You will not be able to talk in the lobby or start new battles until the server restarts.</div>');
 		}
-		Config.modchat = 'crash';
 		Rooms.global.lockdown = true;
 	});
 }
@@ -386,26 +368,17 @@ global.Sockets = require('./sockets.js');
  * Set up our last global
  *********************************************************/
 
-// This slow operation is done *after* we start listening for connections
-// to the server. Anybody who connects while this require() is running will
-// have to wait a couple seconds before they are able to join the server, but
-// at least they probably won't receive a connection error message.
-global.Tools = require('./tools.js');
-
-// After loading tools, generate and cache the format list.
-Rooms.global.formatListText = Rooms.global.getFormatListText();
-
 global.TeamValidator = require('./team-validator.js');
 
 // load ipbans at our leisure
-fs.readFile('./config/ipbans.txt', function (err, data) {
+fs.readFile(path.resolve(__dirname, 'config/ipbans.txt'), function (err, data) {
 	if (err) return;
 	data = ('' + data).split("\n");
 	var rangebans = [];
 	for (var i = 0; i < data.length; i++) {
 		data[i] = data[i].split('#')[0].trim();
 		if (!data[i]) continue;
-		if (data[i].indexOf('/') >= 0) {
+		if (data[i].includes('/')) {
 			rangebans.push(data[i]);
 		} else if (!Users.bannedIps[data[i]]) {
 			Users.bannedIps[data[i]] = '#ipban';

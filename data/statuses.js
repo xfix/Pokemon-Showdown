@@ -19,9 +19,9 @@ exports.BattleStatuses = {
 		onStart: function (target) {
 			this.add('-status', target, 'par');
 		},
-		onModifySpe: function (speMod, pokemon) {
+		onModifySpe: function (spe, pokemon) {
 			if (!pokemon.hasAbility('quickfeet')) {
-				return this.chain(speMod, 0.25);
+				return this.chainModify(0.25);
 			}
 		},
 		onBeforeMovePriority: 1,
@@ -61,7 +61,7 @@ exports.BattleStatuses = {
 		effectType: 'Status',
 		onStart: function (target) {
 			this.add('-status', target, 'frz');
-			if (target.species === 'Shaymin-Sky' && target.baseTemplate.species === target.species) {
+			if (target.template.species === 'Shaymin-Sky' && target.baseTemplate.baseSpecies === 'Shaymin') {
 				var template = this.getTemplate('Shaymin');
 				target.formeChange(template);
 				target.baseTemplate = template;
@@ -69,7 +69,7 @@ exports.BattleStatuses = {
 				target.baseAbility = target.ability;
 				target.details = template.species + (target.level === 100 ? '' : ', L' + target.level) + (target.gender === '' ? '' : ', ' + target.gender) + (target.set.shiny ? ', shiny' : '');
 				this.add('detailschange', target, target.details);
-				this.add('message', target.species + " has reverted to Land Forme! (placeholder)");
+				this.add('-formechange', target, 'Shaymin', '[msg]');
 			}
 		},
 		onBeforeMovePriority: 10,
@@ -130,7 +130,11 @@ exports.BattleStatuses = {
 		onStart: function (target, source, sourceEffect) {
 			var result = this.runEvent('TryConfusion', target, source, sourceEffect);
 			if (!result) return result;
-			this.add('-start', target, 'confusion');
+			if (sourceEffect && sourceEffect.id === 'lockedmove') {
+				this.add('-start', target, 'confusion', '[fatigue]');
+			} else {
+				this.add('-start', target, 'confusion');
+			}
 			this.effectData.time = this.random(2, 6);
 		},
 		onEnd: function (target) {
@@ -147,7 +151,11 @@ exports.BattleStatuses = {
 			if (this.random(2) === 0) {
 				return;
 			}
-			this.directDamage(this.getDamage(pokemon, pokemon, 40));
+			this.damage(this.getDamage(pokemon, pokemon, 40), pokemon, pokemon, {
+				id: 'confused',
+				effectType: 'Move',
+				type: '???'
+			});
 			return false;
 		}
 	},
@@ -186,7 +194,7 @@ exports.BattleStatuses = {
 		onResidualOrder: 11,
 		onResidual: function (pokemon) {
 			if (this.effectData.source && (!this.effectData.source.isActive || this.effectData.source.hp <= 0)) {
-				pokemon.removeVolatile('partiallytrapped');
+				delete pokemon.volatiles['partiallytrapped'];
 				return;
 			}
 			if (this.effectData.source.hasItem('bindingband')) {
@@ -223,7 +231,6 @@ exports.BattleStatuses = {
 		},
 		onEnd: function (target) {
 			if (this.effectData.trueDuration > 1) return;
-			this.add('-end', target, 'rampage');
 			target.addVolatile('confusion');
 		},
 		onLockMove: function (pokemon) {
@@ -255,12 +262,12 @@ exports.BattleStatuses = {
 			if (!this.activeMove.id || this.activeMove.sourceEffect && this.activeMove.sourceEffect !== this.activeMove.id) return false;
 			this.effectData.move = this.activeMove.id;
 		},
-		onModifyPokemon: function (pokemon) {
+		onDisableMove: function (pokemon) {
 			if (!pokemon.getItem().isChoice || !pokemon.hasMove(this.effectData.move)) {
 				pokemon.removeVolatile('choicelock');
 				return;
 			}
-			if (pokemon.ignore['Item']) {
+			if (pokemon.ignoringItem()) {
 				return;
 			}
 			var moves = pokemon.moveset;
@@ -279,7 +286,10 @@ exports.BattleStatuses = {
 			pokemon.removeVolatile('mustrecharge');
 			return false;
 		},
-		onLockMove: 'recharge'
+		onLockMove: function (pokemon) {
+			this.add('-mustrecharge', pokemon);
+			return 'recharge';
+		}
 	},
 	futuremove: {
 		// this is a side condition
@@ -401,7 +411,7 @@ exports.BattleStatuses = {
 			}
 			return 5;
 		},
-		onBasePower: function (basePower, attacker, defender, move) {
+		onWeatherModifyDamage: function (damage, attacker, defender, move) {
 			if (move.type === 'Water') {
 				this.debug('rain water boost');
 				return this.chainModify(1.5);
@@ -438,14 +448,11 @@ exports.BattleStatuses = {
 				return null;
 			}
 		},
-		onBasePower: function (basePower, attacker, defender, move) {
+		onWeatherModifyDamage: function (damage, attacker, defender, move) {
 			if (move.type === 'Water') {
 				this.debug('Rain water boost');
 				return this.chainModify(1.5);
 			}
-		},
-		onSetWeather: function (target, source, weather) {
-			if (!(weather.id in {desolateland:1, primordialsea:1, deltastream:1})) return false;
 		},
 		onStart: function () {
 			this.add('-weather', 'PrimordialSea');
@@ -468,7 +475,7 @@ exports.BattleStatuses = {
 			}
 			return 5;
 		},
-		onBasePower: function (basePower, attacker, defender, move) {
+		onWeatherModifyDamage: function (damage, attacker, defender, move) {
 			if (move.type === 'Fire') {
 				this.debug('Sunny Day fire boost');
 				return this.chainModify(1.5);
@@ -508,14 +515,11 @@ exports.BattleStatuses = {
 				return null;
 			}
 		},
-		onBasePower: function (basePower, attacker, defender, move) {
+		onWeatherModifyDamage: function (damage, attacker, defender, move) {
 			if (move.type === 'Fire') {
 				this.debug('Sunny Day fire boost');
 				return this.chainModify(1.5);
 			}
-		},
-		onSetWeather: function (target, source, weather) {
-			if (!(weather.id in {desolateland:1, primordialsea:1, deltastream:1})) return false;
 		},
 		onStart: function () {
 			this.add('-weather', 'DesolateLand');
@@ -607,9 +611,6 @@ exports.BattleStatuses = {
 				return 0;
 			}
 		},
-		onSetWeather: function (target, source, weather) {
-			if (!(weather.id in {desolateland:1, primordialsea:1, deltastream:1})) return false;
-		},
 		onStart: function () {
 			this.add('-weather', 'DeltaStream');
 		},
@@ -634,7 +635,7 @@ exports.BattleStatuses = {
 		onSwitchIn: function (pokemon) {
 			var type = 'Normal';
 			if (pokemon.ability === 'multitype') {
-				type = this.runEvent('Plate', pokemon);
+				type = pokemon.getItem().onPlate;
 				if (!type || type === true) {
 					type = 'Normal';
 				}

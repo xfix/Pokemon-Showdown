@@ -23,53 +23,46 @@ exports.BattleScripts = {
 	},
 	// BattlePokemon scripts.
 	pokemon: {
-		getStat: function (statName, unboosted, unmodified, noscreens) {
+		getStat: function (statName, unmodified) {
 			statName = toId(statName);
 			if (statName === 'hp') return this.maxhp;
-
-			// base stat
-			var stat = this.stats[statName];
-
-			// stat boosts
-			if (!unboosted) {
-				var boost = this.boosts[statName];
-				if (boost > 6) boost = 6;
-				if (boost < -6) boost = -6;
-				if (boost >= 0) {
-					var boostTable = [1, 1.5, 2, 2.5, 3, 3.5, 4];
-					stat = Math.floor(stat * boostTable[boost]);
-				} else {
-					var numerators = [100, 66, 50, 40, 33, 28, 25];
-					stat = Math.floor(stat * numerators[-boost] / 100);
+			if (unmodified) return this.stats[statName];
+			return this.modifiedStats[statName];
+		},
+		// Gen 1 function to apply a stat modification that is only active until the stat is recalculated or mon switched.
+		// Modified stats are declared in BattlePokemon object in battle-engine.js in about line 303.
+		modifyStat: function (stat, modifier) {
+			if (!(stat in this.stats)) return;
+			this.modifiedStats[stat] = this.battle.clampIntRange(Math.floor(this.modifiedStats[stat] * modifier), 1, 999);
+		},
+		// In generation 1, boosting function increases the stored modified stat and checks for opponent's status.
+		boostBy: function (boost) {
+			var changed = false;
+			for (var i in boost) {
+				this.boosts[i] += boost[i];
+				if (this.boosts[i] > 6) {
+					this.boosts[i] = 6;
+				}
+				if (this.boosts[i] < -6) {
+					this.boosts[i] = -6;
+				}
+				if (this.boosts[i]) {
+					changed = true;
+					// Recalculate the modified stat
+					if (this.stats[i]) {
+						var stat = this.template.baseStats[i];
+						stat = Math.floor(Math.floor(2 * stat + this.set.ivs[i] + Math.floor(this.set.evs[i] / 4)) * this.level / 100 + 5);
+						this.modifiedStats[i] = this.stats[i] = Math.floor(stat);
+						if (this.boosts[i] >= 0) {
+							this.modifyStat(i, [1, 1.5, 2, 2.5, 3, 3.5, 4][this.boosts[i]]);
+						} else {
+							this.modifyStat(i, [100, 66, 50, 40, 33, 28, 25][-this.boosts[i]] / 100);
+						}
+					}
 				}
 			}
-
-			// Stat modifiers: burn, paralyse.
-			if (!unmodified) {
-				// Burn attack drop is checked when you get the attack stat upon switch in and used until switch out.
-				if (this.volatiles['brnattackdrop'] && statName === 'atk') {
-					stat = this.battle.clampIntRange(Math.floor(stat / 2), 1);
-				}
-				if (this.volatiles['parspeeddrop'] && statName === 'spe') {
-					stat = this.battle.clampIntRange(Math.floor(stat / 4), 1);
-				}
-			}
-
-			// Hard coded Reflect and Light Screen boosts
-			if (this.volatiles['reflect'] && statName === 'def' && !unboosted && !noscreens) {
-				this.battle.debug('Reflect doubles Defense');
-				stat *= 2;
-				stat = this.battle.clampIntRange(stat, 1, 1998);
-			} else if (this.volatiles['lightscreen'] && statName === 'spd' && !unboosted && !noscreens) {
-				this.battle.debug('Light Screen doubles Special Defense');
-				stat *= 2;
-				stat = this.battle.clampIntRange(stat, 1, 1998);
-			} else {
-				// Gen 1 normally caps stats at 999 and min is 1.
-				stat = this.battle.clampIntRange(stat, 1, 999);
-			}
-
-			return stat;
+			this.update();
+			return changed;
 		}
 	},
 	// Battle scripts.
@@ -87,6 +80,8 @@ exports.BattleScripts = {
 		if (pokemon.movedThisTurn || !this.runEvent('BeforeMove', pokemon, target, move)) {
 			// Prevent invulnerability from persisting until the turn ends.
 			pokemon.removeVolatile('twoturnmove');
+			// Rampage moves end without causing confusion
+			delete pokemon.volatiles['lockedmove'];
 			this.clearActiveMove(true);
 			// This is only run for sleep.
 			this.runEvent('AfterMoveSelf', pokemon, target, move);
@@ -108,7 +103,7 @@ exports.BattleScripts = {
 			pokemon.lastMove = move.id;
 		}
 		this.useMove(move, pokemon, target, sourceEffect);
-		this.runEvent('AfterMove', target, pokemon, move);
+		this.singleEvent('AfterMove', move, null, pokemon, target, move);
 
 		// If rival fainted
 		if (target.hp <= 0) {
@@ -139,8 +134,7 @@ exports.BattleScripts = {
 						pokemon.volatiles['partialtrappinglock'].locked = target;
 						// Duration reset thus partially trapped at 2 always.
 						target.volatiles['partiallytrapped'].duration = 2;
-						// We deduct an additional PP that was not deducted earlier.
-						// Also get the move position for the PP change.
+						// We get the move position for the PP change.
 						var usedMovePos = -1;
 						for (var m in pokemon.moveset) {
 							if (pokemon.moveset[m].id === move.id) usedMovePos = m;
@@ -148,9 +142,8 @@ exports.BattleScripts = {
 						if (usedMovePos > -1 && pokemon.moveset[usedMovePos].pp === 0) {
 							// If we were on the middle of the 0 PP sequence, the PPs get reset to 63.
 							pokemon.moveset[usedMovePos].pp = 63;
-						} else {
-							// Otherwise, plain reduct.
-							pokemon.deductPP(move, null, target);
+							pokemon.isStale = 2;
+							pokemon.isStaleSource = 'ppoverflow';
 						}
 					}
 				}
@@ -247,7 +240,15 @@ exports.BattleScripts = {
 		var doSelfDestruct = true;
 		var damage = 0;
 
-		// First, let's calculate the accuracy.
+		// First, check if the Pokémon is immune to this move.
+		if (move.ignoreImmunity !== true && !move.ignoreImmunity[move.type] && !target.runImmunity(move.type, true)) {
+			if (move.selfdestruct) {
+				this.faint(pokemon, pokemon, move);
+			}
+			return false;
+		}
+
+		// Now, let's calculate the accuracy.
 		var accuracy = move.accuracy;
 
 		// Partial trapping moves: true accuracy while it lasts
@@ -260,9 +261,22 @@ exports.BattleScripts = {
 			accuracy = true;
 		}
 
+		// OHKO moves only have a chance to hit if the user is at least as fast as the target
+		if (move.ohko) {
+			if (target.speed > pokemon.speed) {
+				this.add('-immune', target, '[ohko]');
+				return false;
+			}
+		}
+
 		// Calculate true accuracy for gen 1, which uses 0-255.
 		if (accuracy !== true) {
-			accuracy = Math.floor(accuracy * 255 / 100);
+			// Rage bug
+			if (move.id === 'rage' && pokemon.volatiles['ragemiss']) {
+				accuracy = 1;
+			} else {
+				accuracy = Math.floor(accuracy * 255 / 100);
+			}
 			// Check also for accuracy modifiers.
 			if (!move.ignoreAccuracy) {
 				if (pokemon.boosts.accuracy > 0) {
@@ -287,11 +301,6 @@ exports.BattleScripts = {
 		if (accuracy !== true && this.random(256) >= accuracy) {
 			this.attrLastMove('[miss]');
 			this.add('-miss', pokemon);
-			damage = false;
-		}
-
-		// Check if the Pokémon is immune to this move.
-		if (move.ignoreImmunity !== true && !move.ignoreImmunity[move.type] && !target.runImmunity(move.type, true)) {
 			damage = false;
 		}
 
@@ -352,6 +361,8 @@ exports.BattleScripts = {
 			delete pokemon.volatiles['partialtrappinglock'];
 			return false;
 		}
+
+		if (move.ohko) this.add('-ohko');
 
 		if (!move.negateSecondary) {
 			this.singleEvent('AfterMoveSecondary', move, null, target, pokemon, move);
@@ -453,6 +464,21 @@ exports.BattleScripts = {
 			}
 			if (moveData.boosts && !target.fainted) {
 				this.boost(moveData.boosts, target, pokemon, move);
+
+				// Check the status of the Pokémon whose turn is not.
+				// When a move that affects stat levels is used, if the Pokémon whose turn it is not right now is paralyzed or
+				// burned, the correspoding stat penalties will be applied again to that Pokémon.
+				if (pokemon.side.foe.active[0] && pokemon.side.foe.active[0].status) {
+					// If it's paralysed, quarter its speed.
+					if (pokemon.side.foe.active[0].status === 'par') {
+						pokemon.side.foe.active[0].modifyStat('spe', 0.25);
+					}
+					// If it's burned, halve its attack.
+					if (pokemon.side.foe.active[0].status === 'brn') {
+						pokemon.side.foe.active[0].modifyStat('atk', 0.5);
+					}
+					pokemon.side.foe.active[0].update();
+				}
 			}
 			if (moveData.heal && !target.fainted) {
 				var d = target.heal(Math.floor(target.maxhp * moveData.heal[0] / moveData.heal[1]));
@@ -467,7 +493,11 @@ exports.BattleScripts = {
 				// Gen 1 bug: If the target has just used hyperbeam and must recharge, its status will be ignored and put to sleep.
 				// This does NOT revert the paralyse speed drop or the burn attack drop.
 				if (!target.status || moveData.status === 'slp' && target.volatiles['mustrecharge']) {
-					target.setStatus(moveData.status, pokemon, move);
+					if (target.setStatus(moveData.status, pokemon, move)) {
+						// Gen 1 mechanics: The burn attack drop and the paralyse speed drop are applied here directly on stat modifiers.
+						if (moveData.status === 'brn') target.modifyStat('atk', 0.5);
+						if (moveData.status === 'par') target.modifyStat('spe', 0.25);
+					}
 				} else if (!isSecondary) {
 					if (target.status === moveData.status) {
 						this.add('-fail', target, target.status);
@@ -479,6 +509,8 @@ exports.BattleScripts = {
 			}
 			if (moveData.forceStatus) {
 				if (target.setStatus(moveData.forceStatus, pokemon, move)) {
+					if (moveData.forceStatus === 'brn') target.modifyStat('atk', 0.5);
+					if (moveData.forceStatus === 'par') target.modifyStat('spe', 0.25);
 					didSomething = true;
 				}
 			}
@@ -712,11 +744,6 @@ exports.BattleScripts = {
 
 		// Is it an OHKO move?
 		if (move.ohko) {
-			// If it is, move hits if the Pokémon is faster.
-			if (target.speed > pokemon.speed) {
-				this.add('-failed', target);
-				return false;
-			}
 			return target.maxhp;
 		}
 
@@ -818,6 +845,12 @@ exports.BattleScripts = {
 		var defType = (move.defensiveCategory === 'Physical') ? 'def' : 'spd';
 		var attack = attacker.getStat(atkType);
 		var defense = defender.getStat(defType);
+		// In gen 1, screen effect is applied here.
+		if ((defType === 'def' && defender.volatiles['reflect']) || (defType === 'spd' && defender.volatiles['lightscreen'])) {
+			this.debug('Screen doubling (Sp)Def');
+			defense *= 2;
+			defense = this.clampIntRange(defense, 1, 1998);
+		}
 
 		// In the event of a critical hit, the ofense and defense changes are ignored.
 		// This includes both boosts and screens.
@@ -830,10 +863,11 @@ exports.BattleScripts = {
 		}
 		if (move.ignoreOffensive) {
 			this.debug('Negating (sp)atk boost/penalty.');
-			attack = attacker.getStat(atkType, true, true);
+			attack = attacker.getStat(atkType, true);
 		}
 		if (move.ignoreDefensive) {
 			this.debug('Negating (sp)def boost/penalty.');
+			// No screens
 			defense = target.getStat(defType, true);
 		}
 
@@ -910,26 +944,33 @@ exports.BattleScripts = {
 		var teamdexno = [];
 		var team = [];
 
+		var hasDexNumber = {};
+		var formes = [[], [], [], [], [], []];
+
 		// Pick six random Pokémon, no repeats.
+		var num;
 		for (var i = 0; i < 6; i++) {
-			while (true) {
-				var x = Math.floor(Math.random() * 151) + 1;
-				if (teamdexno.indexOf(x) === -1) {
-					teamdexno.push(x);
-					break;
-				}
+			do {
+				num = this.random(151) + 1;
+			} while (num in hasDexNumber);
+			hasDexNumber[num] = i;
+		}
+
+		var formeCounter = 0;
+		for (var id in this.data.Pokedex) {
+			if (!(this.data.Pokedex[id].num in hasDexNumber)) continue;
+			var template = this.getTemplate(id);
+			if (!template.learnset || template.forme) continue;
+			formes[hasDexNumber[template.num]].push(template.species);
+			if (++formeCounter >= 6) {
+				// Gen 1 had no alternate formes, so we can break out of the loop already.
+				break;
 			}
 		}
 
 		for (var i = 0; i < 6; i++) {
 			// Choose forme.
-			var formes = [];
-			for (var j in this.data.Pokedex) {
-				if (this.data.Pokedex[j].num === teamdexno[i] && this.getTemplate(this.data.Pokedex[j].species).learnset && this.data.Pokedex[j].species !== 'Pichu-Spiky-eared') {
-					formes.push(this.data.Pokedex[j].species);
-				}
-			}
-			var poke = formes.sample();
+			var poke = formes[i][this.random(formes[i].length)];
 			var template = this.getTemplate(poke);
 
 			// Level balance: calculate directly from stats rather than using some silly lookup table.
@@ -954,30 +995,22 @@ exports.BattleScripts = {
 				mbst += Math.floor((stats["spd"] * 2 + 30 + 63 + 100) * level / 100 + 5);
 				mbst += Math.floor((stats["spe"] * 2 + 30 + 63 + 100) * level / 100 + 5);
 
-				if (mbst >= mbstmin)
-					break;
+				if (mbst >= mbstmin) break;
 				level++;
 			}
 
 			// Random DVs.
 			var ivs = {
-				hp: Math.floor(Math.random() * 30),
-				atk: Math.floor(Math.random() * 30),
-				def: Math.floor(Math.random() * 30),
-				spa: Math.floor(Math.random() * 30),
-				spd: Math.floor(Math.random() * 30),
-				spe: Math.floor(Math.random() * 30)
+				hp: this.random(30),
+				atk: this.random(30),
+				def: this.random(30),
+				spa: this.random(30),
+				spd: this.random(30),
+				spe: this.random(30)
 			};
 
-			// All EVs.
-			var evs = {
-				hp: 255,
-				atk: 255,
-				def: 255,
-				spa: 255,
-				spd: 255,
-				spe: 255
-			};
+			// Maxed EVs.
+			var evs = {hp: 255, atk: 255, def: 255, spa: 255, spd: 255,	spe: 255};
 
 			// Four random unique moves from movepool. don't worry about "attacking" or "viable".
 			// Since Gens 1 and 2 learnsets are shared, we need to weed out Gen 2 moves.
@@ -986,12 +1019,10 @@ exports.BattleScripts = {
 			for (var move in template.learnset) {
 				if (this.getMove(move).gen === 1) pool.push(move);
 			}
-			if (pool.length > 4) {
-				moves = pool.sample(4);
-			} else if (pool.length > 0) {
+			if (pool.length <= 4) {
 				moves = pool;
 			} else {
-				moves = ['struggle'];
+				moves = [this.sampleNoReplace(pool), this.sampleNoReplace(pool), this.sampleNoReplace(pool), this.sampleNoReplace(pool)];
 			}
 
 			team.push({
@@ -1013,64 +1044,77 @@ exports.BattleScripts = {
 	// Random team generation for Gen 1 Random Battles.
 	randomTeam: function (side) {
 		// Get what we need ready.
-		var keys = [];
 		var pokemonLeft = 0;
 		var pokemon = [];
-		var i = 1;
 
-		// We need to check it's one of the first 151 because formats data are installed onto main format data, not replaced.
-		for (var n in this.data.FormatsData) {
-			if (this.data.FormatsData[n].randomBattleMoves && i < 152) {
-				keys.push(n);
-			}
-			i++;
+		var handicapMons = {'magikarp':1, 'weedle':1, 'kakuna':1, 'caterpie':1, 'metapod':1, 'ditto':1};
+		var nuTiers = {'UU':1, 'BL':1, 'NFE':1, 'LC':1};
+		var uuTiers = {'NFE':1, 'UU':1, 'BL':1};
+
+		var n = 1;
+		var pokemonPool = [];
+		for (var id in this.data.FormatsData) {
+			// FIXME: Not ES-compliant
+			if (n++ > 151 || !this.data.FormatsData[id].randomBattleMoves) continue;
+			pokemonPool.push(id);
 		}
-		keys = keys.randomize();
 
 		// Now let's store what we are getting.
 		var typeCount = {};
-		var weaknessCount = {'electric':0, 'psychic':0, 'water':0, 'ice':0};
+		var weaknessCount = {'Electric':0, 'Psychic':0, 'Water':0, 'Ice':0};
 		var uberCount = 0;
 		var nuCount = 0;
 		var hasShitmon = false;
 
-		for (var i = 0; i < keys.length && pokemonLeft < 6; i++) {
-			var template = this.getTemplate(keys[i]);
-			if (!template || !template.name || !template.types) continue;
+		while (pokemonPool.length && pokemonLeft < 6) {
+			var template = this.getTemplate(this.sampleNoReplace(pokemonPool));
+			if (!template.exists) continue;
 
 			// Bias the tiers so you get less shitmons and only one of the two Ubers.
 			// If you have a shitmon, you're covered in OUs and Ubers if possible
 			var tier = template.tier;
-			if (tier === 'LC' && (nuCount > 1 || hasShitmon)) continue;
-			if ((tier === 'NFE' || tier === 'UU') && (hasShitmon || (nuCount > 2 && this.random(1)))) continue;
-			// Unless you have one of the worst mons, in that case we allow luck to give you both Mew and Mewtwo.
-			if (tier === 'Uber' && uberCount >= 1 && !hasShitmon) continue;
+			switch (tier) {
+			case 'LC':
+				if (nuCount > 1 || hasShitmon) continue;
+				break;
+			case 'Uber':
+				// Unless you have one of the worst mons, in that case we allow luck to give you all Ubers.
+				if (uberCount >= 1 && !hasShitmon) continue;
+				break;
+			default:
+				if (uuTiers[tier] && (hasShitmon || (nuCount > 2 && this.random(2) >= 1))) continue;
+			}
 
-			// We need a weakness count of spammable attacks to avoid being swept by those.
-			// Spammable attacks are: Thunderbolt, Psychic, Surf, Blizzard.
 			var skip = false;
-			Object.keys(weaknessCount).forEach(function (type) {
-				var notImmune = Tools.getImmunity(type, template);
-				if (notImmune && Tools.getEffectiveness(type, template) > 0) {
-					weaknessCount[type]++;
-				}
-				if (weaknessCount[type] > 2) skip = true;
-			});
-			if (skip) continue;
 
 			// Limit 2 of any type as well. Diversity and minor weakness count.
 			// The second of a same type has halved chance of being added.
 			var types = template.types;
 			for (var t = 0; t < types.length; t++) {
-				if (typeCount[types[t]] > 1 || (typeCount[types[t]] === 1 && this.random(1))) {
+				if (typeCount[types[t]] > 1 || (typeCount[types[t]] === 1 && this.random(2))) {
 					skip = true;
 					break;
 				}
 			}
 			if (skip) continue;
 
+			// We need a weakness count of spammable attacks to avoid being swept by those.
+			// Spammable attacks are: Thunderbolt, Psychic, Surf, Blizzard.
+			var pokemonWeaknesses = [];
+			for (var type in weaknessCount) {
+				var increaseCount = Tools.getImmunity(type, template) && Tools.getEffectiveness(type, template) > 0;
+				if (!increaseCount) continue;
+				if (weaknessCount[type] >= 2) {
+					skip = true;
+					break;
+				}
+				pokemonWeaknesses.push(type);
+			}
+
+			if (skip) continue;
+
 			// The set passes the limitations.
-			var set = this.randomSet(template, i);
+			var set = this.randomSet(template, pokemon.length);
 			pokemon.push(set);
 
 			// Now let's increase the counters. First, the Pokémon left.
@@ -1078,34 +1122,38 @@ exports.BattleScripts = {
 
 			// Type counter.
 			for (var t = 0; t < types.length; t++) {
-				if (types[t] in typeCount) {
+				if (typeCount[types[t]]) {
 					typeCount[types[t]]++;
 				} else {
 					typeCount[types[t]] = 1;
 				}
 			}
 
-			// Increment type bias counters.
+			// Weakness counter.
+			for (var t = 0; t < pokemonWeaknesses.length; t++) {
+				weaknessCount[pokemonWeaknesses[t]]++;
+			}
+
+			// Increment tier bias counters.
 			if (tier === 'Uber') {
 				uberCount++;
-			} else if (tier === 'UU' || tier === 'NFE' || tier === 'LC') {
+			} else if (nuTiers[tier]) {
 				nuCount++;
 			}
 
 			// Is it Magikarp?
-			if (keys[i] in {'magikarp':1, 'weedle':1, 'kakuna':1, 'caterpie':1, 'metapod':1, 'ditto':1}) hasShitmon = true;
+			if (template.speciesid in handicapMons) hasShitmon = true;
 		}
 
 		return pokemon;
 	},
 	// Random set generation for Gen 1 Random Battles.
-	randomSet: function (template, i) {
-		if (i === undefined) i = 1;
+	randomSet: function (template, slot) {
+		if (slot === undefined) slot = 1;
 		template = this.getTemplate(template);
 		if (!template.exists) template = this.getTemplate('pikachu'); // Because Gen 1.
 
-		var moveKeys = template.randomBattleMoves;
-		moveKeys = moveKeys.randomize();
+		var movePool = template.randomBattleMoves.slice();
 		var moves = [];
 		var hasType = {};
 		hasType[template.types[0]] = true;
@@ -1114,24 +1162,28 @@ exports.BattleScripts = {
 		var counter = {};
 		var setupType = '';
 
-		var j = 0;
+		// Moves that boost Attack:
+		var PhysicalSetup = {
+			swordsdance:1, sharpen:1
+		};
+		// Moves which boost Special Attack:
+		var SpecialSetup = {
+			amnesia:1, growth:1
+		};
+
+		// Add the mandatory move
+		if (template.essentialMove) {
+			moves.push(template.essentialMove);
+		}
 		do {
 			// Choose next 4 moves from learnset/viable moves and add them to moves list:
-			var howMany = (template.essentialMove) ? 3 : 4;
-			while (moves.length < howMany && j < moveKeys.length) {
-				var moveid = toId(moveKeys[j]);
-				j++;
+			while (moves.length < 4 && movePool.length) {
+				var moveid = this.sampleNoReplace(movePool);
 				moves.push(moveid);
 			}
 
-			// Add now the mandatory move
-			if (template.essentialMove) {
-				moves.unshift(template.essentialMove);
-				j++;
-			}
-
-			// Only do move choosing if we have more than four on the moveset...
-			if (moveKeys.length > howMany) {
+			// Only do move choosing if we have backup moves in the pool...
+			if (movePool.length) {
 				hasMove = {};
 				counter = {Physical: 0, Special: 0, Status: 0, physicalsetup: 0, specialsetup: 0};
 				for (var k = 0; k < moves.length; k++) {
@@ -1141,10 +1193,10 @@ exports.BattleScripts = {
 					if (!move.damage && !move.damageCallback) {
 						counter[move.category]++;
 					}
-					if ({swordsdance:1, sharpen:1}[moveid]) {
+					if (PhysicalSetup[moveid]) {
 						counter['physicalsetup']++;
 					}
-					if ({amnesia:1, growth:1}[moveid]) {
+					if (SpecialSetup[moveid]) {
 						counter['specialsetup']++;
 					}
 				}
@@ -1157,6 +1209,7 @@ exports.BattleScripts = {
 
 				for (var k = 0; k < moves.length; k++) {
 					var moveid = moves[k];
+					if (moveid === template.essentialMove) continue;
 					var move = this.getMove(moveid);
 					var rejected = false;
 					if (hasMove[moveid]) rejected = true;
@@ -1249,6 +1302,9 @@ exports.BattleScripts = {
 						case 'growth':
 							if (hasMove['amnesia']) rejected = true;
 							break;
+						case 'fissure':
+							if (hasMove['horndrill']) rejected = true;
+							break;
 						case 'supersonic':
 							if (hasMove['confuseray']) rejected = true;
 							break;
@@ -1266,18 +1322,19 @@ exports.BattleScripts = {
 							break;
 						} // End of switch for moveid
 					}
-					if (rejected && j < moveKeys.length) {
+					if (rejected) {
 						moves.splice(k, 1);
 						break;
 					}
 					counter[move.category]++;
 				} // End of for
 			} // End of the check for more than 4 moves on moveset.
-		} while (moves.length < 4 && j < moveKeys.length);
+		} while (moves.length < 4 && movePool.length);
 
 		var levelScale = {
 			LC: 96,
 			NFE: 90,
+			NU: 90,
 			UU: 85,
 			OU: 79,
 			Uber: 74

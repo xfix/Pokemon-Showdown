@@ -177,7 +177,7 @@ exports.BattleMovedex = {
 					return false;
 				}
 			},
-			onModifyPokemon: function (pokemon) {
+			onDisableMove: function (pokemon) {
 				var moves = pokemon.moveset;
 				for (var i = 0; i < moves.length; i++) {
 					if (moves[i].id === this.effectData.move) {
@@ -215,7 +215,7 @@ exports.BattleMovedex = {
 				return this.random(3, 7);
 			},
 			onStart: function (target) {
-				var noEncore = {encore:1, mimic:1, mirrormove:1, sketch:1, transform:1};
+				var noEncore = {encore:1, mimic:1, mirrormove:1, sketch:1, struggle:1, transform:1};
 				var moveIndex = target.moves.indexOf(target.lastMove);
 				if (!target.lastMove || noEncore[target.lastMove] || (target.moveset[moveIndex] && target.moveset[moveIndex].pp <= 0)) {
 					// it failed
@@ -243,7 +243,7 @@ exports.BattleMovedex = {
 			onEnd: function (target) {
 				this.add('-end', target, 'Encore');
 			},
-			onModifyPokemon: function (pokemon) {
+			onDisableMove: function (pokemon) {
 				if (!this.effectData.move || !pokemon.hasMove(this.effectData.move)) {
 					return;
 				}
@@ -286,32 +286,25 @@ exports.BattleMovedex = {
 	},
 	flail: {
 		inherit: true,
-		accuracy: 100,
-		basePower: 0,
 		basePowerCallback: function (pokemon, target) {
-			var hpPercent = pokemon.hp * 100 / pokemon.maxhp;
-			if (hpPercent <= 5) {
+			var ratio = pokemon.hp * 48 / pokemon.maxhp;
+			if (ratio < 2) {
 				return 200;
 			}
-			if (hpPercent <= 10) {
+			if (ratio < 5) {
 				return 150;
 			}
-			if (hpPercent <= 20) {
+			if (ratio < 10) {
 				return 100;
 			}
-			if (hpPercent <= 35) {
+			if (ratio < 17) {
 				return 80;
 			}
-			if (hpPercent <= 70) {
+			if (ratio < 33) {
 				return 40;
 			}
 			return 20;
-		},
-		pp: 15,
-		priority: 0,
-		secondary: false,
-		target: "normal",
-		type: "Normal"
+		}
 	},
 	flash: {
 		inherit: true,
@@ -501,7 +494,8 @@ exports.BattleMovedex = {
 	outrage: {
 		inherit: true,
 		basePower: 90,
-		pp: 15
+		pp: 15,
+		onAfterMove: function () {}
 	},
 	overheat: {
 		inherit: true,
@@ -510,7 +504,8 @@ exports.BattleMovedex = {
 	petaldance: {
 		inherit: true,
 		basePower: 70,
-		pp: 20
+		pp: 20,
+		onAfterMove: function () {}
 	},
 	poisongas: {
 		inherit: true,
@@ -524,6 +519,28 @@ exports.BattleMovedex = {
 	recover: {
 		inherit: true,
 		pp: 20
+	},
+	reversal: {
+		inherit: true,
+		basePowerCallback: function (pokemon, target) {
+			var ratio = pokemon.hp * 48 / pokemon.maxhp;
+			if (ratio < 2) {
+				return 200;
+			}
+			if (ratio < 5) {
+				return 150;
+			}
+			if (ratio < 10) {
+				return 100;
+			}
+			if (ratio < 17) {
+				return 80;
+			}
+			if (ratio < 33) {
+				return 40;
+			}
+			return 20;
+		}
 	},
 	roar: {
 		inherit: true,
@@ -563,6 +580,16 @@ exports.BattleMovedex = {
 			target.setAbility(sourceAbility);
 		}
 	},
+	sleeptalk: {
+		inherit: true,
+		beforeMoveCallback: function (pokemon) {
+			if (pokemon.volatiles['choicelock'] || pokemon.volatiles['encore']) {
+				this.addMove('move', pokemon, 'Sleep Talk');
+				this.add('-fail', pokemon);
+				return true;
+			}
+		}
+	},
 	spikes: {
 		inherit: true,
 		flags: {}
@@ -582,7 +609,21 @@ exports.BattleMovedex = {
 	stockpile: {
 		inherit: true,
 		pp: 10,
-		boosts: false
+		effect: {
+			onStart: function (target) {
+				this.effectData.layers = 1;
+				this.add('-start', target, 'stockpile' + this.effectData.layers);
+			},
+			onRestart: function (target) {
+				if (this.effectData.layers >= 3) return false;
+				this.effectData.layers++;
+				this.add('-start', target, 'stockpile' + this.effectData.layers);
+			},
+			onEnd: function (target) {
+				this.effectData.layers = 0;
+				this.add('-end', target, 'Stockpile');
+			}
+		}
 	},
 	struggle: {
 		inherit: true,
@@ -626,9 +667,9 @@ exports.BattleMovedex = {
 			},
 			onResidualOrder: 12,
 			onEnd: function (target) {
-				this.add('-end', target, 'move: Taunt');
+				this.add('-end', target, 'move: Taunt', '[silent]');
 			},
-			onModifyPokemon: function (pokemon) {
+			onDisableMove: function (pokemon) {
 				var moves = pokemon.moveset;
 				for (var i = 0; i < moves.length; i++) {
 					if (this.getMove(moves[i].move).category === 'Status') {
@@ -647,7 +688,8 @@ exports.BattleMovedex = {
 	thrash: {
 		inherit: true,
 		basePower: 90,
-		pp: 20
+		pp: 20,
+		onAfterMove: function () {}
 	},
 	tickle: {
 		inherit: true,
@@ -677,6 +719,28 @@ exports.BattleMovedex = {
 	waterfall: {
 		inherit: true,
 		secondary: false
+	},
+	weatherball: {
+		inherit: true,
+		onModifyMove: function (move) {
+			switch (this.effectiveWeather()) {
+			case 'sunnyday':
+				move.type = 'Fire';
+				move.category = 'Special';
+				break;
+			case 'raindance':
+				move.type = 'Water';
+				move.category = 'Special';
+				break;
+			case 'sandstorm':
+				move.type = 'Rock';
+				break;
+			case 'hail':
+				move.type = 'Ice';
+				move.category = 'Special';
+				break;
+			}
+		}
 	},
 	whirlpool: {
 		inherit: true,

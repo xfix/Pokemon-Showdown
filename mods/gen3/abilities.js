@@ -14,9 +14,13 @@ exports.BattleAbilities = {
 		onAfterDamage: function (damage, target, source, move) {
 			if (move && move.flags['contact'] && !source.status) {
 				var r = this.random(300);
-				if (r < 10) source.setStatus('slp');
-				else if (r < 20) source.setStatus('par');
-				else if (r < 30) source.setStatus('psn');
+				if (r < 10) {
+					source.setStatus('slp');
+				} else if (r < 20) {
+					source.setStatus('par');
+				} else if (r < 30) {
+					source.setStatus('psn');
+				}
 			}
 		}
 	},
@@ -79,12 +83,6 @@ exports.BattleAbilities = {
 		inherit: true,
 		onStart: function () { }
 	},
-	"rockhead": {
-		inherit: true,
-		onModifyMove: function (move) {
-			if (move.id !== 'struggle') delete move.recoil;
-		}
-	},
 	"roughskin": {
 		inherit: true,
 		onAfterDamage: function (damage, target, source, move) {
@@ -115,12 +113,7 @@ exports.BattleAbilities = {
 	},
 	"sturdy": {
 		inherit: true,
-		onDamage: function (damage, target, source, effect) {
-			if (effect && effect.ohko) {
-				this.add('-activate', target, 'Sturdy');
-				return 0;
-			}
-		}
+		onDamage: function () {}
 	},
 	"synchronize": {
 		inherit: true,

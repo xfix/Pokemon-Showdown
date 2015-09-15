@@ -13,20 +13,14 @@ describe('Primordial Sea', function () {
 		assert.ok(battle.isWeather('primordialsea'));
 	});
 
-	it('should increase the power of Water-type attacks by 50%', function () {
+	it('should not increase the power of Water-type attacks', function () {
 		battle = BattleEngine.Battle.construct();
-		battle.join('p1', 'Guest 1', 1, [
-			{species: "Kyogre", ability: 'torrent', moves: ['helpinghand']},
-			{species: "Kyogre", ability: 'primordialsea', moves: ['helpinghand']}
-		]);
-		battle.join('p2', 'Guest 2', 1, [{species: "Blastoise", ability: 'torrent', moves: ['waterpledge', 'roost']}]);
-		battle.seed = [0, 0, 0, 0];
+		battle.join('p1', 'Guest 1', 1, [{species: "Kyogre", ability: 'primordialsea', moves: ['helpinghand']}]);
+		battle.join('p2', 'Guest 2', 1, [{species: "Blastoise", ability: 'torrent', moves: ['waterpledge']}]);
 		battle.commitDecisions();
-		var damage = battle.p1.active[0].maxhp - battle.p1.active[0].hp;
-		battle.choose('p1', 'switch 2');
-		battle.choose('p2', 'move 2');
-		battle.commitDecisions();
-		assert.strictEqual(battle.p1.active[0].maxhp - battle.p1.active[0].hp, battle.modify(damage, 1.5));
+		var move = Tools.getMove('waterpledge');
+		var basePower = battle.runEvent('BasePower', battle.p2.active[0], battle.p1.active[0], move, move.basePower, true);
+		assert.strictEqual(basePower, move.basePower);
 	});
 
 	it('should cause Fire-type attacks to fail', function () {

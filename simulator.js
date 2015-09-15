@@ -15,7 +15,7 @@ var battles = Object.create(null);
 
 var SimulatorProcess = (function () {
 	function SimulatorProcess() {
-		this.process = require('child_process').fork('battle-engine.js');
+		this.process = require('child_process').fork('battle-engine.js', {cwd: __dirname});
 		this.process.on('message', function (message) {
 			var lines = message.split('\n');
 			var battle = battles[lines[0]];
@@ -81,6 +81,7 @@ var Battle = (function () {
 		this.format = toId(format);
 		this.players = [null, null];
 		this.playerids = [null, null];
+		this.lastPlayers = [room.p1.userid, room.p2.userid];
 		this.playerTable = {};
 		this.requests = {};
 
@@ -98,6 +99,7 @@ var Battle = (function () {
 	Battle.prototype.active = false;
 	Battle.prototype.players = null;
 	Battle.prototype.playerids = null;
+	Battle.prototype.lastPlayers = null;
 	Battle.prototype.playerTable = null;
 	Battle.prototype.format = null;
 	Battle.prototype.room = null;
@@ -119,7 +121,7 @@ var Battle = (function () {
 	Battle.prototype.sendFor = function (user, action) {
 		var player = this.playerTable[toId(user)];
 		if (!player) {
-			console.log('SENDFOR FAILED: Player doesn\'t exist: ' + user.name);
+			console.log('SENDFOR FAILED in ' + this.id + ': Player doesn\'t exist: ' + user.name);
 			return;
 		}
 
@@ -264,6 +266,7 @@ var Battle = (function () {
 			}
 			this.playerTable[player.userid] = 'p' + (i + 1);
 		}
+		if (this.active) this.lastPlayers = this.playerids.slice();
 	};
 	Battle.prototype.getPlayer = function (slot) {
 		if (typeof slot === 'string') {

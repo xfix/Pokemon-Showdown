@@ -19,7 +19,7 @@ exports.BattleStatuses = {
 		},
 		onAfterMoveSelfPriority: 2,
 		onAfterMoveSelf: function (pokemon) {
-			this.damage(this.clampIntRange(Math.floor(pokemon.maxhp / 16), 1) * pokemon.volatiles['residualdmg'].counter);
+			this.damage(this.clampIntRange(Math.floor(pokemon.maxhp / 16), 1) * pokemon.volatiles['residualdmg'].counter, pokemon);
 		},
 		onSwitchIn: function (pokemon) {
 			pokemon.addVolatile('brnattackdrop');
@@ -38,10 +38,9 @@ exports.BattleStatuses = {
 		},
 		onBeforeMovePriority: 2,
 		onBeforeMove: function (pokemon) {
-			if (this.random(256) < 64) {
+			if (this.random(256) < 63) {
 				this.add('cant', pokemon, 'par');
 				pokemon.removeVolatile('bide');
-				pokemon.removeVolatile('lockedmovee');
 				pokemon.removeVolatile('twoturnmove');
 				pokemon.removeVolatile('fly');
 				pokemon.removeVolatile('dig');
@@ -66,7 +65,9 @@ exports.BattleStatuses = {
 		onBeforeMovePriority: 2,
 		onBeforeMove: function (pokemon, target, move) {
 			pokemon.statusData.time--;
-			this.add('cant', pokemon, 'slp');
+			if (pokemon.statusData.time > 0) {
+				this.add('cant', pokemon, 'slp');
+			}
 			pokemon.lastMove = '';
 			return false;
 		},
@@ -101,7 +102,7 @@ exports.BattleStatuses = {
 		},
 		onAfterMoveSelfPriority: 2,
 		onAfterMoveSelf: function (pokemon) {
-			this.damage(this.clampIntRange(Math.floor(pokemon.maxhp / 16), 1) * pokemon.volatiles['residualdmg'].counter);
+			this.damage(this.clampIntRange(Math.floor(pokemon.maxhp / 16), 1) * pokemon.volatiles['residualdmg'].counter, pokemon);
 		},
 		onSwitchIn: function (pokemon) {
 			pokemon.addVolatile('residualdmg');
@@ -121,7 +122,7 @@ exports.BattleStatuses = {
 		onAfterMoveSelfPriority: 2,
 		onAfterMoveSelf: function (pokemon) {
 			pokemon.volatiles['residualdmg'].counter++;
-			this.damage(this.clampIntRange(Math.floor(pokemon.maxhp / 16), 1) * pokemon.volatiles['residualdmg'].counter);
+			this.damage(this.clampIntRange(Math.floor(pokemon.maxhp / 16), 1) * pokemon.volatiles['residualdmg'].counter, pokemon);
 		},
 		onSwitchIn: function (pokemon) {
 			// Regular poison status and damage after a switchout -> switchin.
@@ -135,10 +136,14 @@ exports.BattleStatuses = {
 	},
 	confusion: {
 		// this is a volatile status
-		onStart: function (target) {
+		onStart: function (target, source, sourceEffect) {
 			var result = this.runEvent('TryConfusion');
 			if (!result) return result;
-			this.add('-start', target, 'confusion');
+			if (sourceEffect && sourceEffect.id === 'lockedmove') {
+				this.add('-start', target, 'confusion', '[silent]');
+			} else {
+				this.add('-start', target, 'confusion');
+			}
 			this.effectData.time = this.random(2, 6);
 		},
 		onEnd: function (target) {
@@ -165,7 +170,6 @@ exports.BattleStatuses = {
 					this.directDamage(damage);
 				}
 				pokemon.removeVolatile('bide');
-				pokemon.removeVolatile('lockedmovee');
 				pokemon.removeVolatile('twoturnmove');
 				pokemon.removeVolatile('fly');
 				pokemon.removeVolatile('dig');
@@ -239,41 +243,10 @@ exports.BattleStatuses = {
 	},
 	lockedmove: {
 		// Outrage, Thrash, Petal Dance...
+		inherit: true,
 		durationCallback: function () {
-			return this.random(2, 4);
-		},
-		onResidual: function (target) {
-			if (target.lastMove === 'struggle' || target.status === 'slp') {
-				// don't lock, and bypass confusion for calming
-				delete target.volatiles['lockedmove'];
-			}
-		},
-		onStart: function (target, source, effect) {
-			this.effectData.move = effect.id;
-		},
-		onEnd: function (target) {
-			this.add('-end', target, 'rampage');
-			target.addVolatile('confusion');
-		},
-		onLockMove: function (pokemon) {
-			return this.effectData.move;
-		},
-		onBeforeTurn: function (pokemon) {
-			var move = this.getMove(this.effectData.move);
-			if (move.id) {
-				this.debug('Forcing into ' + move.id);
-				this.changeDecision(pokemon, {move: move.id});
-			}
+			return this.random(3, 5);
 		}
-	},
-	mustrecharge: {
-		duration: 2,
-		onBeforeMove: function (pokemon) {
-			this.add('cant', pokemon, 'recharge');
-			pokemon.removeVolatile('mustrecharge');
-			return false;
-		},
-		onLockMove: 'recharge'
 	},
 	futuremove: {
 		// this is a side condition
@@ -346,11 +319,6 @@ exports.BattleStatuses = {
 				this.effectData.counter *= 2;
 			}
 			this.effectData.duration = 2;
-		}
-	},
-	ragemiss: {
-		onModifyMove: function (move) {
-			if (move.id === 'rage') move.accuracy = 1 / 255 * 100;
 		}
 	}
 };

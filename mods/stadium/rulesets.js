@@ -1,9 +1,9 @@
 exports.BattleFormats = {
 	standard: {
 		effectType: 'Banlist',
-		ruleset: ['Sleep Clause Mod', 'Freeze Clause Mod', 'Species Clause', 'OHKO Clause', 'Evasion Moves Clause', 'Exact HP Mod', 'Team Preview'],
+		ruleset: ['Sleep Clause Mod', 'Freeze Clause Mod', 'Species Clause', 'OHKO Clause', 'Evasion Moves Clause', 'Exact HP Mod', 'Cancel Mod'],
 		banlist: ['Unreleased', 'Illegal'],
-		validateSet: function (set) {
+		onValidateSet: function (set) {
 			// limit one of each move in Standard
 			var moves = [];
 			if (set.moves) {
