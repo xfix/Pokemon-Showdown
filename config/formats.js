@@ -96,13 +96,6 @@ exports.Formats = [
 		banlist: ['RU', 'BL3']
 	},
 	{
-		name: "Anything Goes",
-		section: "XY Singles",
-
-		ruleset: ['Pokemon', 'Endless Battle Clause', 'HP Percentage Mod', 'Team Preview'],
-		banlist: ['Unreleased', 'Illegal']
-	},
-	{
 		name: "LC",
 		desc: [
 			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3505710/\">LC Metagame Discussion</a>",
@@ -1436,7 +1429,7 @@ exports.Formats = [
 	{
 		name: "Winter's Wont",
 		section: 'Seasonal',
-		mod: 'inverse',
+		//mod: 'inverse',
 		gameType: 'doubles',
 		team: 'randomSeasonalFF',
 		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod'],
@@ -4751,14 +4744,6 @@ exports.Formats = [
 						this.add('c|%Feliburn|PUUUUUNCH!!');
 					};
 				}
-				break;
-			default:
-				if (side.pokemonLeft - side.foe.pokemonLeft >= 2) {
-					side.item = 'blueshell';
-					side.hadItem = true;
-					this.add('message', "A Blue Spiny Shell flew over the horizon and crashed into " + side.name + "!");
-					this.damage(pokemon.maxhp / 2, pokemon, pokemon, this.getMove('judgment'), true);
-				}
 			}
 
 			if (move.id === 'highjumpkick' && name === 'galbia') {
@@ -5311,21 +5296,6 @@ exports.Formats = [
 			'Lugia', 'Mewtwo', 'Palkia', 'Rayquaza', 'Reshiram', 'Shaymin-Sky', 'Xerneas', 'Yveltal', 'Zekrom',
 			'Shadow Tag', 'Illusion'
 		]
-	},
-	{
-		name: "350 Cup",
-		section: "Other Metagames",
-
-		mod: '350cup',
-		ruleset: ['Ubers', 'Evasion Moves Clause'],
-		banlist: ['Abra', 'Cranidos', 'Darumaka', 'Gastly', 'Pawniard', 'Smeargle', 'Spritzee', 'DeepSeaScale', 'DeepSeaTooth', 'Light Ball', 'Thick Club'],
-		validateSet: function (set) {
-			var template = Tools.getTemplate(set.species);
-			var item = this.getItem(set.item);
-			if (item.name === 'Eviolite' && Object.values(template.baseStats).sum() <= 350) {
-				return ['Eviolite is banned on Pokémon with 350 or lower BST.'];
-			}
-		}
 	},
 	{
 		name: "CAP",
@@ -5952,15 +5922,6 @@ exports.Formats = [
 		mod: 'gen1',
 		ruleset: ['Pokemon', 'Standard'],
 		banlist: ['Uber']
-	},
-	{
-		name: "[Gen 1] Ubers",
-		section: "Past Generations",
-
-		mod: 'gen1',
-		searchShow: false,
-		ruleset: ['Pokemon', 'Standard'],
-		banlist: []
 	},
 	{
 		name: "[Gen 1] OU (tradeback)",
