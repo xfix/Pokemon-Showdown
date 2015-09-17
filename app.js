@@ -111,6 +111,8 @@ if (require.main === module && process.argv[2] && parseInt(process.argv[2])) {
 	Config.ssl = null;
 }
 
+global.Bot = require('./bot');
+
 global.ResourceMonitor = {
 	connections: {},
 	connectionTimes: {},
