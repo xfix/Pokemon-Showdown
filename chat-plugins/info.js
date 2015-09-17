@@ -366,7 +366,7 @@ var commands = exports.commands = {
 		var showAll = false;
 		var megaSearch = null;
 		var randomOutput = 0;
-		var categories = ['gen', 'tier', 'color', 'types', 'ability', 'stats', 'compileLearnsets', 'moves', 'recovery', 'priority'];
+		var categories = ['gen', 'tier', 'color', 'types', 'ability', 'stats', 'compileLearnsets', 'moves', 'recovery', 'priority', 'tpp'];
 
 		for (var i = 0; i < targets.length; i++) {
 			var isNotSearch = false;
@@ -434,6 +434,12 @@ var commands = exports.commands = {
 			if (target === 'priority') {
 				if ((searches['priority'] && isNotSearch) || (searches['priority'] === false && !isNotSearch)) return this.sendReplyBox('A search cannot both exclude and recovery moves.');
 				searches['priority'] = !isNotSearch;
+				continue;
+			}
+
+			if (target === 'tpp') {
+				if ((searches['tpp'] && isNotSearch) || (searches['tpp'] === false && !isNotSearch)) return this.sendReplyBox('A search cannot both exclude and include TPP mons.');
+				searches['tpp'] = !isNotSearch;
 				continue;
 			}
 
@@ -646,6 +652,14 @@ var commands = exports.commands = {
 				}
 				break;
 
+			case 'tpp':
+				var tppInformation = require('../data/tpp').BattleTPP;
+				for (var mon in dex) {
+					var tpp = tppInformation[mon];
+					if ((searches[search] && !tpp) || (searches[search] === false && tpp)) delete dex[mon];
+				}
+				break;
+
 			case 'stats':
 				for (var stat in searches[search]) {
 					for (var mon in dex) {
@@ -704,7 +718,7 @@ var commands = exports.commands = {
 		return this.sendReplyBox(resultsStr);
 	},
 	dexsearchhelp: ["/dexsearch [type], [move], [move], ... - Searches for Pok\u00e9mon that fulfill the selected criteria",
-		"Search categories are: type, tier, color, moves, ability, gen, recovery, priority, stat.",
+		"Search categories are: type, tier, color, moves, ability, gen, recovery, priority, tpp, stat.",
 		"Valid colors are: green, red, blue, white, brown, yellow, purple, pink, gray and black.",
 		"Valid tiers are: Uber/OU/BL/UU/BL2/RU/BL3/NU/PU/NFE/LC/CAP.",
 		"Types must be followed by ' type', e.g., 'dragon type'.",
