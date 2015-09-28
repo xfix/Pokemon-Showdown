@@ -5194,6 +5194,23 @@ exports.Formats = [
 			this.add('-message', pokemon.name + ': ' + message);
 		}
 	},
+	{
+		name: "Superhero Squad Smackdown",
+		section: 'Seasonal',
+		team: 'randomHero',
+		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod', 'Cancel Mod'],
+		onEffectiveness: function (typeMod, target, move, type) {
+			if (this.activePokemon.name === 'Magneto' && move.id === 'flashcannon' && type === 'Steel') return 1;
+		},
+		onSwitchIn: function (pokemon) {
+			switch (pokemon.name) {
+			case 'Iron Man':
+				pokemon.addType('Steel');
+				this.add('-start', pokemon, 'typechange', 'Fire/Steel');
+				break;
+			}
+		}
+	},
 
 	// Other Metagames
 	///////////////////////////////////////////////////////////////////

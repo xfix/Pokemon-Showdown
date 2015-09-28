@@ -3296,6 +3296,89 @@ exports.BattleScripts = {
 		}
 		return pokemon;
 	},
+	randomHeroTeam: function () {
+		var teams = [
+			//['Wolverine', 'Professor X', 'Cyclops', 'Nightcrawler', 'Phoenix', 'Colossus', 'Emma Frost', 'Storm', 'Iceman'],
+			//['Magneto', 'Mystique', 'Quicksilver', 'Scarlet Witch', 'Blob', 'Pyro', 'Sabretooth', 'Juggernaut', 'Toad'],
+			['Captain America', 'Hulk', 'Iron Man', 'Hawkeye', 'Black Widow', 'Thor', 'Nick Fury', 'Vision'],
+			//['Starlord', 'Gamora', 'Groot', 'Rocket Raccoon', 'Drax the Destroyer', 'Nova'],
+			//['Batman', 'Superman', 'Aquaman', 'Wonder Woman', 'Green Lantern', 'The Flash', 'Green Arrow', 'Firestorm'],
+			//['Robin', 'Starfire', 'Cyborg', 'Beast Boy', 'Raven', 'Jinx', 'Terra', 'Blue Beetle'],
+			//['Mr. Fantastic', 'Invisible Woman', 'Thing', 'Human Torch', 'Spiderman', 'Ant-Man'],
+			//['Baymax', 'Honey Lemon', 'GoGo Tomago', 'Wasabi-no-Ginger', 'Fredzilla', 'Silver Samurai', 'Sunfire'],
+			//['Joker', 'Deadshot', 'Harley Quinn', 'Boomerang', 'Killer Croc', 'Enchantress'],
+			['Joker', 'Poison Ivy', 'Bane', 'Scarecrow', 'Two-Face', 'Penguin', 'Mr. Freeze', 'Catwoman']
+			//,['Lex Luthor', 'Darkseid', 'General Zod', 'Braniac', 'Doomsday', 'Bizarro', 'Atomic Skull']
+		];
+		var mons = {
+			'Wolverine': {species: 'excadrill', ability: 'Regenerator', item: 'lifeorb', gender: 'M'},
+			'Professor X': {species: 'beheeyem', moves: ['psystrike', 'thunderbolt', 'calmmind', 'aurasphere', 'signalbeam'], gender: 'M'},
+			'Cyclops': {species: 'sigilyph', moves: ['icebeam', 'psybeam', 'signalbeam', 'chargebeam'], item: 'lifeorb', 
+				ability: 'tintedlens', gender: 'M'},
+			'Nightcrawler': {species: 'sableye', gender: 'M'}, 'Phoenix': {species: 'Ho-oh', gender: 'F'}, 'Colossus': {species: 'registeel'},
+			'Emma Frost': {species: 'diancie'}, 'Storm': {species: 'tornadus'}, 'Iceman': {species: 'regice'},
+			'Magneto': {species: 'magnezone'}, 'Quicksilver': {species: 'lucario'}, 'Scarlet Witch': {species: 'delphox'},
+			'Blob': {species: 'snorlax'}, 'Pyro': {species: 'magmortar'}, 'Juggernaut': {species: 'conkeldurr'}, 'Toad': {species: 'poliwrath'},
+			'Mystique': {species: 'mew', moves: ['knockoff', 'zenheadbutt', 'stormthrow', 'acrobatics', 'fakeout'], ability: 'Illusion'},
+			'Sabretooth': {species: 'zangoose', ability: 'Tough Claws', item: 'lifeorb',
+				moves: ['swordsdance', 'quickattack', 'doubleedge', 'closecombat', 'knockoff']},
+			'Captain America': {species: 'braviary'}, 'Hulk': {species: 'machamp', shiny: true}, 'Iron Man': {species: 'magmortar'},
+			'Hawkeye': {species: 'gliscor', moves: ['thousandarrows', 'acrobatics', 'stoneedge', 'knockoff'], gender: 'M'},
+			'Black Widow': {species: 'greninja', gender: 'F', shiny: true}, 'Thor': {species: 'ampharosmega'}, 'Nick Fury': {species: 'primeape'},
+			'Vision': {species: 'genesectshock'}, 'Starlord': {species: 'medicham', requiredMove: 'teeterdance'},
+			'Groot': {species: 'trevenant'}, 'Rocket Raccoon': {species: 'linoone'}, 'Gamora': {species: 'gardevoir'},
+			'Drax the Destroyer': {species: 'throh'}, 'Nova': {species: 'electivire'}, 'Batman': {species: 'crobat'},
+			'Superman': {species: 'deoxys'}, 'Aquaman': {species: 'samurott'}, 'Wonder Woman': {species: 'lopunnymega'},
+			'Green Lantern': {species: 'reuniclus'}, 'The Flash': {species: 'blaziken'}, 'Green Arrow': {species: 'sceptile'},
+			'Firestorm': {species: 'infernape'}, 'Robin': {species: 'talonflame'}, 'Starfire': {species: 'mesprit'}, 
+			'Cyborg': {species: 'golurk'}, 'Raven': {species: 'absolmega'}, 'Jinx': {species: 'mismagius'},
+			'Terra': {species: 'nidoqueen'}, 'Blue Beetle': {species: 'heracross'}, 'Beast Boy': {species: 'virizion'},
+			'Mr. Fantastic': {species: 'zygarde'}, 'Invisible Woman': {species: 'cresselia'}, 'Thing': {species: 'regirock'},
+			'Human Torch': {species: 'typhlosion'}, 'Spiderman': {species: 'Ariados'}, 'Ant-Man': {species: 'durant'},
+			'Baymax': {species: 'regigigas'}, 'Honey Lemon': {species: 'goodra'}, 'GoGo Tomago': {species: 'heliolisk'},
+			'Wasabi-no-Ginger': {species: 'gallade'}, 'Fredzilla': {species: 'tyrantrum'}, 'Silver Samurai': {species: 'cobalion'},
+			'Sunfire': {species: 'charizardmegay'}, 'Joker': {species: 'mrmime'}, 'Boomerang': {species: 'marowak'},
+			'Deadshot': {species: 'kingdra', ability: 'No Guard', item: 'scopelens', moves: ['dracometeor', 'hydropump', 'searingshot', 'aurasphere']},
+			'Harley Quinn': {species: 'lopunny'}, 'Killer Croc': {species: 'krookodile'}, 'Enchantress': {species: 'mesprit'},
+			'Bane': {species: 'metagrossmega'}, 'Scarecrow': {species: 'cacturne'}, 'Penguin': {species: 'empoleon'},
+			'Two-Face': {species: 'zweilous'}, 'Mr. Freeze': {species: 'beartic'}, 'Catwoman': {species: 'persian'}, 'Poison Ivy': {species: 'roserade'}
+		};
+
+		if (!this.seasonal) this.seasonal = {};
+
+		var sides = Object.keys(teams);
+		var side;
+		while (side === undefined || this.seasonal.side === side) {
+			// You can't have both players have the same squad
+			side = this.sampleNoReplace(sides);
+		}
+		if (this.seasonal.side === undefined) this.seasonal.side = side;
+
+		var heroes = teams[side];
+		var pokemonTeam = [];
+		var hero, heroTemplate, template, pokemon;
+
+		for (var i = 0; i < 6; i++) {
+			hero = this.sampleNoReplace(heroes);
+			heroTemplate = mons[hero];
+
+			template = this.getTemplate(heroTemplate.species);
+			if (heroTemplate.moves) template.randomBattleMoves = heroTemplate.moves;
+
+			pokemon = this.randomSet(template, i, {megaCount: 1});
+
+			if (heroTemplate.ability) pokemon.ability = heroTemplate.ability;
+			if (heroTemplate.gender) pokemon.gender = heroTemplate.gender;
+			if (heroTemplate.item) pokemon.item = heroTemplate.item;
+			pokemon.species = pokemon.name;
+			pokemon.name = hero;
+			pokemon.shiny = !!heroTemplate.shiny;
+
+			pokemonTeam.push(pokemon);
+		}
+
+		return pokemonTeam;
+	},
 	randomFactorySets: require('./factory-sets.json'),
 	randomFactorySet: function (template, slot, teamData, tier) {
 		var speciesId = toId(template.species);
