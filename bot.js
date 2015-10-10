@@ -31,6 +31,13 @@ function parseRaw(message) {
 		.replace(/<font color=#999999>/g, "\x0314")
 		.replace(/&nbsp;|&ThickSpace;| +/g, " ")
 		.replace(/&#10003;/g, "✓")
+		.replace(/&lt;/g, "<")
+		.replace(/&gt;/g, ">")
+		.replace(/&quot;/g, '"')
+		.replace(/&apos;/g, "'")
+		.replace(/&#x2f;/g, "/")
+		.replace(/&eacute;/, "é")
+		.replace(/&amp;/g, "&")
 		.split(/<br\s*\/?>/);
 }
 
