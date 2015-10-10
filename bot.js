@@ -8,7 +8,7 @@ var connection = exports.connection = new irc.Client(config.server, config.nickn
 function identity(value) {
 	return function identityFunction() {
 		return value;
-	}
+	};
 }
 
 function parseRaw(message) {
@@ -144,16 +144,14 @@ var dataParsers = {
 		if (moveData.category !== 'Status') {
 			if (moveData.basePower) {
 				result.push('\x0314Power:\x0F ' + moveData.basePower + ' BP');
-			}
-			else {
+			} else {
 				result.push('\x0314Power:\x0F —');
 			}
 		}
 
 		if (moveData.accuracy === true) {
 			result.push('\x0314Accuracy:\x0F —');
-		}
-		else {
+		} else {
 			result.push('\x0314Accuracy:\x0F ' + moveData.accuracy + '%');
 		}
 
@@ -191,7 +189,7 @@ connection.on('message', function parseMessage(from, to, message) {
 		to = from;
 	}
 	if (/\byay\b/i.test(message)) {
-		connection.say(to, 'Y+A+Y')
+		connection.say(to, 'Y+A+Y');
 	}
 	// DootBot conflict
 	if (message.slice(0, 2) === '!?') return;
