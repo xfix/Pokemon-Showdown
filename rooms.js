@@ -813,6 +813,7 @@ var GlobalRoom = (function () {
 		if (Config.reportbattles && rooms.lobby) {
 			rooms.lobby.add('|b|' + newRoom.id + '|' + p1.getIdentity() + '|' + p2.getIdentity());
 		}
+		Bot.report(Tools.getFormat(format) + ' battle started between ' + p1.getIdentity() + ' and ' + p2.getIdentity() + ' -- https://tppleague.me/' + newRoom.id);
 		if (Config.logladderip && options.rated) {
 			if (!this.ladderIpLog) {
 				this.ladderIpLog = fs.createWriteStream('logs/ladderip/ladderip.txt', {flags: 'a'});

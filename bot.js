@@ -5,6 +5,13 @@ var irc = require('irc');
 var config = Config.ircconfig;
 var connection = exports.connection = new irc.Client(config.server, config.nickname, config);
 
+exports.report = function report(message) {
+	var room = config.reportroom;
+	if (room) {
+		connection.say(room, message);
+	}
+}
+
 function identity(value) {
 	return function identityFunction() {
 		return value;
