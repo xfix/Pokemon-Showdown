@@ -287,22 +287,42 @@ var ircConnection = {
 	popup: identity()
 };
 
-connection.on('message', function parseMessage(from, to, message) {
+connection.on('message', function parseMessage(from, to, text, message) {
 	if (config.loggerid && to === (config.reportroom || config.channels[0])) {
-		log(config.loggerid, 1, from, message);
+		log(config.loggerid, 1, message.prefix, text);
 	}
 	if (to.charAt(0) !== '#') {
 		to = from;
 	}
-	if (/\byay\b/i.test(message)) {
+	if (/\byay\b/i.test(text)) {
 		connection.say(to, 'Y+A+Y');
 	}
 	// DootBot conflict
-	if (message.slice(0, 2) === '!?') return;
-	if (message.charAt(0) !== '!' && message.charAt(0) !== '/') return;
-	CommandParser.parse('/' + message.slice(1), new FakeRoom(to), ircUser, ircConnection);
+	if (text.slice(0, 2) === '!?') return;
+	if (text.charAt(0) !== '!' && text.charAt(0) !== '/') return;
+	CommandParser.parse('/' + text.slice(1), new FakeRoom(to), ircUser, ircConnection);
 });
 
 if (config.loggerid) {
 	listenForLogs(connection, config.reportroom || config.channels[0], config.loggerid);
+}
+
+if (!Config.irclog) {
+	Config.irclog = [];
+}
+
+for (var i = 0; i < Config.irclog.length; i++) {
+	var server = Config.irclog[i];
+	var channels = server.channels;
+	server.channels = server.channels.map(function (channel) {
+		return channel.name;
+	});
+	var logConnection = new irc.Client(server.server, server.nickname, server);
+	for (var j = 0; j < channels.length; j++) {
+		var channel = channels[j];
+		listenForLogs(logConnection, channel.name, channel.loggerid);
+		logConnection.on('message' + channel.name, function (nick, text, message) {
+			log(channel.loggerid, 1, message.prefix, text);
+		});
+	}
 }
