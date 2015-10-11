@@ -1,4 +1,4 @@
-const REPL_ENABLED = false;
+const REPL_ENABLED = true;
 
 var fs = require('fs');
 var path = require('path');
