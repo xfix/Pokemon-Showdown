@@ -50,7 +50,7 @@ var megaStoneList = [
 	'Blue Orb'
 ];
 exports.BattleScripts = {
-	randomtpplbTeam: function(side) {
+	randomtpplbTeam: function (side) {
 		var team = [];
 		var variant = this.random(2);
 		var sets = { // this is where all the movesets are defined. Add new mons here.
@@ -135,14 +135,14 @@ exports.BattleScripts = {
 			},*/
 			'Poomph':{
 				species: "Ampharosmega", ability: "Little Engine", item: 'Life Orb', gender: 'M',
-				moves: ['surf','powergem','detect','wish','nastyplot'],
+				moves: ['surf', 'powergem', 'detect', 'wish', 'nastyplot'],
 				signatureMove: 'eternalstruggle',
 				happiness: 0,
 				evs: {hp:252, spa:252, def:4}, nature: 'Modest'
 			},
 			/*'NoFunMantis':{ // STPPLB+ only
 				species: "Scyther", ability: "No Fun Allowed", item: 'Eviolite', gender: 'M',
-				moves: ['knockoff','brickbreak','aerialace','swordsdance','agility','batonpass','roost'],
+				moves: ['knockoff', 'brickbreak', 'aerialace', 'swordsdance', 'agility', 'batonpass', 'roost'],
 				signatureMove: 'xscissor',
 				evs: {hp:4, atk:252, spe:252}, nature: 'Adamant'
 			},*/
@@ -150,11 +150,11 @@ exports.BattleScripts = {
 				species: "Scyther", shiny: true, ability: "Dictator", item: 'Eviolite', gender: 'M',
 				moves: ['bravebird', 'aerialace', 'swordsdance', 'roost', 'uturn', 'xscissor', 'knockoff', 'earthquake'],
 				signatureMove: 'nofun',
-				evs: {hp:216,atk:40,spe:252}, nature: 'Jolly'
+				evs: {hp:216, atk:40, spe:252}, nature: 'Jolly'
 			},
 			/*'DictatorMantis': { // STPPLB+ only
 				species: 'Scizor', ability: 'Technicality', item: 'Occa Berry', gender: 'M',
-				moves: ['barrier','craftyshield','trick','block','disable','stickyweb','embargo','quash','taunt','knockoff','bulletpunch'],
+				moves: ['barrier', 'craftyshield', 'trick', 'block', 'disable', 'stickyweb', 'embargo', 'quash', 'taunt', 'knockoff', 'bulletpunch'],
 				signatureMove: 'ironfist',
 				evs: {hp:4,atk:252,spe:252}, nature: 'Adamant'
 			},*/
@@ -166,7 +166,7 @@ exports.BattleScripts = {
 			},
 			'Natsugan': {
 				species: 'Flygon', ability: 'Mega Plunder', item: megaStoneList.sample(1)[0], gender: 'M',
-				moves: ['earthquake','earthpower','uturn','dragonclaw','fireblast','boomburst','dragonpulse','return','stoneedge','crunch','ironhead','dragondance','quiverdance'],
+				moves: ['earthquake', 'earthpower', 'uturn', 'dragonclaw', 'fireblast', 'boomburst', 'dragonpulse', 'return', 'stoneedge', 'crunch', 'ironhead', 'dragondance', 'quiverdance'],
 				signatureMove: 'reroll',
 				nature: 'Serious'
 			},
@@ -197,7 +197,7 @@ exports.BattleScripts = {
 			'MihiraTheTiger': {
 				species: 'Mamoswine', ability: 'Technician', item: 'Leftovers', gender: 'M',
 				moves: ['iceshard', 'stealthrock'],
-				signatureMoves: ['yiffyiff','bawk'],
+				signatureMoves: ['yiffyiff', 'bawk'],
 				evs: {hp: 252, atk: 252, def: 4}, nature: 'Adamant'
 			},
 			'HazorEx': {
@@ -208,13 +208,13 @@ exports.BattleScripts = {
 			},
 			'Leonys': {
 				species: 'Flareon', ability: 'Incinerate', item: 'Choice Band', gender: 'M',
-				moves: ['volttackle', 'drillrun', 'irontail', 'revenge', 'pursuit','zenheadbutt'],
-				signatureMoves: ['quickattack','doubleedge'],
+				moves: ['volttackle', 'drillrun', 'irontail', 'revenge', 'pursuit', 'zenheadbutt'],
+				signatureMoves: ['quickattack', 'doubleedge'],
 				evs: {hp: 252, atk: 252, def: 4}, nature: 'Adamant'
 			},
 			'Xinc': {
 				species: 'Bisharp', ability: 'Defiant Plus', item: 'Leftovers', gender: 'M',
-				moves: ['knockoff','drainpunch','ironhead','suckerpunch','bulletpunch'],
+				moves: ['knockoff', 'drainpunch', 'ironhead', 'suckerpunch', 'bulletpunch'],
 				signatureMove: 'ganonssword',
 				evs: {hp: 200, atk: 252, spe: 56}, nature: 'Adamant'
 			},
@@ -226,13 +226,13 @@ exports.BattleScripts = {
 			},
 			'Speedy Pokson': {
 				species: 'Serperior', ability: 'Gotta Go Fast', item: 'Speed Shoes', gender: 'M',
-				moves: ['flyingpress', 'bulletpunch', 'rollout', 'extremespeed','quickattack','leafblade','watershuriken','mysticalfire','aurasphere'],
-				signatureMoves: ['spindash','boost'],
+				moves: ['flyingpress', 'bulletpunch', 'rollout', 'extremespeed', 'quickattack', 'leafblade', 'watershuriken', 'mysticalfire', 'aurasphere'],
+				signatureMoves: ['spindash', 'boost'],
 				evs: {spe: 252, atk: 252, hp: 4}, nature: 'Jolly'
 			},
 			'ColeWalski': {
 				species: 'Empoleon', ability: 'Sniper', item: 'Scope Lens', gender: 'M',
-				moves: ['hydropump','flashcannon'],
+				moves: ['hydropump', 'flashcannon'],
 				signatureMoves: ['setmine', 'locknload', 'assassinate'],
 				evs: {hp: 252, spa: 252, spe: 4}, nature: 'Modest',
 				ivs: {atk: 0}
@@ -267,12 +267,12 @@ exports.BattleScripts = {
 			if (!set.evs) set.evs = {hp:88, atk:84, def:84, spa:84, spd:84, spe:84};
 			if (set.signatureMove) set.signatureMoves = [set.signatureMove];
 			var len = set.signatureMoves.length;
-			set.moves = set.moves.sample(4-len).concat(set.signatureMoves); // always have sig move.
+			set.moves = set.moves.sample(4 - len).concat(set.signatureMoves); // always have sig move.
 			team.push(set);
 		}
 		return team;
 	},
-	randomtpplbpTeam: function(side) {
+	randomtpplbpTeam: function (side) {
 		var team = [];
 		var variant = this.random(2);
 		var sets = { // this is where all the movesets are defined. Add new mons here.
@@ -357,14 +357,14 @@ exports.BattleScripts = {
 			},*/
 			'Poomph':{
 				species: "Ampharosmega", ability: "Little Engine", item: 'Life Orb', gender: 'M',
-				moves: ['surf','powergem','detect','wish','nastyplot'],
+				moves: ['surf', 'powergem', 'detect', 'wish', 'nastyplot'],
 				signatureMove: 'eternalstruggle',
 				happiness: 0,
 				evs: {hp:252, spa:252, def:4}, nature: 'Modest'
 			},
 			'NoFunMantis':{
 				species: "Scyther", ability: "No Fun Allowed", item: 'Eviolite', gender: 'M',
-				moves: ['knockoff','brickbreak','aerialace','swordsdance','agility','batonpass','roost'],
+				moves: ['knockoff', 'brickbreak', 'aerialace', 'swordsdance', 'agility', 'batonpass', 'roost'],
 				signatureMove: 'xscissor',
 				evs: {hp:4, atk:252, spe:252}, nature: 'Adamant'
 			},
@@ -372,13 +372,13 @@ exports.BattleScripts = {
 				species: "Scyther", shiny: true, ability: "Dictator", item: 'Eviolite', gender: 'M',
 				moves: ['bravebird', 'aerialace', 'swordsdance', 'roost', 'uturn', 'xscissor', 'knockoff', 'earthquake'],
 				signatureMove: 'nofun',
-				evs: {hp:216,atk:40,spe:252}, nature: 'Jolly'
+				evs: {hp:216, atk:40, spe:252}, nature: 'Jolly'
 			},
 			'DictatorMantis': {
 				species: 'Scizor', ability: 'Technicality', item: 'Occa Berry', gender: 'M',
-				moves: ['barrier','craftyshield','trick','block','disable','stickyweb','embargo','quash','taunt','knockoff','bulletpunch'],
+				moves: ['barrier', 'craftyshield', 'trick', 'block', 'disable', 'stickyweb', 'embargo', 'quash', 'taunt', 'knockoff', 'bulletpunch'],
 				signatureMove: 'ironfist',
-				evs: {hp:4,atk:252,spe:252}, nature: 'Adamant'
+				evs: {hp:4, atk:252, spe:252}, nature: 'Adamant'
 			},
 			'MegaCharizard': {
 				species: 'Charizard', ability: 'Truant', item: 'Charizardite Y', gender: 'M',
@@ -388,7 +388,7 @@ exports.BattleScripts = {
 			},
 			'Natsugan': {
 				species: 'Flygon', ability: 'Mega Plunder', item: megaStoneList.sample(1)[0], gender: 'M',
-				moves: ['earthquake','earthpower','uturn','dragonclaw','fireblast','boomburst','dragonpulse','return','stoneedge','crunch','ironhead','dragondance','quiverdance'],
+				moves: ['earthquake', 'earthpower', 'uturn', 'dragonclaw', 'fireblast', 'boomburst', 'dragonpulse', 'return', 'stoneedge', 'crunch', 'ironhead', 'dragondance', 'quiverdance'],
 				signatureMove: 'reroll',
 				nature: 'Serious'
 			},
@@ -400,8 +400,8 @@ exports.BattleScripts = {
 			},
 			'WhatevsFur': {
 				species: 'Ursaring', ability: 'Furrier Coat', item: 'Leftovers', gender: 'F',
-				moves: ['earthquake','drainpunch'],
-				signatureMoves: ['wish','aromatherapy','bulkup'],
+				moves: ['earthquake', 'drainpunch'],
+				signatureMoves: ['wish', 'aromatherapy', 'bulkup'],
 				evs: {hps: 252, def: 168, spd: 88}, nature: 'Calm'
 			},
 			'PikalaxALT': {
@@ -425,7 +425,7 @@ exports.BattleScripts = {
 			'MihiraTheTiger': {
 				species: 'Mamoswine', ability: 'Technician', item: 'Leftovers', gender: 'M',
 				moves: ['iceshard', 'stealthrock'],
-				signatureMoves: ['yiffyiff','bawk'],
+				signatureMoves: ['yiffyiff', 'bawk'],
 				evs: {hp: 252, atk: 252, def: 4}, nature: 'Adamant'
 			},
 			'HazorEx': {
@@ -436,13 +436,13 @@ exports.BattleScripts = {
 			},
 			'Leonys': {
 				species: 'Flareon', ability: 'Incinerate', item: 'Choice Band', gender: 'M',
-				moves: ['volttackle', 'drillrun', 'irontail', 'revenge', 'pursuit','zenheadbutt'],
-				signatureMoves: ['quickattack','doubleedge'],
+				moves: ['volttackle', 'drillrun', 'irontail', 'revenge', 'pursuit', 'zenheadbutt'],
+				signatureMoves: ['quickattack', 'doubleedge'],
 				evs: {hp: 252, atk: 252, def: 4}, nature: 'Adamant'
 			},
 			'Xinc': {
 				species: 'Bisharp', ability: 'Defiant Plus', item: 'Leftovers', gender: 'M',
-				moves: ['knockoff','drainpunch','ironhead','suckerpunch'],
+				moves: ['knockoff', 'drainpunch', 'ironhead', 'suckerpunch'],
 				signatureMove: 'ganonssword',
 				evs: {hp: 200, atk: 252, spe: 56}, nature: 'Adamant'
 			},
@@ -454,7 +454,7 @@ exports.BattleScripts = {
 			},
 			'ColeWalski': {
 				species: 'Empoleon', ability: 'Sniper', item: 'Scope Lens', gender: 'M',
-				moves: ['hydropump','flashcannon'],
+				moves: ['hydropump', 'flashcannon'],
 				signatureMoves: ['setmine', 'locknload', 'assassinate'],
 				evs: {hp: 252, spa: 252, spe: 4}, nature: 'Modest',
 				ivs: {atk: 0}
@@ -489,12 +489,12 @@ exports.BattleScripts = {
 			if (!set.evs) set.evs = {hp:84, atk:84, def:84, spa:84, spd:84, spe:84};
 			if (set.signatureMove) set.signatureMoves = [set.signatureMove];
 			var len = set.signatureMoves.length;
-			set.moves = set.moves.sample(4-len).concat(set.signatureMoves); // always have sig move.
+			set.moves = set.moves.sample(4 - len).concat(set.signatureMoves); // always have sig move.
 			team.push(set);
 		}
 		return team;
 	},
-	randomtppbTeam: function(side) {
+	randomtppbTeam: function (side) {
 		var team = [];
 		var variant = this.random(2);
 		var sets = { // this is where all the movesets are defined. Add new mons here.
@@ -575,18 +575,18 @@ exports.BattleScripts = {
 				moves: ['waterpulse', 'hiddenpowerice', 'shockwave'],
 				ivs: {atk:30, def:30}, // in order for HP Ice to be a thing.
 				signatureMove: 'bestfcar',
-				evs: {atk:252,def:4,spe:252}, nature: 'Adamant'
+				evs: {atk:252, def:4, spe:252}, nature: 'Adamant'
 			},
 			'Poomph':{
 				species: "Ampharosmega", ability: "Little Engine", item: 'Life Orb', gender: 'M',
-				moves: ['surf','powergem','detect','wish','nastyplot'],
+				moves: ['surf', 'powergem', 'detect', 'wish', 'nastyplot'],
 				signatureMove: 'eternalstruggle',
 				happiness: 0,
 				evs: {hp:252, spa:252, def:4}, nature: 'Modest'
 			},
 			'NoFunMantis':{
 				species: "Scyther", ability: "No Fun Allowed", item: 'Eviolite', gender: 'M',
-				moves: ['knockoff','brickbreak','aerialace','swordsdance','agility','batonpass','roost'],
+				moves: ['knockoff', 'brickbreak', 'aerialace', 'swordsdance', 'agility', 'batonpass', 'roost'],
 				signatureMove: 'xscissor',
 				evs: {hp:4, atk:252, spe:252}, nature: 'Adamant'
 			},
@@ -594,13 +594,13 @@ exports.BattleScripts = {
 				species: "Scyther", shiny: true, ability: "Dictator", item: 'Eviolite', gender: 'M',
 				moves: ['bravebird', 'aerialace', 'swordsdance', 'roost', 'uturn', 'xscissor', 'knockoff', 'earthquake'],
 				signatureMove: 'nofun',
-				evs: {hp:216,atk:40,spe:252}, nature: 'Jolly'
+				evs: {hp:216, atk:40, spe:252}, nature: 'Jolly'
 			},
 			'DictatorMantis': {
 				species: 'Scizor', ability: 'Technicality', item: 'Occa Berry', gender: 'M',
-				moves: ['barrier','craftyshield','trick','block','disable','stickyweb','embargo','quash','taunt','knockoff','bulletpunch'],
+				moves: ['barrier', 'craftyshield', 'trick', 'block', 'disable', 'stickyweb', 'embargo', 'quash', 'taunt', 'knockoff', 'bulletpunch'],
 				signatureMove: 'ironfist',
-				evs: {hp:4,atk:252,spe:252}, nature: 'Adamant'
+				evs: {hp:4, atk:252, spe:252}, nature: 'Adamant'
 			},
 			'MegaCharizard': {
 				species: 'Charizard', ability: 'Truant', item: 'Charizardite Y', gender: 'M',
@@ -610,15 +610,15 @@ exports.BattleScripts = {
 			},
 			'Natsugan': {
 				species: 'Flygon', ability: 'Mega Plunder', item: megaStoneList.sample(1)[0], gender: 'M',
-				moves: ['earthquake','earthpower','uturn','dragonclaw','fireblast','boomburst','dragonpulse','return','stoneedge','crunch','ironhead','dragondance','quiverdance'],
+				moves: ['earthquake', 'earthpower', 'uturn', 'dragonclaw', 'fireblast', 'boomburst', 'dragonpulse', 'return', 'stoneedge', 'crunch', 'ironhead', 'dragondance', 'quiverdance'],
 				signatureMove: 'reroll',
 				nature: 'Serious'
 			},
 			'Bird Jesus': { //STPPB only
 				species: 'Pidgeot', ability: 'Messiah', item: 'Flying Gem', gender: 'M',
-				moves: ['judgment', 'focusblast', 'roost','fireblast'],
+				moves: ['judgment', 'focusblast', 'roost', 'fireblast'],
 				signatureMove: 'godbird',
-				evs: {spa:252,def:4,spe:252}, nature: 'Timid'
+				evs: {spa:252, def:4, spe:252}, nature: 'Timid'
 			},
 			'GroundCtrl27': {
 				species: 'Meloetta', ability: 'Scrappy', item: 'Assault Vest', gender: 'M',
@@ -628,8 +628,8 @@ exports.BattleScripts = {
 			},
 			'WhatevsFur': {
 				species: 'Ursaring', ability: 'Furrier Coat', item: 'Leftovers', gender: 'F',
-				moves: ['earthquake','drainpunch'],
-				signatureMoves: ['wish','aromatherapy','bulkup'],
+				moves: ['earthquake', 'drainpunch'],
+				signatureMoves: ['wish', 'aromatherapy', 'bulkup'],
 				evs: {hps: 252, def: 168, spd: 88}, nature: 'Calm'
 			},
 			'PikalaxALT': {
@@ -653,7 +653,7 @@ exports.BattleScripts = {
 			'MihiraTheTiger': {
 				species: 'Mamoswine', ability: 'Technician', item: 'Leftovers', gender: 'M',
 				moves: ['iceshard', 'stealthrock'],
-				signatureMoves: ['yiffyiff','bawk'],
+				signatureMoves: ['yiffyiff', 'bawk'],
 				evs: {hp: 252, atk: 252, def: 4}, nature: 'Adamant'
 			},
 			'HazorEx': {
@@ -664,13 +664,13 @@ exports.BattleScripts = {
 			},
 			'Leonys': {
 				species: 'Flareon', ability: 'Incinerate', item: 'Choice Band', gender: 'M',
-				moves: ['volttackle', 'drillrun', 'irontail', 'revenge', 'pursuit','zenheadbutt'],
-				signatureMoves: ['quickattack','doubleedge'],
+				moves: ['volttackle', 'drillrun', 'irontail', 'revenge', 'pursuit', 'zenheadbutt'],
+				signatureMoves: ['quickattack', 'doubleedge'],
 				evs: {hp: 252, atk: 252, def: 4}, nature: 'Adamant'
 			},
 			'Xinc': {
 				species: 'Bisharp', ability: 'Defiant Plus', item: 'Leftovers', gender: 'M',
-				moves: ['knockoff','drainpunch','ironhead','suckerpunch'],
+				moves: ['knockoff', 'drainpunch', 'ironhead', 'suckerpunch'],
 				signatureMove: 'ganonssword',
 				evs: {hp: 200, atk: 252, spe: 56}, nature: 'Adamant'
 			},
@@ -682,7 +682,7 @@ exports.BattleScripts = {
 			},
 			'ColeWalski': {
 				species: 'Empoleon', ability: 'Sniper', item: 'Scope Lens', gender: 'M',
-				moves: ['hydropump','flashcannon'],
+				moves: ['hydropump', 'flashcannon'],
 				signatureMoves: ['setmine', 'locknload', 'assassinate'],
 				evs: {hp: 252, spa: 252, spe: 4}, nature: 'Modest',
 				ivs: {atk: 0}
@@ -717,7 +717,7 @@ exports.BattleScripts = {
 			if (!set.evs) set.evs = {hp:84, atk:84, def:84, spa:84, spd:84, spe:84};
 			if (set.signatureMove) set.signatureMoves = [set.signatureMove];
 			var len = set.signatureMoves.length;
-			set.moves = set.moves.sample(4-len).concat(set.signatureMoves); // always have sig move.
+			set.moves = set.moves.sample(4 - len).concat(set.signatureMoves); // always have sig move.
 			team.push(set);
 		}
 		return team;
@@ -829,4 +829,4 @@ exports.BattleScripts = {
 		if (megaTemplate.isPrimal) deltas.isPrimal = true;
 		return deltas;
 	}
-}
+};

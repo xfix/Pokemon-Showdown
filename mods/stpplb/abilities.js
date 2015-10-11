@@ -40,18 +40,18 @@ exports.BattleAbilities = { // define custom abilities here.
 	'spoopify': {
 		desc: "Makes stuff Ghost on switch-in.",
 		shortDesc: 'b', // got lazy
-		onStart: function(pokemon) {
-			activeFoe = pokemon.side.foe.active;
+		onStart: function (pokemon) {
+			var activeFoe = pokemon.side.foe.active;
 			for (var i = 0; i < activeFoe.length; i++) {
-				var pokemon = activeFoe[i];
-				var secondarytype = (pokemon.typesData[1] ? pokemon.typesData[1].type : false);
-				if (pokemon.typesData[1] === 'Ghost') { // no more Ghost/Ghost madness!
-					this.add('-start', pokemon, 'typechange', 'Ghost');
-					pokemon.typesData = [{type: 'Ghost', suppressed: false,  isAdded: false}];
+				var foe = activeFoe[i];
+				var secondarytype = (foe.typesData[1] ? foe.typesData[1].type : false);
+				if (foe.typesData[1] === 'Ghost') { // no more Ghost/Ghost madness!
+					this.add('-start', foe, 'typechange', 'Ghost');
+					foe.typesData = [{type: 'Ghost', suppressed: false,  isAdded: false}];
 					continue;
 				}
-				this.add('-start', pokemon, 'typechange', 'Ghost' + (secondarytype ? '/' + secondarytype : ''));
-				pokemon.typesData[0] = {type: 'Ghost', suppressed: false,  isAdded: false};
+				this.add('-start', foe, 'typechange', 'Ghost' + (secondarytype ? '/' + secondarytype : ''));
+				foe.typesData[0] = {type: 'Ghost', suppressed: false,  isAdded: false};
 			}
 		},
 		id: "spoopify",
@@ -59,11 +59,10 @@ exports.BattleAbilities = { // define custom abilities here.
 		rating: 4,
 		num: 194
 	},
-	'scrubterrain': { // MLZekrom pls
-	                  // Scrub Terrain was really hacky. Happy it's out of the meta.
+	'scrubterrain': { // MLZekrom pls, Scrub Terrain was really hacky. Happy it's out of the meta.
 		desc: '',
 		shortDesc: '',
-		onStart: function(pokemon) {
+		onStart: function (pokemon) {
 			this.setWeather('scrubterrain');
 		},
 		onAnySetWeather: function (target, source, weather) {
@@ -130,11 +129,11 @@ exports.BattleAbilities = { // define custom abilities here.
 		onImmunity: function (type) {
 			if (type === 'Ground') return false;
 		},
-		onStart: function(pokemon) {
-			activeFoe = pokemon.side.foe.active;
+		onStart: function (pokemon) {
+			var activeFoe = pokemon.side.foe.active;
 			for (var i = 0; i < activeFoe.length; i++) {
-				var pokemon = activeFoe[i];
-				pokemon.addVolatile('confusion');
+				var foe = activeFoe[i];
+				foe.addVolatile('confusion');
 			}
 		},
 		id: 'swahahahahaggers',
@@ -145,9 +144,11 @@ exports.BattleAbilities = { // define custom abilities here.
 	'psychologist': { // Kooma's ability: immune to all "mental" volatile statuses.
 		onUpdate: function (pokemon) {
 			var list = ['embargo', 'encore', 'flinch', 'healblock', 'attract', 'nightmare', 'taunt', 'torment', 'confusion'];
-			for (var i = 0; i < list.length; i++)
-				if (pokemon.volatiles[list[i]])
+			for (var i = 0; i < list.length; i++) {
+				if (pokemon.volatiles[list[i]]) {
 					pokemon.removeVolatile(list[i]);
+				}
+			}
 		},
 		onImmunity: function (type, pokemon) {
 			var list = ['embargo', 'encore', 'flinch', 'healblock', 'attract', 'nightmare', 'taunt', 'torment', 'confusion'];
@@ -200,7 +201,7 @@ exports.BattleAbilities = { // define custom abilities here.
 		onResidualOrder: 26,
 		onResidualSubOrder: 1,
 		onResidual: function (pokemon) {
-			var stats = [], i= '';
+			var stats = [], i = '';
 			var boost = {};
 			for (var i in pokemon.boosts) {
 				if (pokemon.boosts[i] < 6) {
@@ -252,14 +253,14 @@ exports.BattleAbilities = { // define custom abilities here.
 				this.add('-ability', pokemon, 'No Fun', '[from] ability: No Fun Allowed');
 			}
 		},
-		onStart: function (pokemon){
+		onStart: function (pokemon) {
 			var foeactive = pokemon.side.foe.active;
 			for (var i = 0; i < foeactive.length; i++) {
-				var pokemon = foeactive[i];
-				var oldAbility = pokemon.setAbility('nofun', pokemon, 'nofun', true);
+				var foe = foeactive[i];
+				var oldAbility = foe.setAbility('nofun', foe, 'nofun', true);
 				if (oldAbility) {
-					this.add('-endability', pokemon, oldAbility, '[from] ability: No Fun Allowed');
-					this.add('-ability', pokemon, 'No Fun', '[from] ability: No Fun Allowed');
+					this.add('-endability', foe, oldAbility, '[from] ability: No Fun Allowed');
+					this.add('-ability', foe, 'No Fun', '[from] ability: No Fun Allowed');
 				}
 			}
 		},
@@ -342,7 +343,7 @@ exports.BattleAbilities = { // define custom abilities here.
 				this.add("c|DictatorMantis|This move doesn't work because I say so!");
 				return false;
 			}
-		},
+		}
 	},
 	'megaplunder': {
 		num: 207,
@@ -381,17 +382,17 @@ exports.BattleAbilities = { // define custom abilities here.
 		onResidualOrder: 26,
 		onResidualSubOrder: 1,
 		onResidual: function (pokemon) {
-			if (pokemon.hp <= 3*pokemon.maxhp/4 && pokemon.hp > pokemon.maxhp/2 && pokemon.boosts.evasion <1) {
-				this.boost({evasion:1-pokemon.boosts.evasion}, pokemon);
+			if (pokemon.hp <= 3 * pokemon.maxhp / 4 && pokemon.hp > pokemon.maxhp / 2 && pokemon.boosts.evasion < 1) {
+				this.boost({evasion: 1 - pokemon.boosts.evasion}, pokemon);
 			}
-			if (pokemon.hp <= pokemon.maxhp/2 && pokemon.hp > pokemon.maxhp/4 && pokemon.boosts.evasion <2) {
-				this.boost({evasion:2-pokemon.boosts.evasion}, pokemon);
+			if (pokemon.hp <= pokemon.maxhp / 2 && pokemon.hp > pokemon.maxhp / 4 && pokemon.boosts.evasion < 2) {
+				this.boost({evasion: 2 - pokemon.boosts.evasion}, pokemon);
 			}
-			if (pokemon.hp <= 1*pokemon.maxhp/4 && pokemon.hp > pokemon.maxhp/32  && pokemon.boosts.evasion <4) {
-				this.boost({evasion:4-pokemon.boosts.evasion}, pokemon);
+			if (pokemon.hp <= 1 * pokemon.maxhp / 4 && pokemon.hp > pokemon.maxhp / 32  && pokemon.boosts.evasion < 4) {
+				this.boost({evasion: 4 - pokemon.boosts.evasion}, pokemon);
 			}
-			if (pokemon.hp <= pokemon.maxhp/32 && pokemon.boosts.evasion <6) {
-				this.boost({evasion:6-pokemon.boosts.evasion}, pokemon);
+			if (pokemon.hp <= pokemon.maxhp / 32 && pokemon.boosts.evasion < 6) {
+				this.boost({evasion: 6 - pokemon.boosts.evasion}, pokemon);
 			}
 		},
 		id: "banevade",
@@ -404,7 +405,7 @@ exports.BattleAbilities = { // define custom abilities here.
 		shortDesc: "This Pokemon's Normal type moves become Fire type and have 1.3x power.",
 		onModifyMovePriority: -1,
 		onModifyMove: function (move, pokemon) {
-			if (move.id !== 'struggle' && move.type == 'Normal') { // don't mess with Struggle, only change normal moves.
+			if (move.id !== 'struggle' && move.type === 'Normal') { // don't mess with Struggle, only change normal moves.
 				move.type = 'Fire';
 				if (move.category !== 'Status') pokemon.addVolatile('incinerate');
 			}
@@ -491,9 +492,10 @@ exports.BattleAbilities = { // define custom abilities here.
 		desc: "Chance of boosting speed when using signature move",
 		shortDesc: "Chance of boost when using special move",
 		onAnyMove: function (target, source, move) {
-			if(move.id == "boost" || move.id == "spindash") {
-				if(this.random(1) == 0)
+			if (move.id === "boost" || move.id === "spindash") {
+				if (this.random(1) === 0) {
 					this.boost({spe: 6}, source);
+				}
 			}
 		},
 		onStart: function (pokemon) {
@@ -509,7 +511,7 @@ exports.BattleAbilities = { // define custom abilities here.
 		shortDesc: 'TL;DR',
 		onResidualOrder: 26,
 		onResidualSubOrder: 1,
-		onResidual: function(pokemon) {
+		onResidual: function (pokemon) {
 			var moves = [];
 			var movedex = require('./moves.js').BattleMovedex;
 			for (var i in movedex) {
@@ -571,6 +573,6 @@ exports.BattleAbilities = { // define custom abilities here.
 				this.debug('Technician boost');
 				return this.chainModify(1.5);
 			}
-		},
+		}
 	}
-}
+};

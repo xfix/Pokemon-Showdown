@@ -4,8 +4,8 @@ exports.BattleFormats = {
 		onStart: function () {
 			this.add('rule', 'Super Glitch Clause: Every pokemon must hold a Leppa Berry and know Recycle and Super Glitch. No Fun Allowed is banned.');
 		},
-		validateSet: function(set) {
-			issues = [];
+		validateSet: function (set) {
+			var issues = [];
 			set.item = 'Leppa Berry';
 			var metronomeFound = false;
 			var recycleFound = false;
@@ -40,8 +40,9 @@ exports.BattleFormats = {
 			if (!recycleFound) {
 				set.moves.push("Recycle");
 			}
-			if (toId(set.ability) === 'nofunallowed')
+			if (toId(set.ability) === 'nofunallowed') {
 				issues.push(set.species + " has No Fun Allowed.");
+			}
 			var totalEV = 0;
 			for (var k in set.evs) {
 				if (typeof set.evs[k] !== 'number' || set.evs[k] < 0) {
@@ -55,7 +56,7 @@ exports.BattleFormats = {
 			return issues;
 		}
 	},
-	
+
 	noswitchingclause: {
 		effectType: 'rule',
 		onStart: function () {
@@ -64,13 +65,12 @@ exports.BattleFormats = {
 		onModifyPokemon: function (pokemon) {
 			if (!pokemon.volatiles['imprison']) {
 				pokemon.tryTrap();
-			}
-			else {
+			} else {
 				pokemon.side.switchFlag = true;
 			}
 		}
 	},
-	
+
 	norecycleclause: {
 		effectType: 'rule',
 		onStart: function () {
@@ -84,8 +84,7 @@ exports.BattleFormats = {
 				for (var i = 0; i < moves.length; i++) {
 					if (moves[i].id === 'recycle') {
 						recycle = i;
-					}
-					else {
+					} else {
 						pp += moves[i].pp * !moves[i].disabled;
 					}
 				}
@@ -95,7 +94,7 @@ exports.BattleFormats = {
 			}
 		}
 	},
-	
+
 	abilityclause: {
 		effectType: 'Rule',
 		onStart: function () {
@@ -117,4 +116,4 @@ exports.BattleFormats = {
 			}
 		}
 	}
-}
+};

@@ -1214,30 +1214,34 @@ exports.Formats = [
 		searchShow: true,
 		team: 'randomtpplb',
 		ruleset: ['Sleep Clause Mod', 'HP Percentage Mod', 'Cancel Mod'],
-		onUpdate: function(pokemon) { // called whenever a pokemon changes
+		onUpdate: function (pokemon) { // called whenever a pokemon changes
 			var name = toId(pokemon.name);
 			if (pokemon.template.isMega) { // some foolery to give megas their proper ability
-				if (name == 'darkfiregamer' && pokemon.getAbility().id === 'solarpower')
+				if (name === 'darkfiregamer' && pokemon.getAbility().id === 'solarpower') {
 					pokemon.setAbility('darkaura');
-				if (name == 'dictatormantis' && pokemon.getAbility().id === 'technician')
+				}
+				if (name === 'dictatormantis' && pokemon.getAbility().id === 'technician') {
 					pokemon.setAbility('Technicality');
-				if (name == 'hazorex' && pokemon.getAbility().id !== 'physicalakazam')
+				}
+				if (name === 'hazorex' && pokemon.getAbility().id !== 'physicalakazam') {
 					pokemon.setAbility('Physicalakazam');
+				}
 			}
 		},
 		onSwitchInPriority: 1,
-		onSwitchIn: function(pokemon) {
+		onSwitchIn: function (pokemon) {
 			var name = toId(pokemon.illusion ? pokemon.illusion.name : pokemon.name);
 			var oldAbility = pokemon.ability;
 			if (pokemon.template.isMega) { // more hackery for mega abilities.
-				if (name == 'darkfiregamer' && pokemon.getAbility().id === 'solarpower')
+				if (name === 'darkfiregamer' && pokemon.getAbility().id === 'solarpower') {
 					pokemon.setAbility('darkaura');
-
-				if (name == 'dictatormantis' && pokemon.getAbility().id === 'technician')
+				}
+				if (name === 'dictatormantis' && pokemon.getAbility().id === 'technician') {
 					pokemon.setAbility('Technicality');
-
-				if (name == 'hazorex' && pokemon.getAbility().id !== 'physicalakazam')
+				}
+				if (name === 'hazorex' && pokemon.getAbility().id !== 'physicalakazam') {
 					pokemon.setAbility('Physicalakazam');
+				}
 			} else {
 				pokemon.canMegaEvo = this.canMegaEvo(pokemon); // Bypass one mega limit.
 			}
@@ -1266,21 +1270,35 @@ exports.Formats = [
 				} else {
 					this.add('c|xfix|(no hazards, attacks only, final destination)');
 				}
+			} else if (name === 'azum4roll') {
+				this.add("c|azum4roll|What? I'm just a normal Azumarill.");
+			} else if (name === 'lasszeowx') {
+				this.add("c|Lass zeowx|Oh, a new challenger?");
+			} else if (name === 'kapnkooma') {
+				this.add("c|Kap'n Kooma|Hoist the black flag lads!");
+			} else if (name === 'kooma9') {
+				this.add("c|Kooma9|ello");
+			} else if (name === 'best') {
+				this.add("raw|<big>GO AWAY</big>");
+			} else if (name === 'poomph') {
+				this.add("c|Poomph|I'm sure I'll win this time!");
+			} else if (name === 'tadpole_0f_doom') {
+				this.add("c|Tadpole_0f_Doom|I'm not racist. I own Pokemon Black. TriHard");
+			} else if (name === 'trollkitten') {
+				this.add("c|TrollKitten|Have time to listen to my lore?");
+			} else if (name === 'bigfatmantis') {
+				this.add("c|BigFatMantis|gldhf");
+			} else if (name === 'nofunmantis') {
+				this.add("c|NoFunMantis|gldhf");
+			} else if (name === 'dictatormantis') {
+				this.add("c|DictatorMantis|Do you even have enough yays to be battling?");
+			} else if (name === 'xinc') {
+				this.add("c|Xinc|Iwa took Gengar. DansGame");
+			} else if (name === 'natsugan') {
+				this.add('c|Natsugan|Flygonite when');
+			} else {
+				this.add('c|' + (pokemon.illusion ? pokemon.illusion.name : pokemon.name) + '|PLACEHOLDER MESSAGE PLEASE CONTACT TIESOUL');
 			}
-			else if (name === 'azum4roll') this.add("c|azum4roll|What? I'm just a normal Azumarill.");
-			else if (name === 'lasszeowx') this.add("c|Lass zeowx|Oh, a new challenger?");
-			else if (name === 'kapnkooma') this.add("c|Kap'n Kooma|Hoist the black flag lads!");
-			else if (name === 'kooma9') this.add("c|Kooma9|ello");
-			else if (name === 'best') this.add("raw|<big>GO AWAY</big>");
-			else if (name === 'poomph') this.add("c|Poomph|I'm sure I'll win this time!");
-			else if (name === 'tadpole_0f_doom') this.add("c|Tadpole_0f_Doom|I'm not racist. I own Pokemon Black. TriHard");
-			else if (name === 'trollkitten') this.add("c|TrollKitten|Have time to listen to my lore?");
-			else if (name === 'bigfatmantis') this.add("c|BigFatMantis|gldhf");
-			else if (name === 'nofunmantis') this.add("c|NoFunMantis|gldhf");
-			else if (name === 'dictatormantis') this.add("c|DictatorMantis|Do you even have enough yays to be battling?");
-			else if (name === 'xinc') this.add("c|Xinc|Iwa took Gengar. DansGame");
-			else if (name === 'natsugan') this.add('c|Natsugan|Flygonite when');
-			else this.add('c|' + (pokemon.illusion ? pokemon.illusion.name : pokemon.name) + '|PLACEHOLDER MESSAGE PLEASE CONTACT TIESOUL');
 			var item = pokemon.getItem();
 			if (pokemon.isActive && !pokemon.template.isMega && !pokemon.template.isPrimal && (item.id === 'redorb' || item.id === 'blueorb') && pokemon.baseTemplate.tier !== 'Uber' && !pokemon.template.evos.length) {
 				// Primal Reversion
@@ -1329,7 +1347,7 @@ exports.Formats = [
 			}
 		},
 
-		onFaint: function(pokemon) { // PJSalt-y faint messages go here.
+		onFaint: function (pokemon) { // PJSalt-y faint messages go here.
 			var name = toId(pokemon.name);
 			if (name === 'xfix') {
 				var foe = pokemon.side.foe.active[0];
@@ -1341,22 +1359,37 @@ exports.Formats = [
 				} else {
 					this.add('c|xfix|(gg... I guess)');
 				}
-			} else if (name === 'azum4roll') this.add("c|azum4roll|This game doesn't have enough glitches!");
-			else if (name === 'lasszeowx') this.add("c|Lass zeowx|When can I beat TPPLA BibleThump");
-			else if (name === 'kapnkooma') this.add("c|Kap'n Kooma|Avast! I be needing a pint of grog after this.");
-			else if (name === 'kooma9') this.add("c|Kooma9|Most Disappointing Player 2015");
-			else if (name === 'best') this.add("raw|<big>BEST? FALLED</big>");
-			else if (name === 'poomph') this.add("c|Poomph|0/4 again. DansGame");
-			else if (name === 'tadpole_0f_doom') this.add("c|Tadpole_0f_Doom|You'll never take me alive!");
-			else if (name === 'trollkitten') this.add("c|TrollKitten|I need time away from the sub to clear my head after this.");
-			else if (name === 'bigfatmantis') this.add("c|BigFatMantis|GGioz");
-			else if (name === 'nofunmantis') this.add("c|NoFunMantis|GGCtrl27");
-			else if (name === 'dictatormantis') this.add("c|DictatorMantis|bg DansGame");
-			else if (name === 'xinc') this.add("c|Xinc|Bruh");
-			else if (name === 'natsugan') this.add('c|Natsugan|hax imo');
-			else if (name === 'pikalaxalt') this.add('c|PikalaxALT|Wow Deku OneHand');
+			} else if (name === 'azum4roll') {
+				this.add("c|azum4roll|This game doesn't have enough glitches!");
+			} else if (name === 'lasszeowx') {
+				this.add("c|Lass zeowx|When can I beat TPPLA BibleThump");
+			} else if (name === 'kapnkooma') {
+				this.add("c|Kap'n Kooma|Avast! I be needing a pint of grog after this.");
+			} else if (name === 'kooma9') {
+				this.add("c|Kooma9|Most Disappointing Player 2015");
+			} else if (name === 'best') {
+				this.add("raw|<big>BEST? FALLED</big>");
+			} else if (name === 'poomph') {
+				this.add("c|Poomph|0/4 again. DansGame");
+			} else if (name === 'tadpole_0f_doom') {
+				this.add("c|Tadpole_0f_Doom|You'll never take me alive!");
+			} else if (name === 'trollkitten') {
+				this.add("c|TrollKitten|I need time away from the sub to clear my head after this.");
+			} else if (name === 'bigfatmantis') {
+				this.add("c|BigFatMantis|GGioz");
+			} else if (name === 'nofunmantis') {
+				this.add("c|NoFunMantis|GGCtrl27");
+			} else if (name === 'dictatormantis') {
+				this.add("c|DictatorMantis|bg DansGame");
+			} else if (name === 'xinc') {
+				this.add("c|Xinc|Bruh");
+			} else if (name === 'natsugan') {
+				this.add('c|Natsugan|hax imo');
+			} else if (name === 'pikalaxalt') {
+				this.add('c|PikalaxALT|Wow Deku OneHand');
+			}
 		},
-		onBegin: function() {
+		onBegin: function () {
 			// Mix and Mega stuff
 			var allPokemon = this.p1.pokemon.concat(this.p2.pokemon);
 			for (var i = 0, len = allPokemon.length; i < len; i++) {
