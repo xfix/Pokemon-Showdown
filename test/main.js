@@ -90,6 +90,9 @@ before('initialization', function (done) {
 	config.logchallenges = false;
 	config.logchat = false;
 
+	// Disable IRC support
+	config.ircconfig = null;
+
 	// TODO: Use a proper fs sandbox
 	var fsMethodsNullify = ['chmod', 'rename', 'rmdir', 'symlink', 'unlink', 'writeFile'];
 	for (var i = 0; i < fsMethodsNullify.length; i++) {
