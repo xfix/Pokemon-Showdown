@@ -131,7 +131,7 @@ function parseRaw(message) {
 		.replace(/&quot;/g, '"')
 		.replace(/&apos;/g, "'")
 		.replace(/&#x2f;/g, "/")
-		.replace(/&eacute;/, "é")
+		.replace(/&eacute;/g, "é")
 		.replace(/&amp;/g, "&")
 		.split(/<br\s*\/?>/);
 }
