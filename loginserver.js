@@ -10,7 +10,7 @@
 const LOGIN_SERVER_TIMEOUT = 15000;
 const LOGIN_SERVER_BATCH_TIME = 1000;
 
-var http = require("http");
+var http = require("https");
 var url = require('url');
 
 /* global LoginServer: true */
