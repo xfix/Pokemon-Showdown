@@ -10,8 +10,7 @@ var pool = Pool({
 		client.connect(function (err) {
 			if (err) {
 				callback(err, null);
-			}
-			else {
+			} else {
 				callback(null, client);
 			}
 		});
@@ -31,7 +30,7 @@ exports.report = function report(message) {
 	if (room) {
 		say(room, message);
 	}
-}
+};
 
 function say(room, message) {
 	connection.say(room, message);
@@ -71,8 +70,8 @@ function listenForLogs(socket, channel, bufferid) {
 		log(bufferid, 256, message.prefix, nick + ' ' + reason);
 	});
 
-	socket.on('action', function action(nick, to, action, message) {
-		log(bufferid, 4, message.prefix, action);
+	socket.on('action', function action(nick, to, actionMessage, message) {
+		log(bufferid, 4, message.prefix, actionMessage);
 	});
 
 	socket.on('notice', function notice(nick, to, text, message) {
@@ -84,14 +83,13 @@ function listenForLogs(socket, channel, bufferid) {
 		log(bufferid, 8, message.prefix, newnick);
 	});
 
-	socket.on('topic', function topic(to, topic, nick, message) {
+	socket.on('topic', function topic(to, newTopic, nick, message) {
 		if (to !== channel) return;
 		// Initial message
 		if (/!/.test(nick)) {
-			log(bufferid, 16384, "", 'Topic for ' + to + ' is "' + topic + '"');
-		}
-		else {
-			log(bufferid, 16384, "", nick + ' has changed topic for ' + to + ' to: "' + topic + '"');
+			log(bufferid, 16384, "", 'Topic for ' + to + ' is "' + newTopic + '"');
+		} else {
+			log(bufferid, 16384, "", nick + ' has changed topic for ' + to + ' to: "' + newTopic + '"');
 		}
 	});
 
@@ -149,32 +147,6 @@ function verifyParts(parts) {
 		}
 	}
 	return true;
-}
-
-function filter(message) {
-	var parts = message.split(/\n/);
-	var rawSignal = '|raw|';
-	var dataSignal = '|c|~|/data-';
-	var errorSignal = '|html|<div class="message-error">';
-	var finalParts = [];
-	for (var i = 0; i < parts.length; i++) {
-		var part = parts[i];
-		var message;
-		if (part.slice(0, rawSignal.length) === rawSignal) {
-			message = part.slice(rawSignal.length);
-			Array.prototype.push.apply(finalParts, parseRaw(message));
-		} else if (part.slice(0, dataSignal.length) === dataSignal) {
-			message = part.slice(dataSignal.length);
-			var splitter = message.indexOf(' ');
-			var type = message.slice(0, splitter);
-			var what = message.slice(splitter + 1);
-			finalParts.push(dataParsers[type](what));
-		} else if (part.slice(0, errorSignal.length) !== errorSignal) {
-			finalParts.push(part);
-		}
-	}
-	if (!verifyParts(finalParts)) return "Response too long.";
-	return finalParts.join("\n");
 }
 
 var dataParsers = {
@@ -258,6 +230,32 @@ var dataParsers = {
 		return result.join(' | ');
 	}
 };
+
+function filter(rawMessage) {
+	var parts = rawMessage.split(/\n/);
+	var rawSignal = '|raw|';
+	var dataSignal = '|c|~|/data-';
+	var errorSignal = '|html|<div class="message-error">';
+	var finalParts = [];
+	for (var i = 0; i < parts.length; i++) {
+		var part = parts[i];
+		var message;
+		if (part.slice(0, rawSignal.length) === rawSignal) {
+			message = part.slice(rawSignal.length);
+			Array.prototype.push.apply(finalParts, parseRaw(message));
+		} else if (part.slice(0, dataSignal.length) === dataSignal) {
+			message = part.slice(dataSignal.length);
+			var splitter = message.indexOf(' ');
+			var type = message.slice(0, splitter);
+			var what = message.slice(splitter + 1);
+			finalParts.push(dataParsers[type](what));
+		} else if (part.slice(0, errorSignal.length) !== errorSignal) {
+			finalParts.push(part);
+		}
+	}
+	if (!verifyParts(finalParts)) return "Response too long.";
+	return finalParts.join("\n");
+}
 
 function FakeRoom(id) {
 	this.id = id;
