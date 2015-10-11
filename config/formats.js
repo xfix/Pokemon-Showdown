@@ -1440,3 +1440,59 @@ exports.Formats = [
 		defaultLevel: 100
 	}
 ];
+var stpplb;
+var stpplbi;
+for (var i = 0; i < exports.Formats.length; i++)
+	if (exports.Formats[i].name === 'Super TPPL Bros.') {
+		stpplb = exports.Formats[i];
+		stpplbi = i;
+	}
+if (stpplb) {
+	exports.Formats.splice(stpplbi+1, 0, {
+		name: "Super TPPL Bros. Plus",
+		section: "STPPLB",
+		column: 2,
+		
+		mod: 'stpplb',
+		searchShow: true,
+		team: 'randomtpplbp',
+		ruleset: ['Sleep Clause Mod', 'HP Percentage Mod', 'Cancel Mod'],
+		onUpdate: stpplb.onUpdate,
+		onModifyMove: stpplb.onModifyMove,
+		onSwitchInPriority: 1,
+		onSwitchIn: stpplb.onSwitchIn,
+		onFaint: stpplb.onFaint,
+		onBegin: stpplb.onBegin
+	});
+	exports.Formats.splice(stpplbi+2, 0, {
+		name: "Super TPP Bros.",
+		section: "STPPLB",
+		column: 2,
+		
+		mod: 'stpplb',
+		searchShow: true,
+		team: 'randomtppb',
+		ruleset: ['Sleep Clause Mod', 'HP Percentage Mod', 'Cancel Mod'],
+		onUpdate: stpplb.onUpdate,
+		onModifyMove: stpplb.onModifyMove,
+		onSwitchInPriority: 1,
+		onSwitchIn: stpplb.onSwitchIn,
+		onFaint: stpplb.onFaint,
+		onBegin: stpplb.onBegin
+	});
+	exports.Formats.splice(stpplbi+2, 0, {
+		name: "Super TPPL Bros. Testing",
+		section: "STPPLB",
+		column: 2,
+		
+		mod: 'stpplb',
+		searchShow: false,
+		ruleset: ['Sleep Clause Mod', 'HP Percentage Mod', 'Cancel Mod', 'Team Preview'],
+		onUpdate: stpplb.onUpdate,
+		onModifyMove: stpplb.onModifyMove,
+		onSwitchInPriority: 1,
+		onSwitchIn: stpplb.onSwitchIn,
+		onFaint: stpplb.onFaint,
+		onBegin: stpplb.onBegin
+	});
+}
