@@ -817,7 +817,7 @@ exports.BattleMovedex = {
 			if (!pokemon.addType('Flying')) return;
 			this.add('-start', pokemon, 'typeadd', 'Flying', '[from] move: BAWK!');
 			this.attrLastMove('[still]');
-			this.add('-anim', source, 'Roost', source);
+			this.add('-anim', pokemon, 'Roost', pokemon);
 		},
 		heal: [1, 2],
 		secondary: false,
@@ -1166,7 +1166,7 @@ exports.BattleMovedex = {
 				maxpp: move.pp,
 				target: move.target,
 				disabled: false,
-				used: false,
+				used: false
 			};
 			source.moves[1] = toId(move.name);
 			this.add('message', source.name + ' acquired ' + move.name + ' using its Quick Sketch!');
