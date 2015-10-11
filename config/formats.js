@@ -1202,5 +1202,179 @@ exports.Formats = [
 		searchShow: false,
 		debug: true,
 		ruleset: ['Pokemon', 'HP Percentage Mod', 'Cancel Mod']
+	},
+
+	// TPP League exclusives
+	{
+		name: "Super TPPL Bros.",
+		section: "STPPLB",
+		column: 4,
+
+		mod: 'stpplb',
+		searchShow: true,
+		team: 'randomtpplb',
+		ruleset: ['Sleep Clause Mod', 'HP Percentage Mod', 'Cancel Mod'],
+		onUpdate: function(pokemon) { // called whenever a pokemon changes
+			var name = toId(pokemon.name);
+			if (pokemon.template.isMega) { // some foolery to give megas their proper ability
+				if (name == 'darkfiregamer' && pokemon.getAbility().id === 'solarpower')
+					pokemon.setAbility('darkaura');
+				if (name == 'dictatormantis' && pokemon.getAbility().id === 'technician')
+					pokemon.setAbility('Technicality');
+				if (name == 'hazorex' && pokemon.getAbility().id !== 'physicalakazam')
+					pokemon.setAbility('Physicalakazam');
+			}
+		},
+		onSwitchInPriority: 1,
+		onSwitchIn: function(pokemon) {
+			var name = toId(pokemon.illusion ? pokemon.illusion.name : pokemon.name);
+			var oldAbility = pokemon.ability;
+			if (pokemon.template.isMega) { // more hackery for mega abilities.
+				if (name == 'darkfiregamer' && pokemon.getAbility().id === 'solarpower')
+					pokemon.setAbility('darkaura');
+
+				if (name == 'dictatormantis' && pokemon.getAbility().id === 'technician')
+					pokemon.setAbility('Technicality');
+
+				if (name == 'hazorex' && pokemon.getAbility().id !== 'physicalakazam')
+					pokemon.setAbility('Physicalakazam');
+			} else {
+				pokemon.canMegaEvo = this.canMegaEvo(pokemon); // Bypass one mega limit.
+			}
+			if (name === 'somasghost' && !pokemon.illusion) {
+				this.add('-start', pokemon, 'typechange', 'Normal/Ghost');
+				pokemon.typesData = [
+					{type: 'Normal', suppressed: false,  isAdded: false},
+					{type: 'Ghost', suppressed: false,  isAdded: false}
+				];
+			}
+			if (name === 'pikalaxalt') {
+				this.boost({def:1, spd:1}, pokemon);
+				this.add('c|PikalaxALT|ヽ༼ຈل͜ຈ༽ﾉ RIOT ヽ༼ຈل͜ຈ༽ﾉ');
+			}
+			if (name === 'xfix') { // different message depending on hazards.
+				var hazards = {stealthrock: 1, spikes: 1, toxicspikes: 1, stickyweb: 1};
+				var hasHazards = false;
+				for (var hazard in hazards) {
+					if (pokemon.side.getSideCondition(hazard)) {
+						hasHazards = true;
+						break;
+					}
+				}
+				if (hasHazards) {
+					this.add('c|xfix|(no haz... too late)');
+				} else {
+					this.add('c|xfix|(no hazards, attacks only, final destination)');
+				}
+			}
+			else if (name === 'azum4roll') this.add("c|azum4roll|What? I'm just a normal Azumarill.");
+			else if (name === 'lasszeowx') this.add("c|Lass zeowx|Oh, a new challenger?");
+			else if (name === 'kapnkooma') this.add("c|Kap'n Kooma|Hoist the black flag lads!");
+			else if (name === 'kooma9') this.add("c|Kooma9|ello");
+			else if (name === 'best') this.add("raw|<big>GO AWAY</big>");
+			else if (name === 'poomph') this.add("c|Poomph|I'm sure I'll win this time!");
+			else if (name === 'tadpole_0f_doom') this.add("c|Tadpole_0f_Doom|I'm not racist. I own Pokemon Black. TriHard");
+			else if (name === 'trollkitten') this.add("c|TrollKitten|Have time to listen to my lore?");
+			else if (name === 'bigfatmantis') this.add("c|BigFatMantis|gldhf");
+			else if (name === 'nofunmantis') this.add("c|NoFunMantis|gldhf");
+			else if (name === 'dictatormantis') this.add("c|DictatorMantis|Do you even have enough yays to be battling?");
+			else if (name === 'xinc') this.add("c|Xinc|Iwa took Gengar. DansGame");
+			else if (name === 'natsugan') this.add('c|Natsugan|Flygonite when');
+			else this.add('c|' + (pokemon.illusion ? pokemon.illusion.name : pokemon.name) + '|PLACEHOLDER MESSAGE PLEASE CONTACT TIESOUL');
+			var item = pokemon.getItem();
+			if (pokemon.isActive && !pokemon.template.isMega && !pokemon.template.isPrimal && (item.id === 'redorb' || item.id === 'blueorb') && pokemon.baseTemplate.tier !== 'Uber' && !pokemon.template.evos.length) {
+				// Primal Reversion
+				var bannedMons = {'Kyurem-Black':1, 'Slaking':1, 'Regigigas':1, 'Cresselia':1, 'Shuckle':1};
+				if (!(pokemon.baseTemplate.baseSpecies in bannedMons)) {
+					var template = this.getMixedTemplate(pokemon.originalSpecies, item.id === 'redorb' ? 'Groudon-Primal' : 'Kyogre-Primal');
+					pokemon.formeChange(template);
+					pokemon.baseTemplate = template;
+
+					// Do we have a proper sprite for it?
+					if (pokemon.originalSpecies === (item.id === 'redorb' ? 'Groudon' : 'Kyogre')) {
+						pokemon.details = template.species + (pokemon.level === 100 ? '' : ', L' + pokemon.level) + (pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
+						this.add('detailschange', pokemon, pokemon.details);
+					} else {
+						var oTemplate = this.getTemplate(pokemon.originalSpecies);
+						this.add('-formechange', pokemon, oTemplate.species, template.requiredItem);
+						this.add('-start', pokemon, this.getTemplate(template.originalMega).requiredItem, '[silent]');
+						if (oTemplate.types.length !== pokemon.template.types.length || oTemplate.types[1] !== pokemon.template.types[1]) {
+							this.add('-start', pokemon, 'typechange', pokemon.template.types.join('/'), '[silent]');
+						}
+					}
+					this.add('message', pokemon.name + "'s " + pokemon.getItem().name + " activated!");
+					this.add('message', pokemon.name + "'s Primal Reversion! It reverted to its primal form!");
+					pokemon.setAbility(template.abilities['0']);
+					pokemon.baseAbility = pokemon.ability;
+					pokemon.canMegaEvo = false;
+				}
+			} else {
+				var oMegaTemplate = this.getTemplate(pokemon.template.originalMega);
+				if (oMegaTemplate.exists && pokemon.originalSpecies !== oMegaTemplate.baseSpecies) {
+					// Place volatiles on the Pokémon to show its mega-evolved condition and details
+					this.add('-start', pokemon, oMegaTemplate.requiredItem || oMegaTemplate.requiredMove, '[silent]');
+					var oTemplate = this.getTemplate(pokemon.originalSpecies);
+					if (oTemplate.types.length !== pokemon.template.types.length || oTemplate.types[1] !== pokemon.template.types[1]) {
+						this.add('-start', pokemon, 'typechange', pokemon.template.types.join('/'), '[silent]');
+					}
+				}
+			}
+		},
+
+		onSwitchOut: function (pokemon) {
+			var name = toId(pokemon.name);
+			var oMegaTemplate = this.getTemplate(pokemon.template.originalMega);
+			if (oMegaTemplate.exists && pokemon.originalSpecies !== oMegaTemplate.baseSpecies) {
+				this.add('-end', pokemon, oMegaTemplate.requiredItem || oMegaTemplate.requiredMove, '[silent]');
+			}
+		},
+
+		onFaint: function(pokemon) { // PJSalt-y faint messages go here.
+			var name = toId(pokemon.name);
+			if (name === 'xfix') {
+				var foe = pokemon.side.foe.active[0];
+				if (foe.name === 'xfix') {
+					this.add('c|xfix|(annoying Dittos...)');
+				} else if (foe.ability === 'magicbounce') {
+					this.add('c|xfix|(why ' + foe.name + ' has Magic Bounce...)');
+					this.add('c|xfix|(gg... why...)');
+				} else {
+					this.add('c|xfix|(gg... I guess)');
+				}
+			} else if (name === 'azum4roll') this.add("c|azum4roll|This game doesn't have enough glitches!");
+			else if (name === 'lasszeowx') this.add("c|Lass zeowx|When can I beat TPPLA BibleThump");
+			else if (name === 'kapnkooma') this.add("c|Kap'n Kooma|Avast! I be needing a pint of grog after this.");
+			else if (name === 'kooma9') this.add("c|Kooma9|Most Disappointing Player 2015");
+			else if (name === 'best') this.add("raw|<big>BEST? FALLED</big>");
+			else if (name === 'poomph') this.add("c|Poomph|0/4 again. DansGame");
+			else if (name === 'tadpole_0f_doom') this.add("c|Tadpole_0f_Doom|You'll never take me alive!");
+			else if (name === 'trollkitten') this.add("c|TrollKitten|I need time away from the sub to clear my head after this.");
+			else if (name === 'bigfatmantis') this.add("c|BigFatMantis|GGioz");
+			else if (name === 'nofunmantis') this.add("c|NoFunMantis|GGCtrl27");
+			else if (name === 'dictatormantis') this.add("c|DictatorMantis|bg DansGame");
+			else if (name === 'xinc') this.add("c|Xinc|Bruh");
+			else if (name === 'natsugan') this.add('c|Natsugan|hax imo');
+			else if (name === 'pikalaxalt') this.add('c|PikalaxALT|Wow Deku OneHand');
+		},
+		onBegin: function() {
+			// Mix and Mega stuff
+			var allPokemon = this.p1.pokemon.concat(this.p2.pokemon);
+			for (var i = 0, len = allPokemon.length; i < len; i++) {
+				var pokemon = allPokemon[i];
+				pokemon.originalSpecies = pokemon.baseTemplate.species;
+			}
+		}
+	},
+
+	{
+		name: 'Super Glitch',
+		section: 'STPPLB',
+		column: 2,
+		searchShow: true,
+		mod: 'stpplb',
+		ruleset: ['Super Glitch Clause', 'HP Percentage Mod', 'Cancel Mod', 'No Switching Clause', 'No Recycle Clause', 'Ability Clause', 'Team Preview'],
+
+		maxLevel: 100,
+		defaultLevel: 100
 	}
 ];
