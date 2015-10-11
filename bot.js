@@ -1,5 +1,21 @@
 // This code is awful, and I know it.
 
+var config = Config.ircconfig;
+
+exports.report = function report(message) {
+	if (!config) {
+		return;
+	}
+	var room = config.reportroom;
+	if (room) {
+		say(room, message);
+	}
+};
+
+if (!config) {
+	return;
+}
+
 var irc = require('irc');
 var Pool = require('generic-pool').Pool;
 var Client = require('pg-native');
@@ -22,15 +38,7 @@ var pool = Pool({
 	idleTimeoutMillis: 30000
 });
 
-var config = Config.ircconfig;
 var connection = exports.connection = new irc.Client(config.server, config.nickname, config);
-
-exports.report = function report(message) {
-	var room = config.reportroom;
-	if (room) {
-		say(room, message);
-	}
-};
 
 function say(room, message) {
 	connection.say(room, message);
