@@ -18,19 +18,29 @@ exports.BattleMovedex = {
 	"moonlight": {
 		inherit: true,
 		onHit: function (pokemon) {
-			if (this.isWeather('sunnyday')) this.heal(this.modify(pokemon.maxhp, 0.667));
-			else if (this.isWeather(['sandstorm', 'hail'])) this.heal(this.modify(pokemon.maxhp, 0.25));
-			else if (this.isWeather('raindance')) this.heal(this.modify(pokemon.maxhp, 0.0833));
-			else this.heal(this.modify(pokemon.maxhp, 0.5));
+			if (this.isWeather('sunnyday')) {
+				this.heal(this.modify(pokemon.maxhp, 0.667));
+			} else if (this.isWeather(['sandstorm', 'hail'])) {
+				this.heal(this.modify(pokemon.maxhp, 0.25));
+			} else if (this.isWeather('raindance')) {
+				this.heal(this.modify(pokemon.maxhp, 0.0833));
+			} else {
+				this.heal(this.modify(pokemon.maxhp, 0.5));
+			}
 		}
 	},
 	"morningsun": {
 		inherit: true,
 		onHit: function (pokemon) {
-			if (this.isWeather('sunnyday')) this.heal(this.modify(pokemon.maxhp, 0.667));
-			else if (this.isWeather(['sandstorm', 'hail'])) this.heal(this.modify(pokemon.maxhp, 0.25));
-			else if (this.isWeather('raindance')) this.heal(this.modify(pokemon.maxhp, 0.0833));
-			else this.heal(this.modify(pokemon.maxhp, 0.5));
+			if (this.isWeather('sunnyday')) {
+				this.heal(this.modify(pokemon.maxhp, 0.667));
+			} else if (this.isWeather(['sandstorm', 'hail'])) {
+				this.heal(this.modify(pokemon.maxhp, 0.25));
+			} else if (this.isWeather('raindance')) {
+				this.heal(this.modify(pokemon.maxhp, 0.0833));
+			} else {
+				this.heal(this.modify(pokemon.maxhp, 0.5));
+			}
 		}
 	},
 	"sandstorm": {
@@ -77,8 +87,11 @@ exports.BattleMovedex = {
 	"weatherball": {
 		inherit: true,
 		basePowerCallback: function () {
-			if (this.isWeather('raindance')) return 800; //We have 4 weathers active at once.
-			else if (this.weather) return 100;
+			if (this.isWeather('raindance')) {
+				return 800; //We have 4 weathers active at once.
+			} else if (this.weather) {
+				return 100;
+			}
 			return 50;
 		},
 		onModifyMove: function (move) {
