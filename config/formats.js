@@ -1448,7 +1448,7 @@ for (var i = 0; i < exports.Formats.length; i++)
 		stpplbi = i;
 	}
 if (stpplb) {
-	exports.Formats.splice(stpplbi+1, 0, {
+	exports.Formats.splice(stpplbi + 1, 0, {
 		name: "Super TPPL Bros. Plus",
 		section: "STPPLB",
 		column: 2,
@@ -1463,8 +1463,7 @@ if (stpplb) {
 		onSwitchIn: stpplb.onSwitchIn,
 		onFaint: stpplb.onFaint,
 		onBegin: stpplb.onBegin
-	});
-	exports.Formats.splice(stpplbi+2, 0, {
+	}, {
 		name: "Super TPP Bros.",
 		section: "STPPLB",
 		column: 2,
@@ -1479,8 +1478,7 @@ if (stpplb) {
 		onSwitchIn: stpplb.onSwitchIn,
 		onFaint: stpplb.onFaint,
 		onBegin: stpplb.onBegin
-	});
-	exports.Formats.splice(stpplbi+2, 0, {
+	}, {
 		name: "Super TPPL Bros. Testing",
 		section: "STPPLB",
 		column: 2,
