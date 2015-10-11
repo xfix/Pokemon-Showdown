@@ -1,6 +1,27 @@
 // This code is awful, and I know it.
 
 var irc = require('irc');
+var Pool = require('generic-pool').Pool;
+var Client = require('pg-native');
+
+var pool = Pool({
+	create: function (callback) {
+		var client = new Client();
+		client.connect(function (err) {
+			if (err) {
+				callback(err, null);
+			}
+			else {
+				callback(null, client);
+			}
+		});
+	},
+	destroy: function (client) {
+		client.end();
+	},
+	max: 5,
+	idleTimeoutMillis: 30000
+});
 
 var config = Config.ircconfig;
 var connection = exports.connection = new irc.Client(config.server, config.nickname, config);
@@ -8,8 +29,77 @@ var connection = exports.connection = new irc.Client(config.server, config.nickn
 exports.report = function report(message) {
 	var room = config.reportroom;
 	if (room) {
-		connection.say(room, message);
+		say(room, message);
 	}
+}
+
+function say(room, message) {
+	connection.say(room, message);
+	if (!config.loggerid) return;
+	var messages = message.split("\n");
+	for (var i = 0; i < messages.length; i++) {
+		log(config.loggerid, 1, config.nickname, messages[i]);
+	}
+}
+
+function log(bufferid, type, user, message) {
+	pool.acquire(function (err, client) {
+		if (err) throw err;
+		client.query('SELECT insert_row($1, $2, $3, $4)', [bufferid, type, user, message], function (err, result) {
+			pool.release(client);
+			if (err) throw err;
+		});
+	});
+}
+
+function listenForLogs(socket, channel, bufferid) {
+	socket.on('join' + channel, function join(nick, message) {
+		log(bufferid, 32, message.prefix, channel);
+	});
+
+	socket.on('part' + channel, function part(nick, reason, message) {
+		log(bufferid, 64, message.prefix, reason);
+	});
+
+	socket.on('quit', function quit(nick, reason, channels, message) {
+		if (channels.indexOf(channel) !== -1) return;
+
+		log(bufferid, 128, message.prefix, reason);
+	});
+
+	socket.on('kick' + channel, function kick(nick, by, reason, message) {
+		log(bufferid, 256, message.prefix, nick + ' ' + reason);
+	});
+
+	socket.on('action', function action(nick, to, action, message) {
+		log(bufferid, 4, message.prefix, action);
+	});
+
+	socket.on('notice', function notice(nick, to, text, message) {
+		if (to !== channel) return;
+		log(bufferid, 2, message.prefix, text);
+	});
+
+	socket.on('nick', function nick(oldnick, newnick, channels, message) {
+		log(bufferid, 8, message.prefix, newnick);
+	});
+
+	socket.on('topic', function topic(to, topic, nick, message) {
+		if (to !== channel) return;
+		// Initial message
+		if (/!/.test(nick)) {
+			log(bufferid, 16384, "", 'Topic for ' + to + ' is "' + topic + '"');
+		}
+		else {
+			log(bufferid, 16384, "", nick + ' has changed topic for ' + to + ' to: "' + topic + '"');
+		}
+	});
+
+	// Mode messages in IRC framework are way too clever.
+	socket.on('raw', function (message) {
+		if (message.command !== 'MODE' || message.args[0] !== channel) return;
+		log(bufferid, 16, message.prefix, message.args.join(' '));
+	});
 }
 
 function identity(value) {
@@ -186,12 +276,15 @@ var ircUser = {
 
 var ircConnection = {
 	sendTo: function (room, message) {
-		connection.say(room.id, filter(message));
+		say(room.id, filter(message));
 	},
 	popup: identity()
 };
 
 connection.on('message', function parseMessage(from, to, message) {
+	if (config.loggerid && to === (config.reportroom || config.channels[0])) {
+		log(config.loggerid, 1, from, message);
+	}
 	if (to.charAt(0) !== '#') {
 		to = from;
 	}
@@ -203,3 +296,7 @@ connection.on('message', function parseMessage(from, to, message) {
 	if (message.charAt(0) !== '!' && message.charAt(0) !== '/') return;
 	CommandParser.parse('/' + message.slice(1), new FakeRoom(to), ircUser, ircConnection);
 });
+
+if (config.loggerid) {
+	listenForLogs(connection, config.reportroom || config.channels[0], config.loggerid);
+}
