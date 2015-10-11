@@ -422,6 +422,21 @@ exports.Formats = [
 	///////////////////////////////////////////////////////////////////
 
 	{
+		name: "Acid Rain",
+		section: "OM of the Week",
+		column: 2,
+
+		mod: 'acidrain',
+		onBegin: function () {
+			this.setWeather('raindance');
+			delete this.weatherData.duration;
+			this.add('-message', "Eh, close enough.");
+		},
+		ruleset: ['OU'],
+		banlist: ['Weather Ball', 'Castform']
+	},
+
+	{
 		name: "Highest Stat Meta",
 		desc: [
 			"All Pok&eacute;mon on a team must share the same highest stat.",
