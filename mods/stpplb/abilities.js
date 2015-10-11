@@ -493,7 +493,7 @@ exports.BattleAbilities = { // define custom abilities here.
 		shortDesc: "Chance of boost when using special move",
 		onAnyMove: function (target, source, move) {
 			if (move.id === "boost" || move.id === "spindash") {
-				if (this.random(1) === 0) {
+				if (this.random(10) === 0) {
 					this.boost({spe: 6}, source);
 				}
 			}
@@ -520,7 +520,7 @@ exports.BattleAbilities = { // define custom abilities here.
 				if (move.isNonstandard) continue;
 				if (move.category === 'Physical') continue;
 				if (move.basePower < 60) continue;
-				if (move.category === 'Status' && move.boosts && move.boosts.atk && move.boosts.atk > 0) continue;
+				if (move.category === 'Status' && move.boosts && move.boosts.atk && move.boosts.atk > 0 && move.target === 'self') continue;
 				if (pokemon.hasMove(move)) continue;
 				moves.push(move);
 			}

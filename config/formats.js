@@ -1296,6 +1296,14 @@ exports.Formats = [
 				this.add("c|Xinc|Iwa took Gengar. DansGame");
 			} else if (name === 'natsugan') {
 				this.add('c|Natsugan|Flygonite when');
+			} else if (name === 'pikalaxalt') {
+				this.add('c|PikalaxALT|ヽ༼ຈل͜ຈ༽ﾉ RIOT ヽ༼ຈل͜ຈ༽ﾉ');
+			} else if (name === 'colewalski') {
+				this.add('c|ColeWalski|Allons-y and GERONIMOOO!');
+			} else if (name === 'liria10') {
+				this.add("c|Liria_10|let's draw all night!");
+			} else if (name === 'speedypokson') {
+				this.add("c|Speedy Pokson|YOU'RE TOO SLOW!");
 			} else {
 				this.add('c|' + (pokemon.illusion ? pokemon.illusion.name : pokemon.name) + '|PLACEHOLDER MESSAGE PLEASE CONTACT TIESOUL');
 			}
@@ -1387,6 +1395,12 @@ exports.Formats = [
 				this.add('c|Natsugan|hax imo');
 			} else if (name === 'pikalaxalt') {
 				this.add('c|PikalaxALT|Wow Deku OneHand');
+			} else if (name === 'colewalski') {
+				this.add('c|ColeWalski|Dced again');
+			} else if (name === 'liria10') {
+				this.add('c|Liria_10|why is art so difficult ;_;');
+			} else if (name === 'speedypokson') {
+				this.add("c|Speedy Pokson|C'MON, STEP IT UP!");
 			}
 		},
 		onBegin: function () {
