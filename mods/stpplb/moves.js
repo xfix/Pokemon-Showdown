@@ -1136,10 +1136,10 @@ exports.BattleMovedex = {
 		priority: 0,
 		flags: {protect: 1, authentic: 1},
 		onHit: function (target, source) {
-			var disallowedMoves = {copycat:1, focuspunch:1, mimic: 1, quicksketch: 1, sketch:1, sleeptalk:1, snatch:1, struggle:1, transform:1};
+			var disallowedMoves = {quicksketch: 1, sketch:1, struggle:1};
 			if (!this.lastMove || disallowedMoves[this.lastMove]) return false;
-			var move = this.lastMove;
-			source.moveset[1] = {
+			var move = this.getMove(this.lastMove);
+			var sketchedMove = {
 				move: move.name,
 				id: move.id,
 				pp: move.pp,
@@ -1148,9 +1148,11 @@ exports.BattleMovedex = {
 				disabled: false,
 				used: false
 			};
+			source.moveset[1] = sketchedMove;
+			source.baseMoveset[1] = sketchedMove;
 			source.moves[1] = toId(move.name);
 			this.add('message', source.name + ' acquired ' + move.name + ' using its Quick Sketch!');
-			this.useMove(move, source, target);
+			this.useMove(move, target);
 		},
 		secondary: false,
 		target: 'self',
