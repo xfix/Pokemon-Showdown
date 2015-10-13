@@ -887,7 +887,10 @@ exports.Formats = [
 
 	{
 		name: "[Gen 5] OU",
-		desc: ["&bullet; <a href=\"https://www.smogon.com/forums/threads/3509218/#post-5522693\">BW Resources</a>"],
+		desc: [
+			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3551993/\">BW2 OU Viability Ranking</a>",
+			"&bullet; <a href=\"https://www.smogon.com/forums/posts/6431094/\">BW2 Sample Teams</a>"
+		],
 		section: "BW2 Singles",
 		column: 3,
 
@@ -897,7 +900,10 @@ exports.Formats = [
 	},
 	{
 		name: "[Gen 5] Ubers",
-		desc: ["&bullet; <a href=\"https://www.smogon.com/forums/threads/3509218/#post-5522693\">BW Resources</a>"],
+		desc: [
+			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3550881/\">BW2 Ubers Viability Ranking</a>",
+			"&bullet; <a href=\"https://www.smogon.com/forums/posts/6446463/\">BW2 Ubers Sample Teams</a>"
+		],
 		section: "BW2 Singles",
 
 		mod: 'gen5',
@@ -906,7 +912,10 @@ exports.Formats = [
 	},
 	{
 		name: "[Gen 5] UU",
-		desc: ["&bullet; <a href=\"https://www.smogon.com/forums/threads/3509218/#post-5522693\">BW Resources</a>"],
+		desc: [
+			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3474024/\">BW2 UU Viability Ranking</a>",
+			"&bullet; <a href=\"https://www.smogon.com/forums/posts/6431094/\">BW2 Sample Teams</a>"
+		],
 		section: "BW2 Singles",
 
 		mod: 'gen5',
@@ -915,7 +924,10 @@ exports.Formats = [
 	},
 	{
 		name: "[Gen 5] RU",
-		desc: ["&bullet; <a href=\"https://www.smogon.com/forums/threads/3509218/#post-5522693\">BW Resources</a>"],
+		desc: [
+			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3473124/\">BW2 RU Viability Ranking</a>",
+			"&bullet; <a href=\"https://www.smogon.com/forums/posts/6431094/\">BW2 Sample Teams</a>"
+		],
 		section: "BW2 Singles",
 
 		mod: 'gen5',
@@ -924,7 +936,10 @@ exports.Formats = [
 	},
 	{
 		name: "[Gen 5] NU",
-		desc: ["&bullet; <a href=\"https://www.smogon.com/forums/threads/3509218/#post-5522693\">BW Resources</a>"],
+		desc: [
+			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3484121/\">BW2 NU Viability Ranking</a>",
+			"&bullet; <a href=\"https://www.smogon.com/forums/posts/6431094/\">BW2 Sample Teams</a>"
+		],
 		section: "BW2 Singles",
 
 		mod: 'gen5',
@@ -933,7 +948,10 @@ exports.Formats = [
 	},
 	{
 		name: "[Gen 5] LC",
-		desc: ["&bullet; <a href=\"https://www.smogon.com/forums/threads/3509218/#post-5522693\">BW Resources</a>"],
+		desc: [
+			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3485860/\">BW2 LC Viability Ranking</a>",
+			"&bullet; <a href=\"https://www.smogon.com/forums/posts/6431094/\">BW2 Sample Teams</a>"
+		],
 		section: "BW2 Singles",
 
 		mod: 'gen5',
@@ -977,6 +995,7 @@ exports.Formats = [
 
 	{
 		name: "[Gen 5] Doubles OU",
+		desc: ["&bullet; <a href=\"https://www.smogon.com/forums/threads/3485044/\">BW2 Doubles Viability Ranking</a>"],
 		section: 'BW2 Doubles',
 		column: 3,
 
@@ -1025,7 +1044,10 @@ exports.Formats = [
 
 	{
 		name: "[Gen 4] OU",
-		desc: ["&bullet; <a href=\"https://www.smogon.com/forums/threads/3509218/#post-5522692\">DPP Resources</a>"],
+		desc: [
+			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3551992/\">DPP OU Viability Ranking</a>",
+			"&bullet; <a href=\"https://www.smogon.com/forums/posts/6431088/\">DPP Sample Teams</a>"
+		],
 		section: "Past Generations",
 		column: 3,
 
@@ -1035,7 +1057,10 @@ exports.Formats = [
 	},
 	{
 		name: "[Gen 4] Ubers",
-		desc: ["&bullet; <a href=\"https://www.smogon.com/forums/threads/3509218/#post-5522692\">DPP Resources</a>"],
+		desc: [
+			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3505128/\">DPP Ubers Viability Ranking</a>",
+			"&bullet; <a href=\"https://www.smogon.com/forums/posts/6446464/\">DPP Ubers Sample Teams</a>"
+		],
 		section: "Past Generations",
 
 		mod: 'gen4',
@@ -1044,7 +1069,10 @@ exports.Formats = [
 	},
 	{
 		name: "[Gen 4] UU",
-		desc: ["&bullet; <a href=\"https://www.smogon.com/forums/threads/3509218/#post-5522692\">DPP Resources</a>"],
+		desc: [
+			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3503638/\">DPP UU Viability Ranking</a>",
+			"&bullet; <a href=\"https://www.smogon.com/forums/posts/6431088/\">DPP Sample Teams</a>"
+		],
 		section: "Past Generations",
 
 		mod: 'gen4',
@@ -1053,7 +1081,10 @@ exports.Formats = [
 	},
 	{
 		name: "[Gen 4] LC",
-		desc: ["&bullet; <a href=\"https://www.smogon.com/forums/threads/3509218/#post-5522692\">DPP Resources</a>"],
+		desc: [
+			"&bullet; <a href=\"https://www.smogon.com/dp/articles/little_cup_guide\">DPP LC Guide</a>",
+			"&bullet; <a href=\"https://www.smogon.com/forums/posts/6431088/\">DPP Sample Teams</a>"
+		],
 		section: "Past Generations",
 
 		mod: 'gen4',
@@ -1091,7 +1122,10 @@ exports.Formats = [
 	{
 		name: "[Gen 3] OU",
 		section: "Past Generations",
-		desc: ["&bullet; <a href=\"https://www.smogon.com/forums/threads/3509218/#post-5522690\">ADV Resources</a>"],
+		desc: [
+			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3503019/\">ADV OU Viability Ranking</a>",
+			"&bullet; <a href=\"https://www.smogon.com/forums/posts/6431087/\">ADV Sample Teams</a>"
+		],
 
 		mod: 'gen3',
 		ruleset: ['Pokemon', 'Standard'],
@@ -1099,7 +1133,10 @@ exports.Formats = [
 	},
 	{
 		name: "[Gen 3] Ubers",
-		desc: ["&bullet; <a href=\"https://www.smogon.com/forums/threads/3509218/#post-5522690\">ADV Resources</a>"],
+		desc: [
+			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3536426/\">ADV Ubers Viability Ranking</a>",
+			"&bullet; <a href=\"https://www.smogon.com/forums/posts/6446466/\">ADV Ubers Sample Teams</a>"
+		],
 		section: "Past Generations",
 
 		mod: 'gen3',
@@ -1117,7 +1154,10 @@ exports.Formats = [
 	},
 	{
 		name: "[Gen 2] OU",
-		desc: ["&bullet; <a href=\"https://www.smogon.com/forums/threads/3509218/#post-5522689\">GSC Resources</a>"],
+		desc: [
+			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3503082/\">GSC OU Viability Ranking</a>",
+			"&bullet; <a href=\"https://www.smogon.com/forums/posts/6431086/\">GSC Sample Teams</a>"
+		],
 		section: "Past Generations",
 
 		mod: 'gen2',
@@ -1126,6 +1166,10 @@ exports.Formats = [
 	},
 	{
 		name: "[Gen 2] Ubers",
+		desc: [
+			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3507552/\">GSC Ubers Discussion</a>",
+			"&bullet; <a href=\"https://www.smogon.com/forums/posts/6431086/\">GSC Sample Teams</a>"
+		],
 		section: "Past Generations",
 
 		mod: 'gen2',
@@ -1152,7 +1196,10 @@ exports.Formats = [
 	},
 	{
 		name: "[Gen 1] OU",
-		desc: ["&bullet; <a href=\"https://www.smogon.com/forums/threads/3509218/#post-5522688\">RBY Resources</a>"],
+		desc: [
+			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3486845/\">RBY OU Viability Ranking</a>",
+			"&bullet; <a href=\"https://www.smogon.com/forums/posts/6431045/\">RBY Sample Teams</a>"
+		],
 		section: "Past Generations",
 
 		mod: 'gen1',
@@ -1161,6 +1208,10 @@ exports.Formats = [
 	},
 	{
 		name: "[Gen 1] Ubers",
+		desc: [
+			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3541329/\">RBY Ubers Viability Ranking</a>",
+			"&bullet; <a href=\"https://www.smogon.com/forums/posts/6431045/\">RBY Sample Teams</a>"
+		],
 		section: "Past Generations",
 
 		mod: 'gen1',
