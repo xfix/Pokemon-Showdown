@@ -498,9 +498,6 @@ exports.BattleAbilities = { // define custom abilities here.
 				}
 			}
 		}
-		// onStart: function (pokemon) {
-			// this.boost({def: -1, spd: -1});
-		// }
 	},
 	'drawingrequest': {
 		id: 'drawingrequest',
