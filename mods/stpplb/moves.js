@@ -1013,7 +1013,7 @@ exports.BattleMovedex = {
 	},
 	"boost": {
 		num: 661,
-		accuracy: 70,
+		accuracy: 90,
 		basePower: 100,
 		category: "Physical",
 		desc: "No additional effect.",

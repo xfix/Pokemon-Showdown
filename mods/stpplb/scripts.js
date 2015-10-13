@@ -168,7 +168,7 @@ exports.BattleScripts = {
 				species: 'Flygon', ability: 'Mega Plunder', item: megaStoneList.sample(1)[0], gender: 'M',
 				moves: ['earthquake', 'earthpower', 'uturn', 'dragonclaw', 'fireblast', 'boomburst', 'dragonpulse', 'return', 'stoneedge', 'crunch', 'ironhead', 'dragondance', 'quiverdance'],
 				signatureMove: 'reroll',
-				nature: 'Serious'
+				evs: {hp:88, atk: 84, def: 84, spa: 84, spd: 84, spe: 84}, nature: 'Serious'
 			},
 			'GroundCtrl27': {
 				species: 'Meloetta', ability: 'Scrappy', item: 'Assault Vest', gender: 'M',
