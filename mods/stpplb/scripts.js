@@ -168,7 +168,7 @@ exports.BattleScripts = {
 				species: 'Flygon', ability: 'Mega Plunder', item: megaStoneList.sample(1)[0], gender: 'M',
 				moves: ['earthquake', 'earthpower', 'uturn', 'dragonclaw', 'fireblast', 'boomburst', 'dragonpulse', 'return', 'stoneedge', 'crunch', 'ironhead', 'dragondance', 'quiverdance'],
 				signatureMove: 'reroll',
-				nature: 'Serious'
+				evs: {hp:88, atk: 84, def: 84, spa: 84, spd: 84, spe: 84}, nature: 'Serious'
 			},
 			'GroundCtrl27': {
 				species: 'Meloetta', ability: 'Scrappy', item: 'Assault Vest', gender: 'M',
@@ -486,7 +486,7 @@ exports.BattleScripts = {
 				}
 			}
 			// Assuming the hardcoded set evs are all legal.
-			if (!set.evs) set.evs = {hp:84, atk:84, def:84, spa:84, spd:84, spe:84};
+			if (!set.evs) set.evs = {hp:88, atk:84, def:84, spa:84, spd:84, spe:84};
 			if (set.signatureMove) set.signatureMoves = [set.signatureMove];
 			var len = set.signatureMoves.length;
 			set.moves = set.moves.sample(4 - len).concat(set.signatureMoves); // always have sig move.
@@ -714,7 +714,7 @@ exports.BattleScripts = {
 				}
 			}
 			// Assuming the hardcoded set evs are all legal.
-			if (!set.evs) set.evs = {hp:84, atk:84, def:84, spa:84, spd:84, spe:84};
+			if (!set.evs) set.evs = {hp:88, atk:84, def:84, spa:84, spd:84, spe:84};
 			if (set.signatureMove) set.signatureMoves = [set.signatureMove];
 			var len = set.signatureMoves.length;
 			set.moves = set.moves.sample(4 - len).concat(set.signatureMoves); // always have sig move.

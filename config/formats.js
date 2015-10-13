@@ -1503,7 +1503,7 @@ if (stpplb) {
 		name: "Super TPPL Bros. Plus",
 		section: "STPPLB",
 		column: 2,
-		
+
 		mod: 'stpplb',
 		searchShow: true,
 		team: 'randomtpplbp',
@@ -1518,7 +1518,7 @@ if (stpplb) {
 		name: "Super TPP Bros.",
 		section: "STPPLB",
 		column: 2,
-		
+
 		mod: 'stpplb',
 		searchShow: true,
 		team: 'randomtppb',
@@ -1533,7 +1533,7 @@ if (stpplb) {
 		name: "Super TPPL Bros. Testing",
 		section: "STPPLB",
 		column: 2,
-		
+
 		mod: 'stpplb',
 		searchShow: false,
 		ruleset: ['Sleep Clause Mod', 'HP Percentage Mod', 'Cancel Mod', 'Team Preview'],

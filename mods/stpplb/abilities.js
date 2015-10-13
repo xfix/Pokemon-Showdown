@@ -426,11 +426,11 @@ exports.BattleAbilities = { // define custom abilities here.
 		shortDesc: "This Pokemon's Attack is increased 2.5x and its Defense is doubled.",
 		onModifyDefPriority: 6,
 		onModifyDef: function (def) {
-			return this.chainModify(2);
+			return this.chainModify(1.5);
 		},
 		onModifyAtkPriority: 6,
 		onModifyAtk: function (atk) {
-			return this.chainModify(2.5);
+			return this.chainModify(2);
 		},
 		id: "physicalakazam",
 		name: "Physicalakazam",
@@ -493,13 +493,10 @@ exports.BattleAbilities = { // define custom abilities here.
 		shortDesc: "Chance of boost when using special move",
 		onAnyMove: function (target, source, move) {
 			if (move.id === "boost" || move.id === "spindash") {
-				if (this.random(10) === 0) {
+				if (this.random(3) === 0) {
 					this.boost({spe: 6}, source);
 				}
 			}
-		},
-		onStart: function (pokemon) {
-			this.boost({def: -1, spd: -1});
 		}
 	},
 	'drawingrequest': {
