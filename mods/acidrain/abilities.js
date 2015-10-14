@@ -3,7 +3,7 @@ exports.BattleAbilities = {
 		inherit: true,
 		onModifySpe: function (speMod) {
 			if (this.isWeather('sunnyday') || this.isWeather('raindance')) {
-				return this.chain(speMod, 2);
+				return this.chainModify(2);
 			}
 		}
 	},
@@ -91,7 +91,7 @@ exports.BattleAbilities = {
 		inherit: true,
 		onModifySpe: function (speMod, pokemon) {
 			if (this.isWeather('sandstorm') || this.isWeather('raindance')) {
-				return this.chain(speMod, 2);
+				return this.chainModify(2);
 			}
 		}
 	},
