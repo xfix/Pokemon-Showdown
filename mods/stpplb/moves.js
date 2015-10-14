@@ -1136,8 +1136,8 @@ exports.BattleMovedex = {
 		priority: 0,
 		flags: {protect: 1, authentic: 1},
 		onHit: function (target, source) {
-			var disallowedMoves = {quicksketch: 1, sketch:1, struggle:1};
-			if (!this.lastMove || disallowedMoves[this.lastMove]) return false;
+			var disallowedMoves = {copycat:1, focuspunch:1, mimic: 1, quicksketch: 1, sketch:1, sleeptalk:1, snatch:1, struggle:1, transform:1};
+			if (!this.lastMove || disallowedMoves[this.lastMove] || source.hasMove(this.lastMove)) return false;
 			var move = this.getMove(this.lastMove);
 			var sketchedMove = {
 				move: move.name,
