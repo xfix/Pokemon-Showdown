@@ -571,5 +571,29 @@ exports.BattleAbilities = { // define custom abilities here.
 				return this.chainModify(1.5);
 			}
 		}
+	},
+	'mirrorguard': {
+		desc: 'Pokemon bounces residual damage. Curse and Substitute on use, Belly Drum, Pain Split, Struggle recoil, and confusion damage are considered direct damage.',
+		shortDesc: 'This Pokemon bounces residual damage.',
+		onDamage: function (damage, target, source, effect) {
+			console.log(arguments);
+			if (effect.effectType === 'Move' || effect.wasMirrored) {
+				return;
+			}
+			var newEffect = Object.create(effect);
+			newEffect.wasMirrored = true;
+			var foes = target.side.foe.active;
+			for (var i = 0; i < foes.length; i++) {
+				var foe = foes[i];
+				this.damage(damage, foe, source, newEffect);
+			}
+			return false;
+		},
+		id: 'mirrorguard',
+		name: 'Mirror Guard',
+		// Would be totally broken on something holding Toxic Orb.
+		// Good thing I haven't done that, right?
+		rating: 5,
+		num: 151,
 	}
 };
