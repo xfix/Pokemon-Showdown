@@ -594,6 +594,6 @@ exports.BattleAbilities = { // define custom abilities here.
 		// Would be totally broken on something holding Toxic Orb.
 		// Good thing I haven't done that, right?
 		rating: 5,
-		num: 151,
+		num: 151
 	}
 };
