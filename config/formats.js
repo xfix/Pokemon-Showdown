@@ -1322,20 +1322,8 @@ exports.Formats = [
 				this.boost({def:1, spd:1}, pokemon);
 				this.add('c|PikalaxALT|ヽ༼ຈل͜ຈ༽ﾉ RIOT ヽ༼ຈل͜ຈ༽ﾉ');
 			}
-			if (name === 'xfix') { // different message depending on hazards.
-				var hazards = {stealthrock: 1, spikes: 1, toxicspikes: 1, stickyweb: 1};
-				var hasHazards = false;
-				for (var hazard in hazards) {
-					if (pokemon.side.getSideCondition(hazard)) {
-						hasHazards = true;
-						break;
-					}
-				}
-				if (hasHazards) {
-					this.add('c|xfix|(no haz... too late)');
-				} else {
-					this.add('c|xfix|(no hazards, attacks only, final destination)');
-				}
+			if (name === 'xfix') {
+				this.add("c|xfix|YayBot will be updated soon, okay?");
 			} else if (name === 'azum4roll') {
 				this.add("c|azum4roll|What? I'm just a normal Azumarill.");
 			} else if (name === 'lasszeowx') {
@@ -1424,15 +1412,7 @@ exports.Formats = [
 		onFaint: function (pokemon) { // PJSalt-y faint messages go here.
 			var name = toId(pokemon.name);
 			if (name === 'xfix') {
-				var foe = pokemon.side.foe.active[0];
-				if (foe.name === 'xfix') {
-					this.add('c|xfix|(annoying Dittos...)');
-				} else if (foe.ability === 'magicbounce') {
-					this.add('c|xfix|(why ' + foe.name + ' has Magic Bounce...)');
-					this.add('c|xfix|(gg... why...)');
-				} else {
-					this.add('c|xfix|(gg... I guess)');
-				}
+				this.add("c|xfix|I'm not going to update YayBot if you defeat me like that...");
 			} else if (name === 'azum4roll') {
 				this.add("c|azum4roll|This game doesn't have enough glitches!");
 			} else if (name === 'lasszeowx') {

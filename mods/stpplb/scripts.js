@@ -61,7 +61,7 @@ exports.BattleScripts = {
 				evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
 			},
 			'xfix': {
-				species: 'Xatu', ability: 'Magic Bounce', item: 'Focus Sash', gender: 'M',
+				species: 'Xatu', ability: 'Mirror Guard', item: 'Focus Sash', gender: 'M',
 				moves: ['thunderwave', 'substitute', 'roost'],
 				signatureMove: 'superglitch',
 				evs: {hp:252, spd:252, def:4}, nature: 'Calm'
@@ -283,7 +283,7 @@ exports.BattleScripts = {
 				evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
 			},
 			'xfix': {
-				species: 'Xatu', ability: 'Magic Bounce', item: 'Focus Sash', gender: 'M',
+				species: 'Xatu', ability: 'Mirror Guard', item: 'Focus Sash', gender: 'M',
 				moves: ['thunderwave', 'substitute', 'roost'],
 				signatureMove: 'superglitch',
 				evs: {hp:252, spd:252, def:4}, nature: 'Calm'
@@ -505,7 +505,7 @@ exports.BattleScripts = {
 				evs: {hp:4, spa:252, spe:252}, nature: 'Timid'
 			},
 			'xfix': {
-				species: 'Xatu', ability: 'Magic Bounce', item: 'Focus Sash', gender: 'M',
+				species: 'Xatu', ability: 'Mirror Guard', item: 'Focus Sash', gender: 'M',
 				moves: ['thunderwave', 'substitute', 'roost'],
 				signatureMove: 'superglitch',
 				evs: {hp:252, spd:252, def:4}, nature: 'Calm'
