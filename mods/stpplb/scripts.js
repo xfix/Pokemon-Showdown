@@ -729,7 +729,7 @@ exports.BattleScripts = {
 		pokemon.baseTemplate = template; // mega evolution is permanent
 
 		// Do we have a proper sprite for it?
-		if (this.getTemplate(pokemon.canMegaEvo).baseSpecies === pokemon.originalSpecies) {
+		if (this.getTemplate(pokemon.canMegaEvo).baseSpecies === pokemon.originalSpecies && template.requiredItem.num < 684) {
 			pokemon.details = template.species + (pokemon.level === 100 ? '' : ', L' + pokemon.level) + (pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
 			this.add('detailschange', pokemon, pokemon.details);
 			this.add('-mega', pokemon, template.baseSpecies, template.requiredItem);
