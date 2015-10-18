@@ -1,4 +1,4 @@
-var megaStoneList = [
+/*var megaStoneList = [
 	'Abomasite',
 	'Absolite',
 	'Aerodactylite',
@@ -48,7 +48,13 @@ var megaStoneList = [
 	'Venusaurite',
 	'Red Orb',
 	'Blue Orb'
-];
+];*/
+var megaStoneList = [];
+var items = require('./items.js').BattleItems;
+for (var i in items) {
+	var item = items[i];
+	if (item.megaStone || item.id === 'redorb' || item.id === 'blueorb') megaStoneList.push(item.name);
+}
 exports.BattleScripts = {
 	randomtpplbTeam: function (side) {
 		var team = [];
@@ -85,7 +91,7 @@ exports.BattleScripts = {
 				evs: {hp:4, atk:252, spe:252}, nature: 'Jolly'
 			},*/
 			'TieSoul': {
-				species: 'Rhyperior', ability: 'Rock Head', item: 'Focus Sash', gender: 'M',
+				species: 'Rhyperior', ability: 'Rock Head', item: 'Rhyperiorite', gender: 'M',
 				moves: ['headsmash', 'autotomize', 'earthquake'],
 				signatureMove: 'bulk',
 				evs: {hp:252, def:252, spe:4}, nature: 'Impish'
@@ -307,7 +313,7 @@ exports.BattleScripts = {
 				evs: {hp:4, atk:252, spe:252}, nature: 'Jolly'
 			},
 			'TieSoul': {
-				species: 'Rhyperior', ability: 'Rock Head', item: 'Focus Sash', gender: 'M',
+				species: 'Rhyperior', ability: 'Rock Head', item: 'Rhyperiorite', gender: 'M',
 				moves: ['headsmash', 'autotomize', 'earthquake'],
 				signatureMove: 'bulk',
 				evs: {hp:252, def:252, spe:4}, nature: 'Impish'
@@ -529,7 +535,7 @@ exports.BattleScripts = {
 				evs: {hp:4, atk:252, spe:252}, nature: 'Jolly'
 			},
 			'TieSoul': {
-				species: 'Rhyperior', ability: 'Rock Head', item: 'Focus Sash', gender: 'M',
+				species: 'Rhyperior', ability: 'Rock Head', item: 'Rhyperiorite', gender: 'M',
 				moves: ['headsmash', 'autotomize', 'earthquake'],
 				signatureMove: 'bulk',
 				evs: {hp:252, def:252, spe:4}, nature: 'Impish'
@@ -762,7 +768,7 @@ exports.BattleScripts = {
 		pokemon.baseTemplate = template; // mega evolution is permanent
 
 		// Do we have a proper sprite for it?
-		if (this.getTemplate(pokemon.canMegaEvo).baseSpecies === pokemon.originalSpecies) {
+		if (this.getTemplate(pokemon.canMegaEvo).baseSpecies === pokemon.originalSpecies && pokemon.item.num < 684) {
 			pokemon.details = template.species + (pokemon.level === 100 ? '' : ', L' + pokemon.level) + (pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
 			this.add('detailschange', pokemon, pokemon.details);
 			this.add('-mega', pokemon, template.baseSpecies, template.requiredItem);

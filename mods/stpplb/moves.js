@@ -236,8 +236,8 @@ exports.BattleMovedex = {
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
-		desc: "Raises the user's Attack and Defense by 2 stages.",
-		shortDesc: "Raises the user's Attack and Defense by 2.",
+		desc: "Raises the user's Defense by 2 stages.",
+		shortDesc: "Raises the user's Defense by 2.",
 		id: "bulk",
 		isViable: true,
 		name: "BULK!!",
@@ -245,7 +245,6 @@ exports.BattleMovedex = {
 		priority: 0,
 		flags: {snatch: 1},
 		boosts: {
-			atk: 2,
 			def: 2
 		},
 		onPrepareHit: function (target, source, move) {

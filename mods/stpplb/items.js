@@ -2,7 +2,7 @@ exports.BattleItems = {
 	"lunchabylls": {
 		id: "lunchabylls",
 		name: "Lunchabylls",
-		num: 444,
+		num: 684,
 		spritenum: 242,
 		fling: {
 			basePower: 10
@@ -22,7 +22,7 @@ exports.BattleItems = {
 	'speedshoes': {
 		id: 'speedshoes',
 		name: 'Speed Shoes',
-		num: 445,
+		num: 685,
 		fling: {
 			basePower: 15
 		},
@@ -35,7 +35,7 @@ exports.BattleItems = {
 	'dex': {
 		id: 'dex',
 		name: 'Dex',
-		num: 446,
+		num: 686,
 		fling: {basePower: 15},
 		desc: 'Boosts accuracy by 20% and crit rate by one stage.',
 		shortDesc: 'Boosts accuracy by 20% and crit rate by one stage.',
@@ -47,5 +47,19 @@ exports.BattleItems = {
 				return accuracy * 1.2;
 			}
 		}
+	},
+	'rhyperiorite': {
+		id: "rhyperiorite",
+		name: "Rhyperiorite",
+		spritenum: 575,
+		megaStone: "Rhyperior-Mega",
+		megaEvolves: "Rhyperior",
+		onTakeItem: function (item, source) {
+			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
+			return true;
+		},
+		num: 687,
+		gen: 6,
+		desc: "If holder is a Rhyperior, this item allows it to Mega Evolve in battle."
 	}
 };
