@@ -1,11 +1,62 @@
+/*var megaStoneList = [
+	'Abomasite',
+	'Absolite',
+	'Aerodactylite',
+	'Aggronite',
+	'Alakazite',
+	'Altarianite',
+	'Ampharosite',
+	'Audinite',
+	'Banettite',
+	'Beedrillite',
+	'Blastoisinite',
+	'Blazikenite',
+	'Cameruptite',
+	'Charizardite X',
+	'Charizardite Y',
+	'Diancite',
+	'Galladite',
+	'Garchompite',
+	'Gardevoirite',
+	'Gengarite',
+	'Glalitite',
+	'Gyaradosite',
+	'Heracronite',
+	'Houndoominite',
+	'Kangaskhanite',
+	'Latiasite',
+	'Latiosite',
+	'Lopunnite',
+	'Lucarionite',
+	'Manectite',
+	'Mawilite',
+	'Medichamite',
+	'Metagrossite',
+	'Mewtwonite X',
+	'Mewtwonite Y',
+	'Pidgeotite',
+	'Pinsirite',
+	'Sablenite',
+	'Salamencite',
+	'Sceptilite',
+	'Scizorite',
+	'Sharpedonite',
+	'Slowbronite',
+	'Steelixite',
+	'Swampertite',
+	'Tyranitarite',
+	'Venusaurite',
+	'Red Orb',
+	'Blue Orb'
+];*/
+var megaStoneList = [];
+var items = require('./items.js').BattleItems;
+for (var i in items) {
+	var item = items[i];
+	if (item.megaStone || item.id === 'redorb' || item.id === 'blueorb') megaStoneList.push(item.name);
+}
 exports.BattleScripts = {
 	randomtpplbTeam: function (side) {
-		var megaStoneList = [];
-		var items = require('./items.js').BattleItems;
-		for (var i in items) {
-			var item = items[i];
-			if (item.megaStone || item.id === 'redorb' || item.id === 'blueorb') megaStoneList.push(item.name);
-		}
 		var team = [];
 		var variant = this.random(2);
 		var sets = { // this is where all the movesets are defined. Add new mons here.
@@ -228,12 +279,6 @@ exports.BattleScripts = {
 		return team;
 	},
 	randomtpplbpTeam: function (side) {
-		var megaStoneList = [];
-		var items = require('./items.js').BattleItems;
-		for (var i in items) {
-			var item = items[i];
-			if (item.megaStone || item.id === 'redorb' || item.id === 'blueorb') megaStoneList.push(item.name);
-		}
 		var team = [];
 		var variant = this.random(2);
 		var sets = { // this is where all the movesets are defined. Add new mons here.
@@ -456,12 +501,6 @@ exports.BattleScripts = {
 		return team;
 	},
 	randomtppbTeam: function (side) {
-		var megaStoneList = [];
-		var items = require('./items.js').BattleItems;
-		for (var i in items) {
-			var item = items[i];
-			if (item.megaStone || item.id === 'redorb' || item.id === 'blueorb') megaStoneList.push(item.name);
-		}
 		var team = [];
 		var variant = this.random(2);
 		var sets = { // this is where all the movesets are defined. Add new mons here.
@@ -729,7 +768,7 @@ exports.BattleScripts = {
 		pokemon.baseTemplate = template; // mega evolution is permanent
 
 		// Do we have a proper sprite for it?
-		if (this.getTemplate(pokemon.canMegaEvo).baseSpecies === pokemon.originalSpecies && template.requiredItem.num < 684) {
+		if (this.getTemplate(pokemon.canMegaEvo).baseSpecies === pokemon.originalSpecies && pokemon.item.num < 684) {
 			pokemon.details = template.species + (pokemon.level === 100 ? '' : ', L' + pokemon.level) + (pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
 			this.add('detailschange', pokemon, pokemon.details);
 			this.add('-mega', pokemon, template.baseSpecies, template.requiredItem);
