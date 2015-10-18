@@ -41,6 +41,7 @@ var pool = Pool({
 var connection = exports.connection = new irc.Client(config.server, config.nickname, config);
 
 function say(room, message) {
+	if (!message) return;
 	connection.say(room, message);
 	if (!config.loggerid) return;
 	var messages = message.split("\n");
