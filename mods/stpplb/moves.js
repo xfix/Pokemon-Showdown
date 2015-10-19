@@ -898,7 +898,7 @@ exports.BattleMovedex = {
 				this.add('-message', pokemon.name + " is preparing to strike!");
 			},
 			onBeforeMovePriority: 100,
-			onBeforeMovePriority: function (pokemon) {
+			onBeforeMove: function (pokemon) {
 				this.boost({def:-2, spd:-2}, pokemon, pokemon, this.getMove("Ganon's Sword")); // dunno if this works
 			}
 		},
