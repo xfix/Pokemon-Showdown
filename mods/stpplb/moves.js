@@ -137,7 +137,7 @@ exports.BattleMovedex = {
 			this.add('-message', "(Enemy " + generateNoise.call(this) + " TMTRAINER " + opponent.name + " is hurt by its burn!)");
 			this.damage(opponent.maxhp * this.random(42, 96) * 0.01, opponent, opponent);
 			var exclamation = source.status === 'brn' ? '!' : '?';
-			this.add('-message', "(Enemy " + generateNoise.call(this) + " TMTRAINER xfix is hurt by its burn" + exclamation + ")");
+			this.add('-message', "(Enemy " + generateNoise.call(this) + " TMTRAINER " + source.name + " is hurt by its burn" + exclamation + ")");
 			this.damage(source.maxhp * this.random(24, 48) * 0.01, source, source);
 			return null;
 		},
@@ -160,7 +160,7 @@ exports.BattleMovedex = {
 			this.attrLastMove('[still]');
 			this.add('-anim', source, 'Wish', source);
 			if (!source.hasType('Bird')) { // turn user into Bird-type and spout glitchy nonsense.
-				this.add("c|azum4roll|9̜͉̲͇̱̘̼ͬ̈́̒͌̑̓̓7ͩ͊̚5ͨ̆͐͏̪̦6̗͎ͬ̿̍̍̉ͧ͢4̯̠ͤ͛͐̄͒͡2͐ͬ̀d̺͉̜̈ͯ̓x̩̖̥̦̥͛́ͥ͑̈́ͩ͊͠║̛̥̜̱̝͍͒̌ͣ̀͌͌̒'̣͎̗̬̯r̸̗͍ͫ̓͆ͣ̎͊ ̜̻̈D͓̰̳̝̥̙͙͋̀E͉͔̥͇̫͓͍̔ͬͣ͂̓̽x̰̗̬̖͊̏̄̑̒̿͊s̜̪̏́f̧̯̼̦̓͌̇̒o̱̾̓ͩ̆̓̀F̟̰͓̩̂̆͛ͤ▓̣̩̝̙̇̓͒͋̈͡1̡̹̹͓̬͖͐̑̉̔̏xͥ̀'̻͖͍̠̉͡v̫̼̹̳̤̱͉▓̄̏͂ͤͭ̋ͫ͏̠̦̝▓̟͉͇̣̠̦̓̄ͫͥ̐̍̂▓͔̦̫̦̜̖́▓͍ͯ͗̾͆▓̮̗̠̜͙̹̟͊̎ͤ̔̽ͬ̃▓̩̟̏ͪ̇̂̂̒▓̖̼̤͉ͤ̾̋ͥͣͬ͒▓̈́̿͂̌̓▓͇̞̗̽̔̂͊̌ͣ͐▓ͬ́ͥ̔͒͒̎▓̰̪̫̩͇̲̇̔̿͢ͅ▓̞̬͎▓̖͍̖̫ͪ͐̆̅̍̂ͨͅ▓̡̭̠̗̳̬̜̝▓̤͙̥̆̌ͨͪ̆͌▓̴͉̩̈́▓ͩ̌̌̂̿̑̐▓ͨ҉͕̠͍▓̹̌̅̂ͨ͋̃͑▓̯̰̣̝̯ͭͦ̂͋̇̾͠▓̸̺̣̜̯̙̂͋̈ͨ̎̾ͧ▓͢▓͔̚▓̭͎͖̟̼̄̈̃̎́▓̧̌ͧ▓̼̹͈͗̄̆");
+				this.add("c|" + source.name + "|9̜͉̲͇̱̘̼ͬ̈́̒͌̑̓̓7ͩ͊̚5ͨ̆͐͏̪̦6̗͎ͬ̿̍̍̉ͧ͢4̯̠ͤ͛͐̄͒͡2͐ͬ̀d̺͉̜̈ͯ̓x̩̖̥̦̥͛́ͥ͑̈́ͩ͊͠║̛̥̜̱̝͍͒̌ͣ̀͌͌̒'̣͎̗̬̯r̸̗͍ͫ̓͆ͣ̎͊ ̜̻̈D͓̰̳̝̥̙͙͋̀E͉͔̥͇̫͓͍̔ͬͣ͂̓̽x̰̗̬̖͊̏̄̑̒̿͊s̜̪̏́f̧̯̼̦̓͌̇̒o̱̾̓ͩ̆̓̀F̟̰͓̩̂̆͛ͤ▓̣̩̝̙̇̓͒͋̈͡1̡̹̹͓̬͖͐̑̉̔̏xͥ̀'̻͖͍̠̉͡v̫̼̹̳̤̱͉▓̄̏͂ͤͭ̋ͫ͏̠̦̝▓̟͉͇̣̠̦̓̄ͫͥ̐̍̂▓͔̦̫̦̜̖́▓͍ͯ͗̾͆▓̮̗̠̜͙̹̟͊̎ͤ̔̽ͬ̃▓̩̟̏ͪ̇̂̂̒▓̖̼̤͉ͤ̾̋ͥͣͬ͒▓̈́̿͂̌̓▓͇̞̗̽̔̂͊̌ͣ͐▓ͬ́ͥ̔͒͒̎▓̰̪̫̩͇̲̇̔̿͢ͅ▓̞̬͎▓̖͍̖̫ͪ͐̆̅̍̂ͨͅ▓̡̭̠̗̳̬̜̝▓̤͙̥̆̌ͨͪ̆͌▓̴͉̩̈́▓ͩ̌̌̂̿̑̐▓ͨ҉͕̠͍▓̹̌̅̂ͨ͋̃͑▓̯̰̣̝̯ͭͦ̂͋̇̾͠▓̸̺̣̜̯̙̂͋̈ͨ̎̾ͧ▓͢▓͔̚▓̭͎͖̟̼̄̈̃̎́▓̧̌ͧ▓̼̹͈͗̄̆");
 				source.setType('Bird');
 				this.add('-start', source, 'typechange', 'Bird');
 			}
@@ -292,7 +292,7 @@ exports.BattleMovedex = {
 			this.useMove('partingshot', target);
 			this.useMove('voltswitch', target);
 			this.useMove('uturn', target);
-			this.add("c|Lass Zeowx|I'm getting outta here! Byeeeee~");
+			this.add("c|" + source.name + "|I'm getting outta here! Byeeeee~");
 		},
 		secondary: false,
 		target: "self",
@@ -501,15 +501,15 @@ exports.BattleMovedex = {
 			this.attrLastMove('[still]');
 			if (attacker.volatiles[move.id] && attacker.volatiles[move.id].duration === 1) {
 				this.add('-anim', attacker, 'Flare Blitz', defender);
-				this.add('c|MegaCharizard|back');
+				this.add('c|' + attacker.name + '|back');
 				attacker.removeVolatile(move.id);
 				return;
 			}
 			if (!attacker.volatiles[move.id]) {
-				this.add('c|MegaCharizard|afk');
+				this.add('c|' + attacker.name + '|afk');
 				this.add('-prepare', attacker, 'Shadow Force', defender);
 			} else {
-				this.add('raw|MegaCharizard is still gone!');
+				this.add('raw|' + attacker.name + ' is still gone!');
 			}
 			attacker.addVolatile('afk', defender);
 			return null;
@@ -773,6 +773,7 @@ exports.BattleMovedex = {
 			if (pokemon.hasType('Dark')) return;
 			if (!pokemon.addType('Dark')) return;
 			this.add('-start', pokemon, 'typeadd', 'Dark', '[from] move: Thousand Alts');
+			this.add('-anim', source, 'Head Smash', target);
 		},
 		recoil: [1, 2],
 		secondary: {chance: 20,	volatileStatus: 'confusion'},
@@ -1046,9 +1047,6 @@ exports.BattleMovedex = {
 		flags: {reflectable: 1},
 		secondary: false,
 		sideCondition: 'setmine',
-		onPrepareHit: function (target, source, move) { // animation
-			this.attrLastMove('[still]');
-		},
 		effect: {
 			onStart: function (side) {
 				this.add('-sidestart', side, 'move: Set Mine');
@@ -1098,7 +1096,7 @@ exports.BattleMovedex = {
 		},
 		onHit: function (target, source) {
 			source.addVolatile('lockon', target);
-			this.add('-activate', source, 'move: Lock On', '[of] ' + target);
+			this.add('-activate', source, 'move: Lock \'n\' Load', '[of] ' + target);
 			this.add('c|' + source.name + '|Say hello to Becky and Betsy!');
 		},
 		self: {volatileStatus: 'focusenergy'},
