@@ -39,15 +39,15 @@ exports.BattleAbilities = { // define custom abilities here.
 	},
 	'spoopify': {
 		desc: "Makes stuff Ghost on switch-in.",
-		shortDesc: 'b', // got lazy
+		shortDesc: "On switch-in, this Pokemon changes all opponents' primary type to Ghost.",
 		onStart: function (pokemon) {
 			var activeFoe = pokemon.side.foe.active;
 			for (var i = 0; i < activeFoe.length; i++) {
 				var foe = activeFoe[i];
 				var secondarytype = (foe.typesData[1] ? foe.typesData[1].type : false);
-				if (foe.typesData[1] === 'Ghost') { // no more Ghost/Ghost madness!
+				if (foe.typesData[1] === 'Ghost') { // no more Ghost/Ghost madness! it should work now right?
 					this.add('-start', foe, 'typechange', 'Ghost');
-					foe.typesData = [{type: 'Ghost', suppressed: false,  isAdded: false}];
+					foe.setType('Ghost');
 					continue;
 				}
 				this.add('-start', foe, 'typechange', 'Ghost' + (secondarytype ? '/' + secondarytype : ''));
@@ -89,7 +89,7 @@ exports.BattleAbilities = { // define custom abilities here.
 	},
 	'proteon': { // Eeveelutionlvr's ability.
 		desc: '',
-		shortDesc: '',
+		shortDesc: "This Pokemon transforms into an Eeveelution to match the type of the move it is about to use, if possible.",
 		onPrepareHit: function (source, target, move) {
 			var type = move.type;
 			if (type && type !== '???' && source.getTypes().join() !== type) {
@@ -126,6 +126,8 @@ exports.BattleAbilities = { // define custom abilities here.
 		num: 196
 	},
 	'swahahahahaggers': { // Sohippy's ability: con on switch-in.
+		desc: '',
+		shortDesc: "On switch-in, all opponents become confused; Ground immunity.",
 		onImmunity: function (type) {
 			if (type === 'Ground') return false;
 		},
