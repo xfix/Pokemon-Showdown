@@ -41,6 +41,7 @@ var pool = Pool({
 var connection = exports.connection = new irc.Client(config.server, config.nickname, config);
 
 function say(room, message) {
+	if (!message) return;
 	connection.say(room, message);
 	if (!config.loggerid) return;
 	var messages = message.split("\n");
@@ -69,7 +70,7 @@ function listenForLogs(socket, channel, bufferid) {
 	});
 
 	socket.on('quit', function quit(nick, reason, channels, message) {
-		if (channels.indexOf(channel) !== -1) return;
+		if (channels.indexOf(channel) === -1) return;
 
 		log(bufferid, 128, message.prefix, reason);
 	});
@@ -88,6 +89,8 @@ function listenForLogs(socket, channel, bufferid) {
 	});
 
 	socket.on('nick', function nick(oldnick, newnick, channels, message) {
+		if (channels.indexOf(channel) === -1) return;
+
 		log(bufferid, 8, message.prefix, newnick);
 	});
 
