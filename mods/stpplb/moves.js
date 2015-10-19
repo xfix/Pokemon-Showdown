@@ -288,11 +288,13 @@ exports.BattleMovedex = {
 		pp: 10,
 		priority: 0,
 		flags: {},
+		onPrepareHit: function (target, source, move) {
+			this.add("c|" + source.name + "|I'm getting outta here! Byeeeee~");
+		},
 		onHit: function (target) {
 			this.useMove('partingshot', target);
 			this.useMove('voltswitch', target);
 			this.useMove('uturn', target);
-			this.add("c|" + source.name + "|I'm getting outta here! Byeeeee~");
 		},
 		secondary: false,
 		target: "self",
@@ -773,7 +775,7 @@ exports.BattleMovedex = {
 			if (pokemon.hasType('Dark')) return;
 			if (!pokemon.addType('Dark')) return;
 			this.add('-start', pokemon, 'typeadd', 'Dark', '[from] move: Thousand Alts');
-			this.add('-anim', source, 'Head Smash', target);
+			this.add('-anim', pokemon, 'Head Smash', target);
 		},
 		recoil: [1, 2],
 		secondary: {chance: 20,	volatileStatus: 'confusion'},
