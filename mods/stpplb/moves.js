@@ -891,7 +891,7 @@ exports.BattleMovedex = {
 			if (!pokemon.removeVolatile('ganonssword')) {
 				return;
 			}
-			this.boost({def:-2, spd:-2}, pokemon); // dunno if this works
+			this.boost({def:-2, spd:-2}, pokemon, pokemon, this.getMove("Ganon's Sword")); // dunno if this works
 		},
 		effect: {
 			duration: 1,
