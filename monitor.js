@@ -117,7 +117,7 @@ var Monitor = module.exports = {
 		var duration = now - this.battlePrepTimes[ip];
 		if (ip in this.battlePreps && duration < 3 * 60 * 1000) {
 			this.battlePreps[ip]++;
-			if (this.battlePreps[ip] > 6) {
+			if (this.battlePreps[ip] > 18) {
 				return true;
 			}
 		} else {

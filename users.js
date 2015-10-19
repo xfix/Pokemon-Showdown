@@ -1465,7 +1465,7 @@ User = (function () {
 			return;
 		}
 		if (Monitor.countPrepBattle(connection.ip || connection.latestIp, this.name)) {
-			connection.popup("Due to high load, you are limited to 6 battles every 3 minutes.");
+			connection.popup("Due to high load, you are limited to 18 battles every 3 minutes.");
 			setImmediate(callback.bind(null, false));
 			return;
 		}
