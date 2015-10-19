@@ -544,7 +544,7 @@ exports.BattleMovedex = {
 		name: "God Bird",
 		pp: 15,
 		priority: 0,
-		flags: {contact: 1, charge: 1, mirror: 1},
+		flags: {contact: 1, charge: 1, mirror: 1, gravity: 1, distance: 1},
 		breaksProtect: true,
 		self: {
 			onHit: function (pokemon) {
@@ -567,6 +567,10 @@ exports.BattleMovedex = {
 			attacker.addVolatile('twoturnmove', defender);
 			return null;
 		},
+		onPrepareHit: function (target, source, move) { // animation
+			this.attrLastMove('[still]');
+			this.add('-anim', source, 'Sky Attack', target);
+		},
 		effect: {
 			duration: 2,
 			onAccuracy: function (accuracy, target, source, move) {
@@ -581,7 +585,7 @@ exports.BattleMovedex = {
 			}
 		},
 		secondary: false,
-		target: "normal",
+		target: "any",
 		type: "Flying"
 	},
 	'reroll': {
