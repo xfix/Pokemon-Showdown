@@ -888,7 +888,7 @@ exports.BattleMovedex = {
 			this.boost({def:2, spd:2}, pokemon);
 		},
 		beforeMoveCallback: function (pokemon) {
-			if (!pokemon.removeVolatile('ganonssword')) { 
+			if (!pokemon.removeVolatile('ganonssword')) {
 				return;
 			}
 			this.boost({def:-2, spd:-2}, pokemon); // dunno if this works
