@@ -556,6 +556,7 @@ exports.BattleMovedex = {
 			}
 		},
 		onTry: function (attacker, defender, move) {
+			this.attrLastMove('[still]');
 			if (attacker.removeVolatile(move.id)) {
 				this.add('-anim', attacker, 'Sky Attack', defender);
 				return;
@@ -887,10 +888,10 @@ exports.BattleMovedex = {
 			this.boost({def:2, spd:2}, pokemon);
 		},
 		beforeMoveCallback: function (pokemon) {
-			if (!pokemon.removeVolatile('ganonssword')) { // dunno if this works
-				this.boost({def:-2, spd:-2}, pokemon);
+			if (!pokemon.removeVolatile('ganonssword')) { 
 				return;
 			}
+			this.boost({def:-2, spd:-2}, pokemon); // dunno if this works
 		},
 		effect: {
 			duration: 1,
@@ -1042,6 +1043,9 @@ exports.BattleMovedex = {
 		flags: {reflectable: 1},
 		secondary: false,
 		sideCondition: 'setmine',
+		onPrepareHit: function (target, source, move) { // animation
+			this.attrLastMove('[still]');
+		},
 		effect: {
 			onStart: function (side) {
 				this.add('-sidestart', side, 'move: Set Mine');
