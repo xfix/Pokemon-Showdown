@@ -45,7 +45,7 @@ exports.BattleAbilities = { // define custom abilities here.
 			for (var i = 0; i < activeFoe.length; i++) {
 				var foe = activeFoe[i];
 				var secondarytype = (foe.typesData[1] ? foe.typesData[1].type : false);
-				if (foe.typesData[1] === 'Ghost') { // no more Ghost/Ghost madness! it should work now right?
+				if (secondarytype === 'Ghost') { // no more Ghost/Ghost madness! it should work now right?
 					this.add('-start', foe, 'typechange', 'Ghost');
 					foe.setType('Ghost');
 					continue;
