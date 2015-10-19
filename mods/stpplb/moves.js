@@ -557,6 +557,7 @@ exports.BattleMovedex = {
 		},
 		onTry: function (attacker, defender, move) {
 			if (attacker.removeVolatile(move.id)) {
+				this.add('-anim', attacker, 'Sky Attack', defender);
 				return;
 			}
 			this.add('-prepare', attacker, 'Fly', defender);
@@ -566,10 +567,6 @@ exports.BattleMovedex = {
 			}
 			attacker.addVolatile('twoturnmove', defender);
 			return null;
-		},
-		onPrepareHit: function (target, source, move) { // animation
-			this.attrLastMove('[still]');
-			this.add('-anim', source, 'Sky Attack', target);
 		},
 		effect: {
 			duration: 2,
@@ -890,23 +887,15 @@ exports.BattleMovedex = {
 			this.boost({def:2, spd:2}, pokemon);
 		},
 		beforeMoveCallback: function (pokemon) {
-			if (!pokemon.removeVolatile('ganonssword')) {
+			if (!pokemon.removeVolatile('ganonssword')) { // dunno if this works
+				this.boost({def:-2, spd:-2}, pokemon);
 				return;
 			}
 		},
 		effect: {
 			duration: 1,
 			onStart: function (pokemon) {
-				this.add('-singleturn', pokemon, "move: Ganon's Sword");
-			}
-		},
-		secondary: {
-			chance: 95,
-			self: {
-				boosts: {
-					def: -2,
-					spd: -2
-				}
+				this.add('-message', pokemon.name + " is preparing to strike!");
 			}
 		},
 		target: "normal",
