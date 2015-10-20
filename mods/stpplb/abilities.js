@@ -46,9 +46,9 @@ exports.BattleAbilities = { // define custom abilities here.
 				var foe = activeFoe[i];
 				if (!foe.hasType('Ghost')) {
 					foe.typesData[0] = {type: 'Ghost', suppressed: false,  isAdded: false};
-				} else {
+				} else if (foe.typesData[0].type !== 'Ghost') {
 					foe.typesData.shift();
-				}
+				} else continue;
 				this.add('-start', foe, 'typechange', foe.typesData.map(function(x){return x.type}).join('/'));
 			}
 		},
