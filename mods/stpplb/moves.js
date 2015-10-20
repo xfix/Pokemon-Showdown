@@ -1226,7 +1226,7 @@ exports.BattleMovedex = {
 		flags: {contact: 1, protect: 1, mirror: 1},
 		beforeTurnCallback: function (pokemon, target, move) {
 			move.type = move.typeList.sample(1)[0];
-		}
+		},
 		onPrepareHit: function(target, source, move) {
 			this.attrLastMove('[still]');
 			this.add('-anim', source, 'Tri Attack', target);
