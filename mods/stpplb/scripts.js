@@ -84,11 +84,17 @@ exports.BattleScripts = {
 				signatureMove: 'projectilespam',
 				evs: {hp:4, atk:252, spe:252}, nature: 'Jolly'
 			},*/
-			'TieSoul': {
+			/*'BulkSoul': { // STPPLB+ only
 				species: 'Rhyperior', ability: 'Rock Head', item: 'Focus Sash', gender: 'M',
 				moves: ['headsmash', 'autotomize', 'earthquake'],
 				signatureMove: 'bulk',
 				evs: {hp:252, def:252, spe:4}, nature: 'Impish'
+			},*/
+			'TieSoul': {
+				species: 'Aggron', ability: 'Super Protean', item: 'Membrane', gender: 'M',
+				moves: ['playrough', 'firepunch', 'icepunch', 'thunderpunch', 'waterfall', 'heavyslam', 'stoneedge', 'knockoff', 'shadowclaw', 'earthquake', 'psychocut', 'dragonclaw', 'acrobatics', 'xscissor', 'poisonjab'],
+				signatureMove: 'typeroulette',
+				evs: {hp:252, atk:252, spe:4}, nature: 'Adamant'
 			},
 			"Soma's Ghost": {
 				species: 'Herdier', ability: 'Spoopify', item: 'Leftovers', gender: 'M',
@@ -306,7 +312,7 @@ exports.BattleScripts = {
 				signatureMove: 'projectilespam',
 				evs: {hp:4, atk:252, spe:252}, nature: 'Jolly'
 			},
-			'TieSoul': {
+			'BulkSoul': {
 				species: 'Rhyperior', ability: 'Rock Head', item: 'Focus Sash', gender: 'M',
 				moves: ['headsmash', 'autotomize', 'earthquake'],
 				signatureMove: 'bulk',
@@ -528,7 +534,7 @@ exports.BattleScripts = {
 				signatureMove: 'projectilespam',
 				evs: {hp:4, atk:252, spe:252}, nature: 'Jolly'
 			},
-			'TieSoul': {
+			'BulkSoul': {
 				species: 'Rhyperior', ability: 'Rock Head', item: 'Focus Sash', gender: 'M',
 				moves: ['headsmash', 'autotomize', 'earthquake'],
 				signatureMove: 'bulk',

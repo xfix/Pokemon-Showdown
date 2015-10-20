@@ -47,5 +47,19 @@ exports.BattleItems = {
 				return accuracy * 1.2;
 			}
 		}
+	},
+	'membrane': {
+		id: 'membrane',
+		name: 'Membrane',
+		num: 447,
+		fling: {basePower: 1},
+		desc: 'Reduces super-effective damage by 25%',
+		shortDesc: 'Reduces super-effective damage by 25%',
+		onSourceModifyDamage: function (damage, source, target, move) {
+			if (move.typeMod > 0) {
+				this.debug('Membrane neutralize');
+				return this.chainModify(0.75);
+			}
+		}
 	}
 };

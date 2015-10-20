@@ -1211,5 +1211,26 @@ exports.BattleMovedex = {
 		num: 668,
 		type: 'Fighting',
 		target: 'normal'
+	},
+	'typeroulette': {
+		id: 'typeroulette',
+		name: 'Type Roulette',
+		pp: 10,
+		priority: 0,
+		category: 'Physical',
+		type: 'Normal',
+		typeList: ['Normal', 'Fire', 'Fighting', 'Water', 'Flying', 'Grass', 'Poison', 'Electric', 'Ground', 'Psychic', 'Rock', 'Ice', 'Bug', 'Dragon', 'Ghost', 'Dark', 'Steel', 'Fairy'],
+		target: 'normal',
+		basePower: 80,
+		accuracy: 100,
+		flags: {contact: 1, protect: 1, mirror: 1},
+		beforeTurnCallback: function (pokemon, target, move) {
+			move.type = move.typeList.sample(1)[0];
+		}
+		onPrepareHit: function(target, source, move) {
+			this.attrLastMove('[still]');
+			this.add('-anim', source, 'Tri Attack', target);
+		},
+		num: 669
 	}
 };

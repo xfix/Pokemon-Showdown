@@ -597,5 +597,18 @@ exports.BattleAbilities = { // define custom abilities here.
 		// Good thing I haven't done that, right?
 		rating: 5,
 		num: 151
+	},
+	'superprotean': {
+		desc: 'Adds the type of every move used to the pokemon.',
+		shortDesc: 'Gets a shitload of types.',
+		onPrepareHit: function (source, target, move) {
+			var type = move.type;
+			source.typesData.push({type: type, suppressed: false,  isAdded: false});
+			this.add('-start', source, 'typechange', source.typesData.map(function(x){x.type}).join('/'))
+		},
+		id: 'superprotean',
+		name: 'Super Protean',
+		rating: 4,
+		num: 152
 	}
 };
