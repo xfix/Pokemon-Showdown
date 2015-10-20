@@ -603,8 +603,10 @@ exports.BattleAbilities = { // define custom abilities here.
 		shortDesc: 'Gets a shitload of types.',
 		onPrepareHit: function (source, target, move) {
 			var type = move.type;
-			source.typesData.push({type: type, suppressed: false,  isAdded: false});
-			this.add('-start', source, 'typechange', source.typesData.map(function(x){x.type}).join('/'))
+			if (!source.hasType(type)) {
+				source.typesData.push({type: type, suppressed: false,  isAdded: false});
+				this.add('-start', source, 'typechange', source.typesData.map(function(x){return x.type;}).join('/'))
+			}
 		},
 		id: 'superprotean',
 		name: 'Super Protean',
