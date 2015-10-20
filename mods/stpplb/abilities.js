@@ -44,14 +44,12 @@ exports.BattleAbilities = { // define custom abilities here.
 			var activeFoe = pokemon.side.foe.active;
 			for (var i = 0; i < activeFoe.length; i++) {
 				var foe = activeFoe[i];
-				var secondarytype = (foe.typesData[1] ? foe.typesData[1].type : false);
-				if (secondarytype === 'Ghost') { // no more Ghost/Ghost madness! it should work now right?
-					this.add('-start', foe, 'typechange', 'Ghost');
-					foe.setType('Ghost');
-					continue;
+				if (!foe.hasType('Ghost')) {
+					foe.typesData[0] = {type: 'Ghost', suppressed: false,  isAdded: false};
+				} else {
+					foe.typesData.shift();
 				}
-				this.add('-start', foe, 'typechange', 'Ghost' + (secondarytype ? '/' + secondarytype : ''));
-				foe.typesData[0] = {type: 'Ghost', suppressed: false,  isAdded: false};
+				this.add('-start', foe, 'typechange', foe.typesData.map(function(x){return x.type}).join('/'));
 			}
 		},
 		id: "spoopify",
