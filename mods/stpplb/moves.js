@@ -1228,7 +1228,64 @@ exports.BattleMovedex = {
 		onPrepareHit: function(target, source, move) {
 			move.type = move.typeList.sample(1)[0];
 			this.attrLastMove('[still]');
-			this.add('-anim', source, 'Tri Attack', target);
+			var anim;
+			switch (move.type) {
+				case 'Normal':
+					anim = 'Mega Punch';
+					break;
+				case 'Fire':
+					anim = 'Fire Punch';
+					break;
+				case 'Fighting':
+					anim = 'Close Combat';
+					break;
+				case 'Water':
+					anim = 'Waterfall';
+					break;
+				case 'Flying':
+					anim = 'Wing Attack';
+					break;
+				case 'Grass':
+					anim = 'Leaf Blade';
+					break;
+				case 'Poison':
+					anim = 'Poison Jab';
+					break;
+				case 'Electric':
+					anim = 'Thunder Punch';
+					break;
+				case 'Ground':
+					anim = 'Earthquake';
+					break;
+				case 'Psychic':
+					anim = 'Psycho Cut';
+					break;
+				case 'Rock':
+					anim = 'Stone Edge';
+					break;
+				case 'Ice':
+					anim = 'Ice Punch';
+					break;
+				case 'Bug':
+					anim = 'X-Scissor';
+					break;
+				case 'Dragon':
+					anim = 'Outrage';
+					break;
+				case 'Ghost':
+					anim = 'Shadow Claw';
+					break;
+				case 'Dark':
+					anim = 'Night Slash';
+					break;
+				case 'Steel':
+					anim = 'Heavy Slam';
+					break;
+				case 'Fairy':
+					anim = 'Play Rough';
+					break;
+			}
+			this.add('-anim', source, anim, target);
 		},
 		num: 669
 	}
