@@ -518,7 +518,7 @@ exports.BattleAbilities = { // define custom abilities here.
 				if (i !== move.id) continue;
 				if (move.isNonstandard) continue;
 				if (move.category === 'Physical') continue;
-				if (move.basePower < 60) continue;
+				if (move.basePower < 60 && move.category !== 'Status') continue;
 				if (move.category === 'Status' && move.boosts && move.boosts.atk && move.boosts.atk > 0 && move.target === 'self') continue;
 				if (pokemon.hasMove(move)) continue;
 				moves.push(move);
