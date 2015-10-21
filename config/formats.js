@@ -430,7 +430,7 @@ exports.Formats = [
 		ruleset: ['Ubers', 'Old School Clause'],
 		banlist: []
 	},
-	
+
 	{
 		name: "Acid Rain",
 		section: "OM of the Week",
