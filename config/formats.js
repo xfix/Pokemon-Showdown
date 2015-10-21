@@ -1557,7 +1557,7 @@ exports.Formats = [
 		banlist: ['No Fun Allowed', 'Wonder Guard', 'Huge Power', 'Pure Power', 'Physicalakazam', 'Rayquaza-Mega'],
 		maxLevel: 100,
 		defaultLevel: 100,
-		
+
 		onSwitchInPriority: 1,
 		onSwitchIn: function (pokemon) {
 			var item = pokemon.getItem();
@@ -1599,7 +1599,7 @@ exports.Formats = [
 				}
 			}
 		},
-		
+
 		onBegin: function () {
 			// Mix and Mega stuff
 			var allPokemon = this.p1.pokemon.concat(this.p2.pokemon);

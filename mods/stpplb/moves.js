@@ -1225,65 +1225,65 @@ exports.BattleMovedex = {
 		accuracy: 100,
 		flags: {contact: 1, protect: 1, mirror: 1},
 		onPrepareHitPriority: 100,
-		onPrepareHit: function(target, source, move) {
+		onPrepareHit: function (target, source, move) {
 			move.type = move.typeList.sample(1)[0];
 			this.attrLastMove('[still]');
 			var anim;
 			switch (move.type) {
-				case 'Normal':
-					anim = 'Mega Punch';
-					break;
-				case 'Fire':
-					anim = 'Fire Punch';
-					break;
-				case 'Fighting':
-					anim = 'Close Combat';
-					break;
-				case 'Water':
-					anim = 'Waterfall';
-					break;
-				case 'Flying':
-					anim = 'Wing Attack';
-					break;
-				case 'Grass':
-					anim = 'Leaf Blade';
-					break;
-				case 'Poison':
-					anim = 'Poison Jab';
-					break;
-				case 'Electric':
-					anim = 'Thunder Punch';
-					break;
-				case 'Ground':
-					anim = 'Earthquake';
-					break;
-				case 'Psychic':
-					anim = 'Psycho Cut';
-					break;
-				case 'Rock':
-					anim = 'Stone Edge';
-					break;
-				case 'Ice':
-					anim = 'Ice Punch';
-					break;
-				case 'Bug':
-					anim = 'X-Scissor';
-					break;
-				case 'Dragon':
-					anim = 'Outrage';
-					break;
-				case 'Ghost':
-					anim = 'Shadow Claw';
-					break;
-				case 'Dark':
-					anim = 'Night Slash';
-					break;
-				case 'Steel':
-					anim = 'Heavy Slam';
-					break;
-				case 'Fairy':
-					anim = 'Play Rough';
-					break;
+			case 'Normal':
+				anim = 'Mega Punch';
+				break;
+			case 'Fire':
+				anim = 'Fire Punch';
+				break;
+			case 'Fighting':
+				anim = 'Close Combat';
+				break;
+			case 'Water':
+				anim = 'Waterfall';
+				break;
+			case 'Flying':
+				anim = 'Wing Attack';
+				break;
+			case 'Grass':
+				anim = 'Leaf Blade';
+				break;
+			case 'Poison':
+				anim = 'Poison Jab';
+				break;
+			case 'Electric':
+				anim = 'Thunder Punch';
+				break;
+			case 'Ground':
+				anim = 'Earthquake';
+				break;
+			case 'Psychic':
+				anim = 'Psycho Cut';
+				break;
+			case 'Rock':
+				anim = 'Stone Edge';
+				break;
+			case 'Ice':
+				anim = 'Ice Punch';
+				break;
+			case 'Bug':
+				anim = 'X-Scissor';
+				break;
+			case 'Dragon':
+				anim = 'Outrage';
+				break;
+			case 'Ghost':
+				anim = 'Shadow Claw';
+				break;
+			case 'Dark':
+				anim = 'Night Slash';
+				break;
+			case 'Steel':
+				anim = 'Heavy Slam';
+				break;
+			case 'Fairy':
+				anim = 'Play Rough';
+				break;
 			}
 			this.add('-anim', source, anim, target);
 		},
