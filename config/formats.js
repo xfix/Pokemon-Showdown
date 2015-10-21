@@ -899,7 +899,7 @@ exports.Formats = [
 		mod: 'mixandmega',
 		ruleset: ['Ubers'],
 		banlist: ['Shadow Tag'],
-		validateTeam: function (team, format) {
+		onValidateTeam: function (team, format) {
 			var itemTable = {};
 			for (var i = 0; i < team.length; i++) {
 				var item = this.getItem(team[i].item);
@@ -909,7 +909,7 @@ exports.Formats = [
 				itemTable[item] = true;
 			}
 		},
-		validateSet: function (set) {
+		onValidateSet: function (set) {
 			var template = this.getTemplate(set.species || set.name);
 			var item = this.getItem(set.item);
 			if (!item.megaEvolves && item.id !== 'blueorb' && item.id !== 'redorb') return;
