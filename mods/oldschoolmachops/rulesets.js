@@ -173,13 +173,11 @@ exports.BattleFormats = {
 				'Withdraw',
 				'Wrap',
 				'Hidden Power'
-			].map(function(x){return toId(x);});
+			].map(function(x){return toId(x)});
 			var movesLength = set.moves.length;
-			var movedex = require('./moves.js').BattleMovedex;
 			for (i = 0; i < movesLength; i++) {
-				var move = movedex[toId(set.moves[i])];
-				var id = move.id;
-				if (allowedMoves.indexOf(id) === -1) {
+				var move = set.moves[i];
+				if (allowedMoves.indexOf(move) === -1) {
 					issues.push(set.species + "'s " + move.name + " is not allowed.");
 				}
 			}
