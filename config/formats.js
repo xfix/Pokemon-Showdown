@@ -1595,7 +1595,7 @@ exports.Formats = [
 		searchShow: true,
 		mod: 'stpplb',
 		ruleset: ['Super Glitch Clause', 'HP Percentage Mod', 'Species Clause', 'Cancel Mod', 'No Switching Clause', 'No Recycle Clause', 'Ability Clause', 'Team Preview'],
-		banlist: ['No Fun Allowed', 'Wonder Guard', 'Huge Power', 'Pure Power', 'Rayquaza-Mega'],
+		banlist: ['No Fun Allowed', 'Wonder Guard', 'Huge Power', 'Pure Power', 'Physicalakazam', 'Rayquaza-Mega'],
 		maxLevel: 100,
 		defaultLevel: 100
 	}
