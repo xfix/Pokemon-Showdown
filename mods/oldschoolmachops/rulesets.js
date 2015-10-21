@@ -9,7 +9,7 @@ exports.BattleFormats = {
 			var movesLength = set.moves.length;
 			for (i = 0; i < movesLength; i++) {
 				var move = this.getMove(set.moves[i]);
-				if (move.gen > 1) {
+				if (move.gen > 1 && move.id !== 'hiddenpower') {
 					issues.push(set.species + " can't have " + move.name + ".");
 				}
 			}
