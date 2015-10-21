@@ -40,9 +40,6 @@ exports.BattleFormats = {
 			if (!recycleFound) {
 				set.moves.push("Recycle");
 			}
-			if (toId(set.ability) === 'nofunallowed') {
-				issues.push(set.species + " has No Fun Allowed.");
-			}
 			var totalEV = 0;
 			for (var k in set.evs) {
 				if (typeof set.evs[k] !== 'number' || set.evs[k] < 0) {
