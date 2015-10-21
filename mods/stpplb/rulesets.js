@@ -97,7 +97,7 @@ exports.BattleFormats = {
 		onStart: function () {
 			this.add('rule', 'Ability Clause: Limit one of each ability');
 		},
-		validateTeam: function (team, format) {
+		onValidateTeam: function (team, format) {
 			var abilityTable = {};
 			for (var i = 0; i < team.length; i++) {
 				var ability = toId(team[i].ability);
