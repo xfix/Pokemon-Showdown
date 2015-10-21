@@ -48,8 +48,10 @@ exports.BattleAbilities = { // define custom abilities here.
 					foe.typesData[0] = {type: 'Ghost', suppressed: false,  isAdded: false};
 				} else if (foe.typesData[0].type !== 'Ghost') {
 					foe.typesData.shift();
-				} else continue;
-				this.add('-start', foe, 'typechange', foe.typesData.map(function(x){return x.type;}).join('/'));
+				} else {
+					continue;
+				}
+				this.add('-start', foe, 'typechange', foe.typesData.map(function (x) {return x.type;}).join('/'));
 			}
 		},
 		id: "spoopify",
@@ -603,7 +605,7 @@ exports.BattleAbilities = { // define custom abilities here.
 			var type = move.type;
 			if (!source.hasType(type)) {
 				source.typesData.push({type: type, suppressed: false,  isAdded: false});
-				this.add('-start', source, 'typechange', source.typesData.map(function(x){return x.type;}).join('/'));
+				this.add('-start', source, 'typechange', source.typesData.map(function (x) {return x.type;}).join('/'));
 			}
 		},
 		id: 'superprotean',
