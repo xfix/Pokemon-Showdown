@@ -422,18 +422,13 @@ exports.Formats = [
 	///////////////////////////////////////////////////////////////////
 
 	{
-		name: "Acid Rain",
+		name: "Old School Machops",
 		section: "OM of the Week",
 		column: 2,
 
-		mod: 'acidrain',
-		onBegin: function () {
-			this.setWeather('raindance');
-			delete this.weatherData.duration;
-			this.add('-message', "Eh, close enough.");
-		},
-		ruleset: ['OU'],
-		banlist: ['Weather Ball', 'Castform']
+		mod: 'oldschoolmachops',
+		ruleset: ['Ubers', 'Old School Clause'],
+		banlist: []
 	},
 
 	{
