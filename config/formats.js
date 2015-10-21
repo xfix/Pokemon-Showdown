@@ -392,16 +392,6 @@ exports.Formats = [
 	///////////////////////////////////////////////////////////////////
 
 	{
-		name: "Old School Machops",
-		section: "OM of the Week",
-		column: 2,
-
-		mod: 'oldschoolmachops',
-		ruleset: ['Ubers', 'Old School Clause'],
-		banlist: []
-	},
-
-	{
 		name: "Acid Rain",
 		section: "OM of the Week",
 		column: 2,
@@ -414,6 +404,25 @@ exports.Formats = [
 		},
 		ruleset: ['OU'],
 		banlist: ['Weather Ball', 'Castform']
+	},
+	{
+		name: "Old School Machops",
+		section: "OM of the Week",
+
+		ruleset: ['Ubers'],
+		banlist: [],
+		onValidateSet: function (set) {
+			var moves = set.moves;
+			var problems = [];
+			var name = set.name || set.species;
+			for (var i = 0; i < moves.length; i++) {
+				var move = this.getMove(moves[i]);
+				if (move.gen !== 1 && move.id !== 'hiddenpower') {
+					problems.push(name + "'s move " + set.moves[i] + " is banned.");
+				}
+			}
+			return problems;
+		}
 	},
 
 	{
