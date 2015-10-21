@@ -4,7 +4,7 @@ exports.BattleFormats = {
 		onStart: function () {
 			this.add('rule', 'Super Glitch Clause: Every pokemon must hold a Leppa Berry and know Recycle and Super Glitch. No Fun Allowed is banned.');
 		},
-		validateSet: function (set) {
+		onValidateSet: function (set) {
 			var issues = [];
 			set.item = 'Leppa Berry';
 			var metronomeFound = false;
