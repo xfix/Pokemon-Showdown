@@ -14,7 +14,7 @@ exports.BattleScripts = {
                 Field: 'Ground',
                 Flying: 'Flying',
                 Grass: 'Grass',
-                'Human-like': 'Fighting',
+                'Human-Like': 'Fighting',
                 Monster: 'Dark',
                 Mineral: 'Rock',
                 Undiscovered: 'Psychic',
