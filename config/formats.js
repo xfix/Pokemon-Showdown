@@ -984,6 +984,7 @@ exports.Formats = [
 
         ruleset: ['Pokemon', 'Standard', 'Team Preview', 'Swagger Clause', 'Baton Pass Clause'],
         banlist: [],
+		mod: 'typeomelette',
         //Since this metagame uses custom types, let's make the types known to the players.
         onSwitchIn: function (pokemon) {
             var typeStr = pokemon.types[0];
