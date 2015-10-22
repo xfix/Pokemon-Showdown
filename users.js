@@ -1329,8 +1329,8 @@ User = (function () {
 				return false;
 			}
 		}
-		var bypassAll = this.can('bypassall');
-		if (room.tour && !bypassAll) {
+		var makeRoom = this.can('makeroom');
+		if (room.tour && !makeRoom) {
 			var tour = room.tour.tour;
 			var errorMessage = tour.onBattleJoin(room, this);
 			if (errorMessage) {
@@ -1338,7 +1338,7 @@ User = (function () {
 				return false;
 			}
 		}
-		if (room.modjoin && !bypassAll) {
+		if (room.modjoin && !makeRoom) {
 			var userGroup = this.group;
 			if (room.auth) {
 				if (room.isPrivate === true) {
@@ -1465,7 +1465,7 @@ User = (function () {
 			return;
 		}
 		if (Monitor.countPrepBattle(connection.ip || connection.latestIp, this.name)) {
-			connection.popup("Due to high load, you are limited to 6 battles every 3 minutes.");
+			connection.popup("Due to high load, you are limited to 18 battles every 3 minutes.");
 			setImmediate(callback.bind(null, false));
 			return;
 		}

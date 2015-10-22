@@ -44,14 +44,14 @@ exports.BattleAbilities = { // define custom abilities here.
 			var activeFoe = pokemon.side.foe.active;
 			for (var i = 0; i < activeFoe.length; i++) {
 				var foe = activeFoe[i];
-				var secondarytype = (foe.typesData[1] ? foe.typesData[1].type : false);
-				if (foe.typesData[1] === 'Ghost') { // no more Ghost/Ghost madness! it should work now right?
-					this.add('-start', foe, 'typechange', 'Ghost');
-					foe.setType('Ghost');
+				if (!foe.hasType('Ghost')) {
+					foe.typesData[0] = {type: 'Ghost', suppressed: false,  isAdded: false};
+				} else if (foe.typesData[0].type !== 'Ghost') {
+					foe.typesData.shift();
+				} else {
 					continue;
 				}
-				this.add('-start', foe, 'typechange', 'Ghost' + (secondarytype ? '/' + secondarytype : ''));
-				foe.typesData[0] = {type: 'Ghost', suppressed: false,  isAdded: false};
+				this.add('-start', foe, 'typechange', foe.typesData.map(function (x) {return x.type;}).join('/'));
 			}
 		},
 		id: "spoopify",
@@ -518,7 +518,7 @@ exports.BattleAbilities = { // define custom abilities here.
 				if (i !== move.id) continue;
 				if (move.isNonstandard) continue;
 				if (move.category === 'Physical') continue;
-				if (move.basePower < 60) continue;
+				if (move.basePower < 60 && move.category !== 'Status') continue;
 				if (move.category === 'Status' && move.boosts && move.boosts.atk && move.boosts.atk > 0 && move.target === 'self') continue;
 				if (pokemon.hasMove(move)) continue;
 				moves.push(move);
@@ -597,5 +597,20 @@ exports.BattleAbilities = { // define custom abilities here.
 		// Good thing I haven't done that, right?
 		rating: 5,
 		num: 151
+	},
+	'superprotean': {
+		desc: 'Adds the type of every move used to the pokemon.',
+		shortDesc: 'Gets a shitload of types.',
+		onPrepareHit: function (source, target, move) {
+			var type = move.type;
+			if (!source.hasType(type)) {
+				source.typesData.push({type: type, suppressed: false,  isAdded: false});
+				this.add('-start', source, 'typechange', source.typesData.map(function (x) {return x.type;}).join('/'));
+			}
+		},
+		id: 'superprotean',
+		name: 'Super Protean',
+		rating: 4,
+		num: 152
 	}
 };

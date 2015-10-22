@@ -2442,7 +2442,7 @@ var commands = exports.commands = {
 
 	vtm: function (target, room, user, connection) {
 		if (Monitor.countPrepBattle(connection.ip, user.name)) {
-			connection.popup("Due to high load, you are limited to 6 team validations every 3 minutes.");
+			connection.popup("Due to high load, you are limited to 18 team validations every 3 minutes.");
 			return;
 		}
 		var format = Tools.getFormat(target);
@@ -2490,7 +2490,8 @@ var commands = exports.commands = {
 			for (var i in targetUser.roomCount) {
 				if (i === 'global') continue;
 				var targetRoom = Rooms.get(i);
-				if (!targetRoom || targetRoom.isPrivate) continue;
+				if (!targetRoom) continue; // shouldn't happen
+				if (targetRoom.isPrivate && (!targetRoom.battle || targetRoom.battle.lastPlayers.indexOf(user.userid) < 0)) continue;
 				var roomData = {};
 				if (targetRoom.battle) {
 					var battle = targetRoom.battle;

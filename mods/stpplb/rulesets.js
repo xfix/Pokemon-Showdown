@@ -4,7 +4,7 @@ exports.BattleFormats = {
 		onStart: function () {
 			this.add('rule', 'Super Glitch Clause: Every pokemon must hold a Leppa Berry and know Recycle and Super Glitch. No Fun Allowed is banned.');
 		},
-		validateSet: function (set) {
+		onValidateSet: function (set) {
 			var issues = [];
 			set.item = 'Leppa Berry';
 			var metronomeFound = false;
@@ -40,9 +40,6 @@ exports.BattleFormats = {
 			if (!recycleFound) {
 				set.moves.push("Recycle");
 			}
-			if (toId(set.ability) === 'nofunallowed') {
-				issues.push(set.species + " has No Fun Allowed.");
-			}
 			var totalEV = 0;
 			for (var k in set.evs) {
 				if (typeof set.evs[k] !== 'number' || set.evs[k] < 0) {
@@ -52,6 +49,14 @@ exports.BattleFormats = {
 			}
 			if (totalEV > 510) {
 				issues.push(set.species + " has more than 510 total EVs.");
+			}
+			var template = Tools.getTemplate(set.species);
+			var totalBST = 0;
+			for (var k in template.baseStats) {
+				totalBST += template.baseStats[k];
+			}
+			if (totalBST > 600) {
+				issues.push(set.species + " has more than 600 BST.");
 			}
 			return issues;
 		}
@@ -100,7 +105,7 @@ exports.BattleFormats = {
 		onStart: function () {
 			this.add('rule', 'Ability Clause: Limit one of each ability');
 		},
-		validateTeam: function (team, format) {
+		onValidateTeam: function (team, format) {
 			var abilityTable = {};
 			for (var i = 0; i < team.length; i++) {
 				var ability = toId(team[i].ability);
