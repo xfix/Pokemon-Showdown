@@ -987,7 +987,7 @@ exports.Formats = [
 		//Since this metagame uses custom types, let's make the types known to the players.
 		onSwitchIn: function (pokemon) {
 			var typeStr = pokemon.types[0];
-			if (pokemon.types[1]) typeStr += '/' + pokemon.types[1]
+			if (pokemon.types[1]) typeStr += '/' + pokemon.types[1];
 			this.add('-start', pokemon, 'typechange', typeStr);
 		}
 	},
