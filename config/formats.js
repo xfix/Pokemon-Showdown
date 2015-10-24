@@ -27,7 +27,7 @@ exports.Formats = [
 		desc: [
 			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3521201/\">OU Metagame Discussion</a>",
 			"&bullet; <a href=\"https://www.smogon.com/dex/xy/tags/ou/\">OU Banlist</a>",
-			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3536420/\">OU Viability Ranking</a>"
+			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3553516/\">OU Viability Ranking</a>"
 		],
 		section: "ORAS Singles",
 
@@ -856,6 +856,7 @@ exports.Formats = [
 		searchShow: false,
 		ruleset: ['Pokemon', 'Same Type Clause', 'Sleep Clause Mod', 'HP Percentage Mod', 'Cancel Mod']
 	},
+
 	{
 		name: "Mix and Mega",
 		section: "Other Metagames",
@@ -975,6 +976,22 @@ exports.Formats = [
 			}
 		}
 	},
+
+	{
+        name: "Type Omelette",
+        section: "Other Metagames",
+      
+
+        ruleset: ['Pokemon', 'Standard', 'Team Preview', 'Swagger Clause', 'Baton Pass Clause'],
+        banlist: [],
+		mod: 'typeomelette',
+        //Since this metagame uses custom types, let's make the types known to the players.
+        onSwitchIn: function (pokemon) {
+            var typeStr = pokemon.types[0];
+            if (pokemon.types[1]) typeStr += '/' + pokemon.types[1]
+            this.add('-start', pokemon, 'typechange', typeStr);
+        },
+    },
 
 	// BW2 Singles
 	///////////////////////////////////////////////////////////////////
