@@ -978,20 +978,19 @@ exports.Formats = [
 	},
 
 	{
-        name: "Type Omelette",
-        section: "Other Metagames",
-      
+		name: "Type Omelette",
+		section: "Other Metagames",
 
-        ruleset: ['Pokemon', 'Standard', 'Team Preview', 'Swagger Clause', 'Baton Pass Clause'],
-        banlist: [],
+		ruleset: ['Pokemon', 'Standard', 'Team Preview', 'Swagger Clause', 'Baton Pass Clause'],
+		banlist: [],
 		mod: 'typeomelette',
-        //Since this metagame uses custom types, let's make the types known to the players.
-        onSwitchIn: function (pokemon) {
-            var typeStr = pokemon.types[0];
-            if (pokemon.types[1]) typeStr += '/' + pokemon.types[1]
-            this.add('-start', pokemon, 'typechange', typeStr);
-        },
-    },
+		//Since this metagame uses custom types, let's make the types known to the players.
+		onSwitchIn: function (pokemon) {
+			var typeStr = pokemon.types[0];
+			if (pokemon.types[1]) typeStr += '/' + pokemon.types[1]
+			this.add('-start', pokemon, 'typechange', typeStr);
+		}
+	},
 
 	// BW2 Singles
 	///////////////////////////////////////////////////////////////////
@@ -1626,7 +1625,7 @@ exports.Formats = [
 			}
 		}
 	},
-	
+
 	{
 		name: 'Snowball Fight',
 		section: 'TPP League',
@@ -1655,7 +1654,7 @@ exports.Formats = [
 				}
 			}
 		}
-	},
+	}
 ];
 var stpplb;
 var stpplbi;
