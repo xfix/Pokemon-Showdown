@@ -92,7 +92,7 @@ exports.BattleScripts = {
 			},*/
 			'TieSoul': {
 				species: 'Aggron', ability: 'Super Protean', item: 'Membrane', gender: 'M',
-				moves: ['playrough', 'firepunch', 'icepunch', 'thunderpunch', 'waterfall', 'heavyslam', 'stoneedge', 'knockoff', 'shadowclaw', 'earthquake', 'psychocut', 'dragonclaw', 'acrobatics', 'xscissor', 'poisonjab'],
+				moves: ['playrough', 'firepunch', 'icepunch', 'thunderpunch', 'waterfall', 'heavyslam', 'stoneedge', 'nightslash', 'shadowclaw', 'earthquake', 'psychocut', 'dragonclaw', 'drillpeck', 'xscissor', 'poisonjab', 'brickbreak', 'leafblade', 'bodyslam'],
 				signatureMove: 'typeroulette',
 				evs: {hp:252, atk:252, spe:4}, nature: 'Adamant'
 			},
