@@ -1224,7 +1224,7 @@ exports.BattleMovedex = {
 		type: 'Normal',
 		typeList: ['Normal', 'Fire', 'Fighting', 'Water', 'Flying', 'Grass', 'Poison', 'Electric', 'Ground', 'Psychic', 'Rock', 'Ice', 'Bug', 'Dragon', 'Ghost', 'Dark', 'Steel', 'Fairy'],
 		target: 'normal',
-		basePower: 80,
+		basePower: 120,
 		accuracy: 100,
 		flags: {contact: 1, protect: 1, mirror: 1},
 		onPrepareHitPriority: 100,
