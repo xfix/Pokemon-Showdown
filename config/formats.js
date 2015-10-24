@@ -1630,7 +1630,7 @@ exports.Formats = [
 	{
 		name: 'Snowball Fight',
 		section: 'TPP League',
-		column: 3,
+		column: 4,
 		ruleset: ['Ubers'],
 		banlist: [],
 		mod: 'snowballfight',
