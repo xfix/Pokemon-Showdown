@@ -777,6 +777,7 @@ exports.BattleMovedex = {
 			if (pokemon.hasType('Dark')) return;
 			if (!pokemon.addType('Dark')) return;
 			this.add('-start', pokemon, 'typeadd', 'Dark', '[from] move: Thousand Alts');
+			this.attrLastMove('[still]');
 			this.add('-anim', pokemon, 'Head Smash', target);
 		},
 		recoil: [1, 2],
@@ -910,11 +911,13 @@ exports.BattleMovedex = {
 		accuracy: 85,
 		basePower: 0,
 		category: "Status",
+		onPrepareHit: function (target, source, move) {
+			this.attrLastMove('[still]');
+			this.add('-anim', source, 'Chatter', target);
+		},
 		onTryHit: function (target, source, move) {
 			var targetName = toId(target.name);
 			var sourceName = toId(source.name);
-			this.attrLastMove('[still]');
-			this.add('-anim', source, 'Chatter', target);
 			this.add('c|' + sourceName + '|Wow ' + targetName + ' OneHand');
 		},
 		onHit: function (target) {
@@ -1237,7 +1240,7 @@ exports.BattleMovedex = {
 				anim = 'Fire Punch';
 				break;
 			case 'Fighting':
-				anim = 'Close Combat';
+				anim = 'Dynamic Punch';
 				break;
 			case 'Water':
 				anim = 'Waterfall';
@@ -1255,13 +1258,13 @@ exports.BattleMovedex = {
 				anim = 'Thunder Punch';
 				break;
 			case 'Ground':
-				anim = 'Earthquake';
+				anim = 'Drill Run';
 				break;
 			case 'Psychic':
-				anim = 'Psycho Cut';
+				anim = 'Zen Headbutt';
 				break;
 			case 'Rock':
-				anim = 'Stone Edge';
+				anim = 'Head Smash';
 				break;
 			case 'Ice':
 				anim = 'Ice Punch';
