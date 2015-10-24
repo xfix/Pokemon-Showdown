@@ -1625,7 +1625,37 @@ exports.Formats = [
 				pokemon.originalSpecies = pokemon.baseTemplate.species;
 			}
 		}
-	}
+	},
+	
+	{
+		name: 'Snowball Fight',
+		section: 'TPP League',
+		column: 3,
+		ruleset: ['Ubers'],
+		banlist: [],
+		mod: 'snowballfight',
+		onValidateSet: function (set) {
+			set.moves.push('fling');
+		},
+		onBeforeTurn: function () {
+			if (!this.p1.snowballs) {
+				this.p1.snowballs = 0;
+			}
+			if (!this.p2.snowballs) {
+				this.p2.snowballs = 0;
+			}
+		},
+		onFaintPriority: 100,
+		onFaint: function (pokemon) {
+			if (pokemon.side.pokemonLeft === 1) {
+				if (this.p1.snowballs > this.p2.snowballs) {
+					this.win(this.p1);
+				} else if (this.p2.snowballs > this.p1.snowballs) {
+					this.win(this.p2);
+				}
+			}
+		}
+	},
 ];
 var stpplb;
 var stpplbi;
