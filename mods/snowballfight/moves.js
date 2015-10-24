@@ -2,7 +2,6 @@ exports.BattleMovedex = {
 	'fling': {
 		inherit: true,
 		snowball: false,
-		sub: false,
 		onPrepareHit: function (target, source, move) {
 			if (!source.volatiles['fling']) return false;
 			var item = this.getItem(source.volatiles['fling'].item);
@@ -10,13 +9,10 @@ exports.BattleMovedex = {
 			if (item.name === 'Snowball') {
 				move.snowball = true;
 			}
-			if (target.volatiles['substitute'] && target.volatiles['substitute'].hp > 0) {
-				move.sub = true;
-			}
 		},
 		onAfterMove: function (source, target, move) {
 			var sub = false;
-			if (move.sub && target.volatiles['substitute'] && target.volatiles['substitute'].hp > 0) {
+			if (target.volatiles['substitute'] && target.volatiles['substitute'].hp > 0) {
 				sub = true;
 			}
 			if (!sub && move.snowball) {
