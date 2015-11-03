@@ -380,7 +380,7 @@ exports.BattleMovedex = {
 		id: 'broadside',
 		accuracy: 100,
 		basePower: 18,
-		multihit: [4,5], // Nerfed from always 5
+		multihit: [4, 5], // Nerfed from always 5
 		category: "Special",
 		desc: "Hits 4 to 5 times. If one of the hits breaks the target's substitute, it will take damage for the remaining hits.",
 		shortDesc: "Hits 4-5 times in one turn.",
