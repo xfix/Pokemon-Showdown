@@ -188,7 +188,7 @@ exports.BattleAbilities = { // define custom abilities here.
 		},
 		onModifySpe: function (spe, pokemon) {
 			if (this.isWeather(['raindance', 'primordialsea'])) {
-				return this.chainModify(1); // Temporarily nerfed
+				return this.chainModify(1.25); // Temporarily nerfed
 			}
 		},
 		id: 'seaandsky',
