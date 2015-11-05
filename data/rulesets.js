@@ -112,7 +112,7 @@ exports.BattleFormats = {
 			if (item.gen > this.gen) {
 				problems.push(item.name + ' does not exist in gen ' + this.gen + '.');
 			}
-			if (set.moves && set.moves.length > 4) {
+			if (set.moves && set.moves.length > 4 && format.banlistTable['allowMoreMoves']) {
 				problems.push((set.name || set.species) + ' has more than four moves.');
 			}
 			if (set.level && set.level > 100) {

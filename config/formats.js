@@ -432,6 +432,18 @@ exports.Formats = [
 			return problems;
 		}
 	},
+	{
+		name: "5 Star Battalion",
+		section: "OM of the Week",
+
+		ruleset: ['Ubers'],
+		banlist: ['Allow More Moves'],
+		onValidateSet: function (set) {
+			if (set.moves && set.moves.length > 5) {
+				return [(set.name || set.species) + ' has more than five moves.'];
+			}
+		}
+	},
 
 	{
 		name: "Inheritance",
