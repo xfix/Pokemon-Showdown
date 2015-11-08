@@ -20,7 +20,7 @@ var irc = require('irc');
 var Pool = require('generic-pool').Pool;
 var Client = require('pg-native');
 
-var pool = Pool({
+var pool = new Pool({
 	create: function (callback) {
 		var client = new Client();
 		client.connect(function (err) {

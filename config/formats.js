@@ -996,7 +996,7 @@ exports.Formats = [
 						pokemon.details = template.species + (pokemon.level === 100 ? '' : ', L' + pokemon.level) + (pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
 						this.add('detailschange', pokemon, pokemon.details);
 					} else {
-						var originalTemplate = this.getTemplate(pokemon.originalSpecies);
+						let originalTemplate = this.getTemplate(pokemon.originalSpecies);
 						this.add('-formechange', pokemon, originalTemplate.species, template.requiredItem);
 						this.add('-start', pokemon, template.originalMega, '[silent]');
 						if (originalTemplate.types.length !== pokemon.template.types.length || originalTemplate.types[1] !== pokemon.template.types[1]) {
@@ -1012,7 +1012,7 @@ exports.Formats = [
 			} else if (pokemon.template.originalMega && pokemon.originalSpecies !== pokemon.template.originalMega) {
 				// Place volatiles on the Pokémon to show its mega-evolved condition
 				this.add('-start', pokemon, pokemon.template.originalMega, '[silent]');
-				var originalTemplate = this.getTemplate(pokemon.originalSpecies);
+				let originalTemplate = this.getTemplate(pokemon.originalSpecies);
 				if (originalTemplate.types.length !== pokemon.template.types.length || originalTemplate.types[1] !== pokemon.template.types[1]) {
 					this.add('-start', pokemon, 'typechange', pokemon.template.types.join('/')/*, '[silent]'*/);
 				}
@@ -1444,7 +1444,6 @@ exports.Formats = [
 		onSwitchInPriority: 1,
 		onSwitchIn: function (pokemon) {
 			var name = toId(pokemon.illusion ? pokemon.illusion.name : pokemon.name);
-			var oldAbility = pokemon.ability;
 			if (pokemon.template.isMega) { // more hackery for mega abilities.
 				if (name === 'darkfiregamer' && pokemon.getAbility().id === 'solarpower') {
 					pokemon.setAbility('darkaura');
@@ -1522,7 +1521,7 @@ exports.Formats = [
 						pokemon.details = template.species + (pokemon.level === 100 ? '' : ', L' + pokemon.level) + (pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
 						this.add('detailschange', pokemon, pokemon.details);
 					} else {
-						var oTemplate = this.getTemplate(pokemon.originalSpecies);
+						let oTemplate = this.getTemplate(pokemon.originalSpecies);
 						this.add('-formechange', pokemon, oTemplate.species, template.requiredItem);
 						this.add('-start', pokemon, this.getTemplate(template.originalMega).requiredItem, '[silent]');
 						if (oTemplate.types.length !== pokemon.template.types.length || oTemplate.types[1] !== pokemon.template.types[1]) {
@@ -1540,7 +1539,7 @@ exports.Formats = [
 				if (oMegaTemplate.exists && pokemon.originalSpecies !== oMegaTemplate.baseSpecies) {
 					// Place volatiles on the Pokémon to show its mega-evolved condition and details
 					this.add('-start', pokemon, oMegaTemplate.requiredItem || oMegaTemplate.requiredMove, '[silent]');
-					var oTemplate = this.getTemplate(pokemon.originalSpecies);
+					let oTemplate = this.getTemplate(pokemon.originalSpecies);
 					if (oTemplate.types.length !== pokemon.template.types.length || oTemplate.types[1] !== pokemon.template.types[1]) {
 						this.add('-start', pokemon, 'typechange', pokemon.template.types.join('/'), '[silent]');
 					}
@@ -1549,7 +1548,6 @@ exports.Formats = [
 		},
 
 		onSwitchOut: function (pokemon) {
-			var name = toId(pokemon.name);
 			var oMegaTemplate = this.getTemplate(pokemon.template.originalMega);
 			if (oMegaTemplate.exists && pokemon.originalSpecies !== oMegaTemplate.baseSpecies) {
 				this.add('-end', pokemon, oMegaTemplate.requiredItem || oMegaTemplate.requiredMove, '[silent]');
@@ -1633,7 +1631,7 @@ exports.Formats = [
 						pokemon.details = template.species + (pokemon.level === 100 ? '' : ', L' + pokemon.level) + (pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
 						this.add('detailschange', pokemon, pokemon.details);
 					} else {
-						var oTemplate = this.getTemplate(pokemon.originalSpecies);
+						let oTemplate = this.getTemplate(pokemon.originalSpecies);
 						this.add('-formechange', pokemon, oTemplate.species, template.requiredItem);
 						this.add('-start', pokemon, this.getTemplate(template.originalMega).requiredItem, '[silent]');
 						if (oTemplate.types.length !== pokemon.template.types.length || oTemplate.types[1] !== pokemon.template.types[1]) {
@@ -1651,7 +1649,7 @@ exports.Formats = [
 				if (oMegaTemplate.exists && pokemon.originalSpecies !== oMegaTemplate.baseSpecies) {
 					// Place volatiles on the Pokémon to show its mega-evolved condition and details
 					this.add('-start', pokemon, oMegaTemplate.requiredItem || oMegaTemplate.requiredMove, '[silent]');
-					var oTemplate = this.getTemplate(pokemon.originalSpecies);
+					let oTemplate = this.getTemplate(pokemon.originalSpecies);
 					if (oTemplate.types.length !== pokemon.template.types.length || oTemplate.types[1] !== pokemon.template.types[1]) {
 						this.add('-start', pokemon, 'typechange', pokemon.template.types.join('/'), '[silent]');
 					}
@@ -1701,11 +1699,12 @@ exports.Formats = [
 ];
 var stpplb;
 var stpplbi;
-for (var i = 0; i < exports.Formats.length; i++)
+for (var i = 0; i < exports.Formats.length; i++) {
 	if (exports.Formats[i].name === 'Super TPPL Bros.') {
 		stpplb = exports.Formats[i];
 		stpplbi = i;
 	}
+}
 if (stpplb) {
 	exports.Formats.splice(stpplbi + 1, 0, {
 		name: "Super TPPL Bros. Plus",

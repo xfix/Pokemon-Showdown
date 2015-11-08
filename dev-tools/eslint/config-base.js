@@ -8,7 +8,8 @@ module.exports = {
 	"globals": {
 		"Config": false, "Monitor": false, "toId": false, "Tools": false, "LoginServer": false,
 		"Users": false, "Rooms": false, "Verifier": false, "CommandParser": false, "Simulator": false,
-		"Tournaments": false, "Dnsbl": false, "Cidr": false, "Sockets": false, "TeamValidator": false, "Ladders": false
+		"Tournaments": false, "Dnsbl": false, "Cidr": false, "Sockets": false, "TeamValidator": false,
+		"Ladders": false, "Bot": false
 	},
 	"rules": {
 		"comma-dangle": [2, "never"],
