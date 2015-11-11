@@ -1,3 +1,5 @@
+'use strict';
+
 exports.BattleAbilities = { // define custom abilities here.
 	"glitchiate": {
 		desc: "This Pokemon's moves become Bird-type moves and have their power multiplied by 1.3. This effect comes after other effects that change a move's type, but before Ion Deluge and Electrify's effects.",
@@ -154,11 +156,12 @@ exports.BattleAbilities = { // define custom abilities here.
 		},
 		onImmunity: function (type, pokemon) {
 			var list = ['embargo', 'encore', 'flinch', 'healblock', 'attract', 'nightmare', 'taunt', 'torment', 'confusion'];
-			for (var i = 0; i < list.length; i++)
+			for (var i = 0; i < list.length; i++) {
 				if (type === list[i]) {
 					this.add('-immune', pokemon, list[i]);
 					return false;
 				}
+			}
 		},
 		id: 'psychologist',
 		name: 'Psychologist',
@@ -202,9 +205,9 @@ exports.BattleAbilities = { // define custom abilities here.
 		onResidualOrder: 26,
 		onResidualSubOrder: 1,
 		onResidual: function (pokemon) {
-			var stats = [], i = '';
+			let stats = [], i = '';
 			var boost = {};
-			for (var i in pokemon.boosts) {
+			for (let i in pokemon.boosts) {
 				if (pokemon.boosts[i] < 6) {
 					stats.push(i);
 				}
@@ -513,7 +516,7 @@ exports.BattleAbilities = { // define custom abilities here.
 			var moves = [];
 			var movedex = require('./moves.js').BattleMovedex;
 			for (var i in movedex) {
-				var move = movedex[i];
+				let move = movedex[i];
 				if (i !== move.id) continue;
 				if (move.isNonstandard) continue;
 				if (move.category === 'Physical') continue;
@@ -522,7 +525,7 @@ exports.BattleAbilities = { // define custom abilities here.
 				if (pokemon.hasMove(move)) continue;
 				moves.push(move);
 			}
-			var move = '';
+			let move = '';
 			if (moves.length) {
 				moves.sort(function (a, b) {return a.num - b.num;});
 				move = moves[this.random(moves.length)];

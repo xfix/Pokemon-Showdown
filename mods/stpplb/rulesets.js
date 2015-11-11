@@ -1,3 +1,5 @@
+'use strict';
+
 exports.BattleFormats = {
 	superglitchclause: {
 		effectType: 'Rule',
@@ -41,7 +43,7 @@ exports.BattleFormats = {
 				set.moves.push("Recycle");
 			}
 			var totalEV = 0;
-			for (var k in set.evs) {
+			for (let k in set.evs) {
 				if (typeof set.evs[k] !== 'number' || set.evs[k] < 0) {
 					set.evs[k] = 0;
 				}
@@ -52,7 +54,7 @@ exports.BattleFormats = {
 			}
 			var template = Tools.getTemplate(set.species);
 			var totalBST = 0;
-			for (var k in template.baseStats) {
+			for (let k in template.baseStats) {
 				totalBST += template.baseStats[k];
 			}
 			if (totalBST > 600) {

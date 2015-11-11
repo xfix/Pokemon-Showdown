@@ -1,3 +1,5 @@
+'use strict';
+
 exports.BattleMovedex = {
 	"disappointment": {
 		num: 622,
@@ -76,12 +78,12 @@ exports.BattleMovedex = {
 		},
 		self: {
 			onHit: function (pokemon) { // Mega evolves dfg
-					var temp = pokemon.item;
-					pokemon.item = 'houndoominite'; // in order to make it mega evolvable, add a Houndoomite temporarily.
-					pokemon.canMegaEvo = this.canMegaEvo(pokemon);
-					if (pokemon.canMegaEvo) this.runMegaEvo(pokemon);
-					pokemon.item = temp; // give its normal item back.
-				}
+				var temp = pokemon.item;
+				pokemon.item = 'houndoominite'; // in order to make it mega evolvable, add a Houndoomite temporarily.
+				pokemon.canMegaEvo = this.canMegaEvo(pokemon);
+				if (pokemon.canMegaEvo) this.runMegaEvo(pokemon);
+				pokemon.item = temp; // give its normal item back.
+			}
 		},
 		secondary: {
 			chance: 20,

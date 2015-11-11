@@ -1,3 +1,5 @@
+'use strict';
+
 // Note: This is the list of formats
 // The rules that formats use are stored in data/rulesets.js
 
@@ -40,10 +42,10 @@ exports.Formats = [
 
 		ruleset: ['OU'],
 		onBegin: function () {
-			for (var i = 0; i < this.p1.pokemon.length; i++) {
+			for (let i = 0; i < this.p1.pokemon.length; i++) {
 				this.p1.pokemon[i].canMegaEvo = false;
 			}
-			for (var i = 0; i < this.p2.pokemon.length; i++) {
+			for (let i = 0; i < this.p2.pokemon.length; i++) {
 				this.p2.pokemon[i].canMegaEvo = false;
 			}
 		}
@@ -483,15 +485,15 @@ exports.Formats = [
 		noChangeForme: true,
 		noChangeAbility: true,
 		abilityMap: (function () {
-			var Pokedex = require('./../tools.js').data.Pokedex;
+			let Pokedex = require('./../tools.js').data.Pokedex;
 			if (!Pokedex) return null; // Process is data-unaware
 
-			var abilityMap = Object.create(null);
-			for (var speciesid in Pokedex) {
-				var pokemon = Pokedex[speciesid];
+			let abilityMap = Object.create(null);
+			for (let speciesid in Pokedex) {
+				let pokemon = Pokedex[speciesid];
 				if (pokemon.num < 1 || pokemon.num > 720) continue;
-				for (var key in pokemon.abilities) {
-					var abilityId = toId(pokemon.abilities[key]);
+				for (let key in pokemon.abilities) {
+					let abilityId = toId(pokemon.abilities[key]);
 					if (abilityMap[abilityId]) {
 						abilityMap[abilityId].push(speciesid);
 					} else {
@@ -502,7 +504,7 @@ exports.Formats = [
 			return abilityMap;
 		})(),
 		getEvoFamily: function (species) {
-			var template = Tools.getTemplate(species);
+			let template = Tools.getTemplate(species);
 			while (template.prevo) {
 				template = Tools.getTemplate(template.prevo);
 			}
@@ -510,18 +512,18 @@ exports.Formats = [
 		},
 		onValidateTeam: function (team, format, teamHas) {
 			// Donor Clause
-			var evoFamilyLists = [];
-			for (var i = 0; i < team.length; i++) {
-				var set = team[i];
+			let evoFamilyLists = [];
+			for (let i = 0; i < team.length; i++) {
+				let set = team[i];
 				if (!set.abilitySources) continue;
 				evoFamilyLists.push(set.abilitySources.map(format.getEvoFamily).unique());
 			}
 
 			// Checking actual full incompatibility would require expensive algebra.
 			// Instead, we only check the trivial case of multiple Pokémon only legal for exactly one family. FIXME?
-			var requiredFamilies = Object.create(null);
-			for (var i = 0; i < evoFamilyLists.length; i++) {
-				var evoFamilies = evoFamilyLists[i];
+			let requiredFamilies = Object.create(null);
+			for (let i = 0; i < evoFamilyLists.length; i++) {
+				let evoFamilies = evoFamilyLists[i];
 				if (evoFamilies.length !== 1) continue;
 				if (requiredFamilies[evoFamilies[0]]) return ["You are limited to one inheritance from each family by the Donor Clause.", "(You inherit more than once from " + this.getTemplate(evoFamilies[0]).species + "'s.)"];
 				requiredFamilies[evoFamilies[0]] = 1;
@@ -531,13 +533,13 @@ exports.Formats = [
 			if (!this.format.abilityMap) return this.validateSet(set, teamHas); // shouldn't happen
 
 			this.format.noChangeForme = false;
-			var problems = this.tools.getFormat('Pokemon').onChangeSet.call(this.tools, set, this.format) || [];
+			let problems = this.tools.getFormat('Pokemon').onChangeSet.call(this.tools, set, this.format) || [];
 			this.format.noChangeForme = true;
 
 			if (problems.length) return problems;
 
-			var species = toId(set.species);
-			var template = this.tools.getTemplate(species);
+			let species = toId(set.species);
+			let template = this.tools.getTemplate(species);
 			if (!template.exists) return ["" + set.species + " is not a real Pok\u00E9mon."];
 			if (template.isUnreleased) return ["" + set.species + " is unreleased."];
 			if (template.speciesid in this.format.customBans.receiver) {
@@ -548,26 +550,26 @@ exports.Formats = [
 				}
 			}
 
-			var name = set.name;
+			let name = set.name;
 
-			var abilityId = toId(set.ability);
+			let abilityId = toId(set.ability);
 			if (!abilityId) return ["" + (set.name || set.species) + " must have an ability."];
-			var pokemonWithAbility = this.format.abilityMap[abilityId];
+			let pokemonWithAbility = this.format.abilityMap[abilityId];
 			if (!pokemonWithAbility) return ["" + set.ability + " is an invalid ability."];
-			var isBaseAbility = Object.values(template.abilities).map(toId).indexOf(abilityId) >= 0;
+			let isBaseAbility = Object.values(template.abilities).map(toId).indexOf(abilityId) >= 0;
 
 			// Items must be fully validated here since we may pass a different item to the base set validator.
-			var item = this.tools.getItem(set.item);
+			let item = this.tools.getItem(set.item);
 			if (item.id) {
 				if (!item.exists) return ["" + set.item + " is an invalid item."];
 				if (item.isUnreleased) return ["" + (set.name || set.species) + "'s item " + item.name + " is unreleased."];
 				if (item.id in this.format.customBans.items) return ["" + item.name + " is banned."];
 			}
 
-			var validSources = set.abilitySources = []; // evolutionary families
-			for (var i = 0; i < pokemonWithAbility.length; i++) {
-				var donorTemplate = this.tools.getTemplate(pokemonWithAbility[i]);
-				var evoFamily = this.format.getEvoFamily(donorTemplate);
+			let validSources = set.abilitySources = []; // evolutionary families
+			for (let i = 0; i < pokemonWithAbility.length; i++) {
+				let donorTemplate = this.tools.getTemplate(pokemonWithAbility[i]);
+				let evoFamily = this.format.getEvoFamily(donorTemplate);
 
 				if (validSources.indexOf(evoFamily) >= 0) {
 					// The existence of a legal set has already been established.
@@ -728,7 +730,7 @@ exports.Formats = [
 		desc: [
 			"Pok&eacute;mon below OU/BL get all their stats boosted. UU/BL2 get +5, RU/BL3 get +10, and NU or lower get +15.",
 			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3532973/\">Tier Shift</a>",
-			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3536719/\">Tier Shift Viability Ranking</a>"
+			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3554765/\">Tier Shift Viability Ranking</a>"
 		],
 		section: "Other Metagames",
 
@@ -778,11 +780,11 @@ exports.Formats = [
 			'Blazikenite', 'Gengarite', 'Kangaskhanite', 'Lucarionite', 'Mawilite', 'Salamencite', 'Soul Dew', 'Chatter'
 		],
 		onValidateSet: function (set) {
-			var bannedAbilities = {'Aerilate': 1, 'Arena Trap': 1, 'Contrary': 1, 'Fur Coat': 1, 'Huge Power': 1, 'Imposter': 1, 'Parental Bond': 1, 'Protean': 1, 'Pure Power': 1, 'Shadow Tag': 1, 'Simple':1, 'Speed Boost': 1, 'Wonder Guard': 1};
+			let bannedAbilities = {'Aerilate': 1, 'Arena Trap': 1, 'Contrary': 1, 'Fur Coat': 1, 'Huge Power': 1, 'Imposter': 1, 'Parental Bond': 1, 'Protean': 1, 'Pure Power': 1, 'Shadow Tag': 1, 'Simple':1, 'Speed Boost': 1, 'Wonder Guard': 1};
 			if (set.ability in bannedAbilities) {
-				var template = this.getTemplate(set.species || set.name);
-				var legalAbility = false;
-				for (var i in template.abilities) {
+				let template = this.getTemplate(set.species || set.name);
+				let legalAbility = false;
+				for (let i in template.abilities) {
 					if (set.ability === template.abilities[i]) legalAbility = true;
 				}
 				if (!legalAbility) return ['The ability ' + set.ability + ' is banned on Pok\u00e9mon that do not naturally have it.'];
@@ -801,16 +803,16 @@ exports.Formats = [
 		ruleset: ['OU'],
 		banlist: ['Diggersby', 'Keldeo', 'Porygon-Z', 'Sylveon', 'Aerodactylite', 'Altarianite', "King's Rock", 'Lopunnite', 'Metagrossite', 'Razor Fang'],
 		validateSet: function (set, teamHas) {
-			var statusProblems = this.validateSet(set, teamHas, {ignorestabmoves: {'Status':1}});
+			let statusProblems = this.validateSet(set, teamHas, {ignorestabmoves: {'Status':1}});
 			if (!statusProblems.length) return;
-			var attackProblems = this.validateSet(set, teamHas, {ignorestabmoves: {'Physical':1, 'Special':1}});
+			let attackProblems = this.validateSet(set, teamHas, {ignorestabmoves: {'Physical':1, 'Special':1}});
 			if (!attackProblems.length) return;
 
-			var problems = [];
-			for (var i = 0; i < statusProblems.length; i++) {
+			let problems = [];
+			for (let i = 0; i < statusProblems.length; i++) {
 				problems.push('(Status) ' + statusProblems[i]);
 			}
-			for (var i = 0; i < attackProblems.length; i++) {
+			for (let i = 0; i < attackProblems.length; i++) {
 				problems.push('(Attack) ' + attackProblems[i]);
 			}
 			return problems;
@@ -1006,7 +1008,7 @@ exports.Formats = [
 						pokemon.details = template.species + (pokemon.level === 100 ? '' : ', L' + pokemon.level) + (pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
 						this.add('detailschange', pokemon, pokemon.details);
 					} else {
-						var originalTemplate = this.getTemplate(pokemon.originalSpecies);
+						let originalTemplate = this.getTemplate(pokemon.originalSpecies);
 						this.add('-formechange', pokemon, originalTemplate.species, template.requiredItem);
 						this.add('-start', pokemon, template.originalMega, '[silent]');
 						if (originalTemplate.types.length !== pokemon.template.types.length || originalTemplate.types[1] !== pokemon.template.types[1]) {
@@ -1022,7 +1024,7 @@ exports.Formats = [
 			} else if (pokemon.template.originalMega && pokemon.originalSpecies !== pokemon.template.originalMega) {
 				// Place volatiles on the Pokémon to show its mega-evolved condition
 				this.add('-start', pokemon, pokemon.template.originalMega, '[silent]');
-				var originalTemplate = this.getTemplate(pokemon.originalSpecies);
+				let originalTemplate = this.getTemplate(pokemon.originalSpecies);
 				if (originalTemplate.types.length !== pokemon.template.types.length || originalTemplate.types[1] !== pokemon.template.types[1]) {
 					this.add('-start', pokemon, 'typechange', pokemon.template.types.join('/')/*, '[silent]'*/);
 				}
@@ -1454,7 +1456,6 @@ exports.Formats = [
 		onSwitchInPriority: 1,
 		onSwitchIn: function (pokemon) {
 			var name = toId(pokemon.illusion ? pokemon.illusion.name : pokemon.name);
-			var oldAbility = pokemon.ability;
 			if (pokemon.template.isMega) { // more hackery for mega abilities.
 				if (name === 'darkfiregamer' && pokemon.getAbility().id === 'solarpower') {
 					pokemon.setAbility('darkaura');
@@ -1532,7 +1533,7 @@ exports.Formats = [
 						pokemon.details = template.species + (pokemon.level === 100 ? '' : ', L' + pokemon.level) + (pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
 						this.add('detailschange', pokemon, pokemon.details);
 					} else {
-						var oTemplate = this.getTemplate(pokemon.originalSpecies);
+						let oTemplate = this.getTemplate(pokemon.originalSpecies);
 						this.add('-formechange', pokemon, oTemplate.species, template.requiredItem);
 						this.add('-start', pokemon, this.getTemplate(template.originalMega).requiredItem, '[silent]');
 						if (oTemplate.types.length !== pokemon.template.types.length || oTemplate.types[1] !== pokemon.template.types[1]) {
@@ -1550,7 +1551,7 @@ exports.Formats = [
 				if (oMegaTemplate.exists && pokemon.originalSpecies !== oMegaTemplate.baseSpecies) {
 					// Place volatiles on the Pokémon to show its mega-evolved condition and details
 					this.add('-start', pokemon, oMegaTemplate.requiredItem || oMegaTemplate.requiredMove, '[silent]');
-					var oTemplate = this.getTemplate(pokemon.originalSpecies);
+					let oTemplate = this.getTemplate(pokemon.originalSpecies);
 					if (oTemplate.types.length !== pokemon.template.types.length || oTemplate.types[1] !== pokemon.template.types[1]) {
 						this.add('-start', pokemon, 'typechange', pokemon.template.types.join('/'), '[silent]');
 					}
@@ -1559,7 +1560,6 @@ exports.Formats = [
 		},
 
 		onSwitchOut: function (pokemon) {
-			var name = toId(pokemon.name);
 			var oMegaTemplate = this.getTemplate(pokemon.template.originalMega);
 			if (oMegaTemplate.exists && pokemon.originalSpecies !== oMegaTemplate.baseSpecies) {
 				this.add('-end', pokemon, oMegaTemplate.requiredItem || oMegaTemplate.requiredMove, '[silent]');
@@ -1643,7 +1643,7 @@ exports.Formats = [
 						pokemon.details = template.species + (pokemon.level === 100 ? '' : ', L' + pokemon.level) + (pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
 						this.add('detailschange', pokemon, pokemon.details);
 					} else {
-						var oTemplate = this.getTemplate(pokemon.originalSpecies);
+						let oTemplate = this.getTemplate(pokemon.originalSpecies);
 						this.add('-formechange', pokemon, oTemplate.species, template.requiredItem);
 						this.add('-start', pokemon, this.getTemplate(template.originalMega).requiredItem, '[silent]');
 						if (oTemplate.types.length !== pokemon.template.types.length || oTemplate.types[1] !== pokemon.template.types[1]) {
@@ -1661,7 +1661,7 @@ exports.Formats = [
 				if (oMegaTemplate.exists && pokemon.originalSpecies !== oMegaTemplate.baseSpecies) {
 					// Place volatiles on the Pokémon to show its mega-evolved condition and details
 					this.add('-start', pokemon, oMegaTemplate.requiredItem || oMegaTemplate.requiredMove, '[silent]');
-					var oTemplate = this.getTemplate(pokemon.originalSpecies);
+					let oTemplate = this.getTemplate(pokemon.originalSpecies);
 					if (oTemplate.types.length !== pokemon.template.types.length || oTemplate.types[1] !== pokemon.template.types[1]) {
 						this.add('-start', pokemon, 'typechange', pokemon.template.types.join('/'), '[silent]');
 					}
@@ -1711,11 +1711,12 @@ exports.Formats = [
 ];
 var stpplb;
 var stpplbi;
-for (var i = 0; i < exports.Formats.length; i++)
+for (var i = 0; i < exports.Formats.length; i++) {
 	if (exports.Formats[i].name === 'Super TPPL Bros.') {
 		stpplb = exports.Formats[i];
 		stpplbi = i;
 	}
+}
 if (stpplb) {
 	exports.Formats.splice(stpplbi + 1, 0, {
 		name: "Super TPPL Bros. Plus",

@@ -78,10 +78,15 @@ exports.BattleMovedex = {
 	"synthesis": {
 		inherit: true,
 		onHit: function (pokemon) {
-			if (this.isWeather('sunnyday')) this.heal(this.modify(pokemon.maxhp, 0.667));
-			else if (this.isWeather(['sandstorm', 'hail'])) this.heal(this.modify(pokemon.maxhp, 0.25));
-			else if (this.isWeather('raindance')) this.heal(this.modify(pokemon.maxhp, 0.0833));
-			else this.heal(this.modify(pokemon.maxhp, 0.5));
+			if (this.isWeather('sunnyday')) {
+				this.heal(this.modify(pokemon.maxhp, 0.667));
+			} else if (this.isWeather(['sandstorm', 'hail'])) {
+				this.heal(this.modify(pokemon.maxhp, 0.25));
+			} else if (this.isWeather('raindance')) {
+				this.heal(this.modify(pokemon.maxhp, 0.0833));
+			} else {
+				this.heal(this.modify(pokemon.maxhp, 0.5));
+			}
 		}
 	},
 	"weatherball": {
