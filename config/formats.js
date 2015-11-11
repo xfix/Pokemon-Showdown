@@ -384,7 +384,6 @@ exports.Formats = [
 		gameType: 'triples',
 		ruleset: ['Pokemon', 'Species Clause', 'OHKO Clause', 'Moody Clause', 'Evasion Moves Clause', 'Mega Rayquaza Clause', 'Endless Battle Clause', 'HP Percentage Mod', 'Cancel Mod', 'Team Preview'],
 		banlist: ['Illegal', 'Unreleased', 'Dark Void', 'Perish Song']
-		]
 	},
 	{
 		name: "Triples Hackmons Cup",
