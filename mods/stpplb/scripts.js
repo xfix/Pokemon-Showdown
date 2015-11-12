@@ -414,7 +414,7 @@ exports.BattleScripts = {
 				species: 'Ursaring', ability: 'Furrier Coat', item: 'Leftovers', gender: 'F',
 				moves: ['earthquake', 'drainpunch'],
 				signatureMoves: ['wish', 'aromatherapy', 'bulkup'],
-				evs: {hps: 252, def: 168, spd: 88}, nature: 'Calm'
+				evs: {hp: 252, def: 168, spd: 88}, nature: 'Calm'
 			},
 			'PikalaxALT': {
 				species: 'Pikachu', ability: 'Pika Power', item: 'Light Ball', gender: 'M',
@@ -648,7 +648,7 @@ exports.BattleScripts = {
 				species: 'Ursaring', ability: 'Furrier Coat', item: 'Leftovers', gender: 'F',
 				moves: ['earthquake', 'drainpunch'],
 				signatureMoves: ['wish', 'aromatherapy', 'bulkup'],
-				evs: {hps: 252, def: 168, spd: 88}, nature: 'Calm'
+				evs: {hp: 252, def: 168, spd: 88}, nature: 'Calm'
 			},
 			'PikalaxALT': {
 				species: 'Pikachu', ability: 'Pika Power', item: 'Light Ball', gender: 'M',
