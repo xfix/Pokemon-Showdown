@@ -369,6 +369,14 @@ exports.Formats = [
 		]
 	},
 	{
+		name: "Smogon Triples Ubers",
+		section: "ORAS Triples",
+
+		gameType: 'triples',
+		ruleset: ['Pokemon', 'Species Clause', 'OHKO Clause', 'Moody Clause', 'Evasion Moves Clause', 'Endless Battle Clause', 'HP Percentage Mod', 'Cancel Mod', 'Team Preview'],
+		banlist: ['Illegal', 'Unreleased', 'Dark Void', 'Perish Song']
+	},
+	{
 		name: "Battle Spot Triples",
 		desc: [
 			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3533914/\">Battle Spot Triples Metagame Discussion</a>",
