@@ -454,7 +454,7 @@ exports.BattleScripts = {
 			},
 			'Xinc': {
 				species: 'Bisharp', ability: 'Defiant Plus', item: 'Leftovers', gender: 'M',
-				moves: ['knockoff', 'drainpunch', 'ironhead', 'suckerpunch'],
+				moves: ['knockoff', 'drainpunch', 'ironhead', 'suckerpunch', 'bulletpunch'],
 				signatureMove: 'ganonssword',
 				evs: {hp: 200, atk: 252, spe: 56}, nature: 'Adamant'
 			},
@@ -688,7 +688,7 @@ exports.BattleScripts = {
 			},
 			'Xinc': {
 				species: 'Bisharp', ability: 'Defiant Plus', item: 'Leftovers', gender: 'M',
-				moves: ['knockoff', 'drainpunch', 'ironhead', 'suckerpunch'],
+				moves: ['knockoff', 'drainpunch', 'ironhead', 'suckerpunch', 'bulletpunch'],
 				signatureMove: 'ganonssword',
 				evs: {hp: 200, atk: 252, spe: 56}, nature: 'Adamant'
 			},
