@@ -52,7 +52,6 @@ var megaStoneList = [
 exports.BattleScripts = {
 	randomtpplbTeam: function (side) {
 		var team = [];
-		var variant = this.random(2);
 		var sets = { // this is where all the movesets are defined. Add new mons here.
 			'darkfiregamer': {
 				species: "Houndoom", ability: "Dark Aura", item: "Dark Gem", gender: "M",
@@ -280,7 +279,6 @@ exports.BattleScripts = {
 	},
 	randomtpplbpTeam: function (side) {
 		var team = [];
-		var variant = this.random(2);
 		var sets = { // this is where all the movesets are defined. Add new mons here.
 			'darkfiregamer': {
 				species: "Houndoom", ability: "Dark Aura", item: "Dark Gem", gender: "M",
@@ -508,7 +506,6 @@ exports.BattleScripts = {
 	},
 	randomtppbTeam: function (side) {
 		var team = [];
-		var variant = this.random(2);
 		var sets = { // this is where all the movesets are defined. Add new mons here.
 			'darkfiregamer': {
 				species: "Houndoom", ability: "Dark Aura", item: "Dark Gem", gender: "M",
