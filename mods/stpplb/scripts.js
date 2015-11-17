@@ -52,7 +52,6 @@ var megaStoneList = [
 exports.BattleScripts = {
 	randomtpplbTeam: function (side) {
 		var team = [];
-		var variant = this.random(2);
 		var sets = { // this is where all the movesets are defined. Add new mons here.
 			'darkfiregamer': {
 				species: "Houndoom", ability: "Dark Aura", item: "Dark Gem", gender: "M",
@@ -280,7 +279,6 @@ exports.BattleScripts = {
 	},
 	randomtpplbpTeam: function (side) {
 		var team = [];
-		var variant = this.random(2);
 		var sets = { // this is where all the movesets are defined. Add new mons here.
 			'darkfiregamer': {
 				species: "Houndoom", ability: "Dark Aura", item: "Dark Gem", gender: "M",
@@ -414,7 +412,7 @@ exports.BattleScripts = {
 				species: 'Ursaring', ability: 'Furrier Coat', item: 'Leftovers', gender: 'F',
 				moves: ['earthquake', 'drainpunch'],
 				signatureMoves: ['wish', 'aromatherapy', 'bulkup'],
-				evs: {hps: 252, def: 168, spd: 88}, nature: 'Calm'
+				evs: {hp: 252, def: 168, spd: 88}, nature: 'Calm'
 			},
 			'PikalaxALT': {
 				species: 'Pikachu', ability: 'Pika Power', item: 'Light Ball', gender: 'M',
@@ -454,7 +452,7 @@ exports.BattleScripts = {
 			},
 			'Xinc': {
 				species: 'Bisharp', ability: 'Defiant Plus', item: 'Leftovers', gender: 'M',
-				moves: ['knockoff', 'drainpunch', 'ironhead', 'suckerpunch'],
+				moves: ['knockoff', 'drainpunch', 'ironhead', 'suckerpunch', 'bulletpunch'],
 				signatureMove: 'ganonssword',
 				evs: {hp: 200, atk: 252, spe: 56}, nature: 'Adamant'
 			},
@@ -508,7 +506,6 @@ exports.BattleScripts = {
 	},
 	randomtppbTeam: function (side) {
 		var team = [];
-		var variant = this.random(2);
 		var sets = { // this is where all the movesets are defined. Add new mons here.
 			'darkfiregamer': {
 				species: "Houndoom", ability: "Dark Aura", item: "Dark Gem", gender: "M",
@@ -648,7 +645,7 @@ exports.BattleScripts = {
 				species: 'Ursaring', ability: 'Furrier Coat', item: 'Leftovers', gender: 'F',
 				moves: ['earthquake', 'drainpunch'],
 				signatureMoves: ['wish', 'aromatherapy', 'bulkup'],
-				evs: {hps: 252, def: 168, spd: 88}, nature: 'Calm'
+				evs: {hp: 252, def: 168, spd: 88}, nature: 'Calm'
 			},
 			'PikalaxALT': {
 				species: 'Pikachu', ability: 'Pika Power', item: 'Light Ball', gender: 'M',
@@ -688,7 +685,7 @@ exports.BattleScripts = {
 			},
 			'Xinc': {
 				species: 'Bisharp', ability: 'Defiant Plus', item: 'Leftovers', gender: 'M',
-				moves: ['knockoff', 'drainpunch', 'ironhead', 'suckerpunch'],
+				moves: ['knockoff', 'drainpunch', 'ironhead', 'suckerpunch', 'bulletpunch'],
 				signatureMove: 'ganonssword',
 				evs: {hp: 200, atk: 252, spe: 56}, nature: 'Adamant'
 			},
