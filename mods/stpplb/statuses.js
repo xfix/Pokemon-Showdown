@@ -1,4 +1,34 @@
 exports.BattleStatuses = {
+	sconfusion: {
+		// sohippy's short switch-in confusion. 70% chance to hit self. doesn't stack with original confusion
+		onStart: function (target, source, sourceEffect) {
+			let result = this.runEvent('TryConfusion', target, source, sourceEffect);
+			if (!result) return result;
+			this.add('-start', target, 'confusion');
+			this.effectData.time = 2;
+		},
+		onEnd: function (target) {
+			this.add('-end', target, 'confusion');
+		},
+		onBeforeMovePriority: 3,
+		onBeforeMove: function (pokemon) {
+			pokemon.volatiles.confusion.time--;
+			if (!pokemon.volatiles.confusion.time) {
+				pokemon.removeVolatile('confusion');
+				return;
+			}
+			this.add('-activate', pokemon, 'confusion');
+			if (this.random(10) < 3) {
+				return;
+			}
+			this.damage(this.getDamage(pokemon, pokemon, 40), pokemon, pokemon, {
+				id: 'confused',
+				effectType: 'Move',
+				type: '???'
+			});
+			return false;
+		}
+	},
 	scrubterrain: {
 		effectType: 'Weather',
 		duration: 0,
