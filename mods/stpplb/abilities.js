@@ -129,7 +129,7 @@ exports.BattleAbilities = { // define custom abilities here.
 	},
 	'swahahahahaggers': { // Sohippy's ability: con on switch-in.
 		desc: '',
-		shortDesc: "On switch-in, all opponents become confused; Ground immunity.",
+		shortDesc: "On switch-in, all opponents become confused for 1 turn; Ground immunity.",
 		onImmunity: function (type) {
 			if (type === 'Ground') return false;
 		},
@@ -137,7 +137,7 @@ exports.BattleAbilities = { // define custom abilities here.
 			var activeFoe = pokemon.side.foe.active;
 			for (var i = 0; i < activeFoe.length; i++) {
 				var foe = activeFoe[i];
-				foe.addVolatile('confusion');
+				foe.addVolatile('sconfusion');
 			}
 		},
 		id: 'swahahahahaggers',
