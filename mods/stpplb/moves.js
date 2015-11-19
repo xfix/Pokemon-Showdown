@@ -191,7 +191,7 @@ exports.BattleMovedex = {
 		},
 		flags: {protect: 1, mirror: 1},
 		secondary: {
-			chance: 20,
+			chance: 25,
 			onHit: function (target, source) { // random status.
 				var result = this.random(6);
 				if (result === 0) {
@@ -602,6 +602,16 @@ exports.BattleMovedex = {
 		},
 		onHit: function (target) {
 			if (!target.template.isMega) {
+				var moves = [];
+				for (var i = 0; i < target.moveset.length; i++) {
+					var move = target.moveset[i].id;
+					if (move.id !== 'reroll') moves.push(move);
+				}
+				var randomMove = '';
+				if (moves.length) randomMove = moves[this.random(moves.length)];
+				if (randomMove) {
+					this.useMove(randomMove, target);
+				}
 				var megaStoneList = [
 					'Abomasite',
 					'Absolite',
