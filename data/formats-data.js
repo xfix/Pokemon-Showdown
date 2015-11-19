@@ -1,3 +1,5 @@
+'use strict';
+
 exports.BattleFormatsData = {
 	bulbasaur: {
 		randomBattleMoves: ["sleeppowder","gigadrain","hiddenpowerfire","hiddenpowerice","sludgebomb","powerwhip","leechseed","synthesis"],
@@ -2235,7 +2237,7 @@ exports.BattleFormatsData = {
 		eventPokemon: [
 			{"generation":6,"level":50,"isHidden":false,"moves":["extremespeed","helpinghand","babydolleyes","protect"],"pokeball":"cherishball"}
 		],
-		tier: "PU"
+		tier: "BL4"
 	},
 	wurmple: {
 		randomBattleMoves: ["bugbite","poisonsting","tackle","electroweb"],
@@ -4043,7 +4045,7 @@ exports.BattleFormatsData = {
 		tier: "LC"
 	},
 	watchog: {
-		randomBattleMoves: ["swordsdance","batonpass","substitute","hypnosis","return","superfang"],
+		randomBattleMoves: ["hypnosis","substitute","batonpass","superfang","swordsdance","return","knockoff"],
 		randomDoubleBattleMoves: ["swordsdance","knockoff","substitute","hypnosis","return","superfang","protect"],
 		tier: "PU"
 	},
