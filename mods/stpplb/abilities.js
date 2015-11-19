@@ -506,7 +506,7 @@ exports.BattleAbilities = { // define custom abilities here.
 		name: 'Drawing Request',
 		rating: 3,
 		num: 214,
-		desc: "At the end of each turn, replaces this Pokemon's first move with a random move from the pool of all Special attacks >= 60 BP and all status moves, minus the ones that boost the user's Attack stat, and the ones this Pokemon already has.",
+		desc: "At the end of each turn, picks a random move from the pool of all Special attacks >= 60 BP and all status moves, minus the ones that boost the user's Attack stat, and the ones this Pokemon already has. The move is added to this Pokemon's moveset if it has 5 moves or less; it replaces its 5th move otherwise.",
 		shortDesc: 'TL;DR',
 		onResidualOrder: 26,
 		onResidualSubOrder: 1,
