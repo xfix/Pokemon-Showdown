@@ -496,7 +496,7 @@ exports.BattleAbilities = { // define custom abilities here.
 		num: 213,
 		desc: "Chance of boosting speed when using signature move",
 		shortDesc: "Chance of boost when using special move",
-		onAfterMoveSecondary: function (target, source, move) {
+		onSourceHit: function (target, source, move) {
 			if (source && move && (move.id === "boost" || move.id === "spindash")) {
 				if (this.random(10) < 3) {
 					this.boost({spe: 12}, source);
