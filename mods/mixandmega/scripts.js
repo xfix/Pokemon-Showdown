@@ -1,3 +1,5 @@
+"use strict";
+
 exports.BattleScripts = {
 	init: function () {
 		var onTakeMegaStone = function (item, source) {
