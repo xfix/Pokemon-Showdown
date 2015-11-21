@@ -1,3 +1,5 @@
+"use strict";
+
 exports.BattleMovedex = {
 	'fling': {
 		inherit: true,
