@@ -1,3 +1,5 @@
+"use strict";
+
 exports.BattleStatuses = {
 	sconfusion: {
 		// sohippy's short switch-in confusion. 70% chance to hit self. doesn't stack with original confusion
