@@ -1163,9 +1163,16 @@ exports.BattleMovedex = {
 				disabled: false,
 				used: false
 			};
-			source.moveset[1] = sketchedMove;
-			source.baseMoveset[1] = sketchedMove;
-			source.moves[1] = toId(move.name);
+			if (source.moveset.length < 8) {
+				source.moveset.push(sketchedMove);
+				source.baseMoveset.push(sketchedMove);
+				source.moves.push(toId(move.name));
+			} else {
+				let r = this.random(8);
+				source.moveset[r] = sketchedMove;
+				source.baseMoveset[r] = sketchedMove;
+				source.moves[r] = toId(move.name);
+			}
 			this.add('message', source.name + ' acquired ' + move.name + ' using its Quick Sketch!');
 			this.useMove(move, target);
 		},
