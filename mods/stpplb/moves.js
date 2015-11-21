@@ -1219,7 +1219,7 @@ exports.BattleMovedex = {
 		priority: 0,
 		category: 'Physical',
 		basePower: 80,
-		accuracy: 95,
+		accuracy: true,
 		flags: {contact: 1, protect: 1, mirror: 1},
 		onPrepareHit: function (target, source) {
 			this.attrLastMove('[still]');
