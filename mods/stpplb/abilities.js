@@ -531,7 +531,7 @@ exports.BattleAbilities = { // define custom abilities here.
 			if (!move) {
 				return false;
 			}
-			let newMove = {
+			pokemon.moveset[0] = {
 				move: move.name,
 				id: move.id,
 				pp: move.pp,
@@ -541,13 +541,7 @@ exports.BattleAbilities = { // define custom abilities here.
 				used: false,
 				virtual: true
 			};
-			if (pokemon.moveset.length < 5) {
-				pokemon.moveset.push(newMove);
-				pokemon.moves.push(toId(move.name));
-			} else {
-				pokemon.moveset[4] = newMove;
-				pokemon.moves[4] = toId(move.name);
-			}
+			pokemon.moves[0] = toId(move.name);
 			this.add('message', pokemon.name + ' acquired a new move using its Drawing Request!');
 		}
 	},
