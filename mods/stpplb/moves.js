@@ -191,7 +191,7 @@ exports.BattleMovedex = {
 		},
 		flags: {protect: 1, mirror: 1},
 		secondary: {
-			chance: 20,
+			chance: 25,
 			onHit: function (target, source) { // random status.
 				var result = this.random(6);
 				if (result === 0) {
@@ -602,6 +602,16 @@ exports.BattleMovedex = {
 		},
 		onHit: function (target) {
 			if (!target.template.isMega) {
+				var moves = [];
+				for (var i = 0; i < target.moveset.length; i++) {
+					var move = target.moveset[i].id;
+					if (move.id !== 'reroll') moves.push(move);
+				}
+				var randomMove = '';
+				if (moves.length) randomMove = moves[this.random(moves.length)];
+				if (randomMove) {
+					this.useMove(randomMove, target);
+				}
 				var megaStoneList = [
 					'Abomasite',
 					'Absolite',
@@ -1153,9 +1163,16 @@ exports.BattleMovedex = {
 				disabled: false,
 				used: false
 			};
-			source.moveset[1] = sketchedMove;
-			source.baseMoveset[1] = sketchedMove;
-			source.moves[1] = toId(move.name);
+			if (source.moveset.length < 8) {
+				source.moveset.push(sketchedMove);
+				source.baseMoveset.push(sketchedMove);
+				source.moves.push(toId(move.name));
+			} else {
+				let r = this.random(8);
+				source.moveset[r] = sketchedMove;
+				source.baseMoveset[r] = sketchedMove;
+				source.moves[r] = toId(move.name);
+			}
 			this.add('message', source.name + ' acquired ' + move.name + ' using its Quick Sketch!');
 			this.useMove(move, target);
 		},
@@ -1202,7 +1219,7 @@ exports.BattleMovedex = {
 		priority: 0,
 		category: 'Physical',
 		basePower: 80,
-		accuracy: 95,
+		accuracy: true,
 		flags: {contact: 1, protect: 1, mirror: 1},
 		onPrepareHit: function (target, source) {
 			this.attrLastMove('[still]');

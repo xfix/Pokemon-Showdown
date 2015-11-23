@@ -1,3 +1,5 @@
+"use strict";
+
 var megaStoneList = [
 	'Abomasite',
 	'Absolite',
@@ -127,7 +129,7 @@ exports.BattleScripts = {
 			},
 			/*"Kap'n Kooma": { // STPPLB+ only
 				species: 'Kingdra', ability: 'Sea and Sky', item: 'Choice Specs', gender: 'M',
-				moves: ['steameruption', 'dracometeor', 'thunder'],
+				moves: ['scald', 'dracometeor', 'thunder'],
 				signatureMove: 'broadside',
 				evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
 			},*/
@@ -136,7 +138,7 @@ exports.BattleScripts = {
 				moves: ['waterpulse', 'hiddenpowerice', 'shockwave'],
 				ivs: {atk:30, def:30}, // in order for HP Ice to be a thing.
 				signatureMove: 'bestfcar',
-				evs: {atk:252,def:4,spe:252}, nature: 'Adamant'
+				evs: {spa:252, def:4, spe:252}, nature: 'Modest'
 			},*/
 			'Poomph':{
 				species: "Ampharosmega", ability: "Little Engine", item: 'Life Orb', gender: 'M',
@@ -354,7 +356,7 @@ exports.BattleScripts = {
 			},
 			"Kap'n Kooma": { // STPPLB+ only
 				species: 'Kingdra', ability: 'Sea and Sky', item: 'Choice Specs', gender: 'M',
-				moves: ['steameruption', 'dracometeor', 'thunder'],
+				moves: ['scald', 'dracometeor', 'thunder'],
 				signatureMove: 'broadside',
 				evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
 			},
@@ -363,7 +365,7 @@ exports.BattleScripts = {
 				moves: ['waterpulse', 'hiddenpowerice', 'shockwave'],
 				ivs: {atk:30, def:30}, // in order for HP Ice to be a thing.
 				signatureMove: 'bestfcar',
-				evs: {atk:252,def:4,spe:252}, nature: 'Adamant'
+				evs: {spa:252, def:4, spe:252}, nature: 'Modest'
 			},*/
 			'Poomph':{
 				species: "Ampharosmega", ability: "Little Engine", item: 'Life Orb', gender: 'M',
@@ -581,7 +583,7 @@ exports.BattleScripts = {
 			},
 			"Kap'n Kooma": { // STPPLB+ only
 				species: 'Kingdra', ability: 'Sea and Sky', item: 'Choice Specs', gender: 'M',
-				moves: ['steameruption', 'dracometeor', 'thunder'],
+				moves: ['scald', 'dracometeor', 'thunder'],
 				signatureMove: 'broadside',
 				evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
 			},
@@ -590,7 +592,7 @@ exports.BattleScripts = {
 				moves: ['waterpulse', 'hiddenpowerice', 'shockwave'],
 				ivs: {atk:30, def:30}, // in order for HP Ice to be a thing.
 				signatureMove: 'bestfcar',
-				evs: {atk:252, def:4, spe:252}, nature: 'Adamant'
+				evs: {spa:252, def:4, spe:252}, nature: 'Modest'
 			},
 			'Poomph':{
 				species: "Ampharosmega", ability: "Little Engine", item: 'Life Orb', gender: 'M',
