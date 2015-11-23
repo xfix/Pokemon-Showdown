@@ -1,3 +1,5 @@
+"use strict";
+
 var megaStoneList = [
 	'Abomasite',
 	'Absolite',
@@ -52,7 +54,6 @@ var megaStoneList = [
 exports.BattleScripts = {
 	randomtpplbTeam: function (side) {
 		var team = [];
-		var variant = this.random(2);
 		var sets = { // this is where all the movesets are defined. Add new mons here.
 			'darkfiregamer': {
 				species: "Houndoom", ability: "Dark Aura", item: "Dark Gem", gender: "M",
@@ -128,7 +129,7 @@ exports.BattleScripts = {
 			},
 			/*"Kap'n Kooma": { // STPPLB+ only
 				species: 'Kingdra', ability: 'Sea and Sky', item: 'Choice Specs', gender: 'M',
-				moves: ['steameruption', 'dracometeor', 'thunder'],
+				moves: ['scald', 'dracometeor', 'thunder'],
 				signatureMove: 'broadside',
 				evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
 			},*/
@@ -137,7 +138,7 @@ exports.BattleScripts = {
 				moves: ['waterpulse', 'hiddenpowerice', 'shockwave'],
 				ivs: {atk:30, def:30}, // in order for HP Ice to be a thing.
 				signatureMove: 'bestfcar',
-				evs: {atk:252,def:4,spe:252}, nature: 'Adamant'
+				evs: {spa:252, def:4, spe:252}, nature: 'Modest'
 			},*/
 			'Poomph':{
 				species: "Ampharosmega", ability: "Little Engine", item: 'Life Orb', gender: 'M',
@@ -280,7 +281,6 @@ exports.BattleScripts = {
 	},
 	randomtpplbpTeam: function (side) {
 		var team = [];
-		var variant = this.random(2);
 		var sets = { // this is where all the movesets are defined. Add new mons here.
 			'darkfiregamer': {
 				species: "Houndoom", ability: "Dark Aura", item: "Dark Gem", gender: "M",
@@ -356,7 +356,7 @@ exports.BattleScripts = {
 			},
 			"Kap'n Kooma": { // STPPLB+ only
 				species: 'Kingdra', ability: 'Sea and Sky', item: 'Choice Specs', gender: 'M',
-				moves: ['steameruption', 'dracometeor', 'thunder'],
+				moves: ['scald', 'dracometeor', 'thunder'],
 				signatureMove: 'broadside',
 				evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
 			},
@@ -365,7 +365,7 @@ exports.BattleScripts = {
 				moves: ['waterpulse', 'hiddenpowerice', 'shockwave'],
 				ivs: {atk:30, def:30}, // in order for HP Ice to be a thing.
 				signatureMove: 'bestfcar',
-				evs: {atk:252,def:4,spe:252}, nature: 'Adamant'
+				evs: {spa:252, def:4, spe:252}, nature: 'Modest'
 			},*/
 			'Poomph':{
 				species: "Ampharosmega", ability: "Little Engine", item: 'Life Orb', gender: 'M',
@@ -414,7 +414,7 @@ exports.BattleScripts = {
 				species: 'Ursaring', ability: 'Furrier Coat', item: 'Leftovers', gender: 'F',
 				moves: ['earthquake', 'drainpunch'],
 				signatureMoves: ['wish', 'aromatherapy', 'bulkup'],
-				evs: {hps: 252, def: 168, spd: 88}, nature: 'Calm'
+				evs: {hp: 252, def: 168, spd: 88}, nature: 'Calm'
 			},
 			'PikalaxALT': {
 				species: 'Pikachu', ability: 'Pika Power', item: 'Light Ball', gender: 'M',
@@ -454,7 +454,7 @@ exports.BattleScripts = {
 			},
 			'Xinc': {
 				species: 'Bisharp', ability: 'Defiant Plus', item: 'Leftovers', gender: 'M',
-				moves: ['knockoff', 'drainpunch', 'ironhead', 'suckerpunch'],
+				moves: ['knockoff', 'drainpunch', 'ironhead', 'suckerpunch', 'bulletpunch'],
 				signatureMove: 'ganonssword',
 				evs: {hp: 200, atk: 252, spe: 56}, nature: 'Adamant'
 			},
@@ -508,7 +508,6 @@ exports.BattleScripts = {
 	},
 	randomtppbTeam: function (side) {
 		var team = [];
-		var variant = this.random(2);
 		var sets = { // this is where all the movesets are defined. Add new mons here.
 			'darkfiregamer': {
 				species: "Houndoom", ability: "Dark Aura", item: "Dark Gem", gender: "M",
@@ -584,7 +583,7 @@ exports.BattleScripts = {
 			},
 			"Kap'n Kooma": { // STPPLB+ only
 				species: 'Kingdra', ability: 'Sea and Sky', item: 'Choice Specs', gender: 'M',
-				moves: ['steameruption', 'dracometeor', 'thunder'],
+				moves: ['scald', 'dracometeor', 'thunder'],
 				signatureMove: 'broadside',
 				evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
 			},
@@ -593,7 +592,7 @@ exports.BattleScripts = {
 				moves: ['waterpulse', 'hiddenpowerice', 'shockwave'],
 				ivs: {atk:30, def:30}, // in order for HP Ice to be a thing.
 				signatureMove: 'bestfcar',
-				evs: {atk:252, def:4, spe:252}, nature: 'Adamant'
+				evs: {spa:252, def:4, spe:252}, nature: 'Modest'
 			},
 			'Poomph':{
 				species: "Ampharosmega", ability: "Little Engine", item: 'Life Orb', gender: 'M',
@@ -648,7 +647,7 @@ exports.BattleScripts = {
 				species: 'Ursaring', ability: 'Furrier Coat', item: 'Leftovers', gender: 'F',
 				moves: ['earthquake', 'drainpunch'],
 				signatureMoves: ['wish', 'aromatherapy', 'bulkup'],
-				evs: {hps: 252, def: 168, spd: 88}, nature: 'Calm'
+				evs: {hp: 252, def: 168, spd: 88}, nature: 'Calm'
 			},
 			'PikalaxALT': {
 				species: 'Pikachu', ability: 'Pika Power', item: 'Light Ball', gender: 'M',
@@ -688,7 +687,7 @@ exports.BattleScripts = {
 			},
 			'Xinc': {
 				species: 'Bisharp', ability: 'Defiant Plus', item: 'Leftovers', gender: 'M',
-				moves: ['knockoff', 'drainpunch', 'ironhead', 'suckerpunch'],
+				moves: ['knockoff', 'drainpunch', 'ironhead', 'suckerpunch', 'bulletpunch'],
 				signatureMove: 'ganonssword',
 				evs: {hp: 200, atk: 252, spe: 56}, nature: 'Adamant'
 			},

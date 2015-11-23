@@ -129,7 +129,7 @@ exports.BattleAbilities = { // define custom abilities here.
 	},
 	'swahahahahaggers': { // Sohippy's ability: con on switch-in.
 		desc: '',
-		shortDesc: "On switch-in, all opponents become confused; Ground immunity.",
+		shortDesc: "On switch-in, all opponents become confused for 1 turn; Ground immunity.",
 		onImmunity: function (type) {
 			if (type === 'Ground') return false;
 		},
@@ -137,7 +137,7 @@ exports.BattleAbilities = { // define custom abilities here.
 			var activeFoe = pokemon.side.foe.active;
 			for (var i = 0; i < activeFoe.length; i++) {
 				var foe = activeFoe[i];
-				foe.addVolatile('confusion');
+				foe.addVolatile('sconfusion');
 			}
 		},
 		id: 'swahahahahaggers',
@@ -386,16 +386,13 @@ exports.BattleAbilities = { // define custom abilities here.
 		onResidualOrder: 26,
 		onResidualSubOrder: 1,
 		onResidual: function (pokemon) {
-			if (pokemon.hp <= 3 * pokemon.maxhp / 4 && pokemon.hp > pokemon.maxhp / 2 && pokemon.boosts.evasion < 1) {
-				this.boost({evasion: 1 - pokemon.boosts.evasion}, pokemon);
-			}
-			if (pokemon.hp <= pokemon.maxhp / 2 && pokemon.hp > pokemon.maxhp / 4 && pokemon.boosts.evasion < 2) {
+			if (pokemon.hp > pokemon.maxhp / 2 && pokemon.boosts.evasion < 0) {
+				this.boost({evasion: 0 - pokemon.boosts.evasion}, pokemon);
+			} else if (pokemon.hp <= pokemon.maxhp / 2 && pokemon.hp > pokemon.maxhp / 4 && pokemon.boosts.evasion < 2) {
 				this.boost({evasion: 2 - pokemon.boosts.evasion}, pokemon);
-			}
-			if (pokemon.hp <= 1 * pokemon.maxhp / 4 && pokemon.hp > pokemon.maxhp / 32  && pokemon.boosts.evasion < 4) {
+			} else if (pokemon.hp <= pokemon.maxhp / 4 && pokemon.hp > pokemon.maxhp / 32 && pokemon.boosts.evasion < 4) {
 				this.boost({evasion: 4 - pokemon.boosts.evasion}, pokemon);
-			}
-			if (pokemon.hp <= pokemon.maxhp / 32 && pokemon.boosts.evasion < 6) {
+			} else if (pokemon.hp <= pokemon.maxhp / 32 && pokemon.boosts.evasion < 6) {
 				this.boost({evasion: 6 - pokemon.boosts.evasion}, pokemon);
 			}
 		},
@@ -495,10 +492,10 @@ exports.BattleAbilities = { // define custom abilities here.
 		num: 213,
 		desc: "Chance of boosting speed when using signature move",
 		shortDesc: "Chance of boost when using special move",
-		onAnyMove: function (target, source, move) {
-			if (move.id === "boost" || move.id === "spindash") {
-				if (this.random(3) === 0) {
-					this.boost({spe: 6}, source);
+		onSourceHit: function (target, source, move) {
+			if (source && move && (move.id === "boost" || move.id === "spindash")) {
+				if (this.random(10) < 3) {
+					this.boost({spe: 12}, source);
 				}
 			}
 		}
@@ -544,7 +541,7 @@ exports.BattleAbilities = { // define custom abilities here.
 				virtual: true
 			};
 			pokemon.moves[0] = toId(move.name);
-			this.add('message', pokemon.name + ' acquired ' + move.name + ' using its Drawing Request!');
+			this.add('message', pokemon.name + ' acquired a new move using its Drawing Request!');
 		}
 	},
 	"mindgames": {
