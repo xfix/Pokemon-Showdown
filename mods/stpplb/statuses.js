@@ -4,7 +4,7 @@ exports.BattleStatuses = {
 	sconfusion: {
 		// sohippy's short switch-in confusion. 70% chance to hit self. doesn't stack with original confusion
 		onStart: function (target, source, sourceEffect) {
-			let result = this.runEvent('TryConfusion', target, source, sourceEffect);
+			let result = !target.volatiles['confusion'] && this.runEvent('TryConfusion', target, source, sourceEffect);
 			if (!result) return result;
 			this.add('-start', target, 'confusion');
 			this.effectData.time = 2;
