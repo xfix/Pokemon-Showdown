@@ -1483,7 +1483,6 @@ exports.Formats = [
 			}
 			if (name === 'pikalaxalt') {
 				this.boost({def:1, spd:1}, pokemon);
-				this.add('c|PikalaxALT|ヽ༼ຈل͜ຈ༽ﾉ RIOT ヽ༼ຈل͜ຈ༽ﾉ');
 			}
 			if (name === 'xfix') {
 				this.add("c|xfix|YayBot will be updated soon, okay?");
