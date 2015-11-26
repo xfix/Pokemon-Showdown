@@ -16,7 +16,7 @@ exports.BattleStatuses = {
 		onBeforeMove: function (pokemon) {
 			pokemon.volatiles.sconfusion.time--;
 			if (!pokemon.volatiles.sconfusion.time) {
-				pokemon.removeVolatile('confusion');
+				pokemon.removeVolatile('sconfusion');
 				return;
 			}
 			this.add('-activate', pokemon, 'confusion');
