@@ -1617,6 +1617,7 @@ exports.Formats = [
 				var pokemon = allPokemon[i];
 				pokemon.originalSpecies = pokemon.baseTemplate.species;
 			}
+			this.add('-message', "STPPLB wiki with all Pokemon descriptions: https://www.reddit.com/r/TPPLeague/wiki/stpplb");
 		}
 	},
 
@@ -1680,6 +1681,7 @@ exports.Formats = [
 				var pokemon = allPokemon[i];
 				pokemon.originalSpecies = pokemon.baseTemplate.species;
 			}
+			this.add('-message', "STPPLB wiki with all ability descriptions: https://www.reddit.com/r/TPPLeague/wiki/stpplb");
 		}
 	},
 
