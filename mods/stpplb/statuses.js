@@ -4,7 +4,7 @@ exports.BattleStatuses = {
 	sconfusion: {
 		// sohippy's short switch-in confusion. 70% chance to hit self. doesn't stack with original confusion
 		onStart: function (target, source, sourceEffect) {
-			let result = this.runEvent('TryConfusion', target, source, sourceEffect);
+			let result = !target.volatiles['confusion'] && this.runEvent('TryConfusion', target, source, sourceEffect);
 			if (!result) return result;
 			this.add('-start', target, 'confusion');
 			this.effectData.time = 2;
@@ -14,9 +14,9 @@ exports.BattleStatuses = {
 		},
 		onBeforeMovePriority: 3,
 		onBeforeMove: function (pokemon) {
-			pokemon.volatiles.confusion.time--;
-			if (!pokemon.volatiles.confusion.time) {
-				pokemon.removeVolatile('confusion');
+			pokemon.volatiles.sconfusion.time--;
+			if (!pokemon.volatiles.sconfusion.time) {
+				pokemon.removeVolatile('sconfusion');
 				return;
 			}
 			this.add('-activate', pokemon, 'confusion');

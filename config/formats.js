@@ -1495,7 +1495,6 @@ exports.Formats = [
 			}
 			if (name === 'pikalaxalt') {
 				this.boost({def:1, spd:1}, pokemon);
-				this.add('c|PikalaxALT|ヽ༼ຈل͜ຈ༽ﾉ RIOT ヽ༼ຈل͜ຈ༽ﾉ');
 			}
 			if (name === 'xfix') {
 				this.add("c|xfix|YayBot will be updated soon, okay?");
@@ -1630,6 +1629,7 @@ exports.Formats = [
 				var pokemon = allPokemon[i];
 				pokemon.originalSpecies = pokemon.baseTemplate.species;
 			}
+			this.add('-message', "STPPLB wiki with all Pokemon descriptions: https://www.reddit.com/r/TPPLeague/wiki/stpplb");
 		}
 	},
 
@@ -1693,6 +1693,7 @@ exports.Formats = [
 				var pokemon = allPokemon[i];
 				pokemon.originalSpecies = pokemon.baseTemplate.species;
 			}
+			this.add('-message', "STPPLB wiki with all ability descriptions: https://www.reddit.com/r/TPPLeague/wiki/stpplb");
 		}
 	},
 
