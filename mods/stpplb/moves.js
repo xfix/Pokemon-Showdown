@@ -1139,6 +1139,7 @@ exports.BattleMovedex = {
 		},
 		onTryHit: function (target, source) {
 			if (target.volatiles['lockon'] && source === target.volatiles['lockon'].source) return;
+			if (source.hasAbility('noguard') || target.hasAbility('noguard')) return;
 			return false;
 		},
 		target: 'normal',
