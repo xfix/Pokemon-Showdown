@@ -1110,18 +1110,18 @@ exports.BattleMovedex = {
 		},
 		onTryHit: function (target, source) {
 			if (source.volatiles['lockon']) source.removeVolatile('lockon');
+			source.addVolatile('focusenergy');
 		},
 		onHit: function (target, source) {
 			source.addVolatile('lockon', target);
 			this.add('-activate', source, 'move: Lock \'n\' Load', '[of] ' + target);
 			this.add('c|' + source.name + '|Say hello to Becky and Betsy!');
 		},
-		self: {volatileStatus: 'focusenergy'},
 		pp: 20
 	},
 	'assassinate': {
 		num: 665,
-		accuracy: 0,
+		accuracy: 0, // ohko moves' accuracy is defined elsewhere
 		basePower: 0,
 		category: 'Physical',
 		desc: 'Deals damage to the target equal to the target\'s maximum HP. Ignores accuracy and evasiveness modifiers.',
@@ -1136,6 +1136,10 @@ exports.BattleMovedex = {
 		onPrepareHit: function (target, source) {
 			this.attrLastMove('[still]');
 			this.add('-anim', source, 'Flash Cannon', target);
+		},
+		onTryHit: function (target, source) {
+			if (target.volatiles['lockon'] && source === target.volatiles['lockon'].source) return;
+			return false;
 		},
 		target: 'normal',
 		type: 'Steel'
