@@ -1430,10 +1430,12 @@ exports.BattleMovedex = {
 				var sourceBoost = source.boosts[stat];
 				var average = Math.ceil((targetBoost + sourceBoost) / 2);
 				boostSource[stat] = average;
+				source.setBoost(boostSource);
+				this.add('-setboost', source, stat, average, '[from] move: Balanced Strike');
 				boostTarget[stat] = average;
+				target.setBoost(boostTarget);
+				this.add('-setboost', target, stat, average, '[from] move: Balanced Strike');
 			}
-			source.setBoost(boostSource);
-			target.setBoost(boostTarget);
 		},
 		num: 673
 	},
