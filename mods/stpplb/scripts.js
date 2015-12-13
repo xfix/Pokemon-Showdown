@@ -722,6 +722,12 @@ exports.BattleScripts = {
 				moves: ['nightslash', 'slash', 'psychocut', 'shadowclaw', 'playrough', 'knockoff'],
 				signatureMoves: ['quityourbullshit', 'keepcalmandfocus'],
 				evs: {hp: 252, atk: 252, spe: 4}, nature: 'Adamant'
+			},
+			'Lorewriter Cole': {
+				species: 'Relicanth', ability: 'Invocation', item: 'Leftovers', gender: 'M',
+				moves: ['stealthrock', 'stoneedge', 'toxic', 'earthpower', 'ancientpower'],
+				signatureMove: 'godswrath',
+				nature: 'Serious'
 			}
 		};
 		var pool = Object.keys(sets).randomize();

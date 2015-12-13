@@ -620,7 +620,7 @@ exports.BattleAbilities = { // define custom abilities here.
 			var fossils = ['Omastar', 'Kabutops', 'Aerodactyl', 'Cradily', 'Armaldo', 'Bastiodon', 'Rampardos', 'Carracosta', 'Archeops', 'Aurorus', 'Tyrantrum'];
 			var fossil = fossils.sample(1)[0];
 			pokemon.formeChange(fossil);
-			this.add('-formechange', pokemon, species, '[msg]');
+			this.add('-formechange', pokemon, fossil, '[msg]');
 		},
 		name: 'Invocation',
 		id: 'invocation',
