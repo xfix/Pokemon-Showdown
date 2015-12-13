@@ -413,7 +413,7 @@ BattlePokemon = (function () {
 		}
 		this.battle.runEvent('ModifyPokemon', this);
 
-		this.speed = this.getStat('spe');
+		this.speed = this.getDecisionSpeed();
 	};
 	BattlePokemon.prototype.calculateStat = function (statName, boost, modifier) {
 		statName = toId(statName);
@@ -478,6 +478,14 @@ BattlePokemon = (function () {
 			stat = this.battle.getStatCallback(stat, statName, this, unboosted);
 		}
 		return stat;
+	};
+	BattlePokemon.prototype.getDecisionSpeed = function () {
+		let speed = this.getStat('spe');
+		if (speed > 10000) speed = 10000;
+		if (this.battle.getPseudoWeather('trickroom')) {
+			speed = 0x2710 - speed;
+		}
+		return speed & 0x1FFF;
 	};
 	BattlePokemon.prototype.getWeight = function () {
 		let weight = this.template.weightkg;
@@ -1541,7 +1549,7 @@ BattleSide = (function () {
 		this.battle.send('sideupdate', this.id + "\n" + sideUpdate);
 	};
 	BattleSide.prototype.emitCallback = function () {
-		this.battle.send('callback', this.id + "\n" +
+		this.battle.send('sideupdate', this.id + "\n|callback|" +
 			Array.prototype.slice.call(arguments).join('|'));
 	};
 	BattleSide.prototype.emitRequest = function (update) {
@@ -3186,10 +3194,10 @@ Battle = (function () {
 						this.add(msg, target, i, boost[i]);
 					} else {
 						if (effect.effectType === 'Ability' && !boosted) {
-							this.add('-activate', target, effect.fullname);
+							this.add('-ability', target, effect.name, 'boost');
 							boosted = true;
 						}
-						this.add(msg, target, i, boost[i], '[from] ' + effect.fullname);
+						this.add(msg, target, i, boost[i]);
 					}
 					break;
 				}
@@ -3225,6 +3233,7 @@ Battle = (function () {
 				this.debug('illusion cleared');
 				target.illusion = null;
 				this.add('replace', target, target.getDetails);
+				this.add('-end', target, 'Illusion');
 			}
 		}
 		if (damage !== 0) damage = this.clampIntRange(damage, 1);
@@ -3243,10 +3252,10 @@ Battle = (function () {
 			this.add('-damage', target, target.getHealth, '[from] confusion');
 			break;
 		default:
-			if (effect.effectType === 'Move') {
+			if (effect.effectType === 'Move' || !name) {
 				this.add('-damage', target, target.getHealth);
 			} else if (source && (source !== target || effect.effectType === 'Ability')) {
-				this.add('-damage', target, target.getHealth, '[from] ' + effect.fullname, '[of] ' + source);
+				this.add('-damage', target, target.getHealth, '[from] ' + name, '[of] ' + source);
 			} else {
 				this.add('-damage', target, target.getHealth, '[from] ' + name);
 			}
@@ -3717,9 +3726,13 @@ Battle = (function () {
 			// in gen 3 or earlier, fainting in singles skips to residuals
 			for (let i = 0; i < this.p1.active.length; i++) {
 				this.cancelMove(this.p1.active[i]);
+				// Stop Pursuit from running
+				this.p1.active[i].moveThisTurn = true;
 			}
 			for (let i = 0; i < this.p2.active.length; i++) {
 				this.cancelMove(this.p2.active[i]);
+				// Stop Pursuit from running
+				this.p2.active[i].moveThisTurn = true;
 			}
 		}
 

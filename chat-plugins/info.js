@@ -153,32 +153,33 @@ exports.commands = {
 		if (/[a-z]/.test(target)) {
 			// host
 			this.sendReply("Users with host " + target + ":");
-			for (let userid in Users.users) {
-				let curUser = Users.users[userid];
-				if (!curUser.latestHost || !curUser.latestHost.endsWith(target)) continue;
-				if (results.push((curUser.connected ? " \u25C9 " : " \u25CC ") + " " + curUser.name) > 100 && !isAll) {
-					return this.sendReply("More than 100 users match the specified IP range. Use /ipsearchall to retrieve the full list.");
-				}
+			Users.users.forEach(function (curUser) {
+				if (results.length > 100 && !isAll) return;
+				if (!curUser.latestHost || !curUser.latestHost.endsWith(target)) return;
+				results.push((curUser.connected ? " \u25C9 " : " \u25CC ") + " " + curUser.name);
+			});
+			if (results.length > 100 && !isAll) {
+				return this.sendReply("More than 100 users match the specified IP range. Use /ipsearchall to retrieve the full list.");
 			}
 		} else if (target.slice(-1) === '*') {
 			// IP range
 			this.sendReply("Users in IP range " + target + ":");
 			target = target.slice(0, -1);
-			for (let userid in Users.users) {
-				let curUser = Users.users[userid];
-				if (!curUser.latestIp.startsWith(target)) continue;
-				if (results.push((curUser.connected ? " \u25C9 " : " \u25CC ") + " " + curUser.name) > 100 && !isAll) {
-					return this.sendReply("More than 100 users match the specified IP range. Use /ipsearchall to retrieve the full list.");
-				}
+			Users.users.forEach(function (curUser) {
+				if (results.length > 100 && !isAll) return;
+				if (!curUser.latestIp.startsWith(target)) return;
+				results.push((curUser.connected ? " \u25C9 " : " \u25CC ") + " " + curUser.name);
+			});
+			if (results.length > 100 && !isAll) {
+				return this.sendReply("More than 100 users match the specified IP range. Use /ipsearchall to retrieve the full list.");
 			}
 		} else {
 			this.sendReply("Users with IP " + target + ":");
-			for (let userid in Users.users) {
-				let curUser = Users.users[userid];
+			Users.users.forEach(function (curUser) {
 				if (curUser.latestIp === target) {
 					results.push((curUser.connected ? " \u25C9 " : " \u25CC ") + " " + curUser.name);
 				}
-			}
+			});
 		}
 		if (!results.length) return this.errorReply("No results found.");
 		return this.sendReply(results.join('; '));
@@ -233,14 +234,15 @@ exports.commands = {
 		let showDetails = (cmd === 'dt' || cmd === 'details');
 		if (newTargets && newTargets.length) {
 			for (let i = 0; i < newTargets.length; ++i) {
-				if (newTargets[i].id !== targetId && !Tools.data.Aliases[targetId] && !i) {
+				if (!newTargets[i].exactMatch && !i) {
 					buffer = "No Pok\u00e9mon, item, move, ability or nature named '" + target + "' was found. Showing the data of '" + newTargets[0].name + "' instead.\n";
 				}
 				if (newTargets[i].searchType === 'nature') {
-					buffer += "" + newTargets[i].name + " nature: ";
-					if (newTargets[i].plus) {
+					let nature = Tools.getNature(newTargets[i].name);
+					buffer += "" + nature.name + " nature: ";
+					if (nature.plus) {
 						let statNames = {'atk': "Attack", 'def': "Defense", 'spa': "Special Attack", 'spd': "Special Defense", 'spe': "Speed"};
-						buffer += "+10% " + statNames[newTargets[i].plus] + ", -10% " + statNames[newTargets[i].minus] + ".";
+						buffer += "+10% " + statNames[nature.plus] + ", -10% " + statNames[nature.minus] + ".";
 					} else {
 						buffer += "No effect.";
 					}
@@ -1123,6 +1125,7 @@ exports.commands = {
 		"If a Pok\u00e9mon is included as a parameter, moves will be searched from it's movepool.",
 		"The order of the parameters does not matter."],
 
+	isearch: 'itemsearch',
 	itemsearch: function (target, room, user, connection, cmd, message) {
 		if (!target) return this.parse('/help itemsearch');
 		if (!this.canBroadcast()) return;
@@ -1171,13 +1174,11 @@ exports.commands = {
 			case 'super':
 				if (rawSearch[i + 1] === 'effective') {
 					newWord = 'supereffective';
-					rawSearch.splice(i + 1, 1);
 				}
 				break;
 			case 'special': newWord = 'sp'; break;
 			case 'spa':
 				newWord = 'sp';
-				rawSearch.splice(i, 0, 'atk');
 				break;
 			case 'atk':
 			case 'attack':
@@ -1189,7 +1190,6 @@ exports.commands = {
 				break;
 			case 'spd':
 				newWord = 'sp';
-				rawSearch.splice(i, 0, 'def');
 				break;
 			case 'def':
 			case 'defense':
@@ -1211,7 +1211,6 @@ exports.commands = {
 		}
 
 		if (searchedWords.length === 0) return this.sendReplyBox("No distinguishing words were used. Try a more specific search.");
-
 		if (searchedWords.indexOf('fling') >= 0) {
 			let basePower = 0;
 			let effect;
@@ -2090,8 +2089,8 @@ exports.commands = {
 		}
 
 		if (!target || target === 'all') {
-			buffer += "- <a href=\"https://www.smogon.com/tiers/om/\">Other Metagames Hub</a><br />";
-			buffer += "- <a href=\"https://www.smogon.com/forums/threads/3505031/\">Other Metagames Index</a><br />";
+			buffer += "- <a href=\"https://www.smogon.com/forums/forums/other-metagames.206/\">Other Metagames Forum</a><br />";
+			buffer += "- <a href=\"https://www.smogon.com/forums/forums/other-metagames-analyses.310/\">Other Metagames Analyses</a><br />";
 			if (!target) return this.sendReplyBox(buffer);
 		}
 		let showMonthly = (target === 'all' || target === 'omofthemonth' || target === 'omotm' || target === 'month');
@@ -2396,8 +2395,9 @@ exports.commands = {
 				formatName = formatId = '';
 			}
 			let speciesid = pokemon.speciesid;
-			// Special case for Meowstic-M
+			// Special case for Meowstic-M and Hoopa-Unbound
 			if (speciesid === 'meowstic') speciesid = 'meowsticm';
+			if (speciesid === 'hoopaunbound') speciesid = 'hoopa-alt';
 			if (pokemon.tier === 'CAP') {
 				this.sendReplyBox("<a href=\"https://www.smogon.com/cap/pokemon/strategies/" + speciesid + "\">" + generation.toUpperCase() + " " + Tools.escapeHTML(formatName) + " " + pokemon.name + " analysis preview</a>, brought to you by <a href=\"https://www.smogon.com\">Smogon University</a> <a href=\"https://smogon.com/cap/\">CAP Project</a>");
 			} else {
@@ -2661,7 +2661,9 @@ exports.commands = {
 
 		let image = targets[0].trim();
 		if (!image) return this.errorReply('No image URL was provided!');
-		if (!/^https?:\/\//.test(image)) image = '//' + image;
+		image = this.canEmbedURI(image);
+
+		if (!image) return false;
 
 		let width = targets[1].trim();
 		if (!width) return this.errorReply('No width for the image was provided!');
@@ -2687,7 +2689,8 @@ exports.commands = {
 
 	htmlbox: function (target, room, user, connection, cmd, message) {
 		if (!target) return this.parse('/help htmlbox');
-		if (!this.canHTML(target)) return;
+		target = this.canHTML(target);
+		if (!target) return;
 
 		if (user.userid === 'github') {
 			if (!this.can('announce', null, room)) return;

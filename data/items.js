@@ -125,7 +125,7 @@ exports.BattleItems = {
 			basePower: 10
 		},
 		onStart: function (target) {
-			if (!target.ignoringItem()) {
+			if (!target.ignoringItem() && !this.getPseudoWeather('gravity')) {
 				this.add('-item', target, 'Air Balloon');
 			}
 		},
@@ -2747,7 +2747,7 @@ exports.BattleItems = {
 					if (pokemon.volatiles[conditions[i]]) {
 						for (var j = 0; j < conditions.length; j++) {
 							pokemon.removeVolatile(conditions[j]);
-							if (conditions[j] === 'attract') {
+							if (conditions[i] === 'attract' && conditions[j] === 'attract') {
 								this.add('-end', pokemon, 'move: Attract', '[from] item: Mental Herb');
 							}
 						}
@@ -2763,7 +2763,7 @@ exports.BattleItems = {
 					if (!pokemon.useItem()) return;
 					for (var j = 0; j < conditions.length; j++) {
 						pokemon.removeVolatile(conditions[j]);
-						if (conditions[j] === 'attract') {
+						if (conditions[i] === 'attract' && conditions[j] === 'attract') {
 							this.add('-end', pokemon, 'move: Attract', '[from] item: Mental Herb');
 						}
 					}

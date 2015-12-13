@@ -55,5 +55,9 @@ exports.BattleScripts = {
 		this.modData('Pokedex', 'cobalion').abilities['1'] = 'Magnet Pull';
 		this.modData('Learnsets', 'sceptile').learnset.seedflare = ['6T'];
 		this.modData('Pokedex', 'gogoat').abilities['1'] = 'Thick Fat';
+		this.modData('Pokedex', 'houndoommega').abilities['0'] = 'Rattled';
+		this.modData('Learnsets', 'houndoom').learnset.moonblast = ['6T'];
+		this.modData('Pokedex', 'tentacruel').abilities['0'] = 'Iron Barbs';
+		this.modData('Learnsets', 'tentacruel').learnset.recover = ['6T'];
 	}
 };

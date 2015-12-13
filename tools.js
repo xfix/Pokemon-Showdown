@@ -19,7 +19,7 @@ const path = require('path');
 module.exports = (function () {
 	let moddedTools = {};
 
-	let dataTypes = ['FormatsData', 'Learnsets', 'Pokedex', 'Movedex', 'Statuses', 'TypeChart', 'Scripts', 'Items', 'Abilities', 'Natures', 'Formats', 'Aliases'];
+	let dataTypes = ['Pokedex', 'FormatsData', 'Learnsets', 'Movedex', 'Statuses', 'TypeChart', 'Scripts', 'Items', 'Abilities', 'Natures', 'Formats', 'Aliases'];
 	let dataFiles = {
 		'Pokedex': 'pokedex.js',
 		'Movedex': 'moves.js',
@@ -174,6 +174,7 @@ module.exports = (function () {
 	 * - must not start or end with a space character
 	 * - must not contain any of: | , [ ]
 	 * - must not be the empty string
+	 * - must not contain Unicode RTL control characters
 	 *
 	 * If no such string can be found, returns the empty string. Calling
 	 * functions are expected to check for that condition and deal with it
@@ -185,7 +186,7 @@ module.exports = (function () {
 
 	Tools.prototype.getName = function (name) {
 		if (typeof name !== 'string' && typeof name !== 'number') return '';
-		name = ('' + name).replace(/[\|\s\[\]\,]+/g, ' ').trim();
+		name = ('' + name).replace(/[\|\s\[\]\,\u202e]+/g, ' ').trim();
 		if (name.length > 18) name = name.substr(0, 18).trim();
 		return name;
 	};
@@ -197,6 +198,17 @@ module.exports = (function () {
 			if (this.data.Aliases[id]) {
 				name = this.data.Aliases[id];
 				id = toId(name);
+			}
+			if (!this.data.Pokedex[id]) {
+				if (id.startsWith('mega') && this.data.Pokedex[id.slice(4) + 'mega']) {
+					id = id.slice(4) + 'mega';
+				} else if (id.startsWith('m') && this.data.Pokedex[id.slice(1) + 'mega'])  {
+					id = id.slice(1) + 'mega';
+				} else if (id.startsWith('primal') && this.data.Pokedex[id.slice(6) + 'primal']) {
+					id = id.slice(6) + 'primal';
+				} else if (id.startsWith('p') && this.data.Pokedex[id.slice(1) + 'primal']) {
+					id = id.slice(1) + 'primal';
+				}
 			}
 			template = {};
 			if (id && this.data.Pokedex[id]) {
@@ -629,7 +641,7 @@ module.exports = (function () {
 		return ('' + str).escapeHTML();
 	};
 
-	Tools.prototype.dataSearch = function (target, searchIn) {
+	Tools.prototype.dataSearch = function (target, searchIn, isInexact) {
 		if (!target) {
 			return false;
 		}
@@ -642,8 +654,11 @@ module.exports = (function () {
 		for (let i = 0; i < searchIn.length; i++) {
 			let res = this[searchFunctions[searchIn[i]]](target);
 			if (res.exists) {
-				res.searchType = searchTypes[searchIn[i]];
-				searchResults.push(res);
+				searchResults.push({
+					exactMatch: !isInexact,
+					searchType: searchTypes[searchIn[i]],
+					name: res.name
+				});
 			}
 		}
 		if (searchResults.length) {
@@ -693,7 +708,7 @@ module.exports = (function () {
 
 			// To make sure we aren't in an infinite loop...
 			if (cmpTarget !== newTarget.word) {
-				return this.dataSearch(newTarget.word);
+				return this.dataSearch(newTarget.word, null, true);
 			}
 		}
 
