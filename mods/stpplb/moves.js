@@ -1314,5 +1314,327 @@ exports.BattleMovedex = {
 			this.add('-anim', source, anim, target);
 		},
 		num: 669
+	},
+	'godswrath': {
+		id: 'godswrath',
+		name: "God's Wrath",
+		pp: 20,
+		priority: 0,
+		category: 'Status',
+		type: 'Rock',
+		target: 'normal',
+		basePower: 0,
+		accuracy: true,
+		flags: {},
+		beforeTurnCallback: function (pokemon, target, move) {
+			if (pokemon.speciesid === 'carracosta') {
+				move.priority = -6;
+			} else {
+				move.priority = 0;
+			}
+		},
+		onTryHit: function (target, pokemon) {
+			var move = 'ancientpower';
+			switch (pokemon.speciesid) {
+				case 'omastar':
+					move = 'abstartselect';
+					break;
+				case 'kabutops':
+					move = 'wait4baba';
+					break;
+				case 'aerodactyl':
+					move = 'balancedstrike';
+					break;
+				case 'cradily':
+					move = 'texttospeech';
+					break;
+				case 'armaldo':
+					move = 'holyducttapeofclaw';
+					break;
+				case 'bastiodon':
+					move = 'warecho';
+					break;
+				case 'rampardos':
+					move = 'skullsmash';
+					break;
+				case 'carracosta':
+					move = 'danceriot';
+					break;
+				case 'archeops':
+					move = 'bluescreenofdeath';
+					break;
+				case 'aurorus':
+					move = 'portaltospaaaaaaace';
+					break;
+				case 'tyrantrum':
+					move = 'doubleascent';
+					break;
+			}
+			this.useMove(move, pokemon, target);
+			return null;
+		},
+		num: 670
+	},
+	'abstartselect': {
+		id: 'abstartselect',
+		name: "A+B+Start+Select",
+		pp: 10,
+		priority: 0,
+		category: 'Special',
+		type: 'Water',
+		target: 'normal',
+		basePower: 120,
+		accuracy: 90,
+		flags: {protect: 1, mirror: 1},
+		secondary: {chance: 20, volatileStatus: 'confusion'},
+		onHit: function (target) {
+			target.clearBoosts();
+			this.add('-clearboost', target);
+		},
+		num: 671
+	},
+	'wait4baba': {
+		id: 'wait4baba',
+		name: 'Wait4baba',
+		pp: 10,
+		priority: 0,
+		category: 'Physical',
+		type: 'Water',
+		target: 'normal',
+		basePower: 100,
+		accuracy: 100,
+		flags: {protect: 1, mirror: 1},
+		secondaries: [{chance: 100, boosts: {spe: -1}}, {chance: 20, volatileStatus: 'flinch'}],
+		num: 672
+	},
+	'balancedstrike': {
+		id: 'balancedstrike',
+		name: 'Balanced Strike',
+		pp: 10,
+		priority: 0,
+		category: 'Physical',
+		type: 'Flying',
+		target: 'normal',
+		basePower: 100,
+		accuracy: true,
+		flags: {contact: 1, protect: 1, mirror: 1},
+		onPrepareHit: function (target, source, move) {
+			var stats = ['atk', 'def', 'spa', 'spd', 'spe', 'accuracy', 'evasion'];
+			var boostSource = {atk:0,def:0,spa:0,spd:0,spe:0,accuracy:0,evasion:0};
+			var boostTarget = {atk:0,def:0,spa:0,spd:0,spe:0,accuracy:0,evasion:0};
+			for (var i = 0; i < stats.length; i++) {
+				var stat = stats[i];
+				var targetBoost = target.boosts[stat];
+				var sourceBoost = source.boosts[stat];
+				var average = Math.ceil((targetBoost + sourceBoost) / 2);
+				boostSource[stat] = average - sourceBoost;
+				boostTarget[stat] = average - targetBoost;
+			}
+			this.boost(boostSource, source);
+			this.boost(boostTarget, target);
+		},
+		num: 673
+	},
+	'texttospeech': {
+		id: 'texttospeech',
+		name: 'Text to Speech',
+		pp: 10,
+		priority: 0,
+		category: 'Status',
+		type: 'Grass',
+		target: 'normal',
+		basePower: 0,
+		accuracy: 85,
+		flags: {protect: 1, reflectable: 1, mirror: 1, sound: 1, authentic: 1},
+		onHit: function (pokemon) {
+			pokemon.addVolatile('taunt');
+			pokemon.addVolatile('torment');
+			pokemon.addVolatile('leechseed');
+			pokemon.addVolatile('confusion');
+			var bannedAbilities = {insomnia:1, multitype:1, stancechange:1, truant:1};
+			if (bannedAbilities[pokemon.ability]) {
+				return;
+			}
+			var oldAbility = pokemon.setAbility('insomnia');
+			if (oldAbility) {
+				this.add('-endability', pokemon, oldAbility, '[from] move: Worry Seed');
+				this.add('-ability', pokemon, 'Insomnia', '[from] move: Worry Seed');
+				if (pokemon.status === 'slp') {
+					pokemon.cureStatus();
+				}
+				return;
+			}
+			return false;
+		},
+		num: 674
+	},
+	'holyducttapeofclaw': {
+		id: 'holyducttapeofclaw',
+		name: 'Holy Duct Tape of Claw',
+		pp: 10,
+		priority: 0,
+		category: 'Physical',
+		type: 'Bug',
+		target: 'normal',
+		basePower: 60,
+		accuracy: 90,
+		flags: {protect: 1, mirror: 1},
+		volatileStatus: 'partiallytrapped',
+		onHit: function (pokemon) {
+			pokemon.addVolatile('taunt');
+		},
+		num: 675
+	},
+	'warecho': {
+		id: 'warecho',
+		name: 'War Echo',
+		pp: 10,
+		priority: 0,
+		category: 'Status',
+		type: 'Steel',
+		target: 'self',
+		basePower: 0,
+		accuracy: true,
+		flags: {mirror: 1},
+		boost: {atk: 2},
+		sideCondition: 'warecho',
+		effect: {
+			duration: 3,
+			onResidualOrder: 4,
+			onEnd: function (side) {
+				var target = side.active[this.effectData.sourcePosition];
+				if (target && !target.fainted) {
+					this.boost({atk: 2}, target);
+				}
+			}
+		},
+		num: 676
+	},
+	'skullsmash': {
+		id: 'skullsmash',
+		name: 'Skull Smash',
+		pp: 10,
+		priority: 0,
+		category: 'Physical',
+		type: 'Rock',
+		target: 'normal',
+		basePower: 150,
+		accuracy: 80,
+		flags: {contact: 1, protect: 1, mirror: 1},
+		recoil: [1, 8],
+		num: 677
+	},
+	'danceriot': {
+		id: 'danceriot',
+		name: 'Dance Riot',
+		pp: 10,
+		priority: -6,
+		category: 'Physical',
+		type: 'Water',
+		target: 'normal',
+		basePower: 120,
+		accuracy: 100,
+		self: {
+			volatileStatus: 'lockedmove'
+		},
+		onAfterMove: function (pokemon) {
+			if (pokemon.volatiles['lockedmove'] && pokemon.volatiles['lockedmove'].duration === 1) {
+				pokemon.removeVolatile('lockedmove');
+				pokemon.removeVolatile('confusion');
+			}
+		},
+		onHit: function (pokemon) {
+			if (this.random(2) === 1) {
+				pokemon.forceSwitchFlag = 1;
+			}
+		},
+		num: 678
+	},
+	'bluescreenofdeath': {
+		id: 'bluescreenofdeath',
+		name: 'Blue Screen of Death',
+		pp: 10,
+		priority: 3,
+		category: 'Physical',
+		type: 'Flying',
+		target: 'normal',
+		basePower: 40,
+		accuracy: 100,
+		flags: {mirror: 1, authentic: 1},
+		onTry: function (pokemon, target) {
+			if (pokemon.activeTurns > 1) {
+				this.add('-fail', pokemon);
+				this.add('-hint', "BSoD only works on your first turn out.");
+				return null;
+			}
+		},
+		secondary: {
+			chance: 100,
+			volatileStatus: 'flinch'
+		},
+		num: 679
+	},
+	'portaltospaaaaaaace': {
+		id: 'portaltospaaaaaaace',
+		name: 'Portal to SPAAAAAAACE',
+		pp: 10,
+		priority: 0,
+		category: 'Special',
+		type: 'Ice',
+		target: 'normal',
+		basePower: 70,
+		accuracy: 95,
+		flags: {protect: 1, mirror: 1},
+		onEffectiveness: function (typeMod, type) {
+			if (type === 'Water' || type === 'Ice' || type === 'Steel' || type === 'Fire') return 1;
+		},
+		secondary: {chance: 10, status: 'frz'},
+		num: 680
+	},
+	'doubleascent': {
+		id: 'doubleascent',
+		name: 'Double Ascent',
+		pp: 10,
+		priority: 0,
+		category: 'Physical',
+		type: 'Dragon',
+		target: 'normal',
+		basePower: 80,
+		accuracy: 95,
+		flags: {contact: 1, charge: 1, protect: 1, mirror: 1},
+		onTry: function (attacker, defender, move) {
+			if (attacker.removeVolatile(move.id)) {
+				return;
+			}
+			this.add('-anim', attacker, 'Fly', defender);
+			this.add('-prepare', attacker, 'Fly', defender);
+			if (!this.runEvent('ChargeMove', attacker, defender, move)) {
+				this.add('-anim', attacker, 'Fly', defender);
+				return;
+			}
+			attacker.addVolatile('twoturnmove', defender);
+		},
+		effect: {
+			duration: 2,
+			onAccuracy: function (accuracy, target, source, move) {
+				if (move.id === 'gust' || move.id === 'twister') {
+					return;
+				}
+				if (move.id === 'skyuppercut' || move.id === 'thunder' || move.id === 'hurricane' || move.id === 'smackdown' || move.id === 'thousandarrows' || move.id === 'helpinghand') {
+					return;
+				}
+				if (source.hasAbility('noguard') || target.hasAbility('noguard')) {
+					return;
+				}
+				if (source.volatiles['lockon'] && target === source.volatiles['lockon'].source) return;
+				return 0;
+			},
+			onSourceModifyDamage: function (damage, source, target, move) {
+				if (move.id === 'gust' || move.id === 'twister') {
+					return this.chainModify(2);
+				}
+			}
+		},
+		num: 681
 	}
 };

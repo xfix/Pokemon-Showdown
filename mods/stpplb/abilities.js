@@ -612,5 +612,19 @@ exports.BattleAbilities = { // define custom abilities here.
 		name: 'Super Protean',
 		rating: 4,
 		num: 152
+	},
+	'invocation': {
+		desc: 'Randomly transforms into a fossil god on switch-in.',
+		shortDesc: 'Transforms into a fossil.',
+		onStart: function(pokemon) {
+			var fossils = ['Omastar', 'Kabutops', 'Aerodactyl', 'Cradily', 'Armaldo', 'Bastiodon', 'Rampardos', 'Carracosta', 'Archeops', 'Aurorus', 'Tyrantrum'];
+			var fossil = fossils.sample(1)[0];
+			pokemon.formeChange(fossil);
+			this.add('-formechange', pokemon, species, '[msg]');
+		},
+		name: 'Invocation',
+		id: 'invocation',
+		rating: 1,
+		num: 153
 	}
 };
