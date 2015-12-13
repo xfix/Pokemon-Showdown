@@ -1337,7 +1337,7 @@ exports.BattleMovedex = {
 		},
 		onTryHit: function (target, pokemon) {
 			var move = 'ancientpower';
-			switch (pokemon.speciesid) {
+			switch (pokemon.template.speciesid) {
 				case 'omastar':
 					move = 'abstartselect';
 					break;
