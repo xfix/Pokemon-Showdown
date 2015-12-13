@@ -1327,9 +1327,9 @@ exports.BattleMovedex = {
 		accuracy: true,
 		flags: {},
 		onModifyPriority: function (priority, pokemon, target, move) {
-			if (pokemon.speciesid === 'carracosta') {
+			if (pokemon.template.speciesid === 'carracosta') {
 				return -6;
-			} else if (pokemon.speciesid === 'archeops') {
+			} else if (pokemon.template.speciesid === 'archeops') {
 				return 3;
 			} else {
 				return 0;
@@ -1429,11 +1429,11 @@ exports.BattleMovedex = {
 				var targetBoost = target.boosts[stat];
 				var sourceBoost = source.boosts[stat];
 				var average = Math.ceil((targetBoost + sourceBoost) / 2);
-				boostSource[stat] = average - sourceBoost;
-				boostTarget[stat] = average - targetBoost;
+				boostSource[stat] = average;
+				boostTarget[stat] = average;
 			}
-			this.boost(boostSource, source);
-			this.boost(boostTarget, target);
+			source.setBoost(boostSource);
+			target.setBoost(boostTarget);
 		},
 		num: 673
 	},
@@ -1498,7 +1498,7 @@ exports.BattleMovedex = {
 		basePower: 0,
 		accuracy: true,
 		flags: {mirror: 1},
-		boost: {atk: 2},
+		boosts: {atk: 2},
 		sideCondition: 'warecho',
 		effect: {
 			duration: 3,
