@@ -1320,17 +1320,19 @@ exports.BattleMovedex = {
 		name: "God's Wrath",
 		pp: 20,
 		priority: 0,
-		category: 'Status',
+		category: 'Physical',
 		type: 'Rock',
 		target: 'normal',
 		basePower: 0,
 		accuracy: true,
 		flags: {},
-		beforeTurnCallback: function (pokemon, target, move) {
+		onModifyPriority: function (priority, pokemon, target, move) {
 			if (pokemon.speciesid === 'carracosta') {
-				move.priority = -6;
+				return -6;
+			} else if (pokemon.speciesid === 'archeops') {
+				return 3;
 			} else {
-				move.priority = 0;
+				return 0;
 			}
 		},
 		onTryHit: function (target, pokemon) {
