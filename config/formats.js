@@ -815,7 +815,7 @@ exports.Formats = [
 		onValidateTeam: function (team, format) {
 			var itemTable = {};
 			for (var i = 0; i < team.length; i++) {
-				var item = this.tools.getItem(team[i].item);
+				var item = this.getItem(team[i].item);
 				if (!item) continue;
 				if (itemTable[item] && item.megaStone) return ["You are limited to one of each Mega Stone.", "(You have more than one " + this.tools.getItem(item).name + ")"];
 				if (itemTable[item] && (item.id === 'redorb' || item.id === 'blueorb')) return ["You are limited to one of each Primal Orb.", "(You have more than one " + this.tools.getItem(item).name + ")"];
@@ -824,7 +824,7 @@ exports.Formats = [
 		},
 		onValidateSet: function (set) {
 			var template = this.getTemplate(set.species || set.name);
-			var item = this.tools.getItem(set.item);
+			var item = this.getItem(set.item);
 			if (!item.megaEvolves && item.id !== 'blueorb' && item.id !== 'redorb') return;
 			if (template.baseSpecies === item.megaEvolves || (item.id === 'redorb' && template.baseSpecies === 'Groudon') || (item.id === 'blueorb' && template.baseSpecies === 'Kyogre')) return;
 			if (template.evos.length) return ["" + template.species + " is not allowed to hold " + item.name + " because it's not fully evolved."];
