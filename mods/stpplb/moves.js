@@ -1428,7 +1428,7 @@ exports.BattleMovedex = {
 				var stat = stats[i];
 				var targetBoost = target.boosts[stat];
 				var sourceBoost = source.boosts[stat];
-				var average = Math.ceil((targetBoost + sourceBoost) / 2);
+				var average = Math.floor((targetBoost + sourceBoost) / 2);
 				boostSource[stat] = average;
 				if (average !== sourceBoost) this.add('-setboost', source, stat, average, '[from] move: Balanced Strike');
 				boostTarget[stat] = average;
