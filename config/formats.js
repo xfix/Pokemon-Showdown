@@ -1309,6 +1309,27 @@ exports.Formats = [
 
 	// TPP League exclusives
 	{
+		name: "TPPLA",
+		section: "TPP",
+		column: 4,
+
+		ruleset: ['Anything Goes', 'Sleep Clause Mod']
+	},
+	{
+		name: "TPPLA Doubles",
+		section: "TPP",
+
+		gameType: 'doubles',
+		ruleset: ['Anything Goes', 'Sleep Clause Mod']
+	},
+	{
+		name: "TPPLA Triples",
+		section: "TPP",
+
+		gameType: 'triples',
+		ruleset: ['Anything Goes', 'Sleep Clause Mod']
+	},
+	{
 		name: "Super TPPL Bros.",
 		section: "STPPLB",
 		column: 4,
