@@ -2820,21 +2820,24 @@ exports.BattleMovedex = {
 		priority: 0,
 		flags: {},
 		isFutureMove: true,
-		onTryHit: function (target, source) {
-			source.side.addSideCondition('futuremove');
-			if (source.side.sideConditions['futuremove'].positions[source.position]) {
+		onTry: function (source, target) {
+			target.side.addSideCondition('futuremove');
+			if (target.side.sideConditions['futuremove'].positions[target.position]) {
 				return false;
 			}
-			source.side.sideConditions['futuremove'].positions[source.position] = {
+			target.side.sideConditions['futuremove'].positions[target.position] = {
 				duration: 3,
 				move: 'doomdesire',
-				targetPosition: target.position,
 				source: source,
 				moveData: {
+					id: 'doomdesire',
 					name: "Doom Desire",
+					accuracy: 100,
 					basePower: 140,
 					category: "Special",
 					flags: {},
+					effectType: 'Move',
+					isFutureMove: true,
 					type: 'Steel'
 				}
 			};
@@ -5000,22 +5003,25 @@ exports.BattleMovedex = {
 		flags: {},
 		ignoreImmunity: true,
 		isFutureMove: true,
-		onTryHit: function (target, source) {
-			source.side.addSideCondition('futuremove');
-			if (source.side.sideConditions['futuremove'].positions[source.position]) {
+		onTry: function (source, target) {
+			target.side.addSideCondition('futuremove');
+			if (target.side.sideConditions['futuremove'].positions[target.position]) {
 				return false;
 			}
-			source.side.sideConditions['futuremove'].positions[source.position] = {
+			target.side.sideConditions['futuremove'].positions[target.position] = {
 				duration: 3,
 				move: 'futuresight',
-				targetPosition: target.position,
 				source: source,
 				moveData: {
+					id: 'futuresight',
 					name: "Future Sight",
+					accuracy: 100,
 					basePower: 120,
 					category: "Special",
 					flags: {},
 					ignoreImmunity: false,
+					effectType: 'Move',
+					isFutureMove: true,
 					type: 'Psychic'
 				}
 			};
@@ -6682,7 +6688,7 @@ exports.BattleMovedex = {
 		accuracy: true,
 		basePower: 100,
 		category: "Physical",
-		desc: "Lowers the user's Defense by 1 stage. This move cannot be used successfully unless the user is a Hoopa in its Unbound forme. If this move is successful, it breaks through the target's Detect, King's Shield, Protect, or Spiky Shield for this turn, allowing other Pokemon to attack the target normally. If the target's side is protected by Crafty Shield, Mat Block, Quick Guard, or Wide Guard, that protection is also broken for this turn and other Pokemon may attack the target's side normally.",
+		desc: "Lowers the user's Defense by 1 stage. This move cannot be used successfully unless the user's current form, while considering Transform, is Hoopa Unbound. If this move is successful, it breaks through the target's Detect, King's Shield, Protect, or Spiky Shield for this turn, allowing other Pokemon to attack the target normally. If the target's side is protected by Crafty Shield, Mat Block, Quick Guard, or Wide Guard, that protection is also broken for this turn and other Pokemon may attack the target's side normally.",
 		shortDesc: "Hoopa-U: Lowers user's Def. by 1; breaks protection.",
 		id: "hyperspacefury",
 		isViable: true,
@@ -6692,11 +6698,11 @@ exports.BattleMovedex = {
 		flags: {mirror: 1, authentic: 1},
 		breaksProtect: true,
 		onTry: function (pokemon) {
-			if (pokemon.species === 'Hoopa-Unbound' && pokemon.baseTemplate.species === pokemon.species) {
+			if (pokemon.template.species === 'Hoopa-Unbound') {
 				return;
 			}
-			this.add('-hint', "Only a Hoopa in its Unbound forme can use this move.");
-			if (pokemon.baseTemplate.species === 'Hoopa') {
+			this.add('-hint', "Only a Pokemon whose form is Hoopa Unbound can use this move.");
+			if (pokemon.template.species === 'Hoopa') {
 				this.add('-fail', pokemon, 'move: Hyperspace Fury', '[forme]');
 				return null;
 			}
@@ -10431,7 +10437,7 @@ exports.BattleMovedex = {
 				this.debug('Pursuit start');
 				var sources = this.effectData.sources;
 				for (var i = 0; i < sources.length; i++) {
-					if (sources[i].moveThisTurn) continue;
+					if (sources[i].moveThisTurn || sources[i].fainted) continue;
 					this.cancelMove(sources[i]);
 					// Run through each decision in queue to check if the Pursuit user is supposed to Mega Evolve this turn.
 					// If it is, then Mega Evolve before moving.
@@ -13501,7 +13507,7 @@ exports.BattleMovedex = {
 					this.add('-activate', target, 'Substitute', '[damage]');
 				}
 				if (move.recoil) {
-					this.damage(Math.round(damage * move.recoil[0] / move.recoil[1]), source, target, 'recoil');
+					this.damage(this.clampIntRange(Math.round(damage * move.recoil[0] / move.recoil[1]), 1), source, target, 'recoil');
 				}
 				if (move.drain) {
 					this.heal(Math.ceil(damage * move.drain[0] / move.drain[1]), source, target, 'drain');
@@ -14619,16 +14625,11 @@ exports.BattleMovedex = {
 			},
 			onStart: function (target, source) {
 				this.add('-fieldstart', 'move: Trick Room', '[of] ' + source);
-				this.getStatCallback = function (stat, statName) {
-					// If stat is speed and does not overflow (Trick Room Glitch) return negative speed.
-					if (statName === 'spe' && stat <= 1809) return -stat;
-					return stat;
-				};
 			},
+			// Speed modification is changed in BattlePokemon.getDecisionSpeed() in battle-engine.js
 			onResidualOrder: 23,
 			onEnd: function () {
 				this.add('-fieldend', 'move: Trick Room');
-				this.getStatCallback = null;
 			}
 		},
 		secondary: false,
@@ -15100,7 +15101,7 @@ exports.BattleMovedex = {
 		accuracy: 100,
 		basePower: 60,
 		category: "Special",
-		desc: "Has a 10% chance to confuse the target.",
+		desc: "Has a 20% chance to confuse the target.",
 		shortDesc: "20% chance to confuse the target.",
 		id: "waterpulse",
 		name: "Water Pulse",

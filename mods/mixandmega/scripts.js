@@ -1,5 +1,3 @@
-"use strict";
-
 exports.BattleScripts = {
 	init: function () {
 		var onTakeMegaStone = function (item, source) {
@@ -17,21 +15,18 @@ exports.BattleScripts = {
 		if (item.megaStone) {
 			if (item.megaStone === pokemon.species) return false;
 			return item.megaStone;
+		} else if (pokemon.set.moves.indexOf('dragonascent') >= 0) {
+			return 'Rayquaza-Mega';
 		} else {
-			// Bans on Mega-Rayquazay megaevos go here.
-			if (pokemon.template.tier === 'Uber') return false;
-			var bannedMons = {'Kyurem-Black':1, 'Slaking':1, 'Regigigas':1, 'Cresselia':1, 'Shuckle':1};
-			if (pokemon.template.species in bannedMons) return false;
-			if (pokemon.set.moves.indexOf('dragonascent') >= 0) return 'Rayquaza-Mega';
+			return false;
 		}
-		return false;
 	},
 	runMegaEvo: function (pokemon) {
 		if (pokemon.template.isMega || pokemon.template.isPrimal) return false;
 		var template = this.getMixedTemplate(pokemon.originalSpecies, pokemon.canMegaEvo);
 		var side = pokemon.side;
 
-		// Pokemon affected by Sky Drop cannot mega evolve. Enforce it here for now.
+		// Pokémon affected by Sky Drop cannot mega evolve. Enforce it here for now.
 		var foeActive = side.foe.active;
 		for (var i = 0; i < foeActive.length; i++) {
 			if (foeActive[i].volatiles['skydrop'] && foeActive[i].volatiles['skydrop'].source === pokemon) {
@@ -48,17 +43,18 @@ exports.BattleScripts = {
 			this.add('detailschange', pokemon, pokemon.details);
 			this.add('-mega', pokemon, template.baseSpecies, template.requiredItem);
 		} else {
-			var originalTemplate = this.getTemplate(pokemon.originalSpecies);
+			var oTemplate = this.getTemplate(pokemon.originalSpecies);
+			var oMegaTemplate = this.getTemplate(template.originalMega);
 			if (template.originalMega === 'Rayquaza-Mega') {
 				this.add('message', "" + pokemon.side.name + "'s fervent wish has reached " + pokemon.species + "!");
 			} else {
 				this.add('message', "" + pokemon.species + "'s " + pokemon.getItem().name + " is reacting to " + pokemon.side.name + "'s Mega Bracelet!");
 			}
-			this.add('-formechange', pokemon, originalTemplate.species, template.requiredItem);
+			this.add('-formechange', pokemon, oTemplate.species, template.requiredItem);
 			this.add('message', template.baseSpecies + " has Mega Evolved into Mega " + template.baseSpecies + "!");
-			this.add('-start', pokemon, template.originalMega, '[silent]');
-			if (originalTemplate.types.length !== pokemon.template.types.length || originalTemplate.types[1] !== pokemon.template.types[1]) {
-				this.add('-start', pokemon, 'typechange', pokemon.template.types.join('/')/*, '[silent]'*/);
+			this.add('-start', pokemon, oMegaTemplate.requiredItem || oMegaTemplate.requiredMove, '[silent]');
+			if (oTemplate.types.length !== pokemon.template.types.length || oTemplate.types[1] !== pokemon.template.types[1]) {
+				this.add('-start', pokemon, 'typechange', pokemon.template.types.join('/'), '[silent]');
 			}
 		}
 
@@ -72,11 +68,11 @@ exports.BattleScripts = {
 		if (!template || typeof template === 'string') template = this.getTemplate(template);
 		template = Object.clone(template); // shallow is enough
 		template.abilities = {'0': deltas.ability};
-		template.types = Object.merge(template.types.slice(), deltas.types).unique();
+		template.types = Object.merge(template.types.slice(), deltas.types).compact().unique();
 		var baseStats = template.baseStats;
 		template.baseStats = {};
 		for (var statName in baseStats) template.baseStats[statName] = baseStats[statName] + deltas.baseStats[statName];
-		template.weightkg += deltas.weightkg;
+		template.weightkg = Math.max(0.1, template.weightkg + deltas.weightkg);
 		template.originalMega = deltas.originalMega;
 		template.requiredItem = deltas.requiredItem;
 		if (deltas.isMega) template.isMega = true;
@@ -100,8 +96,10 @@ exports.BattleScripts = {
 		for (var statId in megaTemplate.baseStats) deltas.baseStats[statId] = megaTemplate.baseStats[statId] - baseTemplate.baseStats[statId];
 		if (megaTemplate.types.length > baseTemplate.types.length) {
 			deltas.types.push(megaTemplate.types[1]);
-		} else if (megaTemplate.types[0] !== baseTemplate.types[0]) {
-			deltas.types[0] = megaTemplate.types[0];
+		} else if (megaTemplate.types.length < baseTemplate.types.length) {
+			deltas.types[1] = baseTemplate.types[0];
+		} else if (megaTemplate.types[1] !== baseTemplate.types[1]) {
+			deltas.types[1] = megaTemplate.types[1];
 		}
 		if (megaTemplate.isMega) deltas.isMega = true;
 		if (megaTemplate.isPrimal) deltas.isPrimal = true;

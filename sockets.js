@@ -67,13 +67,12 @@ if (cluster.isMaster) {
 	exports.killWorker = function (worker) {
 		let idd = worker.id + '-';
 		let count = 0;
-		for (let connectionid in Users.connections) {
+		Users.connections.forEach(function (connection, connectionid) {
 			if (connectionid.substr(idd.length) === idd) {
-				let connection = Users.connections[connectionid];
 				Users.socketDisconnect(worker, worker.id, connection.socketid);
 				count++;
 			}
-		}
+		});
 		try {
 			worker.kill();
 		} catch (e) {}
@@ -357,19 +356,19 @@ if (cluster.isMaster) {
 				switch (subchannel ? subchannel[socketid] : '0') {
 				case '1':
 					if (!messages[1]) {
-						messages[1] = message.replace(/\n\|split\n[^\n]*\n([^\n]*)\n[^\n]*\n[^\n]*/g, '\n$1\n');
+						messages[1] = message.replace(/\n\|split\n[^\n]*\n([^\n]*)\n[^\n]*\n[^\n]*/g, '\n$1');
 					}
 					channel[socketid].write(messages[1]);
 					break;
 				case '2':
 					if (!messages[2]) {
-						messages[2] = message.replace(/\n\|split\n[^\n]*\n[^\n]*\n([^\n]*)\n[^\n]*/g, '\n$1\n');
+						messages[2] = message.replace(/\n\|split\n[^\n]*\n[^\n]*\n([^\n]*)\n[^\n]*/g, '\n$1');
 					}
 					channel[socketid].write(messages[2]);
 					break;
 				default:
 					if (!messages[0]) {
-						messages[0] = message.replace(/\n\|split\n([^\n]*)\n[^\n]*\n[^\n]*\n[^\n]*/g, '\n$1\n');
+						messages[0] = message.replace(/\n\|split\n([^\n]*)\n[^\n]*\n[^\n]*\n[^\n]*/g, '\n$1');
 					}
 					channel[socketid].write(messages[0]);
 					break;
@@ -422,12 +421,12 @@ if (cluster.isMaster) {
 		socket.on('data', function (message) {
 			// drop empty messages (DDoS?)
 			if (!message) return;
+			// drop legacy JSON messages
+			if (typeof message !== 'string' || message.charAt(0) === '{') return;
 			// drop blank messages (DDoS?)
 			let pipeIndex = message.indexOf('|');
 			if (pipeIndex < 0 || pipeIndex === message.length - 1) return;
-			// drop legacy JSON messages
-			if (!message.charAt) throw new Error('message: ' + JSON.stringify(message));
-			if (message.charAt(0) === '{') return;
+
 			process.send('<' + socketid + '\n' + message);
 		});
 
