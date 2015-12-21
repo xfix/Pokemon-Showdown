@@ -1311,6 +1311,7 @@ exports.Formats = [
 	{
 		name: "TPPLA",
 		section: "TPP",
+		mod: 'tppla',
 		column: 4,
 
 		ruleset: ['Custom Game', 'Sleep Clause Mod', 'HP Percentage Mod']
@@ -1318,6 +1319,7 @@ exports.Formats = [
 	{
 		name: "TPPLA Doubles",
 		section: "TPP",
+		mod: 'tppla',
 
 		gameType: 'doubles',
 		ruleset: ['Custom Game', 'Sleep Clause Mod', 'HP Percentage Mod']
@@ -1325,6 +1327,7 @@ exports.Formats = [
 	{
 		name: "TPPLA Triples",
 		section: "TPP",
+		mod: 'tppla',
 
 		gameType: 'triples',
 		ruleset: ['Custom Game', 'Sleep Clause Mod', 'HP Percentage Mod']
