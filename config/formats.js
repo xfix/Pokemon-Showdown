@@ -1313,21 +1313,21 @@ exports.Formats = [
 		section: "TPP",
 		column: 4,
 
-		ruleset: ['Custom Game', 'Sleep Clause Mod']
+		ruleset: ['Custom Game', 'Sleep Clause Mod', 'HP Percentage Mod']
 	},
 	{
 		name: "TPPLA Doubles",
 		section: "TPP",
 
 		gameType: 'doubles',
-		ruleset: ['Custom Game', 'Sleep Clause Mod']
+		ruleset: ['Custom Game', 'Sleep Clause Mod', 'HP Percentage Mod']
 	},
 	{
 		name: "TPPLA Triples",
 		section: "TPP",
 
 		gameType: 'triples',
-		ruleset: ['Custom Game', 'Sleep Clause Mod']
+		ruleset: ['Custom Game', 'Sleep Clause Mod', 'HP Percentage Mod']
 	},
 	{
 		name: "Super TPPL Bros.",
