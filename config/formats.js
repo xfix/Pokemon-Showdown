@@ -932,7 +932,7 @@ exports.Formats = [
 		section: "Other Metagames",
 		
 		ruleset: ['Ubers']
-	}
+	},
 
 	// BW2 Singles
 	///////////////////////////////////////////////////////////////////
