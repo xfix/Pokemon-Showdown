@@ -925,6 +925,14 @@ exports.Formats = [
 			this.add('-start', pokemon, 'typechange', typeStr);
 		}
 	},
+	
+	{
+		name: "Extreme Tier Shift",
+		mod: 'extremetiershift',
+		section: "Other Metagames",
+		
+		ruleset: ['Ubers']
+	}
 
 	// BW2 Singles
 	///////////////////////////////////////////////////////////////////
