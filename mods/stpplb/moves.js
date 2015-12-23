@@ -1327,6 +1327,58 @@ exports.BattleMovedex = {
 		basePower: 0,
 		accuracy: true,
 		flags: {},
+		onStartPriority: -1,
+		onStart: function (pokemon) {
+			var move = 'ancientpower';
+			switch (pokemon.template.speciesid) {
+				case 'omastar':
+					move = 'abstartselect';
+					break;
+				case 'kabutops':
+					move = 'wait4baba';
+					break;
+				case 'aerodactyl':
+					move = 'balancedstrike';
+					break;
+				case 'cradily':
+					move = 'texttospeech';
+					break;
+				case 'armaldo':
+					move = 'holyducttapeofclaw';
+					break;
+				case 'bastiodon':
+					move = 'warecho';
+					break;
+				case 'rampardos':
+					move = 'skullsmash';
+					break;
+				case 'carracosta':
+					move = 'danceriot';
+					break;
+				case 'archeops':
+					move = 'bluescreenofdeath';
+					break;
+				case 'aurorus':
+					move = 'portaltospaaaaaaace';
+					break;
+				case 'tyrantrum':
+					move = 'doubleascent';
+					break;
+			}
+			var index = pokemon.moves.indexOf('godswrath');
+			move = this.getMove(move);
+			pokemon.moveset[index] = {
+				move: move.name,
+				id: move.id,
+				pp: move.pp,
+				maxpp: move.pp,
+				target: move.target,
+				disabled: false,
+				used: false,
+				virtual: true
+			};
+			pokemon.moves[index] = toId(move.name);
+		},
 		onTryHit: function (target, pokemon) {
 			var move = 'ancientpower';
 			switch (pokemon.template.speciesid) {
