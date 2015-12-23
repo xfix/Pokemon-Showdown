@@ -626,5 +626,21 @@ exports.BattleAbilities = { // define custom abilities here.
 		id: 'invocation',
 		rating: 1,
 		num: 153
+	},
+	'solidrock': {
+		inherit: true,
+		onModifyPriority: function (priority, pokemon, target, move) {
+			if (pokemon && pokemon.template.speciesid === 'carracosta' && move && move.id === 'godswrath') {
+				return -6;
+			}
+		}
+	},
+	'defeatist': {
+		inherit: true,
+		onModifyPriority: function (priority, pokemon, target, move) {
+			if (pokemon && pokemon.template.speciesid === 'archeops' && move && move.id === 'godswrath') {
+				return 3;
+			}
+		}
 	}
 };

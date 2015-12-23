@@ -1327,16 +1327,6 @@ exports.BattleMovedex = {
 		basePower: 0,
 		accuracy: true,
 		flags: {},
-		beforeTurnCallback: function (pokemon, target) {
-			var index = pokemon.moves.indexOf("godswrath");
-			if (index !== -1) {
-				if (pokemon.template.speciesid === 'carracosta') {
-					pokemon.moveset[index].priority = -6;
-				} else if (pokemon.template.speciesid === 'archeops') {
-					pokemon.moveset[index].priority = 3;
-				}
-			}
-		},
 		onTryHit: function (target, pokemon) {
 			var move = 'ancientpower';
 			switch (pokemon.template.speciesid) {
