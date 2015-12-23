@@ -1452,7 +1452,6 @@ exports.BattleMovedex = {
 					if (pokemon.status === 'slp') {
 						pokemon.cureStatus();
 					}
-					return;
 				}
 			}
 			pokemon.addVolatile('taunt');
