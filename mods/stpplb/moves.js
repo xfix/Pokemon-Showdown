@@ -1443,24 +1443,22 @@ exports.BattleMovedex = {
 		accuracy: 85,
 		flags: {protect: 1, reflectable: 1, mirror: 1, sound: 1, authentic: 1},
 		onHit: function (pokemon) {
+			var bannedAbilities = {insomnia:1, multitype:1, stancechange:1, truant:1};
+			if (!bannedAbilities[pokemon.ability]) {
+				var oldAbility = pokemon.setAbility('insomnia');
+				if (oldAbility) {
+					this.add('-endability', pokemon, oldAbility, '[from] move: Worry Seed');
+					this.add('-ability', pokemon, 'Insomnia', '[from] move: Worry Seed');
+					if (pokemon.status === 'slp') {
+						pokemon.cureStatus();
+					}
+					return;
+				}
+			}
 			pokemon.addVolatile('taunt');
 			pokemon.addVolatile('torment');
 			pokemon.addVolatile('leechseed');
 			pokemon.addVolatile('confusion');
-			var bannedAbilities = {insomnia:1, multitype:1, stancechange:1, truant:1};
-			if (bannedAbilities[pokemon.ability]) {
-				return;
-			}
-			var oldAbility = pokemon.setAbility('insomnia');
-			if (oldAbility) {
-				this.add('-endability', pokemon, oldAbility, '[from] move: Worry Seed');
-				this.add('-ability', pokemon, 'Insomnia', '[from] move: Worry Seed');
-				if (pokemon.status === 'slp') {
-					pokemon.cureStatus();
-				}
-				return;
-			}
-			return false;
 		},
 		num: 674
 	},
