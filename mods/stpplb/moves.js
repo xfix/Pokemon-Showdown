@@ -1327,13 +1327,14 @@ exports.BattleMovedex = {
 		basePower: 0,
 		accuracy: true,
 		flags: {},
-		onModifyPriority: function (priority, pokemon, target, move) {
-			if (pokemon.template.speciesid === 'carracosta') {
-				return -6;
-			} else if (pokemon.template.speciesid === 'archeops') {
-				return 3;
-			} else {
-				return 0;
+		beforeTurnCallback: function (pokemon, target) {
+			var index = pokemon.moves.indexOf("godswrath");
+			if (index !== -1) {
+				if (pokemon.template.speciesid === 'carracosta') {
+					pokemon.moveset[index].priority = -6;
+				} else if (pokemon.template.speciesid === 'archeops') {
+					pokemon.moveset[index].priority = 3;
+				}
 			}
 		},
 		onTryHit: function (target, pokemon) {
