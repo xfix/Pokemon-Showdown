@@ -120,8 +120,8 @@ before('initialization', function (done) {
 		'mods': getDirTypedContentsSync('mods', 'dir'),
 		'logs': {
 			'chat': {}, 'ladderip': {}, 'modlog': {}, 'repl': {},
-			'lastbattle.txt': '0'
-		}
+			'lastbattle.txt': '0',
+		},
 	};
 
 	// Node's module loading system should be backed up by the real file system.
@@ -160,7 +160,7 @@ before('initialization', function (done) {
 	// `watchFile` is unsupported and throws with mock-fs
 	Object.defineProperty(fs, 'watchFile', {
 		get: function () {return noop;},
-		set: noop
+		set: noop,
 	});
 	mock(fsSandbox);
 
