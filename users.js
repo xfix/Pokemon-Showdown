@@ -874,7 +874,7 @@ User = (function () {
 	User.prototype.handleRename = function (name, userid, newlyRegistered, userType) {
 		let conflictUser = users.get(userid);
 		if (conflictUser && !conflictUser.registered && conflictUser.connected) {
-			if (newlyRegistered) {
+			if (newlyRegistered && userType !== '1') {
 				if (conflictUser !== this) conflictUser.resetName();
 			} else {
 				this.send('|nametaken|' + name + "|Someone is already using the name \"" + conflictUser.name + "\".");
@@ -1066,7 +1066,7 @@ User = (function () {
 					connection.leaveRoom(room);
 					continue;
 				}
-				room.onJoin(this, connection, true);
+				room.onJoin(this, connection);
 				this.roomCount[i] = 0;
 			}
 			this.roomCount[i]++;
@@ -1511,12 +1511,12 @@ User = (function () {
 		if (challengeTo) {
 			challengeTo = {
 				to: challengeTo.to,
-				format: challengeTo.format
+				format: challengeTo.format,
 			};
 		}
 		this.send('|updatechallenges|' + JSON.stringify({
 			challengesFrom: Object.map(this.challengesFrom, 'format'),
-			challengeTo: challengeTo
+			challengeTo: challengeTo,
 		}));
 	};
 	User.prototype.makeChallenge = function (user, format/*, isPrivate*/) {
@@ -1538,7 +1538,7 @@ User = (function () {
 			to: user.userid,
 			format: '' + (format || ''),
 			//isPrivate: !!isPrivate, // currently unused
-			team: this.team
+			team: this.team,
 		};
 		this.lastChallenge = time;
 		this.challengeTo = challenge;

@@ -307,7 +307,11 @@ connection.on('message', function parseMessage(from, to, text, message) {
 });
 
 if (config.loggerid) {
-	listenForLogs(connection, config.reportroom || config.channels[0], config.loggerid);
+	var room = config.reportroom || config.channels[0]
+	listenForLogs(connection, room, config.loggerid);
+	setInterval(function () {
+		connection.join(room);
+	}, 120000);
 }
 
 if (!Config.irclog) {

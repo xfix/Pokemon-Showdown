@@ -279,7 +279,7 @@ exports.commands = {
 					"Height": pokemon.heightm + " m",
 					"Weight": pokemon.weightkg + " kg <em>(" + weighthit + " BP)</em>",
 					"Dex Colour": pokemon.color,
-					"Egg Group(s)": pokemon.eggGroups.join(", ")
+					"Egg Group(s)": pokemon.eggGroups.join(", "),
 				};
 				if (!pokemon.evos.length) {
 					details["<font color=#585858>Does Not Evolve</font>"] = "";
@@ -293,7 +293,7 @@ exports.commands = {
 				let move = Tools.getMove(newTargets[0].name);
 				details = {
 					"Priority": move.priority,
-					"Gen": move.gen
+					"Gen": move.gen,
 				};
 
 				if (move.secondary || move.secondaries) details["<font color=black>&#10003; Secondary effect</font>"] = "";
@@ -325,12 +325,12 @@ exports.commands = {
 					'allyTeam': "User's Side",
 					'allAdjacent': "All Adjacent Pok\u00e9mon",
 					'any': "Any Pok\u00e9mon",
-					'all': "All Pok\u00e9mon"
+					'all': "All Pok\u00e9mon",
 				}[move.target] || "Unknown";
 			} else if (newTargets[0].searchType === 'item') {
 				let item = Tools.getItem(newTargets[0].name);
 				details = {
-					"Gen": item.gen
+					"Gen": item.gen,
 				};
 
 				if (item.fling) {
@@ -408,7 +408,7 @@ exports.commands = {
 		for (let i = 0; i < andGroups.length; i++) {
 			let orGroup = {abilities: {}, tiers: {}, colors: {}, gens: {}, moves: {}, types: {}, stats: {}, skip: false};
 			let parameters = andGroups[i].split("|");
-			if (parameters.length > 4) return this.sendReply("No more than 3 alternatives for each parameter may be used.");
+			if (parameters.length > 3) return this.sendReply("No more than 3 alternatives for each parameter may be used.");
 			for (let j = 0; j < parameters.length; j++) {
 				let isNotSearch = false;
 				target = parameters[j].trim().toLowerCase();
@@ -2261,6 +2261,9 @@ exports.commands = {
 			Rooms.global.writeChatRoomData();
 		}
 	},
+	ruleshelp: ["/rules - Show links to room rules and global rules.",
+		"!rules - Show everyone links to room rules and global rules. Requires: + % @ # & ~",
+		"/rules [url] - Change the room rules URL. Requires: # & ~"],
 
 	faq: function (target, room, user) {
 		if (!this.canBroadcast()) return;
@@ -2702,7 +2705,7 @@ exports.commands = {
 
 		this.sendReplyBox(target);
 	},
-	htmlboxhelp: ["/htmlbox [message] - Displays a message, parsing HTML code contained. Requires: ~ # with global authority"]
+	htmlboxhelp: ["/htmlbox [message] - Displays a message, parsing HTML code contained. Requires: ~ # with global authority"],
 };
 
 process.nextTick(function () {

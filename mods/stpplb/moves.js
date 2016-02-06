@@ -1139,6 +1139,7 @@ exports.BattleMovedex = {
 		},
 		onTryHit: function (target, source) {
 			if (target.volatiles['lockon'] && source === target.volatiles['lockon'].source) return;
+			if (source.hasAbility('noguard') || target.hasAbility('noguard')) return;
 			return false;
 		},
 		target: 'normal',
@@ -1326,15 +1327,6 @@ exports.BattleMovedex = {
 		basePower: 0,
 		accuracy: true,
 		flags: {},
-		onModifyPriority: function (priority, pokemon, target, move) {
-			if (pokemon.template.speciesid === 'carracosta') {
-				return -6;
-			} else if (pokemon.template.speciesid === 'archeops') {
-				return 3;
-			} else {
-				return 0;
-			}
-		},
 		onTryHit: function (target, pokemon) {
 			var move = 'ancientpower';
 			switch (pokemon.template.speciesid) {
@@ -1451,24 +1443,21 @@ exports.BattleMovedex = {
 		accuracy: 85,
 		flags: {protect: 1, reflectable: 1, mirror: 1, sound: 1, authentic: 1},
 		onHit: function (pokemon) {
+			var bannedAbilities = {insomnia:1, multitype:1, stancechange:1, truant:1};
+			if (!bannedAbilities[pokemon.ability]) {
+				var oldAbility = pokemon.setAbility('insomnia');
+				if (oldAbility) {
+					this.add('-endability', pokemon, oldAbility, '[from] move: Worry Seed');
+					this.add('-ability', pokemon, 'Insomnia', '[from] move: Worry Seed');
+					if (pokemon.status === 'slp') {
+						pokemon.cureStatus();
+					}
+				}
+			}
 			pokemon.addVolatile('taunt');
 			pokemon.addVolatile('torment');
 			pokemon.addVolatile('leechseed');
 			pokemon.addVolatile('confusion');
-			var bannedAbilities = {insomnia:1, multitype:1, stancechange:1, truant:1};
-			if (bannedAbilities[pokemon.ability]) {
-				return;
-			}
-			var oldAbility = pokemon.setAbility('insomnia');
-			if (oldAbility) {
-				this.add('-endability', pokemon, oldAbility, '[from] move: Worry Seed');
-				this.add('-ability', pokemon, 'Insomnia', '[from] move: Worry Seed');
-				if (pokemon.status === 'slp') {
-					pokemon.cureStatus();
-				}
-				return;
-			}
-			return false;
 		},
 		num: 674
 	},
