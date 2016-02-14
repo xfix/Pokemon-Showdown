@@ -494,7 +494,7 @@ exports.BattleItems = {
 			pokemon.baseTemplate = template;
 			pokemon.details = template.species + (pokemon.level === 100 ? '' : ', L' + pokemon.level) + (pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
 			this.add('detailschange', pokemon, pokemon.details);
-			this.add('message', pokemon.name + "'s Primal Reversion! It reverted to its primal form!");
+			this.add('-primal', pokemon);
 			pokemon.setAbility(template.abilities['0']);
 			pokemon.baseAbility = pokemon.ability;
 		},
@@ -3648,7 +3648,7 @@ exports.BattleItems = {
 			pokemon.baseTemplate = template;
 			pokemon.details = template.species + (pokemon.level === 100 ? '' : ', L' + pokemon.level) + (pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
 			this.add('detailschange', pokemon, pokemon.details);
-			this.add('message', pokemon.name + "'s Primal Reversion! It reverted to its primal form!");
+			this.add('-primal', pokemon);
 			pokemon.setAbility(template.abilities['0']);
 			pokemon.baseAbility = pokemon.ability;
 		},
@@ -5195,5 +5195,23 @@ exports.BattleItems = {
 		gen: 2,
 		isNonstandard: 'gen2',
 		desc: "(Gen 2) Holder is cured if it is poisoned. Single use.",
+	},
+
+	// CAP items
+
+	"crucibellite": {
+		id: "crucibellite",
+		name: "Crucibellite",
+		spritenum: 577,
+		megaStone: "Crucibelle-Mega",
+		megaEvolves: "Crucibelle",
+		onTakeItem: function (item, source) {
+			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
+			return true;
+		},
+		num: -1,
+		gen: 6,
+		isNonstandard: true,
+		desc: "If holder is a Crucibelle, this item allows it to Mega Evolve in battle.",
 	},
 };

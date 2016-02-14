@@ -117,9 +117,10 @@ exports.commands = {
 			for (let i = 0; i < Rooms.global.chatRooms.length; i++) {
 				let thisRoom = Rooms.global.chatRooms[i];
 				if (!thisRoom || thisRoom.isPrivate === true) continue;
-				if (thisRoom.bannedIps && (targetUser.latestIp in thisRoom.bannedIps || targetUser.userid in thisRoom.bannedUsers)) {
+				let roomBanned = ((thisRoom.bannedIps && thisRoom.bannedIps[targetUser.latestIp]) || (thisRoom.bannedUsers && thisRoom.bannedUsers[targetUser.userid]));
+				if (roomBanned) {
 					if (bannedFrom) bannedFrom += ", ";
-					bannedFrom += '<a href="/' + thisRoom + '">' + thisRoom + '</a>';
+					bannedFrom += '<a href="/' + thisRoom + '">' + thisRoom + '</a> (' + roomBanned + ')';
 				}
 			}
 			if (bannedFrom) buf += '<br />Banned from: ' + bannedFrom;
@@ -133,9 +134,8 @@ exports.commands = {
 		if (!target) return this.parse('/help host');
 		if (!this.can('rangeban')) return;
 		if (!/[0-9.]+/.test(target)) return this.errorReply('You must pass a valid IPv4 IP to /host.');
-		let self = this;
-		Dnsbl.reverse(target, function (err, hosts) {
-			self.sendReply('IP ' + target + ': ' + (hosts ? hosts[0] : 'NULL'));
+		Dnsbl.reverse(target, (err, hosts) => {
+			this.sendReply('IP ' + target + ': ' + (hosts ? hosts[0] : 'NULL'));
 		});
 	},
 	hosthelp: ["/host [ip] - Gets the host for a given IP. Requires: & ~"],
@@ -153,7 +153,7 @@ exports.commands = {
 		if (/[a-z]/.test(target)) {
 			// host
 			this.sendReply("Users with host " + target + ":");
-			Users.users.forEach(function (curUser) {
+			Users.users.forEach(curUser => {
 				if (results.length > 100 && !isAll) return;
 				if (!curUser.latestHost || !curUser.latestHost.endsWith(target)) return;
 				results.push((curUser.connected ? " \u25C9 " : " \u25CC ") + " " + curUser.name);
@@ -165,7 +165,7 @@ exports.commands = {
 			// IP range
 			this.sendReply("Users in IP range " + target + ":");
 			target = target.slice(0, -1);
-			Users.users.forEach(function (curUser) {
+			Users.users.forEach(curUser => {
 				if (results.length > 100 && !isAll) return;
 				if (!curUser.latestIp.startsWith(target)) return;
 				results.push((curUser.connected ? " \u25C9 " : " \u25CC ") + " " + curUser.name);
@@ -175,7 +175,7 @@ exports.commands = {
 			}
 		} else {
 			this.sendReply("Users with IP " + target + ":");
-			Users.users.forEach(function (curUser) {
+			Users.users.forEach(curUser => {
 				if (curUser.latestIp === target) {
 					results.push((curUser.connected ? " \u25C9 " : " \u25CC ") + " " + curUser.name);
 				}
@@ -219,7 +219,7 @@ exports.commands = {
 		let buffer = '';
 		let targetId = toId(target);
 		if (!targetId) return this.parse('/help data');
-		let targetNum = parseInt(targetId, 10);
+		let targetNum = parseInt(targetId);
 		if (!isNaN(targetNum)) {
 			for (let p in Tools.data.Pokedex) {
 				let pokemon = Tools.getTemplate(p);
@@ -279,12 +279,12 @@ exports.commands = {
 					"Height": pokemon.heightm + " m",
 					"Weight": pokemon.weightkg + " kg <em>(" + weighthit + " BP)</em>",
 					"Dex Colour": pokemon.color,
-					"Egg Group(s)": pokemon.eggGroups.join(", "),
 				};
+				if (pokemon.eggGroups) details["Egg Group(s)"] = pokemon.eggGroups.join(", ");
 				if (!pokemon.evos.length) {
-					details["<font color=#585858>Does Not Evolve</font>"] = "";
+					details['<font color="#686868">Does Not Evolve</font>'] = "";
 				} else {
-					details["Evolution"] = pokemon.evos.map(function (evo) {
+					details["Evolution"] = pokemon.evos.map(evo => {
 						evo = Tools.getTemplate(evo);
 						return evo.name + " (" + evo.evoLevel + ")";
 					}).join(", ");
@@ -296,19 +296,19 @@ exports.commands = {
 					"Gen": move.gen,
 				};
 
-				if (move.secondary || move.secondaries) details["<font color=black>&#10003; Secondary effect</font>"] = "";
-				if (move.flags['contact']) details["<font color=black>&#10003; Contact</font>"] = "";
-				if (move.flags['sound']) details["<font color=black>&#10003; Sound</font>"] = "";
-				if (move.flags['bullet']) details["<font color=black>&#10003; Bullet</font>"] = "";
-				if (move.flags['pulse']) details["<font color=black>&#10003; Pulse</font>"] = "";
-				if (!move.flags['protect'] && !/(ally|self)/i.test(move.target)) details["<font color=black>&#10003; Bypasses Protect</font>"] = "";
-				if (move.flags['authentic']) details["<font color=black>&#10003; Bypasses Substitutes</font>"] = "";
-				if (move.flags['defrost']) details["<font color=black>&#10003; Thaws user</font>"] = "";
-				if (move.flags['bite']) details["<font color=black>&#10003; Bite</font>"] = "";
-				if (move.flags['punch']) details["<font color=black>&#10003; Punch</font>"] = "";
-				if (move.flags['powder']) details["<font color=black>&#10003; Powder</font>"] = "";
-				if (move.flags['reflectable']) details["<font color=black>&#10003; Bounceable</font>"] = "";
-				if (move.flags['gravity']) details["<font color=black>&#10007; Suppressed by Gravity</font>"] = "";
+				if (move.secondary || move.secondaries) details["&#10003; Secondary effect"] = "";
+				if (move.flags['contact']) details["&#10003; Contact"] = "";
+				if (move.flags['sound']) details["&#10003; Sound"] = "";
+				if (move.flags['bullet']) details["&#10003; Bullet"] = "";
+				if (move.flags['pulse']) details["&#10003; Pulse"] = "";
+				if (!move.flags['protect'] && !/(ally|self)/i.test(move.target)) details["&#10003; Bypasses Protect"] = "";
+				if (move.flags['authentic']) details["&#10003; Bypasses Substitutes"] = "";
+				if (move.flags['defrost']) details["&#10003; Thaws user"] = "";
+				if (move.flags['bite']) details["&#10003; Bite"] = "";
+				if (move.flags['punch']) details["&#10003; Punch"] = "";
+				if (move.flags['powder']) details["&#10003; Powder"] = "";
+				if (move.flags['reflectable']) details["&#10003; Bounceable"] = "";
+				if (move.flags['gravity']) details["&#10007; Suppressed by Gravity"] = "";
 
 				if (move.id === 'snatch') isSnatch = true;
 				if (move.id === 'mirrormove') isMirrorMove = true;
@@ -351,8 +351,9 @@ exports.commands = {
 				details = {};
 			}
 
-			buffer += '|raw|<font size="1">' + Object.keys(details).map(function (detail) {
-				return '<font color=#585858>' + detail + (details[detail] !== '' ? ':</font> ' + details[detail] : '</font>');
+			buffer += '|raw|<font size="1">' + Object.keys(details).map(detail => {
+				if (!details[detail]) return detail;
+				return '<font color="#686868">' + detail + ':</font> ' + details[detail];
 			}).join("&nbsp;|&ThickSpace;") + '</font>';
 
 			if (isSnatch) buffer += '&nbsp;|&ThickSpace;<a href="https://pokemonshowdown.com/dex/moves/snatch"><font size="1">Snatchable Moves</font></a>';
@@ -387,17 +388,15 @@ exports.commands = {
 		let capSearch = null;
 		let randomOutput = 0;
 
-		let self = this;
-		let validParameter = function (cat, param, isNotSearch) {
-			let catCount = 0;
+		let validParameter = (cat, param, isNotSearch) => {
 			for (let h = 0; h < searches.length; h++) {
 				let group = searches[h];
 				if (group[cat] === undefined) continue;
 				if (group[cat][param] === undefined) continue;
 				if (group[cat][param] === isNotSearch) {
-					self.sendReplyBox("A search cannot both include and exclude '" + param + "'.");
+					this.sendReplyBox("A search cannot both include and exclude '" + param + "'.");
 				} else {
-					self.sendReplyBox("The search included '" + (isNotSearch ? "!" : "") + param + "' more than once.");
+					this.sendReplyBox("The search included '" + (isNotSearch ? "!" : "") + param + "' more than once.");
 				}
 				return false;
 			}
@@ -442,7 +441,7 @@ exports.commands = {
 				}
 
 				if (target.substr(0, 3) === 'gen' && Number.isInteger(parseFloat(target.substr(3)))) target = target.substr(3).trim();
-				let targetInt = parseInt(target, 10);
+				let targetInt = parseInt(target);
 				if (0 < targetInt && targetInt < 7) {
 					if (!validParameter("gens", target, isNotSearch)) return;
 					orGroup.gens[target] = !isNotSearch;
@@ -459,7 +458,7 @@ exports.commands = {
 
 				if (target.substr(0, 6) === 'random' && cmd === 'randpoke') {
 					//validation for this is in the /randpoke command
-					randomOutput = parseInt(target.substr(6), 10);
+					randomOutput = parseInt(target.substr(6));
 					orGroup.skip = true;
 					continue;
 				}
@@ -596,10 +595,11 @@ exports.commands = {
 				dex[pokemon] = template;
 			}
 		}
+		dex = JSON.parse(JSON.stringify(dex)); // Don't modify the original template (when compiling learnsets)
 
 		let learnSetsCompiled = false;
 		//ensure searches with the least alternatives are run first
-		searches.sort(function (a, b) {
+		searches.sort((a, b) => {
 			let aCount = 0, bCount = 0;
 			for (let cat in a) {
 				if (typeof a[cat] === "object") aCount += Object.size(a[cat]);
@@ -710,6 +710,27 @@ exports.commands = {
 		for (let mon in dex) {
 			if (dex[mon].baseSpecies && results.indexOf(dex[mon].baseSpecies) >= 0) continue;
 			results.push(dex[mon].species);
+		}
+
+		let moveGroups = searches
+			.filter(alts => {
+				return Object.any(alts.moves, (move, isSearch) => {
+					return isSearch;
+				});
+			})
+			.map(alts => Object.keys(alts.moves));
+		if (moveGroups.length >= 2) {
+			results = results.filter(mon => {
+				let lsetData = {fastCheck: true, set: {}};
+				for (let group = 0; group < moveGroups.length; group++) {
+					for (let i = 0; i < moveGroups[group].length; i++) {
+						let problem = TeamValidator.checkLearnsetSync('anythinggoes', moveGroups[group][i], mon, lsetData);
+						if (!problem) break;
+						if (i === moveGroups[group].length - 1) return;
+					}
+				}
+				return true;
+			});
 		}
 
 		if (randomOutput && randomOutput < results.length) {
@@ -1238,7 +1259,7 @@ exports.commands = {
 					if (searchedWords[k].substr(searchedWords[k].length - 2) === 'bp' && searchedWords[k].length > 2) searchedWords[k] = searchedWords[k].substr(0, searchedWords[k].length - 2);
 					if (Number.isInteger(Number(searchedWords[k]))) {
 						if (basePower) return this.sendReplyBox("Only specify a number for base power once.");
-						basePower = parseInt(searchedWords[k], 10);
+						basePower = parseInt(searchedWords[k]);
 					}
 				}
 			}
@@ -1270,7 +1291,7 @@ exports.commands = {
 					if (searchedWords[k].substr(searchedWords[k].length - 2) === 'bp' && searchedWords[k].length > 2) searchedWords[k] = searchedWords[k].substr(0, searchedWords[k].length - 2);
 					if (Number.isInteger(Number(searchedWords[k]))) {
 						if (basePower) return this.sendReplyBox("Only specify a number for base power once.");
-						basePower = parseInt(searchedWords[k], 10);
+						basePower = parseInt(searchedWords[k]);
 					}
 				}
 			}
@@ -1299,7 +1320,7 @@ exports.commands = {
 				if (/[1-9\.]+x/.test(descWords)) descWords += ' increases';
 				if (item.isBerry) descWords += ' berry';
 				descWords = descWords.replace(/super[\-\s]effective/g, 'supereffective');
-				descWords = descWords.toLowerCase().replace('-', ' ').replace(/[^a-z0-9\s\/]/g, '').replace(/(\D)\./, function (p0, p1) { return p1; }).split(' ');
+				descWords = descWords.toLowerCase().replace('-', ' ').replace(/[^a-z0-9\s\/]/g, '').replace(/(\D)\./, (p0, p1) => p1).split(' ');
 
 				for (let k = 0; k < searchedWords.length; k++) {
 					if (descWords.indexOf(searchedWords[k]) >= 0) matched++;
@@ -1317,7 +1338,7 @@ exports.commands = {
 				if (/[1-9\.]+x/.test(descWords)) descWords += ' increases';
 				if (item.isBerry) descWords += ' berry';
 				descWords = descWords.replace(/super[\-\s]effective/g, 'supereffective');
-				descWords = descWords.toLowerCase().replace('-', ' ').replace(/[^a-z0-9\s\/]/g, '').replace(/(\D)\./, function (p0, p1) { return p1; }).split(' ');
+				descWords = descWords.toLowerCase().replace('-', ' ').replace(/[^a-z0-9\s\/]/g, '').replace(/(\D)\./, (p0, p1) => p1).split(' ');
 
 				for (let k = 0; k < searchedWords.length; k++) {
 					if (descWords.indexOf(searchedWords[k]) >= 0) matched++;
@@ -1367,7 +1388,8 @@ exports.commands = {
 		let template = Tools.getTemplate(targets[0]);
 		let move = {};
 		let problem;
-		let format = {rby:'gen1ou', gsc:'gen2ou', adv:'gen3ou', dpp:'gen4ou', bw2:'gen5ou'}[cmd.substring(0, 3)];
+		let gen = ({rby:1, gsc:2, adv:3, dpp:4, bw2:5}[cmd.substring(0, 3)] || 6);
+		let format = 'gen' + gen + 'ou';
 		let all = (cmd === 'learnall');
 		if (cmd === 'learn5') lsetData.set.level = 5;
 		if (cmd === 'g6learn') lsetData.format = {noPokebank: true};
@@ -1380,7 +1402,7 @@ exports.commands = {
 			return this.errorReply("You must specify at least one move.");
 		}
 
-		for (let i = 1, len = targets.length; i < len; ++i) {
+		for (let i = 1, len = targets.length; i < len; i++) {
 			move = Tools.getMove(targets[i]);
 			if (!move.exists) {
 				return this.errorReply("Move '" + move.id + "' not found.");
@@ -1388,13 +1410,24 @@ exports.commands = {
 			problem = TeamValidator.checkLearnsetSync(format, move, template.species, lsetData);
 			if (problem) break;
 		}
-		let buffer = template.name + (problem ? " <span class=\"message-learn-cannotlearn\">can't</span> learn " : " <span class=\"message-learn-canlearn\">can</span> learn ") + (targets.length > 2 ? "these moves" : move.name);
-		if (format) buffer += ' on ' + cmd.substring(0, 3).toUpperCase();
+		let buffer = "";
+		if (format) buffer += "In Gen " + gen + ", ";
+		buffer += "" + template.name + (problem ? " <span class=\"message-learn-cannotlearn\">can't</span> learn " : " <span class=\"message-learn-canlearn\">can</span> learn ") + (targets.length > 2 ? "these moves" : move.name);
 		if (!problem) {
-			let sourceNames = {E:"egg", S:"event", D:"dream world"};
-			if (lsetData.sources || lsetData.sourcesBefore) buffer += " only when obtained from:<ul class=\"message-learn-list\">";
+			let sourceNames = {E:"egg", S:"event", D:"dream world", X:"egg, traded back", Y: "event, traded back"};
+			let sourcesBefore = lsetData.sourcesBefore;
+			if (lsetData.sources || sourcesBefore < gen) buffer += " only when obtained";
+			buffer += " from:<ul class=\"message-learn-list\">";
 			if (lsetData.sources) {
-				let sources = lsetData.sources.sort();
+				let sources = lsetData.sources.map(source => {
+					if (source.slice(0, 3) === '1ET') {
+						return '2X' + source.slice(3);
+					}
+					if (source.slice(0, 3) === '1ST') {
+						return '2Y' + source.slice(3);
+					}
+					return source;
+				}).sort();
 				let prevSourceType;
 				let prevSourceCount = 0;
 				for (let i = 0, len = sources.length; i < len; ++i) {
@@ -1417,12 +1450,8 @@ exports.commands = {
 					if (source.substr(2)) buffer += ": " + source.substr(2);
 				}
 			}
-			if (lsetData.sourcesBefore) {
-				if (!(cmd.substring(0, 3) in {'rby':1, 'gsc':1})) {
-					buffer += "<li>any generation before " + (lsetData.sourcesBefore + 1);
-				} else if (!lsetData.sources) {
-					buffer += "<li>gen " + lsetData.sourcesBefore;
-				}
+			if (sourcesBefore) {
+				buffer += "<li>" + (sourcesBefore < gen ? "gen " + sourcesBefore + " or earlier" : "anywhere") + " (all moves are level-up/tutor/TM/HM in gen " + Math.min(gen, sourcesBefore) + (sourcesBefore < gen ? " to " + gen : "") + ")";
 			}
 			buffer += "</ul>";
 		}
@@ -1459,7 +1488,7 @@ exports.commands = {
 		let weaknesses = [];
 		let resistances = [];
 		let immunities = [];
-		Object.keys(Tools.data.TypeChart).forEach(function (type) {
+		for (let type in Tools.data.TypeChart) {
 			let notImmune = Tools.getImmunity(type, pokemon);
 			if (notImmune) {
 				let typeMod = Tools.getEffectiveness(type, pokemon);
@@ -1480,7 +1509,7 @@ exports.commands = {
 			} else {
 				immunities.push(type);
 			}
-		});
+		}
 
 		let buffer = [];
 		buffer.push(pokemon.exists ? "" + target + ' (ignoring abilities):' : '' + target + ':');
@@ -1736,8 +1765,8 @@ exports.commands = {
 		"Adding the parameter 'all' or 'table' will display the information with a table of all type combinations."],
 
 	statcalc: function (target, room, user) {
-		if (!this.canBroadcast()) return;
 		if (!target) return this.parse("/help statcalc");
+		if (!this.canBroadcast()) return;
 
 		let targets = target.split(' ');
 
@@ -1768,7 +1797,7 @@ exports.commands = {
 					lvlSet = true;
 					continue;
 				} else if (lowercase.startsWith('lv') || lowercase.startsWith('level')) {
-					level = parseInt(targets[i].replace(/\D/g, ''), 10);
+					level = parseInt(targets[i].replace(/\D/g, ''));
 					lvlSet = true;
 					if (level < 1 || level > 9999) {
 						return this.sendReplyBox('Invalid value for level: ' + level);
@@ -1822,7 +1851,7 @@ exports.commands = {
 
 			if (!ivSet) {
 				if (lowercase.endsWith('iv') || lowercase.endsWith('ivs')) {
-					iv = parseInt(targets[i], 10);
+					iv = parseInt(targets[i]);
 					ivSet = true;
 
 					if (isNaN(iv)) {
@@ -1839,8 +1868,8 @@ exports.commands = {
 				} else if (lowercase === 'uninvested') {
 					ev = 0;
 					evSet = true;
-				} else if (lowercase.endsWith('ev') || lowercase.endsWith('evs')) {
-					ev = parseInt(targets[i], 10);
+				} else if (lowercase.endsWith('ev') || lowercase.endsWith('evs') || lowercase.endsWith('+') || lowercase.endsWith('-')) {
+					ev = parseInt(targets[i]);
 					evSet = true;
 
 					if (isNaN(ev)) {
@@ -1869,11 +1898,11 @@ exports.commands = {
 					modifier = 1;
 					modSet = true;
 				} else if (targets[i].charAt(0) === '+') {
-					modifier = parseInt(targets[i].charAt(1), 10);
+					modifier = parseInt(targets[i].charAt(1));
 					modSet = true;
 				} else if (targets[i].charAt(0) === '-') {
 					positiveMod = false;
-					modifier = parseInt(targets[i].charAt(1), 10);
+					modifier = parseInt(targets[i].charAt(1));
 					modSet = true;
 				}
 				if (isNaN(modifier)) {
@@ -1893,7 +1922,7 @@ exports.commands = {
 				}
 			}
 
-			let tempStat = parseInt(targets[i], 10);
+			let tempStat = parseInt(targets[i]);
 
 			if (!isNaN(tempStat) && !baseSet && tempStat > 0 && tempStat < 256) {
 				statValue = tempStat;
@@ -1918,7 +1947,7 @@ exports.commands = {
 		if (calcHP) {
 			output = (((iv + (2 * statValue) + (ev / 4) + 100) * level) / 100) + 10;
 		} else {
-			output = Math.floor((((iv + (2 * statValue) + (ev / 4)) * level) / 100) + 5) * nature;
+			output = Math.floor(nature * Math.floor((((iv + (2 * statValue) + (ev / 4)) * level) / 100) + 5));
 			if (positiveMod) {
 				output *= (2 + modifier) / 2;
 			} else {
@@ -1928,9 +1957,9 @@ exports.commands = {
 		return this.sendReplyBox('Base ' + statValue + (calcHP ? ' HP ' : ' ') + 'at level ' + level + ' with ' + iv + ' IVs, ' + ev + (nature === 1.1 ? '+' : (nature === 0.9 ? '-' : '')) + ' EVs' + (modifier > 0 && !calcHP ? ' at ' + (positiveMod ? '+' : '-') + modifier : '') + ': <b>' + Math.floor(output) + '</b>.');
 	},
 
-	statcalchelp: ["/statcalc [level] [base stat] [IVs] [nature] [EVs] [modifier] (only base stat is required) - Calculates what the actual stat of a Pokémon is with the given parameters. For example, '/statcalc lv50 100 30iv positive 252 scarf' calculates the speed of a base 100 scarfer with HP Ice in Battle Spot, and '/statcalc uninvested 90 neutral' calculates the attack of an uninvested Crobat.",
+	statcalchelp: ["/statcalc [level] [base stat] [IVs] [nature] [EVs] [modifier] (only base stat is required) - Calculates what the actual stat of a Pokémon is with the given parameters. For example, '/statcalc lv50 100 30iv positive 252ev scarf' calculates the speed of a base 100 scarfer with HP Ice in Battle Spot, and '/statcalc uninvested 90 neutral' calculates the attack of an uninvested Crobat.",
 		"!statcalc [level] [base stat] [IVs] [nature] [EVs] [modifier] (only base stat is required) - Shows this information to everyone.",
-		"Inputing 'hp' as an argument makes it use the formula for HP. Instead of giving nature, '+' and '-' can be appended to the EV amount to signify a boosting or inihibting nature."],
+		"Inputing 'hp' as an argument makes it use the formula for HP. Instead of giving nature, '+' and '-' can be appended to the EV amount (e.g. 252+ev) to signify a boosting or inhibiting nature."],
 
 	/*********************************************************
 	 * Informational commands
@@ -2141,7 +2170,7 @@ exports.commands = {
 		if (format.effectType === 'Format') formatList = [targetId];
 		if (!formatList) {
 			if (this.broadcasting && (cmd !== 'om' && cmd !== 'othermetas')) return this.sendReply("'" + target + "' is not a format. This command's search mode is too spammy to broadcast.");
-			formatList = Object.keys(Tools.data.Formats).filter(function (formatid) {return Tools.data.Formats[formatid].effectType === 'Format';});
+			formatList = Object.keys(Tools.data.Formats).filter(formatid => Tools.data.Formats[formatid].effectType === 'Format');
 		}
 
 		// Filter formats and group by section
@@ -2400,7 +2429,6 @@ exports.commands = {
 			let speciesid = pokemon.speciesid;
 			// Special case for Meowstic-M and Hoopa-Unbound
 			if (speciesid === 'meowstic') speciesid = 'meowsticm';
-			if (speciesid === 'hoopaunbound') speciesid = 'hoopa-alt';
 			if (pokemon.tier === 'CAP') {
 				this.sendReplyBox("<a href=\"https://www.smogon.com/cap/pokemon/strategies/" + speciesid + "\">" + generation.toUpperCase() + " " + Tools.escapeHTML(formatName) + " " + pokemon.name + " analysis preview</a>, brought to you by <a href=\"https://www.smogon.com\">Smogon University</a> <a href=\"https://smogon.com/cap/\">CAP Project</a>");
 			} else {
@@ -2708,11 +2736,11 @@ exports.commands = {
 	htmlboxhelp: ["/htmlbox [message] - Displays a message, parsing HTML code contained. Requires: ~ # with global authority"],
 };
 
-process.nextTick(function () {
+process.nextTick(() => {
 	// This slow operation is done *after* we start listening for connections
 	// to the server. Anybody who connects while data is loading will
 	// have to wait a couple seconds before they are able to join the server, but
 	// at least they probably won't receive a connection error message.
 
-	Tools.includeData();
+	Tools.includeMods();
 });

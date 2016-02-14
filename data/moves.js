@@ -3588,11 +3588,7 @@ exports.BattleMovedex = {
 		accuracy: 100,
 		basePower: 0,
 		damageCallback: function (pokemon, target) {
-			if (target.hp > pokemon.hp) {
-				return target.hp - pokemon.hp;
-			}
-			this.add('-immune', target, '[msg]');
-			return null;
+			return target.hp - pokemon.hp;
 		},
 		category: "Physical",
 		desc: "Deals damage to the target equal to (target's current HP - user's current HP). The target is unaffected if its current HP is less than or equal to the user's current HP.",
@@ -3602,6 +3598,12 @@ exports.BattleMovedex = {
 		pp: 5,
 		priority: 0,
 		flags: {contact: 1, protect: 1, mirror: 1},
+		onTry: function (pokemon, target) {
+			if (pokemon.hp >= target.hp) {
+				this.add('-immune', target, '[msg]');
+				return null;
+			}
+		},
 		secondary: false,
 		target: "normal",
 		type: "Normal",
@@ -3688,7 +3690,7 @@ exports.BattleMovedex = {
 		onHit: function (target, source) {
 			let oldAbility = target.setAbility(source.ability);
 			if (oldAbility) {
-				this.add('-ability', target, target.ability, '[from] move: Entrainment');
+				this.add('-ability', target, this.getAbility(target.ability).name, '[from] move: Entrainment');
 				return;
 			}
 			return false;
@@ -4475,7 +4477,7 @@ exports.BattleMovedex = {
 			for (let sideSlot = 0; sideSlot < this.sides.length; sideSlot++) {
 				let sideActive = this.sides[sideSlot].active;
 				for (let activeSlot = 0; activeSlot < sideActive.length; activeSlot++) {
-					if (sideActive[activeSlot] && sideActive[activeSlot].hasType('Grass')) {
+					if (sideActive[activeSlot] && sideActive[activeSlot].isActive && sideActive[activeSlot].hasType('Grass')) {
 						// This move affects every Grass-type Pokemon in play.
 						targets.push(sideActive[activeSlot]);
 					}
@@ -4621,10 +4623,7 @@ exports.BattleMovedex = {
 			pokemon.addVolatile('focuspunch');
 		},
 		beforeMoveCallback: function (pokemon) {
-			if (!pokemon.removeVolatile('focuspunch')) {
-				return false;
-			}
-			if (pokemon.lastAttackedBy && pokemon.lastAttackedBy.thisTurn && pokemon.lastAttackedBy.damage > 0 && this.getMove(pokemon.lastAttackedBy.move).category !== 'Status') {
+			if (pokemon.volatiles['focuspunch'] && pokemon.volatiles['focuspunch'].lostFocus) {
 				this.add('cant', pokemon, 'Focus Punch', 'Focus Punch');
 				return true;
 			}
@@ -4633,6 +4632,11 @@ exports.BattleMovedex = {
 			duration: 1,
 			onStart: function (pokemon) {
 				this.add('-singleturn', pokemon, 'move: Focus Punch');
+			},
+			onHit: function (pokemon, source, move) {
+				if (move.category !== 'Status') {
+					pokemon.volatiles['focuspunch'].lostFocus = true;
+				}
 			},
 		},
 		secondary: false,
@@ -4654,6 +4658,9 @@ exports.BattleMovedex = {
 		volatileStatus: 'followme',
 		effect: {
 			duration: 1,
+			onStart: function (pokemon) {
+				this.add('-start', pokemon, 'move: Follow Me');
+			},
 			onFoeRedirectTargetPriority: 1,
 			onFoeRedirectTarget: function (target, source, source2, move) {
 				if (this.validTarget(this.effectData.target, source, move.target)) {
@@ -5756,7 +5763,7 @@ exports.BattleMovedex = {
 			this.add('-clearallboost');
 			for (let i = 0; i < this.sides.length; i++) {
 				for (let j = 0; j < this.sides[i].active.length; j++) {
-					if (this.sides[i].active[j]) this.sides[i].active[j].clearBoosts();
+					if (this.sides[i].active[j] && this.sides[i].active[j].isActive) this.sides[i].active[j].clearBoosts();
 				}
 			}
 		},
@@ -8475,7 +8482,7 @@ exports.BattleMovedex = {
 			}
 			let randomMove = '';
 			if (moves.length) {
-				moves.sort(function (a, b) {return a.num - b.num;});
+				moves.sort((a, b) => a.num - b.num);
 				randomMove = moves[this.random(moves.length)].id;
 			}
 			if (!randomMove) {
@@ -9574,7 +9581,7 @@ exports.BattleMovedex = {
 			let message = false;
 			for (let i = 0; i < this.sides.length; i++) {
 				for (let j = 0; j < this.sides[i].active.length; j++) {
-					if (this.sides[i].active[j]) {
+					if (this.sides[i].active[j] && this.sides[i].active[j].isActive) {
 						if (this.sides[i].active[j].hasAbility('soundproof')) {
 							this.add('-immune', this.sides[i].active[j], '[msg]', '[from] ability: Soundproof');
 							result = true;
@@ -10447,6 +10454,7 @@ exports.BattleMovedex = {
 			onBeforeSwitchOut: function (pokemon) {
 				this.debug('Pursuit start');
 				let sources = this.effectData.sources;
+				this.add('-activate', pokemon, 'move: Pursuit');
 				for (let i = 0; i < sources.length; i++) {
 					if (sources[i].moveThisTurn || sources[i].fainted) continue;
 					this.cancelMove(sources[i]);
@@ -11276,7 +11284,7 @@ exports.BattleMovedex = {
 		onHit: function (target, source) {
 			let oldAbility = source.setAbility(target.ability);
 			if (oldAbility) {
-				this.add('-ability', source, source.ability, '[from] move: Role Play', '[of] ' + target);
+				this.add('-ability', source, this.getAbility(source.ability).name, '[from] move: Role Play', '[of] ' + target);
 				return;
 			}
 			return false;
@@ -11418,7 +11426,7 @@ exports.BattleMovedex = {
 			for (let sideSlot = 0; sideSlot < this.sides.length; sideSlot++) {
 				let sideActive = this.sides[sideSlot].active;
 				for (let activeSlot = 0; activeSlot < sideActive.length; activeSlot++) {
-					if (!sideActive[activeSlot]) continue;
+					if (!sideActive[activeSlot] || !sideActive[activeSlot].isActive) continue;
 					if (!sideActive[activeSlot].runImmunity('Ground')) {
 						this.add('-immune', sideActive[activeSlot], '[msg]');
 						anyAirborne = true;
@@ -11719,31 +11727,23 @@ exports.BattleMovedex = {
 		pp: 20,
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
-		onHit: function (target, source, move) {
-			if (this.isTerrain('')) return;
-			move.secondaries = [];
-			if (this.isTerrain('electricterrain')) {
-				move.secondaries.push({
-					chance: 30,
-					status: 'par',
-				});
-			} else if (this.isTerrain('grassyterrain')) {
-				move.secondaries.push({
-					chance: 30,
-					status: 'slp',
-				});
-			} else if (this.isTerrain('mistyterrain')) {
-				move.secondaries.push({
-					chance: 30,
-					boosts: {
-						spa: -1,
-					},
-				});
-			}
+		onHit: function (target, pokemon) {
+			pokemon.addVolatile('secretpower');
 		},
-		secondary: {
-			chance: 30,
-			status: 'par',
+		effect: {
+			duration: 1,
+			onAfterMoveSecondarySelf: function (source, target, move) {
+				if (this.random(10) < 3) {
+					if (this.isTerrain('') || this.isTerrain('electricterrain')) {
+						target.trySetStatus('par', source, move);
+					} else if (this.isTerrain('grassyterrain')) {
+						target.trySetStatus('slp', source, move);
+					} else if (this.isTerrain('mistyterrain')) {
+						this.boost({spa: -1}, target, source);
+					}
+				}
+				source.removeVolatile('secretpower');
+			},
 		},
 		target: "normal",
 		type: "Normal",
@@ -14194,7 +14194,7 @@ exports.BattleMovedex = {
 		flags: {protect: 1, mirror: 1, nonsky: 1},
 		isUnreleased: true,
 		onHit: function (target, source, move) {
-			target.addVolatile('trapped', source, move, 'trapper');
+			if (source.isActive) target.addVolatile('trapped', source, move, 'trapper');
 		},
 		secondary: false,
 		target: "allAdjacentFoes",
@@ -14441,12 +14441,7 @@ exports.BattleMovedex = {
 		pp: 10,
 		priority: 0,
 		flags: {protect: 1, reflectable: 1, mirror: 1},
-		onModifyMove: function (move, pokemon) {
-			if (pokemon.hasType('Poison')) {
-				move.accuracy = true;
-				move.alwaysHit = true;
-			}
-		},
+		// No Guard-like effect for Poison-type users implemented in BattleScripts#tryMoveHit
 		status: 'tox',
 		secondary: false,
 		target: "normal",

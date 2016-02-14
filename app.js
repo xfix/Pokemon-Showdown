@@ -46,6 +46,9 @@
 
 'use strict';
 
+const fs = require('fs');
+const path = require('path');
+
 /*********************************************************
  * Make sure we have everything set up correctly
  *********************************************************/
@@ -53,21 +56,14 @@
 // Make sure our dependencies are available, and install them if they
 // aren't
 
-function runNpm(command) {
-	if (require.main !== module) throw new Error("Dependencies unmet");
-
-	command = 'npm ' + command + ' && ' + process.execPath + ' app.js';
-	console.log('Running `' + command + '`...');
-	require('child_process').spawn('sh', ['-c', command], {stdio: 'inherit', detached: true});
-	process.exit(0);
-}
-
-const fs = require('fs');
-const path = require('path');
 try {
 	require('sugar');
 } catch (e) {
-	runNpm('install --production');
+	if (require.main !== module) throw new Error("Dependencies unmet");
+
+	let command = 'npm install --production';
+	console.log('Installing dependencies: `' + command + '`...');
+	require('child_process').spawnSync('sh', ['-c', command], {stdio: 'inherit'});
 }
 
 /*********************************************************
@@ -89,7 +85,7 @@ try {
 }
 
 if (Config.watchconfig) {
-	fs.watchFile(path.resolve(__dirname, 'config/config.js'), function (curr, prev) {
+	fs.watchFile(path.resolve(__dirname, 'config/config.js'), (curr, prev) => {
 		if (curr.mtime <= prev.mtime) return;
 		try {
 			delete require.cache[require.resolve('./config/config.js')];
@@ -100,21 +96,6 @@ if (Config.watchconfig) {
 	});
 }
 
-// Autoconfigure the app when running in cloud hosting environments:
-try {
-	let cloudenv = require('cloud-env');
-	Config.bindaddress = cloudenv.get('IP', Config.bindaddress || '');
-	Config.port = cloudenv.get('PORT', Config.port);
-} catch (e) {}
-
-if (require.main === module && process.argv[2]) {
-	let port = parseInt(process.argv[2]); // eslint-disable-line radix
-	if (port) {
-		Config.port = port;
-		Config.ssl = null;
-	}
-}
-
 /*********************************************************
  * Set up most of our globals
  *********************************************************/
@@ -123,7 +104,7 @@ global.Bot = require('./bot');
 
 global.Monitor = require('./monitor.js');
 
-global.Tools = require('./tools.js').includeFormats();
+global.Tools = require('./tools.js');
 global.toId = Tools.getId;
 
 global.LoginServer = require('./loginserver.js');
@@ -133,10 +114,6 @@ global.Ladders = require(Config.remoteladder ? './ladders-remote.js' : './ladder
 global.Users = require('./users.js');
 
 global.Rooms = require('./rooms.js');
-
-// Generate and cache the format list.
-Rooms.global.formatListText = Rooms.global.getFormatListText();
-
 
 delete process.send; // in case we're a child process
 global.Verifier = require('./verifier.js');
@@ -150,24 +127,21 @@ global.Tournaments = require('./tournaments');
 try {
 	global.Dnsbl = require('./dnsbl.js');
 } catch (e) {
-	global.Dnsbl = {query: function () {}, reverse: require('dns').reverse};
+	global.Dnsbl = {query: () => {}, reverse: require('dns').reverse};
 }
 
 global.Cidr = require('./cidr.js');
 
 if (Config.crashguard) {
 	// graceful crash - allow current battles to finish before restarting
-	let lastCrash = 0;
-	process.on('uncaughtException', function (err) {
-		let dateNow = Date.now();
-		let quietCrash = require('./crashlogger.js')(err, 'The main process', true);
-		quietCrash = quietCrash || ((dateNow - lastCrash) <= 1000 * 60 * 5);
-		lastCrash = Date.now();
-		if (quietCrash) return;
+	process.on('uncaughtException', err => {
+		let crashMessage = require('./crashlogger.js')(err, 'The main process');
+		if (crashMessage !== 'lockdown') return;
 		let stack = ("" + err.stack).escapeHTML().split("\n").slice(0, 2).join("<br />");
 		if (Rooms.lobby) {
 			Rooms.lobby.addRaw('<div class="broadcast-red"><b>THE SERVER HAS CRASHED:</b> ' + stack + '<br />Please restart the server.</div>');
-			Rooms.lobby.addRaw('<div class="broadcast-red">You will not be able to talk in the lobby or start new battles until the server restarts.</div>');
+			Rooms.lobby.addRaw('<div class="broadcast-red">You will not be able to start new battles until the server restarts.</div>');
+			Rooms.lobby.update();
 		}
 		Rooms.global.lockdown = true;
 	});
@@ -179,14 +153,32 @@ if (Config.crashguard) {
 
 global.Sockets = require('./sockets.js');
 
+exports.listen = function (port, bindAddress, workerCount) {
+	Sockets.listen(port, bindAddress, workerCount);
+};
+
+if (require.main === module) {
+	// if running with node app.js, set up the server directly
+	// (otherwise, wait for app.listen())
+	let port;
+	if (process.argv[2]) {
+		port = parseInt(process.argv[2]); // eslint-disable-line radix
+	}
+	Sockets.listen(port);
+}
+
 /*********************************************************
  * Set up our last global
  *********************************************************/
 
+// Generate and cache the format list.
+Tools.includeFormats();
+Rooms.global.formatListText = Rooms.global.getFormatListText();
+
 global.TeamValidator = require('./team-validator.js');
 
 // load ipbans at our leisure
-fs.readFile(path.resolve(__dirname, 'config/ipbans.txt'), function (err, data) {
+fs.readFile(path.resolve(__dirname, 'config/ipbans.txt'), (err, data) => {
 	if (err) return;
 	data = ('' + data).split("\n");
 	let rangebans = [];
@@ -206,4 +198,4 @@ fs.readFile(path.resolve(__dirname, 'config/ipbans.txt'), function (err, data) {
  * Start up the REPL server
  *********************************************************/
 
-require('./repl.js').start('app', function (cmd) { return eval(cmd); });
+require('./repl.js').start('app', cmd => eval(cmd));
