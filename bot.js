@@ -1,5 +1,5 @@
 // This code is awful, and I know it.
-"using strict";
+"use strict";
 let config = Config.ircconfig;
 
 exports.report = function report(message) {

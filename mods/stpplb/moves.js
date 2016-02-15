@@ -476,7 +476,7 @@ exports.BattleMovedex = {
 					this.add('-ability', target, 'Defeatist', '[from] move: Iron Fist');
 					return;
 				}
-			},
+			}
 		},
 		self: {
 			onHit: function (pokemon) {
