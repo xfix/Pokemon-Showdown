@@ -83,11 +83,11 @@ exports.BattleMovedex = {
 				pokemon.canMegaEvo = this.canMegaEvo(pokemon);
 				if (pokemon.canMegaEvo) this.runMegaEvo(pokemon);
 				pokemon.item = temp; // give its normal item back.
-			}
+			},
 		},
 		secondary: {
 			chance: 20,
-			volatileStatus: 'flinch'
+			volatileStatus: 'flinch',
 		},
 		priority: 0,
 		pp: 15,
@@ -207,7 +207,7 @@ exports.BattleMovedex = {
 				} else {
 					target.trySetStatus('slp', source);
 				}
-			}
+			},
 		},
 	},
 	'projectilespam': {
@@ -224,7 +224,7 @@ exports.BattleMovedex = {
 			this.add('-anim', source, 'Bullet Punch', target);
 		},
 		self: {
-			volatileStatus: 'lockedmove'
+			volatileStatus: 'lockedmove',
 		},
 		onAfterMove: function (pokemon) {
 			if (pokemon.volatiles['lockedmove'] && pokemon.volatiles['lockedmove'].duration === 1) {
@@ -248,7 +248,7 @@ exports.BattleMovedex = {
 		flags: {snatch: 1},
 		boosts: {
 			atk: 2,
-			def: 2
+			def: 2,
 		},
 		onPrepareHit: function (target, source, move) {
 			this.attrLastMove('[still]');
@@ -485,7 +485,7 @@ exports.BattleMovedex = {
 				if (!pokemon.template.isMega) pokemon.canMegaEvo = this.canMegaEvo(pokemon); // don't mega evolve if it's already mega
 				if (pokemon.canMegaEvo) this.runMegaEvo(pokemon);
 				pokemon.item = temp; // give its normal item back.
-			}
+			},
 		},
 	},
 	'afk': {
@@ -530,7 +530,7 @@ exports.BattleMovedex = {
 				}
 				if (source.volatiles['lockon'] && target === source.volatiles['lockon'].source) return;
 				return 0;
-			}
+			},
 		},
 		secondaries: [{chance: 20, volatileStatus: 'confusion'}, {chance: 10, status: 'slp'}],
 		target: 'normal',
@@ -721,7 +721,7 @@ exports.BattleMovedex = {
 		flags: {bullet: 1, protect: 1, mirror: 1},
 		secondary: {
 			chance: 20,
-			boosts: {spd: -1}
+			boosts: {spd: -1},
 		},
 		target: "normal",
 		type: "Ghost",
@@ -746,7 +746,7 @@ exports.BattleMovedex = {
 		secondary: {
 			chance: 20,
 			boosts: {atk: -1, spe: -1},
-			self: {boosts: {spa: 1, spe: 1}}
+			self: {boosts: {spa: 1, spe: 1}},
 		},
 		target: "normal",
 		type: "Fighting",
@@ -913,7 +913,7 @@ exports.BattleMovedex = {
 			onBeforeMovePriority: 100,
 			onBeforeMove: function (pokemon) {
 				this.boost({def:-2, spd:-2}, pokemon, pokemon, this.getMove("Ganon's Sword")); // dunno if this works
-			}
+			},
 		},
 		target: "normal",
 		type: "Dark",
@@ -1020,7 +1020,7 @@ exports.BattleMovedex = {
 					// don't lock
 					delete target.volatiles['spindash'];
 				}
-			}
+			},
 		},
 		secondary: false,
 		target: "normal",
@@ -1073,7 +1073,7 @@ exports.BattleMovedex = {
 				if (!pokemon.isGrounded()) return;
 				this.useMove('Mine', this.effectData.source, pokemon);
 				pokemon.side.removeSideCondition('setmine');
-			}
+			},
 		},
 		target: 'foeSide',
 		type: 'Fire',
@@ -1166,7 +1166,7 @@ exports.BattleMovedex = {
 				maxpp: move.pp,
 				target: move.target,
 				disabled: false,
-				used: false
+				used: false,
 			};
 			if (source.moveset.length < 8) {
 				source.moveset.push(sketchedMove);
@@ -1330,39 +1330,39 @@ exports.BattleMovedex = {
 		onTryHit: function (target, pokemon) {
 			let move = 'ancientpower';
 			switch (pokemon.template.speciesid) {
-				case 'omastar':
-					move = 'abstartselect';
-					break;
-				case 'kabutops':
-					move = 'wait4baba';
-					break;
-				case 'aerodactyl':
-					move = 'balancedstrike';
-					break;
-				case 'cradily':
-					move = 'texttospeech';
-					break;
-				case 'armaldo':
-					move = 'holyducttapeofclaw';
-					break;
-				case 'bastiodon':
-					move = 'warecho';
-					break;
-				case 'rampardos':
-					move = 'skullsmash';
-					break;
-				case 'carracosta':
-					move = 'danceriot';
-					break;
-				case 'archeops':
-					move = 'bluescreenofdeath';
-					break;
-				case 'aurorus':
-					move = 'portaltospaaaaaaace';
-					break;
-				case 'tyrantrum':
-					move = 'doubleascent';
-					break;
+			case 'omastar':
+				move = 'abstartselect';
+				break;
+			case 'kabutops':
+				move = 'wait4baba';
+				break;
+			case 'aerodactyl':
+				move = 'balancedstrike';
+				break;
+			case 'cradily':
+				move = 'texttospeech';
+				break;
+			case 'armaldo':
+				move = 'holyducttapeofclaw';
+				break;
+			case 'bastiodon':
+				move = 'warecho';
+				break;
+			case 'rampardos':
+				move = 'skullsmash';
+				break;
+			case 'carracosta':
+				move = 'danceriot';
+				break;
+			case 'archeops':
+				move = 'bluescreenofdeath';
+				break;
+			case 'aurorus':
+				move = 'portaltospaaaaaaace';
+				break;
+			case 'tyrantrum':
+				move = 'doubleascent';
+				break;
 			}
 			this.useMove(move, pokemon, target);
 			return null;
@@ -1414,8 +1414,8 @@ exports.BattleMovedex = {
 		flags: {contact: 1, protect: 1, mirror: 1},
 		onPrepareHit: function (target, source, move) {
 			let stats = ['atk', 'def', 'spa', 'spd', 'spe', 'accuracy', 'evasion'];
-			let boostSource = {atk:0,def:0,spa:0,spd:0,spe:0,accuracy:0,evasion:0};
-			let boostTarget = {atk:0,def:0,spa:0,spd:0,spe:0,accuracy:0,evasion:0};
+			let boostSource = {atk:0, def:0, spa:0, spd:0, spe:0, accuracy:0, evasion:0};
+			let boostTarget = {atk:0, def:0, spa:0, spd:0, spe:0, accuracy:0, evasion:0};
 			for (let i = 0; i < stats.length; i++) {
 				let stat = stats[i];
 				let targetBoost = target.boosts[stat];
@@ -1528,7 +1528,7 @@ exports.BattleMovedex = {
 		basePower: 120,
 		accuracy: 100,
 		self: {
-			volatileStatus: 'lockedmove'
+			volatileStatus: 'lockedmove',
 		},
 		onAfterMove: function (pokemon) {
 			if (pokemon.volatiles['lockedmove'] && pokemon.volatiles['lockedmove'].duration === 1) {
@@ -1629,5 +1629,5 @@ exports.BattleMovedex = {
 			},
 		},
 		num: 681,
-	}
+	},
 };
