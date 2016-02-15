@@ -1,3 +1,5 @@
+'use strict';
+
 exports.BattleScripts = {
 	init: function () {
 		this.modData('Pokedex', 'archeops').abilities['1'] = 'Vital Spirit';
@@ -39,5 +41,26 @@ exports.BattleScripts = {
 		this.modData('Pokedex', 'virizion').abilities['1'] = 'Trace';
 		this.modData('Pokedex', 'gastrodon').abilities['H'] = 'Poison Heal';
 		this.modData('Learnsets', 'krookodile').learnset.dragondance = ['6T'];
-	}
+		this.modData('Pokedex', 'latiosmega').types = ['Dragon', 'Ghost'];
+		this.modData('Pokedex', 'latiosmega').abilities['0'] = 'Analytic';
+		this.modData('Pokedex', 'banettemega').types = ['Ghost', 'Fighting'];
+		this.modData('Learnsets', 'banette').learnset.drainpunch = ['6T'];
+		this.modData('Pokedex', 'torterra').abilities['1'] = 'Drought';
+		this.modData('Pokedex', 'muk').types = ['Poison', 'Dark'];
+		this.modData('Pokedex', 'muk').abilities['0'] = 'Regenerator';
+		this.modData('Pokedex', 'cameruptmega').abilities['0'] = 'Desolate Land';
+		this.modData('Pokedex', 'zoroark').types = ['Dark', 'Fighting'];
+		this.modData('Learnsets', 'zoroark').learnset.vacuumwave = ['6T'];
+		this.modData('Learnsets', 'jolteon').learnset.spikes = ['6T'];
+		this.modData('Pokedex', 'cobalion').abilities['1'] = 'Magnet Pull';
+		this.modData('Learnsets', 'sceptile').learnset.seedflare = ['6T'];
+		this.modData('Pokedex', 'gogoat').abilities['1'] = 'Thick Fat';
+		this.modData('Pokedex', 'houndoommega').abilities['0'] = 'Rattled';
+		this.modData('Learnsets', 'houndoom').learnset.moonblast = ['6T'];
+		this.modData('Pokedex', 'tentacruel').abilities['0'] = 'Iron Barbs';
+		this.modData('Learnsets', 'tentacruel').learnset.recover = ['6T'];
+		this.modData('Pokedex', 'stunfisk').abilities['1'] = 'Regenerator';
+		this.modData('Learnsets', 'stunfisk').learnset.voltswitch = ['6T'];
+		this.modData('Pokedex', 'crobat').abilities['1'] = 'Intimidate';
+	},
 };

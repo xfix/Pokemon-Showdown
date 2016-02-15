@@ -1,23 +1,13 @@
+'use strict';
+
 exports.BattleAbilities = {
-	"drizzle": {
-		inherit: true,
-		onStart: function (source) {
-			this.setWeather('raindance', source, null);
-		}
-	},
 	"swiftswim": {
 		inherit: true,
 		onModifySpe: function (spe, pokemon) {
 			if (this.isWeather(['raindance', 'primordialsea'])) {
 				return this.chainModify(1.5);
 			}
-		}
-	},
-	"drought": {
-		inherit: true,
-		onStart: function (source) {
-			this.setWeather('sunnyday', source, null);
-		}
+		},
 	},
 	"chlorophyll": {
 		inherit: true,
@@ -25,19 +15,7 @@ exports.BattleAbilities = {
 			if (this.isWeather(['sunnyday', 'desolateland'])) {
 				return this.chainModify(1.5);
 			}
-		}
-	},
-	"snowwarning": {
-		inherit: true,
-		onStart: function (source) {
-			this.setWeather('hail', source, null);
-		}
-	},
-	"sandstream": {
-		inherit: true,
-		onStart: function (source) {
-			this.setWeather('sandstorm', source, null);
-		}
+		},
 	},
 	"sandrush": {
 		inherit: true,
@@ -45,13 +23,13 @@ exports.BattleAbilities = {
 			if (this.isWeather('sandstorm')) {
 				return this.chainModify(1.5);
 			}
-		}
+		},
 	},
 	"forecast": {
 		inherit: true,
 		onModifyMove: function (move) {
 			if (move.weather) {
-				var weather = move.weather;
+				let weather = move.weather;
 				move.weather = null;
 				move.onHit = function (target, source) {
 					this.setWeather(weather, source, this.getAbility('forecast'));
@@ -59,7 +37,7 @@ exports.BattleAbilities = {
 				};
 				move.target = 'self';
 			}
-		}
+		},
 	},
 	"thickfat": {
 		inherit: true,
@@ -77,13 +55,13 @@ exports.BattleAbilities = {
 				this.add('-message', "The attack was weakened by Thick Fat!");
 				return this.chainModify(0.5);
 			}
-		}
+		},
 	},
 	"marvelscale": {
 		inherit: true,
 		onImmunity: function (type, pokemon) {
 			if (type === 'hail') return false;
-		}
+		},
 	},
 	"snowcloak": {
 		inherit: true,
@@ -96,7 +74,7 @@ exports.BattleAbilities = {
 			}
 			return basePower * 7 / 8;
 		},
-		onModifyAccuracy: function () {}
+		onModifyAccuracy: function () {},
 	},
 	"sandveil": {
 		inherit: true,
@@ -108,7 +86,7 @@ exports.BattleAbilities = {
 				return basePower * 4 / 5;
 			}
 		},
-		onModifyAccuracy: function () {}
+		onModifyAccuracy: function () {},
 	},
 	"waterveil": {
 		inherit: true,
@@ -117,7 +95,7 @@ exports.BattleAbilities = {
 				return basePower * 3 / 4;
 			}
 			return basePower * 7 / 8;
-		}
+		},
 	},
 	"icebody": {
 		inherit: true,
@@ -134,13 +112,13 @@ exports.BattleAbilities = {
 				}
 			}
 		},
-		onWeather: function () {}
+		onWeather: function () {},
 	},
 	"flamebody": {
 		inherit: true,
 		onImmunity: function (type, pokemon) {
 			if (type === 'hail') return false;
-		}
+		},
 	},
 	"static": {
 		inherit: true,
@@ -148,7 +126,7 @@ exports.BattleAbilities = {
 			if (move && move.flags['contact']) {
 				source.trySetStatus('par', target, move);
 			}
-		}
+		},
 	},
 	"cutecharm": {
 		inherit: true,
@@ -156,7 +134,7 @@ exports.BattleAbilities = {
 			if (move && move.flags['contact']) {
 				source.addVolatile('Attract', target);
 			}
-		}
+		},
 	},
 	"poisonpoint": {
 		inherit: true,
@@ -164,13 +142,13 @@ exports.BattleAbilities = {
 			if (move && move.flags['contact']) {
 				source.trySetStatus('psn', target, move);
 			}
-		}
+		},
 	},
 	"flowergift": {
 		inherit: true,
 		onModifyMove: function (move) {
 			if (move.id === 'sunnyday') {
-				var weather = move.weather;
+				let weather = move.weather;
 				move.weather = null;
 				move.onHit = function (target, source) {
 					this.setWeather(weather, source, this.getAbility('flowergift'));
@@ -199,8 +177,8 @@ exports.BattleAbilities = {
 					this.boost({spd:1}, target, target, this.getAbility('flowergift'));
 				}
 				target.side.removeSideCondition('flowergift');
-			}
-		}
+			},
+		},
 	},
 	"slowstart": {
 		inherit: true,
@@ -225,8 +203,8 @@ exports.BattleAbilities = {
 			},
 			onEnd: function (target) {
 				this.add('-end', target, 'Slow Start');
-			}
-		}
+			},
+		},
 	},
 	"compoundeyes": {
 		desc: "The accuracy of this Pokemon's moves receives a 60% increase; for example, a 50% accurate move becomes 80% accurate.",
@@ -239,7 +217,7 @@ exports.BattleAbilities = {
 		id: "compoundeyes",
 		name: "Compound Eyes",
 		rating: 3.5,
-		num: 14
+		num: 14,
 	},
 	"keeneye": {
 		desc: "The accuracy of this Pokemon's moves receives a 60% increase; for example, a 50% accurate move becomes 80% accurate.",
@@ -252,7 +230,7 @@ exports.BattleAbilities = {
 		id: "keeneye",
 		name: "Keen Eye",
 		rating: 3.5,
-		num: 51
+		num: 51,
 	},
 	"solidrock": {
 		inherit: true,
@@ -261,7 +239,7 @@ exports.BattleAbilities = {
 				this.add('-message', "The attack was weakened by Solid Rock!");
 				return this.chainModify(0.5);
 			}
-		}
+		},
 	},
 	"filter": {
 		inherit: true,
@@ -270,16 +248,13 @@ exports.BattleAbilities = {
 				this.add('-message', "The attack was weakened by Filter!");
 				return this.chainModify(0.5);
 			}
-		}
+		},
 	},
 	"heatproof": {
 		inherit: true,
-		onSourceBasePower: function (basePower, attacker, defender, move) {
-			if (move.type === 'Fire') {
-				this.add('-message', "The attack was weakened by Heatproof!");
-				return basePower / 2;
-			}
-		}
+		onImmunity: function (type, pokemon) {
+			if (type === 'Fire' || type === 'brn') return false;
+		},
 	},
 	"reckless": {
 		inherit: true,
@@ -288,35 +263,35 @@ exports.BattleAbilities = {
 				this.debug('Reckless boost');
 				return basePower * 12 / 10;
 			}
-		}
+		},
 	},
 	"clearbody": {
 		inherit: true,
 		onBoost: function (boost, target, source) {
-			for (var i in boost) {
+			for (let i in boost) {
 				if (boost[i] < 0) {
 					delete boost[i];
 					this.add("-message", target.name + "'s stats were not lowered! (placeholder)");
 				}
 			}
-		}
+		},
 	},
 	"whitesmoke": {
 		inherit: true,
 		onBoost: function (boost, target, source) {
-			for (var i in boost) {
+			for (let i in boost) {
 				if (boost[i] < 0) {
 					delete boost[i];
 					this.add("-message", target.name + "'s stats were not lowered! (placeholder)");
 				}
 			}
-		}
+		},
 	},
 	"rockhead": {
 		inherit: true,
 		onDamage: function (damage, target, source, effect) {
 			if (effect && effect.id in {lifeorb: 1, recoil: 1}) return false;
-		}
+		},
 	},
 	"download": {
 		inherit: true,
@@ -324,10 +299,10 @@ exports.BattleAbilities = {
 			if (pokemon.template.baseSpecies === 'Genesect') {
 				if (!pokemon.getItem().onDrive) return;
 			}
-			var foeactive = pokemon.side.foe.active;
-			var totaldef = 0;
-			var totalspd = 0;
-			for (var i = 0; i < foeactive.length; i++) {
+			let foeactive = pokemon.side.foe.active;
+			let totaldef = 0;
+			let totalspd = 0;
+			for (let i = 0; i < foeactive.length; i++) {
 				if (!foeactive[i] || foeactive[i].fainted) continue;
 				totaldef += foeactive[i].stats.def;
 				totalspd += foeactive[i].stats.spd;
@@ -337,7 +312,7 @@ exports.BattleAbilities = {
 			} else if (totalspd) {
 				this.boost({atk:1});
 			}
-		}
+		},
 	},
 	"victorystar": {
 		inherit: true,
@@ -345,7 +320,7 @@ exports.BattleAbilities = {
 			if (typeof move.accuracy === 'number') {
 				move.accuracy *= 1.5;
 			}
-		}
+		},
 	},
 	"shellarmor": {
 		inherit: true,
@@ -361,7 +336,7 @@ exports.BattleAbilities = {
 			if (move.id === 'shellsmash') {
 				target.setAbility('');
 			}
-		}
+		},
 	},
 	"battlearmor": {
 		inherit: true,
@@ -372,9 +347,10 @@ exports.BattleAbilities = {
 				if (damage < 0) damage = 0;
 				return damage;
 			}
-		}
+		},
 	},
 	"weakarmor": {
+		inherit: true,
 		onDamage: function (damage, target, source, effect) {
 			if (effect && effect.effectType === 'Move') {
 				this.add('-message', "Its damage was reduced by Weak Armor!");
@@ -385,7 +361,7 @@ exports.BattleAbilities = {
 				return damage;
 			}
 		},
-		onAfterDamage: function () {}
+		onAfterDamage: function () {},
 	},
 	"magmaarmor": {
 		inherit: true,
@@ -406,7 +382,7 @@ exports.BattleAbilities = {
 				}
 				return damage;
 			}
-		}
+		},
 	},
 	"multiscale": {
 		inherit: true,
@@ -415,7 +391,7 @@ exports.BattleAbilities = {
 				this.add('-message', "The attack was slightly weakened by Multiscale!");
 				return this.chainModify(2 / 3);
 			}
-		}
+		},
 	},
 	"ironfist": {
 		inherit: true,
@@ -423,7 +399,7 @@ exports.BattleAbilities = {
 			if (move.flags['punch']) {
 				return basePower * 1.33;
 			}
-		}
+		},
 	},
 	"stench": {
 		inherit: true,
@@ -431,15 +407,15 @@ exports.BattleAbilities = {
 			if (move.category !== "Status") {
 				this.debug('Adding Stench flinch');
 				if (!move.secondaries) move.secondaries = [];
-				for (var i = 0; i < move.secondaries.length; i++) {
+				for (let i = 0; i < move.secondaries.length; i++) {
 					if (move.secondaries[i].volatileStatus === 'flinch') return;
 				}
 				move.secondaries.push({
 					chance: 40,
-					volatileStatus: 'flinch'
+					volatileStatus: 'flinch',
 				});
 			}
-		}
+		},
 	},
 	"aftermath": {
 		inherit: true,
@@ -447,7 +423,7 @@ exports.BattleAbilities = {
 			if (source && source !== target && move && !target.hp) {
 				this.damage(source.maxhp / 3, source, target, null, true);
 			}
-		}
+		},
 	},
 	"cursedbody": {
 		desc: "When this Pokemon faints, attacker is Cursed.",
@@ -460,7 +436,7 @@ exports.BattleAbilities = {
 		id: "cursedbody",
 		name: "Cursed Body",
 		rating: 3,
-		num: 130
+		num: 130,
 	},
 	"gluttony": {
 		inherit: true,
@@ -472,7 +448,7 @@ exports.BattleAbilities = {
 				pokemon.setItem(pokemon.lastItem);
 				this.add("-item", pokemon, pokemon.item, '[from] ability: Gluttony');
 			}
-		}
+		},
 	},
 	"guts": {
 		inherit: true,
@@ -480,7 +456,7 @@ exports.BattleAbilities = {
 			if (effect && (effect.id === 'brn' || effect.id === 'psn' || effect.id === 'tox')) {
 				return damage / 2;
 			}
-		}
+		},
 	},
 	"quickfeet": {
 		inherit: true,
@@ -488,7 +464,7 @@ exports.BattleAbilities = {
 			if (effect && (effect.id === 'brn' || effect.id === 'psn' || effect.id === 'tox')) {
 				return damage / 2;
 			}
-		}
+		},
 	},
 	"toxicboost": {
 		inherit: true,
@@ -496,9 +472,11 @@ exports.BattleAbilities = {
 			if (effect && (effect.id === 'psn' || effect.id === 'tox')) {
 				return damage / 2;
 			}
-		}
+		},
 	},
 	"truant": {
+		inherit: true,
+		onBeforeMove: function () {},
 		onModifyMove: function (move, pokemon) {
 			if (!move.self) move.self = {};
 			if (!move.self.volatileStatus) move.self.volatileStatus = 'truant';
@@ -515,8 +493,8 @@ exports.BattleAbilities = {
 					this.heal(pokemon.maxhp / 3);
 					return false;
 				}
-			}
-		}
+			},
+		},
 	},
 	"flareboost": {
 		inherit: true,
@@ -524,7 +502,7 @@ exports.BattleAbilities = {
 			if (effect && (effect.id === 'brn')) {
 				return damage / 2;
 			}
-		}
+		},
 	},
 	"telepathy": {
 		inherit: true,
@@ -532,8 +510,8 @@ exports.BattleAbilities = {
 			this.add('-start', target, 'move: Imprison');
 		},
 		onFoeDisableMove: function (pokemon) {
-			var foeMoves = this.effectData.target.moveset;
-			for (var f = 0; f < foeMoves.length; f++) {
+			let foeMoves = this.effectData.target.moveset;
+			for (let f = 0; f < foeMoves.length; f++) {
 				pokemon.disableMove(foeMoves[f].id, true);
 			}
 			pokemon.maybeDisabled = true;
@@ -543,7 +521,7 @@ exports.BattleAbilities = {
 				this.add('cant', attacker, 'move: Imprison', move);
 				return false;
 			}
-		}
+		},
 	},
 	"speedboost": {
 		inherit: true,
@@ -552,7 +530,7 @@ exports.BattleAbilities = {
 			if (pokemon.activeTurns && !pokemon.volatiles.stall) {
 				this.boost({spe:1});
 			}
-		}
+		},
 	},
 	"parentalbond": {
 		inherit: true,
@@ -568,8 +546,26 @@ exports.BattleAbilities = {
 			onBasePowerPriority: 8,
 			onBasePower: function (basePower) {
 				return this.chainModify(0.5);
+			},
+		},
+	},
+	"swarm": {
+		inherit: true,
+		onFoeBasePower: function (basePower, attacker, defender, move) {
+			if (defender.hasType('Flying')) {
+				if (move.type === 'Rock' || move.type === 'Electric' || move.type === 'Ice') {
+					this.add('-message', "The attack was weakened by Swarm!");
+					return basePower / 2;
+				}
 			}
-		}
+		},
+		onDamage: function (damage, defender, attacker, effect) {
+			if (defender.hasType('Flying')) {
+				if (effect && effect.id === 'stealthrock') {
+					return damage / 2;
+				}
+			}
+		},
 	},
 	"adaptability": {
 		inherit: true,
@@ -578,19 +574,21 @@ exports.BattleAbilities = {
 			if (!attacker.hasType(move.type)) {
 				return this.chainModify(1.33);
 			}
-		}
+		},
 	},
 	"shadowtag": {
+		desc: "For the first turn after this Pokemon switches in, prevent adjacent opposing Pokemon from choosing to switch out unless they are immune to trapping or also have this Ability.",
+		shortDesc: "Prevents adjacent foes from choosing to switch for one turn.",
 		onStart: function (pokemon) {
 			pokemon.addVolatile('shadowtag');
 		},
 		effect: {
 			duration: 2,
-			onFoeModifyPokemon: function (pokemon) {
+			onFoeTrapPokemon: function (pokemon) {
 				if (pokemon.ability !== 'shadowtag') {
 					pokemon.tryTrap(true);
 				}
-			}
+			},
 		},
 		onBeforeMovePriority: 15,
 		onBeforeMove: function (pokemon) {
@@ -601,16 +599,10 @@ exports.BattleAbilities = {
 			if (pokemon.ability !== 'shadowtag' && !source.volatiles.shadowtag) {
 				pokemon.maybeTrapped = true;
 			}
-		}
+		},
+		id: "shadowtag",
+		name: "Shadow Tag",
+		rating: 5,
+		num: 23,
 	},
-	"justified": {
-		inherit: true,
-		onBasePowerPriority: 100,
-		onBasePower: function (power, attacker, defender) {
-			if (power > 100 && !defender.hasType('Dark')) {
-				this.debug('capping base power at 100');
-				return 100;
-			}
-		}
-	}
 };

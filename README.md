@@ -26,9 +26,17 @@ You can use your own computer as a server, but for other people to connect to yo
 Installing
 ------------------------------------------------------------------------
 
-Pokémon Showdown requires you to have [io.js][5] installed, any version. (Alternatively, you can install [node.js][6] version 0.10.2 or later.)
+    ./pokemon-showdown
 
-Next, obtain a copy of Pokémon Showdown. If you're reading this outside of GitHub, you've probably already done this. If you're reading this in GitHub, there's a "Clone" button in the bottom of the right sidebar, or if you're really lazy, there's a "ZIP" download button. I recommend the Clone method - it's more time-consuming to set up, but much easier to update.
+(Requires Node.js 4+)
+
+
+Detailed installation instructions
+------------------------------------------------------------------------
+
+Pokémon Showdown requires you to have [Node.js][5] installed, 4.x or later. (Alternatively, most versions of [io.js][6] also work, but is not recommended.)
+
+Next, obtain a copy of Pokémon Showdown. If you're reading this outside of GitHub, you've probably already done this. If you're reading this in GitHub, there's a "Save" icon button near the top right (next to "Download ZIP"), or if you're really lazy, you can use the "Download ZIP" button. I recommend the Save method - it's more time-consuming to set up, but much easier to update.
 
 Pokémon Showdown is installed and run using a command line. In Mac OS X, open `Terminal` (it's in Utilities). In Windows, open `Command Prompt` (type `cmd` into the Start menu and it should be the first result). Type this into the command line:
 
@@ -38,21 +46,19 @@ Replace `LOCATION` with the location Pokémon Showdown is in (ending up with, fo
 
 This will set your command line's location to Pokémon Showdown's folder. You'll have to do this each time you open a command line to run commands for Pokémon Showdown.
 
-To install dependencies, run the command:
-
-    npm install --production
-
 Copy `config/config-example.js` into `config/config.js`, and edit as you please.
 
 Congratulations, you're done setting up Pokémon Showdown.
 
 Now, to start Pokémon Showdown, run the command:
 
-    node app.js
+    node pokemon-showdown
+
+(If you're not on Windows, we recommend doing `./pokemon-showdown` instead.)
 
 You can also specify a port:
 
-    node app.js 8000
+    node pokemon-showdown 8000
 
 Visit your server at `http://SERVER:8000`
 
@@ -64,8 +70,8 @@ You will be redirected to `http://SERVER.psim.us`. The reason your server is vis
 
 If you truly want to host the client yourself, there is [a repository for the Pokémon Showdown Client][7]. It's not recommended for beginners, though.
 
-  [5]: https://iojs.org/
-  [6]: http://nodejs.org/
+  [5]: http://nodejs.org/
+  [6]: https://iojs.org/
   [7]: https://github.com/Zarel/Pokemon-Showdown-Client
 
 
@@ -94,15 +100,17 @@ Pokémon Showdown currently supports, in order of preference:
 
  - Chrome
  - Firefox
- - Safari
- - Chrome/Firefox/Safari for various mobile devices
  - Opera
- - Firefox for Android
+ - Safari 5+
+ - IE11+
+ - Chrome/Firefox/Safari for various mobile devices
+
+Pokémon Showdown is usable, but expect degraded performance and certain features not to work in:
+
+ - Safari 4+
  - IE9+
 
-IE8 support can technically be added without too much difficulty, but it doesn't run PS fast enough to be usable.
-
-As for older browsers (Firefox 3.6), I won't go out of my way to support them, but if there's a simple fix, you can suggest it to me and I'll implement it.
+Pokémon Showdown is mostly developed on Chrome, and Chrome or the desktop client is required for certain features like dragging-and-dropping teams from PS to your computer. However, bugs reported on any supported browser will usually be fixed pretty quickly.
 
 
 Community
@@ -134,6 +142,7 @@ Staff
 
 - Chris Monsanto [chaos] - Sysadmin
 - Hugh Gordon [V4] - Research (game mechanics), Development
+- Juanma Serrano [Joim] - Development, Sysadmin
 - Leonardo Julca [Slayer95] - Development
 - Mathieu Dias-Martins [Marty-D] - Research (game mechanics), Development
 - [The Immortal] - Development
@@ -142,18 +151,23 @@ Retired Staff
 
 - Bill Meltsner [bmelts] - Development, Sysadmin
 - Cathy J. Fitzpatrick [cathyjf] - Development, Sysadmin
-- Juanma Serrano [Joim] - Development, Sysadmin
+
+Major Contributors
+
+- Kevin Lau [Ascriptmaster] - Development, Art (battle animations)
+- Konrad Borowski [xfix] - Development
+- Quinton Lee [sirDonovan] - Development
 
 Contributors
 
 - Andrew Goodsell [Zracknel] - Art (battle weather backdrops)
+- Bär Halberkamp [bumbadadabum] - Development
 - Ben Davies [Morfent] - Development
 - Ben Frengley [TalkTakesTime] - Development
 - Cody Thompson [Rising_Dusk] - Development
+- Ian Clail [Layell] - Art (battle graphics, sprites)
 - Jacob Zimmer [SolarisFox] - Development
-- Kevin Lau [Ascriptmaster] - Development, Art (battle animations)
-- Konrad Borowski [xfix] - Development
-- Quinton Lee [sirDonovan] - Development
+- Neil Rashbrook [urkerab] - Development
 - Robin Vandenbrande [Quinella] - Development
 
 Special thanks

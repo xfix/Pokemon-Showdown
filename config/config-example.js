@@ -1,3 +1,5 @@
+'use strict';
+
 // The server port - the port to run Pokemon Showdown under
 exports.port = 8000;
 
@@ -180,7 +182,7 @@ exports.appealurl = '';
 // replsocketprefix - the prefix for the repl sockets to be listening on
 // replsocketmode - the file mode bits to use for the repl sockets
 exports.replsocketprefix = './logs/repl/';
-exports.replsocketmode = 0600;
+exports.replsocketmode = 0o600;
 
 // permissions and groups:
 //   Each entry in `grouplist' is a seperate group. Some of the members are "special"
@@ -210,6 +212,8 @@ exports.replsocketmode = 0600;
 //     - promote: Promoting and demoting. Will only work if the target user's current
 //                  group and target group are both in jurisdiction.
 //     - room<rank>: /roompromote to <rank> (eg. roomvoice)
+//     - makeroom: Create/delete chatrooms, and set modjoin/roomdesc/privacy
+//     - editroom: Set modjoin/privacy only for battles/groupchats
 //     - ban: Banning and unbanning.
 //     - mute: Muting and unmuting.
 //     - lock: locking (ipmute) and unlocking.
@@ -235,7 +239,7 @@ exports.grouplist = [
 		id: "admin",
 		name: "Administrator",
 		root: true,
-		globalonly: true
+		globalonly: true,
 	},
 	{
 		symbol: '&',
@@ -244,14 +248,19 @@ exports.grouplist = [
 		inherit: '@',
 		jurisdiction: '@u',
 		promote: 'u',
+		roomowner: true,
+		roommod: true,
+		roomdriver: true,
 		forcewin: true,
 		declare: true,
 		modchatall: true,
 		rangeban: true,
+		makeroom: true,
+		editroom: true,
 		potd: true,
 		disableladder: true,
 		globalonly: true,
-		tournamentsmanagement: true
+		tournamentsmanagement: true,
 	},
 	{
 		symbol: '#',
@@ -261,10 +270,11 @@ exports.grouplist = [
 		jurisdiction: 'u',
 		roommod: true,
 		roomdriver: true,
+		editroom: true,
 		declare: true,
 		modchatall: true,
 		roomonly: true,
-		tournamentsmanagement: true
+		tournamentsmanagement: true,
 	},
 	{
 		symbol: '\u2605',
@@ -274,8 +284,8 @@ exports.grouplist = [
 		roomvoice: true,
 		modchat: true,
 		roomonly: true,
-		privateroom: true,
-		joinbattle: true
+		editroom: true,
+		joinbattle: true,
 	},
 	{
 		symbol: '@',
@@ -289,7 +299,7 @@ exports.grouplist = [
 		forcerename: true,
 		ip: true,
 		alts: '@u',
-		tournaments: true
+		tournaments: true,
 	},
 	{
 		symbol: '%',
@@ -298,9 +308,9 @@ exports.grouplist = [
 		inherit: '+',
 		jurisdiction: 'u',
 		announce: true,
-		warn: true,
+		warn: '\u2605u',
 		kick: true,
-		mute: true,
+		mute: '\u2605u',
 		lock: true,
 		forcerename: true,
 		timer: true,
@@ -310,18 +320,18 @@ exports.grouplist = [
 		receiveauthmessages: true,
 		tournamentsmoderation: true,
 		jeopardy: true,
-		joinbattle: true
+		joinbattle: true,
 	},
 	{
 		symbol: '+',
 		id: "voice",
 		name: "Voice",
 		inherit: ' ',
-		broadcast: true
+		alts: 's',
+		broadcast: true,
 	},
 	{
 		symbol: ' ',
 		ip: 's',
-		alts: 's'
-	}
+	},
 ];

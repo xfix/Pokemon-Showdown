@@ -1,3 +1,5 @@
+'use strict';
+
 exports.BattleStatuses = {
 	frz: {
 		effectType: 'Status',
@@ -21,7 +23,7 @@ exports.BattleStatuses = {
 		},
 		onEnd: function (target) {
 			this.battle.add('-curestatus', target, 'frz');
-		}
+		},
 	},
 	lockedmove: {
 		// Outrage, Thrash, Petal Dance...
@@ -29,7 +31,7 @@ exports.BattleStatuses = {
 			return this.random(2, 4);
 		},
 		onResidual: function (target) {
-			var move = this.getMove(target.lastMove);
+			let move = this.getMove(target.lastMove);
 			if (!move.self || move.self.volatileStatus !== 'lockedmove') {
 				// don't lock, and bypass confusion for calming
 				delete target.volatiles['lockedmove'];
@@ -43,12 +45,12 @@ exports.BattleStatuses = {
 		},
 		onLockMove: function (pokemon) {
 			return pokemon.lastMove;
-		}
+		},
 	},
 	confusion: {
 		// this is a volatile status
 		onStart: function (target, source, sourceEffect) {
-			var result = this.runEvent('TryConfusion', target, source, sourceEffect);
+			let result = this.runEvent('TryConfusion', target, source, sourceEffect);
 			if (!result) return result;
 			if (sourceEffect && sourceEffect.id === 'lockedmove') {
 				this.add('-start', target, 'confusion', '[fatigue]');
@@ -67,7 +69,7 @@ exports.BattleStatuses = {
 				return;
 			}
 			this.directDamage(this.getDamage(pokemon, pokemon, 30));
-		}
+		},
 	},
 
 	// weather!
@@ -86,7 +88,7 @@ exports.BattleStatuses = {
 				this.debug('rain fire suppress');
 				return basePower * 0.5;
 			}
-		}
+		},
 	},
 	sunnyday: {
 		inherit: true,
@@ -102,13 +104,13 @@ exports.BattleStatuses = {
 				this.debug('Sunny Day water suppress');
 				return basePower * 0.5;
 			}
-		}
+		},
 	},
 
 	// intrinsics!
 
 	bidestall: {
-		duration: 3
+		duration: 3,
 	},
 
 	unown: {
@@ -125,7 +127,7 @@ exports.BattleStatuses = {
 		onModifyPokemon: function (pokemon) {
 			if (pokemon.transformed) return;
 			pokemon.setType(pokemon.hpType || 'Dark');
-		}
+		},
 	},
 	bronzong: {
 		// Bronzong: Heatproof
@@ -137,7 +139,7 @@ exports.BattleStatuses = {
 				pokemon.ability = 'heatproof';
 				pokemon.baseAbility = 'heatproof';
 			}
-		}
+		},
 	},
 	weezing: {
 		// Weezing: Aftermath
@@ -149,7 +151,7 @@ exports.BattleStatuses = {
 				pokemon.ability = 'aftermath';
 				pokemon.baseAbility = 'aftermath';
 			}
-		}
+		},
 	},
 	flygon: {
 		// Flygon: Compoundeyes
@@ -161,7 +163,7 @@ exports.BattleStatuses = {
 				pokemon.ability = 'compoundeyes';
 				pokemon.baseAbility = 'compoundeyes';
 			}
-		}
+		},
 	},
 	eelektross: {
 		// Eelektross: Poison Heal
@@ -173,7 +175,7 @@ exports.BattleStatuses = {
 				pokemon.ability = 'poisonheal';
 				pokemon.baseAbility = 'poisonheal';
 			}
-		}
+		},
 	},
 	claydol: {
 		// Claydol: Filter
@@ -185,7 +187,7 @@ exports.BattleStatuses = {
 				pokemon.ability = 'filter';
 				pokemon.baseAbility = 'filter';
 			}
-		}
+		},
 	},
 	gengar: {
 		// Gengar: Cursed Body
@@ -197,7 +199,7 @@ exports.BattleStatuses = {
 				pokemon.ability = 'cursedbody';
 				pokemon.baseAbility = 'cursedbody';
 			}
-		}
+		},
 	},
 	mismagius: {
 		// Mismagius: Cursed Body
@@ -209,7 +211,7 @@ exports.BattleStatuses = {
 				pokemon.ability = 'cursedbody';
 				pokemon.baseAbility = 'cursedbody';
 			}
-		}
+		},
 	},
 	mesprit: {
 		// Mesprit: Serene Grace
@@ -221,7 +223,7 @@ exports.BattleStatuses = {
 				pokemon.ability = 'serenegrace';
 				pokemon.baseAbility = 'serenegrace';
 			}
-		}
+		},
 	},
 	uxie: {
 		// Uxie: Synchronize
@@ -233,7 +235,7 @@ exports.BattleStatuses = {
 				pokemon.ability = 'synchronize';
 				pokemon.baseAbility = 'synchronize';
 			}
-		}
+		},
 	},
 	azelf: {
 		// Azelf: Steadfast
@@ -245,7 +247,7 @@ exports.BattleStatuses = {
 				pokemon.ability = 'steadfast';
 				pokemon.baseAbility = 'steadfast';
 			}
-		}
+		},
 	},
 	hydreigon: {
 		// Hydreigon: Sheer Force
@@ -257,13 +259,85 @@ exports.BattleStatuses = {
 				pokemon.ability = 'sheerforce';
 				pokemon.baseAbility = 'sheerforce';
 			}
-		}
+		},
+	},
+	rotom: {
+		// All Rotoms: Trace
+		onImmunity: function (type, pokemon) {
+			if (type === 'Ground' && (!this.suppressingAttackEvents() || this.activePokemon === pokemon)) return false;
+		},
+		onStart: function (pokemon) {
+			if (pokemon.ability === 'levitate') {
+				pokemon.ability = 'trace';
+				pokemon.baseAbility = 'trace';
+			}
+		},
+	},
+	rotomheat: {
+		// All Rotoms: Trace
+		onImmunity: function (type, pokemon) {
+			if (type === 'Ground' && (!this.suppressingAttackEvents() || this.activePokemon === pokemon)) return false;
+		},
+		onStart: function (pokemon) {
+			if (pokemon.ability === 'levitate') {
+				pokemon.ability = 'trace';
+				pokemon.baseAbility = 'trace';
+			}
+		},
+	},
+	rotomwash: {
+		// All Rotoms: Trace
+		onImmunity: function (type, pokemon) {
+			if (type === 'Ground' && (!this.suppressingAttackEvents() || this.activePokemon === pokemon)) return false;
+		},
+		onStart: function (pokemon) {
+			if (pokemon.ability === 'levitate') {
+				pokemon.ability = 'trace';
+				pokemon.baseAbility = 'trace';
+			}
+		},
+	},
+	rotomfan: {
+		// All Rotoms: Trace
+		onImmunity: function (type, pokemon) {
+			if (type === 'Ground' && (!this.suppressingAttackEvents() || this.activePokemon === pokemon)) return false;
+		},
+		onStart: function (pokemon) {
+			if (pokemon.ability === 'levitate') {
+				pokemon.ability = 'trace';
+				pokemon.baseAbility = 'trace';
+			}
+		},
+	},
+	rotomfrost: {
+		// All Rotoms: Trace
+		onImmunity: function (type, pokemon) {
+			if (type === 'Ground' && (!this.suppressingAttackEvents() || this.activePokemon === pokemon)) return false;
+		},
+		onStart: function (pokemon) {
+			if (pokemon.ability === 'levitate') {
+				pokemon.ability = 'trace';
+				pokemon.baseAbility = 'trace';
+			}
+		},
+	},
+	rotommow: {
+		// All Rotoms: Trace
+		onImmunity: function (type, pokemon) {
+			if (type === 'Ground' && (!this.suppressingAttackEvents() || this.activePokemon === pokemon)) return false;
+		},
+		onStart: function (pokemon) {
+			if (pokemon.ability === 'levitate') {
+				pokemon.ability = 'trace';
+				pokemon.baseAbility = 'trace';
+			}
+		},
 	},
 	cryogonal: {
 		// Cryogonal: infinite hail, Ice Body
 		onModifyMove: function (move) {
 			if (move.id === 'hail') {
-				var weather = move.weather;
+				let weather = move.weather;
 				move.weather = null;
 				move.onHit = function (target, source) {
 					this.setWeather(weather, source, this.getAbility('snowwarning'));
@@ -280,13 +354,13 @@ exports.BattleStatuses = {
 				pokemon.ability = 'icebody';
 				pokemon.baseAbility = 'icebody';
 			}
-		}
+		},
 	},
 	probopass: {
 		// Probopass: infinite sand
 		onModifyMove: function (move) {
 			if (move.id === 'sandstorm') {
-				var weather = move.weather;
+				let weather = move.weather;
 				move.weather = null;
 				move.onHit = function (target, source) {
 					this.setWeather(weather, source, this.getAbility('sandstream'));
@@ -294,13 +368,13 @@ exports.BattleStatuses = {
 				};
 				move.target = 'self';
 			}
-		}
+		},
 	},
 	phione: {
 		// Phione: infinite rain
 		onModifyMove: function (move) {
 			if (move.id === 'raindance') {
-				var weather = move.weather;
+				let weather = move.weather;
 				move.weather = null;
 				move.onHit = function (target, source) {
 					this.setWeather(weather, source, this.getAbility('drizzle'));
@@ -308,6 +382,6 @@ exports.BattleStatuses = {
 				};
 				move.target = 'self';
 			}
-		}
-	}
+		},
+	},
 };

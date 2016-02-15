@@ -52,8 +52,8 @@ Major changes:
   everything else.
 
 - Drives will change Genesect's typing immediately after switch-in, to Bug/Ice,
-  Bug/Fire, Bug/Electric, or Bug/Water. However, Download will not activate
-  unless Genesect holds a Drive.
+  Bug/Fire, Bug/Electric, or Bug/Water. However, Download will not activate for
+  Genesect unless it holds a Drive.
 
 - Unown gets an item named Strange Orb (select "Stick" in the teambuilder)
   It doubles its SpA, SpD, and Spe, and changes its type to the type of its
@@ -67,7 +67,7 @@ Major changes:
   Hail last forever. Probopass will make Sandstorm last forever.
 
 - Hail is improved:
-  - Silver Wind, Ominous Wind, and Avalanche deal 1.5x as much damage in Hail
+  - Silver Wind, Ominous Wind, and Avalanche deal 1.5x damage in Hail
   - Snow Cloak no longer modifies evasion, but instead decreases damage by 25%
     in Hail (and 12.5% out of Hail)
   - Ice Body has 30% chance of freezing a contact move (and grants passive
@@ -113,6 +113,9 @@ Major changes:
   double SR damage, heals 1/16 after using a Status move, and makes Twister
   do 1.5x Damage.
 
+- Swarm also makes the user take half damage from Rock, Ice, Electric moves,
+  and Stealth Rock if they are Flying type.
+
 - Relic Song switches Meloetta's SpA and Atk EVs, boosts, and certain natures,
   specifically: Modest <-> Adamant, Jolly <-> Timid, other natures are left
   untouched. It's now 60 base power +1 priority, with no secondary.
@@ -120,8 +123,11 @@ Major changes:
 - Shuckle gets Berry Shell (select "Stick" in the teambuilder), which gives a
   50% boost to Defense and Sp. Def.
 
-- Ambipom gets Sketch as an event move, allowing it to use exactly one move
-  not normally in its learnset.
+- Ambipom, Spinda, and Mr. Mime get Sketch as an egg move, allowing it to use
+  exactly one move not normally in its learnset.
+
+- Spinda gets V-Create, Superpower, Close Combat, Overheat, Leaf Storm, Draco
+  Meteor.
 
 - Echoed Voice now has 80 base power, hits once, and then, 2 turns later,
   hits again for 80 base power. It's like Doom Desire, except it still hits
@@ -139,7 +145,7 @@ Major changes:
 
 - Twister is now a 80 base power Flying move with a 30% confusion chance
 
-- - Hoopa (both forms), Floette-Eternal-Flower, and Volcanion are released.
+- Floette-Eternal-Flower and Volcanion are released.
 
 New mechanic: Signature Pokémon:
 
@@ -207,34 +213,37 @@ New mechanic: Signature Pokémon:
 
 New mechanic: Intrinsics:
 
-- Pokémon that previously get Levitate are now immune to Ground intrinsically.
-  Instead, they get new abilities in addition to their Ground immunity:
+- Pokémon that previously get Levitate are now immune to Ground intrinsically, although
+  Mold Breaker still bypasses this immunity. Instead, many of them get new abilities
+  in addition to their Ground immunity:
 
-  - Unown: Shadow Tag
+  - Azelf: Steadfast
 
   - Bronzong: Heatproof
-
-  - Flygon: Compoundeyes, Sand Rush
-
-  - Weezing: Aftermath
-
-  - Eelektross: Poison Heal
 
   - Claydol: Filter
 
   - Cryogonal: Ice Body
 
+  - Eelektross: Poison Heal
+
+  - Flygon: Compoundeyes, Sand Rush
+
   - Gengar: Cursed Body
 
-  - Mismagius: Cursed Body
+  - Hydreigon: Sheer Force
 
   - Mesprit: Serene Grace
 
+  - Mismagius: Cursed Body
+
+  - Rotom (all formes): Trace
+
+  - Unown: Shadow Tag
+
   - Uxie: Synchronize
 
-  - Azelf: Steadfast
-
-  - Hydreigon: Sheer Force
+  - Weezing: Aftermath
 
 New: Type-specific items:
 
@@ -242,8 +251,8 @@ New: Type-specific items:
 
 - Black Sludge: heals 1/8 per turn for pure Poison types
 
-- Focus Band: always works, but breaks after getting hit once for
-  pure Fighting types (so basically it'd be a Sash that stays intact
+- Focus Band: breaks on first hit, but allows pure Fighting types to survive
+  that hit with 1 HP (so basically it'd be a Focus sash that stays intact
   after residual damage); does nothing for other Pokémon
 
 - Wise Glasses: 1.2x Special damage for pure Psychic types
@@ -255,6 +264,11 @@ Minor move changes:
 - Parabolic Charge now has 40 base power, but gives -1 SpA, -1 SpD to the
   target and +1 SpA, +1 SpD to the user
 
+- Draining Kiss now has 40 base power, but gives -1 SpA, -1 Atk to the
+  target and +1 SpA, +1 Atk to the user
+
+- Defend Order and Heal Order now have +1 priority
+
 - Rock Throw now removes Stealth Rock from the user's side of the field,
   and has 100% accuracy
 
@@ -264,7 +278,7 @@ Minor move changes:
   Helmet etc. And double in power if they remove hazards.
 
 - All moves' accuracy is rounded up to the nearest multiple of 10%
-  (except Jump Kick, which will be rebalanced later)
+  (including Jump Kick)
 
 - Charge Beam and Rock Slide are now 100% accurate
 
@@ -288,8 +302,6 @@ Minor move changes:
 
 - Multi-hit moves are now all perfect-accuracy
 
-- Whirlwind and Roar have perfect accuracy
-
 - Silver Wind, Ominous Wind, and AncientPower have a 100% chance of raising
   one of Def/SpA/SpD/Spe at random, rather than a 10% chance of raising every
   stat
@@ -302,6 +314,8 @@ Minor move changes:
 
 - Cut and Rock Smash are 50 base power and now have a 100% chance of
   lowering foe's Def
+
+- Psycho Cut's Base Power is now 90
 
 - Drill Peck, Needle Arm, Attack Order, and Leaf Blade's Base
   Powers are now 100
@@ -331,10 +345,10 @@ Minor move changes:
 
 - Autotomize now gives +3 Speed
 
-- Zoroark gets a significantly wider movepool: It now learns: Ice Beam, Giga
+- Zoroark gets a significantly wider movepool. It now learns: Ice Beam, Giga
   Drain, Earthquake, Stone Edge, Superpower, X-Scissor
 
-- if Illusion is active, Night Daze now displays as a random non-Status move
+- If Illusion is active, Night Daze now displays as a random non-Status move
   in the copied Pokémon's moveset
 
 - Selfdestruct and Explosion are now 200 and 250 base power autocrit moves,
@@ -358,7 +372,7 @@ Minor move changes:
 
 Minor learnset changes:
 
-- Azumarill now gets Belly Drum with no incompatibilities
+- Azumarill gets Belly Drum with no incompatibilities
 
 - Mantine gets many new moves: Recover, Whirlwind, Baton Pass, Wish, Soak,
   Lock-On, Acid Spray, Octazooka, Stockpile
@@ -376,8 +390,6 @@ Minor learnset changes:
 - Virizion gets Horn Leech
 
 - Scolipede and Steelix get Coil
-
-- Spinda gets Superpower with no incompatibilities
 
 - Rotom formes learn more things:
   - Rotom-Wash: BubbleBeam
@@ -406,12 +418,10 @@ Minor learnset changes:
   - Delphox: Magic Guard
   - Greninja: Pickpocket
 
-Minor ability changes:
+- Crawdaunt's Hidden Ability is now Tough Claws (this is because of a
+  nerf to Adaptability which is discussed below)
 
-- Justified now caps base power to 100 against non-Dark foes:
-  Musketeers are recommended to use Sacred Sword over Close Combat and
-  Surf over Hydro Pump, other Pokémon are recommended not to use
-  Justified
+Minor ability changes:
 
 - Static, Poison Point, and Cute Charm now always activate on
   contact.
@@ -429,9 +439,7 @@ Minor ability changes:
   provides immunity to Hail and freeze, and provides a one-time immunity
   to Water and Ice, after which it turns into Shell Armor
 
-- Adaptability is now 1.33x to non-STAB moves instead of to STAB moves.
-
-- Crawdaunt is given Tough Claws instead of Adaptability to compensate.
+- Adaptability is now 1.33x to non-STAB moves instead of to STAB moves
 
 - Shadow Tag now lasts only one turn
 
@@ -447,9 +455,9 @@ Minor ability changes:
 
 - Victory Star grants 1.5x accuracy (but only for the user)
 
-- Solid Rock and Filter now reduce 1/2 damage of SE moves, not 1/4
+- Solid Rock and Filter now reduce damage of SE moves by 1/2, not 1/4
 
-- Iron Fist now grants a 1.33x boost
+- Iron Fist now grants a 1.33x boost to punching moves
 
 - Outrage, Thrash, and Petal Dance don't lock if the user has Own Tempo
 
@@ -466,13 +474,15 @@ Minor ability changes:
 
 - Thick Fat grants half damage from Fighting
 
-- Aftermath no longer requires contact, and its damage is buffed to 1/3 of the
+- Aftermath no longer requires contact, and is buffed to deal 1/3 of the
   foe's max HP
 
 - Cursed Body works like Aftermath now, but instead of dealing damage, it
   causes the foe to be Cursed (like Ghost-type Curse)
 
-- Gluttony allows a Pokémon to use a Berry twice.
+- Gluttony allows a Pokémon to use a Berry twice
+
+- Heatproof now grants the user immunity to Fire and burns
 
 - Guts, Quick Feet, and Toxic Boost take half damage from poisoning
 
@@ -485,7 +495,8 @@ Minor ability changes:
   reduction in rain, in addition to its usual effect
 
 - Multiscale decreases damage by 1/3 rather than 1/2 (Sorry, Dragonite,
-  this is in return for a usable physical Flying STAB in Aerial Ace)
+  this is in exchange for a usable physical Flying STAB from a buffed
+  Aerial Ace)
 
 Minor item changes:
 
@@ -496,7 +507,7 @@ Minor item changes:
 Bans:
 
 - The OU banlist (i.e. Pokémon considered Uber) is now:
-  - Every Pokémon with over 600 BST except Slaking and Regigigas
+  - Every Pokémon with over 600 BST except Slaking, Regigigas, and Hoopa-Unbound
   - Deoxys (all formes)
   - Darkrai
   - Shaymin-Sky
@@ -508,8 +519,9 @@ Bans:
 
 Specifically, differences from regular OU:
 
-- unbanned: Gengarite, Kangaskhanite, Lucarionite, Aegislash, Blaziken, Genesect, Mawilite, Salamencite
+- unbanned: Aegislash, Blaziken, Genesect, Landorus, Gengarite, Kangaskhanite,
+  Lucarionite, Mawilite, Salamencite
 
-- banned: Kyurem, Kyurem-Black
+- banned: Hoopa-Unbound, Kyurem, Kyurem-Black
 
 - There is no Moody Clause or Evasion Clause
