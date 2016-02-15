@@ -2344,6 +2344,7 @@ exports.commands = {
 			logidx = 3;
 		}
 		let data = room.getLog(logidx).join("\n");
+		let datahash = crypto.createHash('md5').update(data.replace(/[^(\x20-\x7F)]+/g, '')).digest('hex');
 		let players = room.battle.playerNames;
 		LoginServer.request('prepreplay', {
 			id: room.id.substr(7),

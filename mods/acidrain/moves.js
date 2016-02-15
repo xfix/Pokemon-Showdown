@@ -5,17 +5,17 @@ exports.BattleMovedex = {
 		inherit: true,
 		onModifyMove: function (move) {
 			if (this.isWeather('hail') || this.isWeather('raindance')) move.accuracy = true;
-		}
+		},
 	},
 	"growth": {
 		inherit: true,
 		onModifyMove: function (move) {
 			if (this.isWeather('sunnyday') || this.isWeather('raindance')) move.boosts = {atk: 2, spa: 2};
-		}
+		},
 	},
 	"hail": {
 		inherit: true,
-		weather: 'raindance'
+		weather: 'raindance',
 	},
 	"moonlight": {
 		inherit: true,
@@ -29,7 +29,7 @@ exports.BattleMovedex = {
 			} else {
 				this.heal(this.modify(pokemon.maxhp, 0.5));
 			}
-		}
+		},
 	},
 	"morningsun": {
 		inherit: true,
@@ -43,11 +43,11 @@ exports.BattleMovedex = {
 			} else {
 				this.heal(this.modify(pokemon.maxhp, 0.5));
 			}
-		}
+		},
 	},
 	"sandstorm": {
 		inherit: true,
-		weather: 'raindance'
+		weather: 'raindance',
 	},
 	"solarbeam": {
 		inherit: true,
@@ -71,11 +71,11 @@ exports.BattleMovedex = {
 				this.debug('super-weakened by weather');
 				return this.chainModify(0.125);
 			}
-		}
+		},
 	},
 	"sunnyday": {
 		inherit: true,
-		weather: 'sandstorm'
+		weather: 'sandstorm',
 	},
 	"synthesis": {
 		inherit: true,
@@ -89,7 +89,7 @@ exports.BattleMovedex = {
 			} else {
 				this.heal(this.modify(pokemon.maxhp, 0.5));
 			}
-		}
+		},
 	},
 	"weatherball": {
 		inherit: true,
@@ -116,6 +116,6 @@ exports.BattleMovedex = {
 				move.type = 'Ice';
 				break;
 			}
-		}
-	}
+		},
+	},
 };

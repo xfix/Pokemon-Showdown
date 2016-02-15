@@ -29,7 +29,7 @@ exports.BattleStatuses = {
 				type: '???'
 			});
 			return false;
-		}
+		},
 	},
 	scrubterrain: {
 		effectType: 'Weather',
@@ -48,6 +48,6 @@ exports.BattleStatuses = {
 		},
 		onEnd: function () {
 			this.add('-weather', 'none');
-		}
-	}
+		},
+	},
 };

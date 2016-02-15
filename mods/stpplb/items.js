@@ -19,7 +19,7 @@ exports.BattleItems = {
 			}
 		},
 		gen: 7,
-		desc: "At the end of every turn, holder restores 1/16 of its max HP. Recovers 1/8th hp if statused"
+		desc: "At the end of every turn, holder restores 1/16 of its max HP. Recovers 1/8th hp if statused",
 	},
 	'speedshoes': {
 		id: 'speedshoes',
@@ -32,7 +32,7 @@ exports.BattleItems = {
 		shortDesc: "Doubles speed.",
 		onModifySpe: function (spe, pokemon) {
 			return this.chainModify(2);
-		}
+		},
 	},
 	'dex': {
 		id: 'dex',
@@ -48,7 +48,7 @@ exports.BattleItems = {
 			if (typeof accuracy === 'number') {
 				return accuracy * 1.2;
 			}
-		}
+		},
 	},
 	'membrane': {
 		id: 'membrane',
@@ -62,6 +62,6 @@ exports.BattleItems = {
 				this.debug('Membrane neutralize');
 				return this.chainModify(0.75);
 			}
-		}
-	}
+		},
+	},
 };

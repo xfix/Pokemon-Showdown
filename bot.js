@@ -1,12 +1,12 @@
 // This code is awful, and I know it.
 
-var config = Config.ircconfig;
+let config = Config.ircconfig;
 
 exports.report = function report(message) {
 	if (!config) {
 		return;
 	}
-	var room = config.reportroom;
+	let room = config.reportroom;
 	if (room) {
 		say(room, message);
 	}
@@ -16,13 +16,13 @@ if (!config) {
 	return;
 }
 
-var irc = require('irc');
-var Pool = require('generic-pool').Pool;
-var Client = require('pg-native');
+let irc = require('irc');
+let Pool = require('generic-pool').Pool;
+let Client = require('pg-native');
 
-var pool = new Pool({
+let pool = new Pool({
 	create: function (callback) {
-		var client = new Client();
+		let client = new Client();
 		client.connect(function (err) {
 			if (err) {
 				callback(err, null);
@@ -35,17 +35,17 @@ var pool = new Pool({
 		client.end();
 	},
 	max: 5,
-	idleTimeoutMillis: 30000
+	idleTimeoutMillis: 30000,
 });
 
-var connection = exports.connection = new irc.Client(config.server, config.nickname, config);
+let connection = exports.connection = new irc.Client(config.server, config.nickname, config);
 
 function say(room, message) {
 	if (!message) return;
 	connection.say(room, message);
 	if (!config.loggerid) return;
-	var messages = message.split("\n");
-	for (var i = 0; i < messages.length; i++) {
+	let messages = message.split("\n");
+	for (let i = 0; i < messages.length; i++) {
 		log(config.loggerid, 1, config.nickname, messages[i]);
 	}
 }
@@ -151,8 +151,8 @@ function verifyParts(parts) {
 	if (parts.length > 6) {
 		return false;
 	}
-	for (var i = 0; i < parts.length; i++) {
-		var part = parts[i];
+	for (let i = 0; i < parts.length; i++) {
+		let part = parts[i];
 		if (part.length > 440) {
 			return false;
 		}
@@ -160,11 +160,11 @@ function verifyParts(parts) {
 	return true;
 }
 
-var dataParsers = {
+let dataParsers = {
 	pokemon: function (specie) {
-		var specieData = Tools.getTemplate(specie);
-		var result = [];
-		var tier = specieData.tier;
+		let specieData = Tools.getTemplate(specie);
+		let result = [];
+		let tier = specieData.tier;
 		if (!require('./data/tpp').BattleTPP[specieData.id] && !specieData.isNonstandard && !specieData.isUnreleased) {
 			tier = 'T-Rule ' + tier;
 		}
@@ -172,28 +172,28 @@ var dataParsers = {
 		result.push(specieData.species);
 		result.push(specieData.types.join("/") + '-type');
 
-		var baseStats = [];
-		var bst = 0;
-		var stats = ['HP', 'Atk', 'Def', 'SpA', 'SpD', 'Spe'];
-		var statsLength = stats.length;
-		var i;
+		let baseStats = [];
+		let bst = 0;
+		let stats = ['HP', 'Atk', 'Def', 'SpA', 'SpD', 'Spe'];
+		let statsLength = stats.length;
+		let i;
 		for (i = 0; i < statsLength; i++) {
-			var stat = stats[i];
-			var statValue = specieData.baseStats[toId(stat)];
+			let stat = stats[i];
+			let statValue = specieData.baseStats[toId(stat)];
 			bst += statValue;
 			baseStats.push('\x0314' + stat + ':\x0F ' + statValue);
 		}
 		baseStats.push('\x0314BST:\x0F ' + bst);
 		result.push(baseStats.join(', '));
 
-		var abilityData = specieData.abilities;
-		var abilityOrder = [0, 1, 'H'];
-		var abilityOrderLength = abilityOrder.length;
-		var abilities = [];
+		let abilityData = specieData.abilities;
+		let abilityOrder = [0, 1, 'H'];
+		let abilityOrderLength = abilityOrder.length;
+		let abilities = [];
 
 		for (i = 0; i < abilityOrderLength; i++) {
-			var abilityPosition = abilityOrder[i];
-			var ability = abilityData[abilityPosition];
+			let abilityPosition = abilityOrder[i];
+			let ability = abilityData[abilityPosition];
 			if (ability) {
 				if (abilityPosition === 'H') {
 					ability = '\x1D' + ability + '\x1D';
@@ -206,17 +206,17 @@ var dataParsers = {
 		return result.join(' | ');
 	},
 	item: function (item) {
-		var itemData = Tools.getItem(item);
+		let itemData = Tools.getItem(item);
 		return [itemData.name, itemData.desc].join(' | ');
 	},
 	ability: function (ability) {
-		var abilityData = Tools.getAbility(ability);
+		let abilityData = Tools.getAbility(ability);
 		return [abilityData.name, abilityData.shortDesc].join(' | ');
 	},
 	move: function (move) {
-		var moveData = Tools.getMove(move);
+		let moveData = Tools.getMove(move);
 
-		var result = [];
+		let result = [];
 		result.push(moveData.name);
 		result.push(moveData.category);
 		result.push(moveData.type + '-type');
@@ -239,26 +239,26 @@ var dataParsers = {
 		result.push(moveData.shortDesc);
 
 		return result.join(' | ');
-	}
+	},
 };
 
 function filter(rawMessage) {
-	var parts = rawMessage.split(/\n/);
-	var rawSignal = '|raw|';
-	var dataSignal = '|c|~|/data-';
-	var errorSignal = '|html|<div class="message-error">';
-	var finalParts = [];
-	for (var i = 0; i < parts.length; i++) {
-		var part = parts[i];
-		var message;
+	let parts = rawMessage.split(/\n/);
+	let rawSignal = '|raw|';
+	let dataSignal = '|c|~|/data-';
+	let errorSignal = '|html|<div class="message-error">';
+	let finalParts = [];
+	for (let i = 0; i < parts.length; i++) {
+		let part = parts[i];
+		let message;
 		if (part.slice(0, rawSignal.length) === rawSignal) {
 			message = part.slice(rawSignal.length);
 			Array.prototype.push.apply(finalParts, parseRaw(message));
 		} else if (part.slice(0, dataSignal.length) === dataSignal) {
 			message = part.slice(dataSignal.length);
-			var splitter = message.indexOf(' ');
-			var type = message.slice(0, splitter);
-			var what = message.slice(splitter + 1);
+			let splitter = message.indexOf(' ');
+			let type = message.slice(0, splitter);
+			let what = message.slice(splitter + 1);
 			finalParts.push(dataParsers[type](what));
 		} else if (part.slice(0, errorSignal.length) !== errorSignal) {
 			finalParts.push(part);
@@ -274,16 +274,16 @@ function FakeRoom(id) {
 FakeRoom.prototype.isMuted = identity(false);
 FakeRoom.prototype.users = {};
 
-var ircUser = {
+let ircUser = {
 	named: false,
 	can: identity(false),
 	resetName: identity(),
 	tryJoinRoom: identity(null),
 	leaveRoom: identity(),
-	group: ' '
+	group: ' ',
 };
 
-var ircConnection = {
+let ircConnection = {
 	sendTo: function (room, message) {
 		say(room.id, filter(message));
 	},
@@ -307,7 +307,7 @@ connection.on('message', function parseMessage(from, to, text, message) {
 });
 
 if (config.loggerid) {
-	var room = config.reportroom || config.channels[0]
+	let room = config.reportroom || config.channels[0];
 	listenForLogs(connection, room, config.loggerid);
 	setInterval(function () {
 		connection.join(room);
@@ -318,15 +318,15 @@ if (!Config.irclog) {
 	Config.irclog = [];
 }
 
-for (var i = 0; i < Config.irclog.length; i++) {
-	var server = Config.irclog[i];
-	var channels = server.channels;
+for (let i = 0; i < Config.irclog.length; i++) {
+	let server = Config.irclog[i];
+	let channels = server.channels;
 	server.channels = server.channels.map(function (channel) {
 		return channel.name;
 	});
-	var logConnection = new irc.Client(server.server, server.nickname, server);
-	for (var j = 0; j < channels.length; j++) {
-		var channel = channels[j];
+	let logConnection = new irc.Client(server.server, server.nickname, server);
+	for (let j = 0; j < channels.length; j++) {
+		let channel = channels[j];
 		listenForLogs(logConnection, channel.name, channel.loggerid);
 		logConnection.on('message' + channel.name, function (nick, text, message) {
 			log(channel.loggerid, 1, message.prefix, text);

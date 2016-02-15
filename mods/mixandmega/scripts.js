@@ -1,11 +1,3 @@
-<<<<<<< .merge_file_a02224
-exports.BattleScripts = {
-	init: function () {
-		let onTakeMegaStone = function (item, source) {
-			return false;
-		};
-		for (let id in this.data.Items) {
-=======
 'use strict';
 
 exports.BattleScripts = {
@@ -14,7 +6,6 @@ exports.BattleScripts = {
 			return false;
 		};
 		for (let id in this.data.Items) {
->>>>>>> .merge_file_a09988
 			if (id !== 'redorb' && id !== 'blueorb' && !this.data.Items[id].megaStone) continue;
 			this.modData('Items', id).onTakeItem = onTakeMegaStone;
 		}
@@ -22,11 +13,7 @@ exports.BattleScripts = {
 	canMegaEvo: function (pokemon) {
 		if (pokemon.template.isMega || pokemon.template.isPrimal) return false;
 
-<<<<<<< .merge_file_a02224
 		let item = pokemon.getItem();
-=======
-		let item = pokemon.getItem();
->>>>>>> .merge_file_a09988
 		if (item.megaStone) {
 			if (item.megaStone === pokemon.species) return false;
 			return item.megaStone;
@@ -38,21 +25,13 @@ exports.BattleScripts = {
 	},
 	runMegaEvo: function (pokemon) {
 		if (pokemon.template.isMega || pokemon.template.isPrimal) return false;
-<<<<<<< .merge_file_a02224
+
 		let template = this.getMixedTemplate(pokemon.originalSpecies, pokemon.canMegaEvo);
 		let side = pokemon.side;
 
 		// Pokémon affected by Sky Drop cannot mega evolve. Enforce it here for now.
 		let foeActive = side.foe.active;
 		for (let i = 0; i < foeActive.length; i++) {
-=======
-		let template = this.getMixedTemplate(pokemon.originalSpecies, pokemon.canMegaEvo);
-		let side = pokemon.side;
-
-		// Pokémon affected by Sky Drop cannot mega evolve. Enforce it here for now.
-		let foeActive = side.foe.active;
-		for (let i = 0; i < foeActive.length; i++) {
->>>>>>> .merge_file_a09988
 			if (foeActive[i].volatiles['skydrop'] && foeActive[i].volatiles['skydrop'].source === pokemon) {
 				return false;
 			}
@@ -67,13 +46,8 @@ exports.BattleScripts = {
 			this.add('detailschange', pokemon, pokemon.details);
 			this.add('-mega', pokemon, template.baseSpecies, template.requiredItem);
 		} else {
-<<<<<<< .merge_file_a02224
 			let oTemplate = this.getTemplate(pokemon.originalSpecies);
 			let oMegaTemplate = this.getTemplate(template.originalMega);
-=======
-			let oTemplate = this.getTemplate(pokemon.originalSpecies);
-			let oMegaTemplate = this.getTemplate(template.originalMega);
->>>>>>> .merge_file_a09988
 			if (template.originalMega === 'Rayquaza-Mega') {
 				this.add('message', "" + pokemon.side.name + "'s fervent wish has reached " + pokemon.species + "!");
 			} else {
@@ -98,15 +72,9 @@ exports.BattleScripts = {
 		template = Object.clone(template); // shallow is enough
 		template.abilities = {'0': deltas.ability};
 		template.types = Object.merge(template.types.slice(), deltas.types).compact().unique();
-<<<<<<< .merge_file_a02224
 		let baseStats = template.baseStats;
 		template.baseStats = {};
 		for (let statName in baseStats) template.baseStats[statName] = baseStats[statName] + deltas.baseStats[statName];
-=======
-		let baseStats = template.baseStats;
-		template.baseStats = {};
-		for (let statName in baseStats) template.baseStats[statName] = baseStats[statName] + deltas.baseStats[statName];
->>>>>>> .merge_file_a09988
 		template.weightkg = Math.max(0.1, template.weightkg + deltas.weightkg);
 		template.originalMega = deltas.originalMega;
 		template.requiredItem = deltas.requiredItem;
@@ -115,22 +83,6 @@ exports.BattleScripts = {
 		return template;
 	},
 	getMixedTemplate: function (originalSpecies, megaSpecies) {
-<<<<<<< .merge_file_a02224
-		let originalTemplate = this.getTemplate(originalSpecies);
-		let megaTemplate = this.getTemplate(megaSpecies);
-		if (originalTemplate.baseSpecies === megaTemplate.baseSpecies) return megaTemplate;
-		let deltas = this.getMegaDeltas(megaTemplate);
-		let template = this.doGetMixedTemplate(originalTemplate, deltas);
-		return template;
-	},
-	getMegaDeltas: function (megaTemplate) {
-		let baseTemplate = this.getTemplate(megaTemplate.baseSpecies);
-		let deltas = {
-			ability: megaTemplate.abilities['0'], baseStats: {}, weightkg: megaTemplate.weightkg - baseTemplate.weightkg, types: Array(baseTemplate.types.length),
-			originalMega: megaTemplate.species, requiredItem: megaTemplate.requiredItem
-		};
-		for (let statId in megaTemplate.baseStats) deltas.baseStats[statId] = megaTemplate.baseStats[statId] - baseTemplate.baseStats[statId];
-=======
 		let originalTemplate = this.getTemplate(originalSpecies);
 		let megaTemplate = this.getTemplate(megaSpecies);
 		if (originalTemplate.baseSpecies === megaTemplate.baseSpecies) return megaTemplate;
@@ -145,7 +97,6 @@ exports.BattleScripts = {
 			originalMega: megaTemplate.species, requiredItem: megaTemplate.requiredItem,
 		};
 		for (let statId in megaTemplate.baseStats) deltas.baseStats[statId] = megaTemplate.baseStats[statId] - baseTemplate.baseStats[statId];
->>>>>>> .merge_file_a09988
 		if (megaTemplate.types.length > baseTemplate.types.length) {
 			deltas.types.push(megaTemplate.types[1]);
 		} else if (megaTemplate.types.length < baseTemplate.types.length) {
@@ -156,9 +107,5 @@ exports.BattleScripts = {
 		if (megaTemplate.isMega) deltas.isMega = true;
 		if (megaTemplate.isPrimal) deltas.isPrimal = true;
 		return deltas;
-<<<<<<< .merge_file_a02224
-	}
-=======
 	},
->>>>>>> .merge_file_a09988
 };

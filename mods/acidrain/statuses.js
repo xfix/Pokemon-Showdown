@@ -45,6 +45,6 @@ exports.BattleStatuses = {
 		},
 		onEnd: function () {
 			this.add('-weather', 'none');
-		}
-	}
+		},
+	},
 };

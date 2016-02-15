@@ -2,12 +2,12 @@
 
 exports.BattleScripts = {
 	init: function () {
-		for (var i in this.data.Pokedex) {
+		for (let i in this.data.Pokedex) {
 			//Variable Initialization
-			var pokemon = this.data.Pokedex[i];
-			var types = pokemon.types;
-			var eggGroups = pokemon.eggGroups;
-			var typeObj = {
+			let pokemon = this.data.Pokedex[i];
+			let types = pokemon.types;
+			let eggGroups = pokemon.eggGroups;
+			let typeObj = {
 				Amorphous: 'Ghost',
 				Bug: 'Bug',
 				Ditto: 'Normal',
@@ -22,10 +22,10 @@ exports.BattleScripts = {
 				Undiscovered: 'Psychic',
 				'Water 1': 'Water',
 				'Water 2': 'Water',
-				'Water 3': 'Water'
+				'Water 3': 'Water',
 			};
-			var eggTypes = [];
-			var newTypes = [];
+			let eggTypes = [];
+			let newTypes = [];
 			//types: The unmodified types of the Pokemon.
 			//eggGroups: The egg groups of the Pokemon.
 			//typeObj: The relationship between the egg groups of the Pokemon and the new types.
@@ -59,5 +59,5 @@ exports.BattleScripts = {
 			//Finalize Modification
 			this.modData('Pokedex', i).types = newTypes;
 		}
-	}
+	},
 };

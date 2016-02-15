@@ -31,7 +31,7 @@ exports.BattleMovedex = {
 			onStart: function (side, source) {
 				this.debug('Disappointment started on ' + side.name);
 				this.effectData.positions = [];
-				for (var i = 0; i < side.active.length; i++) {
+				for (let i = 0; i < side.active.length; i++) {
 					this.effectData.positions[i] = false;
 				}
 				this.effectData.positions[source.position] = true;
@@ -54,11 +54,11 @@ exports.BattleMovedex = {
 				if (!this.effectData.positions.any(true)) {
 					target.side.removeSideCondition('disappointment');
 				}
-			}
+			},
 		},
 		secondary: false,
 		target: "self",
-		type: "Normal"
+		type: "Normal",
 	},
 	'darkfire': {
 		num: 623,
@@ -78,7 +78,7 @@ exports.BattleMovedex = {
 		},
 		self: {
 			onHit: function (pokemon) { // Mega evolves dfg
-				var temp = pokemon.item;
+				let temp = pokemon.item;
 				pokemon.item = 'houndoominite'; // in order to make it mega evolvable, add a Houndoomite temporarily.
 				pokemon.canMegaEvo = this.canMegaEvo(pokemon);
 				if (pokemon.canMegaEvo) this.runMegaEvo(pokemon);
@@ -91,7 +91,7 @@ exports.BattleMovedex = {
 		},
 		priority: 0,
 		pp: 15,
-		type: 'Dark'
+		type: 'Dark',
 	},
 	'superglitch': {
 		num: 624,
@@ -112,19 +112,19 @@ exports.BattleMovedex = {
 		onTryHit: function (target, source) { // can cause TMTRAINER effect randomly
 			if (!source.isActive) return null;
 			if (this.random(777) !== 42) return; // 1/777 chance to cause TMTRAINER effect
-			var opponent = target;
+			let opponent = target;
 			opponent.setStatus('brn');
-			var possibleStatuses = ['confusion', 'flinch', 'attract', 'focusenergy', 'foresight', 'healblock'];
-			for (var i = 0; i < possibleStatuses.length; i++) {
+			let possibleStatuses = ['confusion', 'flinch', 'attract', 'focusenergy', 'foresight', 'healblock'];
+			for (let i = 0; i < possibleStatuses.length; i++) {
 				if (this.random(3) === 1) {
 					opponent.addVolatile(possibleStatuses[i]);
 				}
 			}
 
 			function generateNoise() { // make some random glitchy text.
-				var noise = '';
-				var random = this.random(40, 81);
-				for (var i = 0; i < random; i++) {
+				let noise = '';
+				let random = this.random(40, 81);
+				for (let i = 0; i < random; i++) {
 					if (this.random(4) !== 0) {
 						// Non-breaking space
 						noise += '\u00A0';
@@ -138,14 +138,14 @@ exports.BattleMovedex = {
 			this.add('-message', "(Enemy " + generateNoise.call(this) + " TMTRAINER " + opponent.name + " is frozen solid?)");
 			this.add('-message', "(Enemy " + generateNoise.call(this) + " TMTRAINER " + opponent.name + " is hurt by its burn!)");
 			this.damage(opponent.maxhp * this.random(42, 96) * 0.01, opponent, opponent);
-			var exclamation = source.status === 'brn' ? '!' : '?';
+			let exclamation = source.status === 'brn' ? '!' : '?';
 			this.add('-message', "(Enemy " + generateNoise.call(this) + " TMTRAINER " + source.name + " is hurt by its burn" + exclamation + ")");
 			this.damage(source.maxhp * this.random(24, 48) * 0.01, source, source);
 			return null;
 		},
 		secondary: false,
 		target: "self",
-		type: "Normal"
+		type: "Normal",
 	},
 	'tm56': {
 		num: 625,
@@ -174,7 +174,7 @@ exports.BattleMovedex = {
 		},
 		onMoveFail: function (target, source, move) {
 			this.boost({accuracy:1, evasion:1}, source);
-		}
+		},
 	},
 	'hexattack': {
 		num: 626,
@@ -193,7 +193,7 @@ exports.BattleMovedex = {
 		secondary: {
 			chance: 25,
 			onHit: function (target, source) { // random status.
-				var result = this.random(6);
+				let result = this.random(6);
 				if (result === 0) {
 					target.trySetStatus('brn', source);
 				} else if (result === 1) {
@@ -208,7 +208,7 @@ exports.BattleMovedex = {
 					target.trySetStatus('slp', source);
 				}
 			}
-		}
+		},
 	},
 	'projectilespam': {
 		num: 627,
@@ -231,7 +231,7 @@ exports.BattleMovedex = {
 				pokemon.removeVolatile('lockedmove');
 			}
 		},
-		flags: {protect: 1, mirror: 1}
+		flags: {protect: 1, mirror: 1},
 	},
 	'bulk': {
 		num: 628,
@@ -256,7 +256,7 @@ exports.BattleMovedex = {
 		},
 		secondary: false,
 		target: "self",
-		type: "Fighting"
+		type: "Fighting",
 	},
 	'shadowrush': {
 		num: 629,
@@ -276,7 +276,7 @@ exports.BattleMovedex = {
 		onPrepareHit: function (target, source, move) {
 			this.attrLastMove('[still]');
 			this.add('-anim', source, 'Shadow Sneak', target);
-		}
+		},
 	},
 	'partingvoltturn': {
 		num: 630,
@@ -300,7 +300,7 @@ exports.BattleMovedex = {
 		},
 		secondary: false,
 		target: "self",
-		type: "Normal"
+		type: "Normal",
 	},
 	'evolutionbeam': {
 		num: 631,
@@ -338,22 +338,22 @@ exports.BattleMovedex = {
 		},
 		onTryHit: function (target, pokemon, move) {
 			if (move.type === 'Normal') {
-				var t = move.eeveelutiontypes.slice(0);
+				let t = move.eeveelutiontypes.slice(0);
 				move.accuracy = true; // What's this line for?
-				for (var i = 0; i < move.eeveelutiontypes.length; i++) { // hit for all eeveelution types in random order.
-					var r = this.random(t.length);
+				for (let i = 0; i < move.eeveelutiontypes.length; i++) { // hit for all eeveelution types in random order.
+					let r = this.random(t.length);
 					move.type = t[r];
 					t.splice(r, 1);
 					this.useMove(move, pokemon, target);
 				}
 				move.type = 'Normal';
 				move.accuracy = 100;
-			}
+			},
 		},
 		eeveelutiontypes: ['Fire', 'Water', 'Electric', 'Psychic', 'Dark', 'Grass', 'Ice', 'Fairy'],
 		secondary: false,
 		target: "normal",
-		type: "Normal"
+		type: "Normal",
 	},
 	'hyperwahahahahaha': {
 		num: 632,
@@ -374,7 +374,7 @@ exports.BattleMovedex = {
 		},
 		secondaries: [{chance: 20, status: 'par'}, {chance: 20, volatileStatus: 'confusion'}],
 		target: "normal",
-		type: "Electric"
+		type: "Electric",
 	},
 	'broadside': {
 		num: 633,
@@ -395,7 +395,7 @@ exports.BattleMovedex = {
 		},
 		secondary: false,
 		target: "allAdjacent",
-		type: "Water"
+		type: "Water",
 	},
 	'bestfcar': {
 		num: 634,
@@ -411,7 +411,7 @@ exports.BattleMovedex = {
 		priority: 0,
 		flags: {protect: 1, mirror: 1, contact: 1, defrost: 1},
 		target: "normal",
-		type: "Fire"
+		type: "Fire",
 	},
 	'eternalstruggle': {
 		num: 635,
@@ -433,7 +433,7 @@ exports.BattleMovedex = {
 		recoil: [1, 2],
 		onHit: function (target, source, move) {
 			this.boost({atk:-1, def:-1, spa:-1, spd:-1, spe:-1}, source);
-		}
+		},
 	},
 	'nofun': {
 		num: 636,
@@ -451,7 +451,7 @@ exports.BattleMovedex = {
 			this.add('-clearboost', target);
 		},
 		secondary: false,
-		target: "normal"
+		target: "normal",
 	},
 	'ironfist': {
 		num: 637,
@@ -468,25 +468,25 @@ exports.BattleMovedex = {
 			this.add('-anim', source, 'Dynamic Punch', target);
 		},
 		onHit: function (target) {
-			var bannedAbilities = {multitype:1, defeatist:1, stancechange:1, truant:1};
+			let bannedAbilities = {multitype:1, defeatist:1, stancechange:1, truant:1};
 			if (!bannedAbilities[target.ability]) {
-				var oldAbility = target.setAbility('defeatist');
+				let oldAbility = target.setAbility('defeatist');
 				if (oldAbility) {
 					this.add('-endability', target, oldAbility, '[from] move: Iron Fist');
 					this.add('-ability', target, 'Defeatist', '[from] move: Iron Fist');
 					return;
 				}
-			}
+			},
 		},
 		self: {
 			onHit: function (pokemon) {
-				var temp = pokemon.item;
+				let temp = pokemon.item;
 				pokemon.item = 'Scizorite';
 				if (!pokemon.template.isMega) pokemon.canMegaEvo = this.canMegaEvo(pokemon); // don't mega evolve if it's already mega
 				if (pokemon.canMegaEvo) this.runMegaEvo(pokemon);
 				pokemon.item = temp; // give its normal item back.
 			}
-		}
+		},
 	},
 	'afk': {
 		num: 638,
@@ -533,7 +533,7 @@ exports.BattleMovedex = {
 			}
 		},
 		secondaries: [{chance: 20, volatileStatus: 'confusion'}, {chance: 10, status: 'slp'}],
-		target: 'normal'
+		target: 'normal',
 	},
 	"godbird": {
 		num: 638,
@@ -550,12 +550,12 @@ exports.BattleMovedex = {
 		breaksProtect: true,
 		self: {
 			onHit: function (pokemon) {
-				var temp = pokemon.item;
+				let temp = pokemon.item;
 				pokemon.item = 'pidgeotite';
 				if (!pokemon.template.isMega) pokemon.canMegaEvo = this.canMegaEvo(pokemon);
 				if (pokemon.canMegaEvo) this.runMegaEvo(pokemon);
 				pokemon.item = temp;
-			}
+			},
 		},
 		onTry: function (attacker, defender, move) {
 			this.attrLastMove('[still]');
@@ -582,11 +582,11 @@ exports.BattleMovedex = {
 				}
 				if (source.volatiles['lockon'] && target === source.volatiles['lockon'].source) return;
 				return 0;
-			}
+			},
 		},
 		secondary: false,
 		target: "any",
-		type: "Flying"
+		type: "Flying",
 	},
 	'reroll': {
 		num: 639,
@@ -602,17 +602,17 @@ exports.BattleMovedex = {
 		},
 		onHit: function (target) {
 			if (!target.template.isMega) {
-				var moves = [];
-				for (var i = 0; i < target.moveset.length; i++) {
-					var move = target.moveset[i].id;
+				let moves = [];
+				for (let i = 0; i < target.moveset.length; i++) {
+					let move = target.moveset[i].id;
 					if (move.id !== 'reroll') moves.push(move);
 				}
-				var randomMove = '';
+				let randomMove = '';
 				if (moves.length) randomMove = moves[this.random(moves.length)];
 				if (randomMove) {
 					this.useMove(randomMove, target);
 				}
-				var megaStoneList = [
+				let megaStoneList = [
 					'Abomasite',
 					'Absolite',
 					'Aerodactylite',
@@ -661,18 +661,18 @@ exports.BattleMovedex = {
 					'Tyranitarite',
 					'Venusaurite',
 					'Red Orb',
-					'Blue Orb'
+					'Blue Orb',
 				];
 				target.item = megaStoneList.sample(1)[0];
 				this.add('-item', target, target.getItem(), '[from] move: Re-Roll');
 				target.canMegaEvo = this.canMegaEvo(target);
-				var pokemon = target;
-				var item = pokemon.getItem();
+				let pokemon = target;
+				let item = pokemon.getItem();
 				if (pokemon.isActive && !pokemon.template.isMega && !pokemon.template.isPrimal && (item.id === 'redorb' || item.id === 'blueorb') && pokemon.baseTemplate.tier !== 'Uber' && !pokemon.template.evos.length) {
 					// Primal Reversion
-					var bannedMons = {'Kyurem-Black':1, 'Slaking':1, 'Regigigas':1, 'Cresselia':1, 'Shuckle':1};
+					let bannedMons = {'Kyurem-Black':1, 'Slaking':1, 'Regigigas':1, 'Cresselia':1, 'Shuckle':1};
 					if (!(pokemon.baseTemplate.baseSpecies in bannedMons)) {
-						var template = this.getMixedTemplate(pokemon.originalSpecies, item.id === 'redorb' ? 'Groudon-Primal' : 'Kyogre-Primal');
+						let template = this.getMixedTemplate(pokemon.originalSpecies, item.id === 'redorb' ? 'Groudon-Primal' : 'Kyogre-Primal');
 						pokemon.formeChange(template);
 						pokemon.baseTemplate = template;
 
@@ -681,7 +681,7 @@ exports.BattleMovedex = {
 							pokemon.details = template.species + (pokemon.level === 100 ? '' : ', L' + pokemon.level) + (pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
 							this.add('detailschange', pokemon, pokemon.details);
 						} else {
-							var oTemplate = this.getTemplate(pokemon.originalSpecies);
+							let oTemplate = this.getTemplate(pokemon.originalSpecies);
 							this.add('-formechange', pokemon, oTemplate.species, template.requiredItem);
 							this.add('-start', pokemon, this.getTemplate(template.originalMega).requiredItem, '[silent]');
 							if (oTemplate.types.length !== pokemon.template.types.length || oTemplate.types[1] !== pokemon.template.types[1]) {
@@ -701,7 +701,7 @@ exports.BattleMovedex = {
 		id: 'reroll',
 		secondary: false,
 		target: 'self',
-		type: 'Normal'
+		type: 'Normal',
 	},
 	'shadowsphere': {
 		num: 640,
@@ -724,7 +724,7 @@ exports.BattleMovedex = {
 			boosts: {spd: -1}
 		},
 		target: "normal",
-		type: "Ghost"
+		type: "Ghost",
 	},
 	'drainforce': {
 		num: 641,
@@ -749,7 +749,7 @@ exports.BattleMovedex = {
 			self: {boosts: {spa: 1, spe: 1}}
 		},
 		target: "normal",
-		type: "Fighting"
+		type: "Fighting",
 	},
 	'sneakyspook': {
 		num: 642, // blaze it + 222
@@ -770,10 +770,10 @@ exports.BattleMovedex = {
 		flags: {protect: 1, mirror: 1},
 		secondary: false,
 		target: "normal",
-		type: "Ghost"
+		type: "Ghost",
 	},
 	'thousandalts': {
-		num: 643, //blaze what?
+		num: 643,
 		accuracy: 100,
 		basePower: 120,
 		category: "Physical",
@@ -795,7 +795,7 @@ exports.BattleMovedex = {
 		recoil: [1, 2],
 		secondary: {chance: 20,	volatileStatus: 'confusion'},
 		target: "normal",
-		type: "Dark"
+		type: "Dark",
 	},
 	'bawk': {
 		num: 644,
@@ -820,7 +820,7 @@ exports.BattleMovedex = {
 		heal: [1, 2],
 		secondary: false,
 		target: "self",
-		type: "Flying"
+		type: "Flying",
 	},
 	'yiffyiff': {
 		num: 645,
@@ -835,11 +835,11 @@ exports.BattleMovedex = {
 		priority: 0,
 		flags: {},
 		onPrepareHit: function (target, pokemon, move) {
-			var bannedAbilities = {furcoat:1, multitype:1, stancechange:1, truant:1};
+			let bannedAbilities = {furcoat:1, multitype:1, stancechange:1, truant:1};
 			if (bannedAbilities[pokemon.ability]) {
 				return;
 			}
-			var oldAbility = pokemon.setAbility('furcoat');
+			let oldAbility = pokemon.setAbility('furcoat');
 			if (oldAbility) {
 				this.add('-endability', pokemon, oldAbility, '[from] move: Yiff Yiff');
 				this.add('-ability', pokemon, 'Fur Coat', '[from] move: Yiff Yiff');
@@ -847,7 +847,7 @@ exports.BattleMovedex = {
 			return;
 		},
 		onHit: function (target, source, move) {
-			var bawked = this.random(source.hasType('Flying') ? 4 : 3);
+			let bawked = this.random(source.hasType('Flying') ? 4 : 3);
 			if (bawked === 0) this.useMove('earthquake', target);
 			if (bawked === 1) this.useMove('iciclecrash', target);
 			if (bawked === 2) this.useMove('stoneedge', target);
@@ -855,7 +855,7 @@ exports.BattleMovedex = {
 		},
 		secondary: {chance: 10,	self: {boosts: {atk: 1, spd: 1, spe: 1, accuracy: 1}}},
 		target: "self",
-		type: "Normal"
+		type: "Normal",
 	},
 	"arcticslash": {
 		num: 656,
@@ -878,7 +878,7 @@ exports.BattleMovedex = {
 		multihit: [2, 5],
 		secondary: false,
 		target: "normal",
-		type: "Ice"
+		type: "Ice",
 	},
 	"ganonssword": {
 		num: 657,
@@ -916,7 +916,7 @@ exports.BattleMovedex = {
 			}
 		},
 		target: "normal",
-		type: "Dark"
+		type: "Dark",
 	},
 	'toucan': {
 		num: 658,
@@ -928,12 +928,12 @@ exports.BattleMovedex = {
 			this.add('-anim', source, 'Chatter', target);
 		},
 		onTryHit: function (target, source, move) {
-			var targetName = toId(target.name);
-			var sourceName = toId(source.name);
+			let targetName = toId(target.name);
+			let sourceName = toId(source.name);
 			this.add('c|' + sourceName + '|Wow ' + targetName + ' OneHand');
 		},
 		onHit: function (target) {
-			var hazards = ['spikes', 'toxicspikes', 'stealthrock', 'stickyweb'];
+			let hazards = ['spikes', 'toxicspikes', 'stealthrock', 'stickyweb'];
 			target.side.addSideCondition(hazards[this.random(4)]);
 		},
 		volatileStatus: 'confusion',
@@ -947,7 +947,7 @@ exports.BattleMovedex = {
 		name: "Toucan",
 		flags: {protect: 1, mirror: 1, sound: 1, authentic: 1, reflectable: 1},
 		target: "normal",
-		type: "Flying"
+		type: "Flying",
 	},
 	'rainbowspray': {
 		id: 'rainbowspray',
@@ -972,15 +972,15 @@ exports.BattleMovedex = {
 			{chance: 45, volatileStatus: 'confusion'},
 			{chance: 35, status: 'par'}],
 		target: "any",
-		type: "Water"
+		type: "Water",
 	},
 	"spindash": {
 		num: 660,
 		accuracy: 90,
 		basePower: 50,
 		basePowerCallback: function (pokemon, target) {
-			var bp = 50;
-			var bpTable = [50, 100, 200, 400, 800];
+			let bp = 50;
+			let bpTable = [50, 100, 200, 400, 800];
 			if (pokemon.volatiles.spindash && pokemon.volatiles.spindash.hitCount) {
 				bp = (bpTable[pokemon.volatiles.spindash.hitCount] || 800);
 			}
@@ -1024,7 +1024,7 @@ exports.BattleMovedex = {
 		},
 		secondary: false,
 		target: "normal",
-		type: "Normal"
+		type: "Normal",
 	},
 	"boost": {
 		num: 661,
@@ -1045,7 +1045,7 @@ exports.BattleMovedex = {
 		flags: {contact: 1, protect: 1, mirror: 1},
 		secondary: false,
 		target: "normal",
-		type: "Normal"
+		type: "Normal",
 	},
 	'setmine': {
 		num: 662,
@@ -1076,7 +1076,7 @@ exports.BattleMovedex = {
 			}
 		},
 		target: 'foeSide',
-		type: 'Fire'
+		type: 'Fire',
 	},
 	'mine': {
 		num: 663,
@@ -1092,7 +1092,7 @@ exports.BattleMovedex = {
 		id: 'mine',
 		name: 'Mine',
 		type: 'Fire',
-		pp: 20
+		pp: 20,
 	},
 	'locknload': {
 		num: 664,
@@ -1117,7 +1117,7 @@ exports.BattleMovedex = {
 			this.add('-activate', source, 'move: Lock \'n\' Load', '[of] ' + target);
 			this.add('c|' + source.name + '|Say hello to Becky and Betsy!');
 		},
-		pp: 20
+		pp: 20,
 	},
 	'assassinate': {
 		num: 665,
@@ -1143,7 +1143,7 @@ exports.BattleMovedex = {
 			return false;
 		},
 		target: 'normal',
-		type: 'Steel'
+		type: 'Steel',
 	},
 	'quicksketch': {
 		num: 666, // hue
@@ -1156,10 +1156,10 @@ exports.BattleMovedex = {
 		priority: 0,
 		flags: {protect: 1, authentic: 1},
 		onHit: function (target, source) {
-			var disallowedMoves = {copycat:1, focuspunch:1, mimic: 1, quicksketch: 1, sketch:1, sleeptalk:1, snatch:1, struggle:1, transform:1};
+			let disallowedMoves = {copycat:1, focuspunch:1, mimic: 1, quicksketch: 1, sketch:1, sleeptalk:1, snatch:1, struggle:1, transform:1};
 			if (!this.lastMove || disallowedMoves[this.lastMove] || source.hasMove(this.lastMove)) return false;
-			var move = this.getMove(this.lastMove);
-			var sketchedMove = {
+			let move = this.getMove(this.lastMove);
+			let sketchedMove = {
 				move: move.name,
 				id: move.id,
 				pp: move.pp,
@@ -1183,7 +1183,7 @@ exports.BattleMovedex = {
 		},
 		secondary: false,
 		target: 'self',
-		type: 'Normal'
+		type: 'Normal',
 	},
 	'keepcalmandfocus': {
 		id: 'keepcalmandfocus',
@@ -1207,7 +1207,7 @@ exports.BattleMovedex = {
 				this.boost({def: 1, spd: 1}, pokemon);
 			}
 			pokemon.cureStatus();
-			var temp = pokemon.item;
+			let temp = pokemon.item;
 			pokemon.item = 'absolite';
 			pokemon.canMegaEvo = this.canMegaEvo(pokemon);
 			if (pokemon.canMegaEvo) this.runMegaEvo(pokemon);
@@ -1215,7 +1215,7 @@ exports.BattleMovedex = {
 		},
 		type: 'Normal',
 		target: 'self',
-		num: 667
+		num: 667,
 	},
 	'quityourbullshit': {
 		id: 'quityourbullshit',
@@ -1237,7 +1237,7 @@ exports.BattleMovedex = {
 		},
 		num: 668,
 		type: 'Fighting',
-		target: 'normal'
+		target: 'normal',
 	},
 	'typeroulette': {
 		id: 'typeroulette',
@@ -1255,7 +1255,7 @@ exports.BattleMovedex = {
 		onPrepareHit: function (target, source, move) {
 			move.type = move.typeList.sample(1)[0];
 			this.attrLastMove('[still]');
-			var anim;
+			let anim;
 			switch (move.type) {
 			case 'Normal':
 				anim = 'Mega Punch';
@@ -1314,7 +1314,7 @@ exports.BattleMovedex = {
 			}
 			this.add('-anim', source, anim, target);
 		},
-		num: 669
+		num: 669,
 	},
 	'godswrath': {
 		id: 'godswrath',
@@ -1328,7 +1328,7 @@ exports.BattleMovedex = {
 		accuracy: true,
 		flags: {},
 		onTryHit: function (target, pokemon) {
-			var move = 'ancientpower';
+			let move = 'ancientpower';
 			switch (pokemon.template.speciesid) {
 				case 'omastar':
 					move = 'abstartselect';
@@ -1367,7 +1367,7 @@ exports.BattleMovedex = {
 			this.useMove(move, pokemon, target);
 			return null;
 		},
-		num: 670
+		num: 670,
 	},
 	'abstartselect': {
 		id: 'abstartselect',
@@ -1385,7 +1385,7 @@ exports.BattleMovedex = {
 			target.clearBoosts();
 			this.add('-clearboost', target);
 		},
-		num: 671
+		num: 671,
 	},
 	'wait4baba': {
 		id: 'wait4baba',
@@ -1399,7 +1399,7 @@ exports.BattleMovedex = {
 		accuracy: 100,
 		flags: {protect: 1, mirror: 1},
 		secondaries: [{chance: 100, boosts: {spe: -1}}, {chance: 20, volatileStatus: 'flinch'}],
-		num: 672
+		num: 672,
 	},
 	'balancedstrike': {
 		id: 'balancedstrike',
@@ -1413,14 +1413,14 @@ exports.BattleMovedex = {
 		accuracy: true,
 		flags: {contact: 1, protect: 1, mirror: 1},
 		onPrepareHit: function (target, source, move) {
-			var stats = ['atk', 'def', 'spa', 'spd', 'spe', 'accuracy', 'evasion'];
-			var boostSource = {atk:0,def:0,spa:0,spd:0,spe:0,accuracy:0,evasion:0};
-			var boostTarget = {atk:0,def:0,spa:0,spd:0,spe:0,accuracy:0,evasion:0};
-			for (var i = 0; i < stats.length; i++) {
-				var stat = stats[i];
-				var targetBoost = target.boosts[stat];
-				var sourceBoost = source.boosts[stat];
-				var average = Math.floor((targetBoost + sourceBoost) / 2);
+			let stats = ['atk', 'def', 'spa', 'spd', 'spe', 'accuracy', 'evasion'];
+			let boostSource = {atk:0,def:0,spa:0,spd:0,spe:0,accuracy:0,evasion:0};
+			let boostTarget = {atk:0,def:0,spa:0,spd:0,spe:0,accuracy:0,evasion:0};
+			for (let i = 0; i < stats.length; i++) {
+				let stat = stats[i];
+				let targetBoost = target.boosts[stat];
+				let sourceBoost = source.boosts[stat];
+				let average = Math.floor((targetBoost + sourceBoost) / 2);
 				boostSource[stat] = average;
 				if (average !== sourceBoost) this.add('-setboost', source, stat, average, '[from] move: Balanced Strike');
 				boostTarget[stat] = average;
@@ -1429,7 +1429,7 @@ exports.BattleMovedex = {
 			source.setBoost(boostSource);
 			target.setBoost(boostTarget);
 		},
-		num: 673
+		num: 673,
 	},
 	'texttospeech': {
 		id: 'texttospeech',
@@ -1443,9 +1443,9 @@ exports.BattleMovedex = {
 		accuracy: 85,
 		flags: {protect: 1, reflectable: 1, mirror: 1, sound: 1, authentic: 1},
 		onHit: function (pokemon) {
-			var bannedAbilities = {insomnia:1, multitype:1, stancechange:1, truant:1};
+			let bannedAbilities = {insomnia:1, multitype:1, stancechange:1, truant:1};
 			if (!bannedAbilities[pokemon.ability]) {
-				var oldAbility = pokemon.setAbility('insomnia');
+				let oldAbility = pokemon.setAbility('insomnia');
 				if (oldAbility) {
 					this.add('-endability', pokemon, oldAbility, '[from] move: Worry Seed');
 					this.add('-ability', pokemon, 'Insomnia', '[from] move: Worry Seed');
@@ -1459,7 +1459,7 @@ exports.BattleMovedex = {
 			pokemon.addVolatile('leechseed');
 			pokemon.addVolatile('confusion');
 		},
-		num: 674
+		num: 674,
 	},
 	'holyducttapeofclaw': {
 		id: 'holyducttapeofclaw',
@@ -1476,7 +1476,7 @@ exports.BattleMovedex = {
 		onHit: function (pokemon) {
 			pokemon.addVolatile('taunt');
 		},
-		num: 675
+		num: 675,
 	},
 	'warecho': {
 		id: 'warecho',
@@ -1495,13 +1495,13 @@ exports.BattleMovedex = {
 			duration: 3,
 			onResidualOrder: 4,
 			onEnd: function (side) {
-				var target = side.active[this.effectData.sourcePosition];
+				let target = side.active[this.effectData.sourcePosition];
 				if (target && !target.fainted) {
 					this.boost({atk: 2}, target);
 				}
-			}
+			},
 		},
-		num: 676
+		num: 676,
 	},
 	'skullsmash': {
 		id: 'skullsmash',
@@ -1515,7 +1515,7 @@ exports.BattleMovedex = {
 		accuracy: 80,
 		flags: {contact: 1, protect: 1, mirror: 1},
 		recoil: [1, 8],
-		num: 677
+		num: 677,
 	},
 	'danceriot': {
 		id: 'danceriot',
@@ -1541,7 +1541,7 @@ exports.BattleMovedex = {
 				pokemon.forceSwitchFlag = 1;
 			}
 		},
-		num: 678
+		num: 678,
 	},
 	'bluescreenofdeath': {
 		id: 'bluescreenofdeath',
@@ -1563,9 +1563,9 @@ exports.BattleMovedex = {
 		},
 		secondary: {
 			chance: 100,
-			volatileStatus: 'flinch'
+			volatileStatus: 'flinch',
 		},
-		num: 679
+		num: 679,
 	},
 	'portaltospaaaaaaace': {
 		id: 'portaltospaaaaaaace',
@@ -1582,7 +1582,7 @@ exports.BattleMovedex = {
 			if (type === 'Water' || type === 'Ice' || type === 'Steel' || type === 'Fire') return 1;
 		},
 		secondary: {chance: 10, status: 'frz'},
-		num: 680
+		num: 680,
 	},
 	'doubleascent': {
 		id: 'doubleascent',
@@ -1626,8 +1626,8 @@ exports.BattleMovedex = {
 				if (move.id === 'gust' || move.id === 'twister') {
 					return this.chainModify(2);
 				}
-			}
+			},
 		},
-		num: 681
+		num: 681,
 	}
 };

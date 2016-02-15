@@ -7,14 +7,14 @@ exports.BattleFormats = {
 			this.add('rule', 'Super Glitch Clause: Every pokemon must hold a Leppa Berry and know Recycle and Super Glitch. No Fun Allowed is banned.');
 		},
 		onValidateSet: function (set) {
-			var issues = [];
+			let issues = [];
 			set.item = 'Leppa Berry';
-			var metronomeFound = false;
-			var recycleFound = false;
-			var i;
-			var movesLength = set.moves.length;
+			let metronomeFound = false;
+			let recycleFound = false;
+			let i;
+			let movesLength = set.moves.length;
 			for (i = 0; i < movesLength; i++) {
-				var move = set.moves[i];
+				let move = set.moves[i];
 				switch (move.toLowerCase()) {
 				case 'superglitch':
 					if (metronomeFound) {
@@ -42,7 +42,7 @@ exports.BattleFormats = {
 			if (!recycleFound) {
 				set.moves.push("Recycle");
 			}
-			var totalEV = 0;
+			let totalEV = 0;
 			for (let k in set.evs) {
 				if (typeof set.evs[k] !== 'number' || set.evs[k] < 0) {
 					set.evs[k] = 0;
@@ -52,8 +52,8 @@ exports.BattleFormats = {
 			if (totalEV > 510) {
 				issues.push(set.species + " has more than 510 total EVs.");
 			}
-			var template = Tools.getTemplate(set.species);
-			var totalBST = 0;
+			let template = Tools.getTemplate(set.species);
+			let totalBST = 0;
 			for (let k in template.baseStats) {
 				totalBST += template.baseStats[k];
 			}
@@ -61,7 +61,7 @@ exports.BattleFormats = {
 				issues.push(set.species + " has more than 600 BST.");
 			}
 			return issues;
-		}
+		},
 	},
 
 	noswitchingclause: {
@@ -75,7 +75,7 @@ exports.BattleFormats = {
 			} else {
 				pokemon.side.switchFlag = true;
 			}
-		}
+		},
 	},
 
 	norecycleclause: {
@@ -85,10 +85,10 @@ exports.BattleFormats = {
 		},
 		onModifyPokemon: function (pokemon) {
 			if ((pokemon.item || !pokemon.lastItem) && !(pokemon.volatiles.torment && pokemon.lastMove === 'metronome')) {
-				var moves = pokemon.moveset;
-				var pp = 0;
-				var recycle = null;
-				for (var i = 0; i < moves.length; i++) {
+				let moves = pokemon.moveset;
+				let pp = 0;
+				let recycle = null;
+				for (let i = 0; i < moves.length; i++) {
 					if (moves[i].id === 'recycle') {
 						recycle = i;
 					} else {
@@ -99,7 +99,7 @@ exports.BattleFormats = {
 					moves[recycle].disabled = true;
 				}
 			}
-		}
+		},
 	},
 
 	abilityclause: {
@@ -108,9 +108,9 @@ exports.BattleFormats = {
 			this.add('rule', 'Ability Clause: Limit one of each ability');
 		},
 		onValidateTeam: function (team, format) {
-			var abilityTable = {};
-			for (var i = 0; i < team.length; i++) {
-				var ability = toId(team[i].ability);
+			let abilityTable = {};
+			for (let i = 0; i < team.length; i++) {
+				let ability = toId(team[i].ability);
 				if (!ability) continue;
 				if (ability in abilityTable) {
 					if (abilityTable[ability] >= 1) {
@@ -121,6 +121,6 @@ exports.BattleFormats = {
 					abilityTable[ability] = 1;
 				}
 			}
-		}
-	}
+		},
+	},
 };

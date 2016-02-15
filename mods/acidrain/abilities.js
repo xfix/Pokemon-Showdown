@@ -7,13 +7,13 @@ exports.BattleAbilities = {
 			if (this.isWeather('sunnyday') || this.isWeather('raindance')) {
 				return this.chainModify(2);
 			}
-		}
+		},
 	},
 	"drought": {
 		inherit: true,
 		onStart: function (source) {
 			this.setWeather('raindance');
-		}
+		},
 	},
 	"flowergift": {
 		inherit: true,
@@ -44,7 +44,7 @@ exports.BattleAbilities = {
 			if (this.isWeather('sunnyday') || this.isWeather('raindance')) {
 				return this.chainModify(1.5);
 			}
-		}
+		},
 	},
 	"harvest": {
 		inherit: true,
@@ -55,7 +55,7 @@ exports.BattleAbilities = {
 					this.add('-item', pokemon, pokemon.getItem(), '[from] ability: Harvest');
 				}
 			}
-		}
+		},
 	},
 	"icebody": {
 		inherit: true,
@@ -63,7 +63,7 @@ exports.BattleAbilities = {
 			if (effect.id === 'hail' || effect.id === 'raindance') {
 				this.heal(target.maxhp / 16);
 			}
-		}
+		},
 	},
 	"leafguard": {
 		inherit: true,
@@ -76,7 +76,7 @@ exports.BattleAbilities = {
 			if (move && move.id === 'yawn' && (this.isWeather('sunnyday') || this.isWeather('raindance'))) {
 				return false;
 			}
-		}
+		},
 	},
 	"sandforce": {
 		inherit: true,
@@ -87,7 +87,7 @@ exports.BattleAbilities = {
 					return this.chainModify([0x14CD, 0x1000]); // The Sand Force modifier is slightly higher than the normal 1.3 (0x14CC)
 				}
 			}
-		}
+		},
 	},
 	"sandrush": {
 		inherit: true,
@@ -95,13 +95,13 @@ exports.BattleAbilities = {
 			if (this.isWeather('sandstorm') || this.isWeather('raindance')) {
 				return this.chainModify(2);
 			}
-		}
+		},
 	},
 	"sandstream": {
 		inherit: true,
 		onStart: function (source) {
 			this.setWeather('raindance');
-		}
+		},
 	},
 	"sandveil": {
 		inherit: true,
@@ -111,7 +111,7 @@ exports.BattleAbilities = {
 				this.debug('Sand Veil - decreasing accuracy');
 				return accuracy * 0.8;
 			}
-		}
+		},
 	},
 	"snowcloak": {
 		inherit: true,
@@ -121,13 +121,13 @@ exports.BattleAbilities = {
 				this.debug('Snow Cloak - decreasing accuracy');
 				return accuracy * 0.8;
 			}
-		}
+		},
 	},
 	"snowwarning": {
 		inherit: true,
 		onStart: function (source) {
 			this.setWeather('raindance');
-		}
+		},
 	},
 	"solarpower": {
 		inherit: true,
@@ -140,6 +140,6 @@ exports.BattleAbilities = {
 			if (effect.id === 'sunnyday' || effect.id === 'raindance') {
 				this.damage(target.maxhp / 8);
 			}
-		}
-	}
+		},
+	},
 };
