@@ -16,7 +16,7 @@ exports.BattleAbilities = { // define custom abilities here.
 			onBasePowerPriority: 8,
 			onBasePower: function (basePower, pokemon, target, move) {
 				return this.chainModify([0x14CD, 0x1000]); // multiplies BP by 5325/4096 (~1.3000488), like in the games
-			}
+			},
 		},
 		id: "glitchiate",
 		name: "Glitchiate",
@@ -331,7 +331,7 @@ exports.BattleAbilities = { // define custom abilities here.
 			return null;
 		},
 		effect: {
-			duration: 1
+			duration: 1,
 		},
 		rating: 4.5,
 		num: 205,
@@ -416,7 +416,7 @@ exports.BattleAbilities = { // define custom abilities here.
 			onBasePowerPriority: 8,
 			onBasePower: function (basePower, pokemon, target, move) {
 				return this.chainModify([0x14CD, 0x1000]); // not sure how this one works but this was in the Aerilate code in Pokemon Showdown.
-			}
+			},
 		},
 		id: "incinerate",
 		name: "Incinerate",
@@ -538,7 +538,7 @@ exports.BattleAbilities = { // define custom abilities here.
 				target: move.target,
 				disabled: false,
 				used: false,
-				virtual: true
+				virtual: true,
 			};
 			pokemon.moves[0] = toId(move.name);
 			this.add('message', pokemon.name + ' acquired a new move using its Drawing Request!');
@@ -615,46 +615,46 @@ exports.BattleAbilities = { // define custom abilities here.
 	'invocation': {
 		desc: 'Randomly transforms into a fossil god on switch-in.',
 		shortDesc: 'Transforms into a fossil.',
-		onStart: function(pokemon) {
+		onStart: function (pokemon) {
 			let fossils = ['Omastar', 'Kabutops', 'Aerodactyl', 'Cradily', 'Armaldo', 'Bastiodon', 'Rampardos', 'Carracosta', 'Archeops', 'Aurorus', 'Tyrantrum'];
 			let fossil = fossils.sample(1)[0];
 			pokemon.formeChange(fossil);
 			this.add('-formechange', pokemon, fossil, '[msg]');
 			let move = 'ancientpower';
 			switch (pokemon.template.speciesid) {
-				case 'omastar':
-					move = 'abstartselect';
-					break;
-				case 'kabutops':
-					move = 'wait4baba';
-					break;
-				case 'aerodactyl':
-					move = 'balancedstrike';
-					break;
-				case 'cradily':
-					move = 'texttospeech';
-					break;
-				case 'armaldo':
-					move = 'holyducttapeofclaw';
-					break;
-				case 'bastiodon':
-					move = 'warecho';
-					break;
-				case 'rampardos':
-					move = 'skullsmash';
-					break;
-				case 'carracosta':
-					move = 'danceriot';
-					break;
-				case 'archeops':
-					move = 'bluescreenofdeath';
-					break;
-				case 'aurorus':
-					move = 'portaltospaaaaaaace';
-					break;
-				case 'tyrantrum':
-					move = 'doubleascent';
-					break;
+			case 'omastar':
+				move = 'abstartselect';
+				break;
+			case 'kabutops':
+				move = 'wait4baba';
+				break;
+			case 'aerodactyl':
+				move = 'balancedstrike';
+				break;
+			case 'cradily':
+				move = 'texttospeech';
+				break;
+			case 'armaldo':
+				move = 'holyducttapeofclaw';
+				break;
+			case 'bastiodon':
+				move = 'warecho';
+				break;
+			case 'rampardos':
+				move = 'skullsmash';
+				break;
+			case 'carracosta':
+				move = 'danceriot';
+				break;
+			case 'archeops':
+				move = 'bluescreenofdeath';
+				break;
+			case 'aurorus':
+				move = 'portaltospaaaaaaace';
+				break;
+			case 'tyrantrum':
+				move = 'doubleascent';
+				break;
 			}
 			let index = pokemon.moves.indexOf('godswrath');
 			move = this.getMove(move);
@@ -666,7 +666,7 @@ exports.BattleAbilities = { // define custom abilities here.
 				target: move.target,
 				disabled: false,
 				used: false,
-				virtual: true
+				virtual: true,
 			};
 			pokemon.moves[index] = toId(move.name);
 		},

@@ -242,7 +242,7 @@ exports.BattleScripts = {
 				moves: ['hydropump', 'flashcannon'],
 				signatureMoves: ['setmine', 'locknload', 'assassinate'],
 				evs: {hp: 252, spa: 252, spe: 4}, nature: 'Modest',
-				ivs: {atk: 0}
+				ivs: {atk: 0},
 			},
 			'Liria_10': {
 				species: 'Roserade', ability: 'Drawing Request', item: 'Black Sludge', gender: 'F',
@@ -469,14 +469,14 @@ exports.BattleScripts = {
 				moves: ['hydropump', 'flashcannon'],
 				signatureMoves: ['setmine', 'locknload', 'assassinate'],
 				evs: {hp: 252, spa: 252, spe: 4}, nature: 'Modest',
-				ivs: {atk: 0}
+				ivs: {atk: 0},
 			},
 			'Liria_10': {
 				species: 'Roserade', ability: 'Drawing Request', item: 'Black Sludge', gender: 'F',
 				moves: ['gigadrain', 'leechseed', 'sleeppowder', 'sludgebomb', 'spikes', 'toxicspikes', 'aromatherapy', 'synthesis'],
 				signatureMove: 'quicksketch',
 				evs: {hp: 252, spd: 240, spe: 16}, nature: 'Calm',
-				ivs: {atk: 0}
+				ivs: {atk: 0},
 			},
 			'Lyca': {
 				species: 'Absol', ability: 'Jack(y) of All Trades', item: 'Scope Lens', gender: 'F',
@@ -708,14 +708,14 @@ exports.BattleScripts = {
 				moves: ['hydropump', 'flashcannon'],
 				signatureMoves: ['setmine', 'locknload', 'assassinate'],
 				evs: {hp: 252, spa: 252, spe: 4}, nature: 'Modest',
-				ivs: {atk: 0}
+				ivs: {atk: 0},
 			},
 			'Liria_10': {
 				species: 'Roserade', ability: 'Drawing Request', item: 'Black Sludge', gender: 'F',
 				moves: ['gigadrain', 'leechseed', 'sleeppowder', 'sludgebomb', 'spikes', 'toxicspikes', 'aromatherapy', 'synthesis'],
 				signatureMove: 'quicksketch',
 				evs: {hp: 252, spd: 240, spe: 16}, nature: 'Calm',
-				ivs: {atk: 0}
+				ivs: {atk: 0},
 			},
 			'Lyca': {
 				species: 'Absol', ability: 'Jack(y) of All Trades', item: 'Scope Lens', gender: 'F',

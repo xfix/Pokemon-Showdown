@@ -1,5 +1,5 @@
 // This code is awful, and I know it.
-
+"using strict";
 let config = Config.ircconfig;
 
 exports.report = function report(message) {
@@ -287,7 +287,7 @@ let ircConnection = {
 	sendTo: function (room, message) {
 		say(room.id, filter(message));
 	},
-	popup: identity()
+	popup: identity(),
 };
 
 connection.on('message', function parseMessage(from, to, text, message) {

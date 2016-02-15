@@ -1,3 +1,5 @@
+"use strict";
+
 exports.BattleScripts = {
 	init: function () {
 		for (let i in this.data.Pokedex) {

@@ -7,7 +7,7 @@ exports.BattleItems = {
 		num: 444,
 		spritenum: 242,
 		fling: {
-			basePower: 10
+			basePower: 10,
 		},
 		onResidualOrder: 5,
 		onResidualSubOrder: 2,
@@ -26,7 +26,7 @@ exports.BattleItems = {
 		name: 'Speed Shoes',
 		num: 445,
 		fling: {
-			basePower: 15
+			basePower: 15,
 		},
 		desc: "Doubles speed.",
 		shortDesc: "Doubles speed.",

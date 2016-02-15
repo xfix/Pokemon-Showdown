@@ -348,7 +348,7 @@ exports.BattleMovedex = {
 				}
 				move.type = 'Normal';
 				move.accuracy = 100;
-			},
+			}
 		},
 		eeveelutiontypes: ['Fire', 'Water', 'Electric', 'Psychic', 'Dark', 'Grass', 'Ice', 'Fairy'],
 		secondary: false,

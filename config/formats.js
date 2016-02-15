@@ -374,7 +374,7 @@ exports.Formats = [
 		name: "Uber Triples",
 		desc: [
 			"Uber Triples",
-			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3511522/\">Like Smogon Triples but no Uber bans.</a>"
+			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3511522/\">Like Smogon Triples but no Uber bans.</a>",
 		],
 		section: "ORAS Triples",
 
@@ -936,12 +936,11 @@ exports.Formats = [
 			this.add('-start', pokemon, 'typechange', typeStr);
 		},
 	},
-	
+
 	{
 		name: "Extreme Tier Shift",
 		mod: 'extremetiershift',
 		section: "Other Metagames",
-		
 		ruleset: ['Ubers'],
 	},
 
