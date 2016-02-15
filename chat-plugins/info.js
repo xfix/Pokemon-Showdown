@@ -2723,7 +2723,6 @@ exports.commands = {
 
 		this.sendReplyBox(target);
 	},
-<<<<<<< HEAD
 	sdata: 'seasonaldata',
 	seasonaldata: function (target, room, user) {
 		if (!this.canBroadcast()) return;
@@ -2860,9 +2859,6 @@ exports.commands = {
 		"!seasonaldata [pokemon/item/move/ability] - Show everyone these details. Requires: + % @ & ~"],
 	htmlboxhelp: ["/htmlbox [message] - Displays a message, parsing HTML code contained. Requires: ~ # with global authority"]
 
-=======
-	htmlboxhelp: ["/htmlbox [message] - Displays a message, parsing HTML code contained. Requires: ~ # with global authority"],
->>>>>>> 9af449e8a945d4dbe2f2084f51e2f3dd9d5804d4
 };
 
 process.nextTick(() => {
