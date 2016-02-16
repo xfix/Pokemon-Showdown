@@ -7,7 +7,7 @@ exports.BattleScripts = {
 			let adjustment = 0;
 
 			if (this.data.FormatsData[i]) tier = this.data.FormatsData[i].tier;
-			if (!tier && this.data.Pokedex[i].baseSpecies) tier = this.data.FormatsData[Tools.toId(this.data.Pokedex[i].baseSpecies)].tier;
+			if (!tier && this.data.Pokedex[i].baseSpecies) tier = this.data.FormatsData[Tools.getId(this.data.Pokedex[i].baseSpecies)].tier;
 
 			switch (tier) {
 			case 'UU':
