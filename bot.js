@@ -119,7 +119,7 @@ function identity(value) {
 
 function parseRaw(message) {
 	return message
-		.replace(/<font color=#559955>Super Effective<\/font><\/b>/g, "\x033Super Effective\x0F")
+		.replace(/<font color="#\d{6}">Super Effective<\/font><\/b>/g, "\x033Super Effective\x0F")
 		.replace(/<a [^>]*room=[^>]*>(.*?)<\/a>/g, "$1")
 		.replace(/<a href="(.+?)">(.*?)<\/a>/g, "[$2]($1)")
 		.replace(/<li>/g, "\n  • ")
@@ -127,14 +127,14 @@ function parseRaw(message) {
 		.replace(/<small style="display:none">.*?<\/small>/g, "")
 		.replace(/<\/?(?:b|strong)(?: class="username")?>/g, "\x02")
 		.replace(/<\/?em>/g, "\x1D")
-		.replace(/<(?:\/span|\/font|font color=black)>/g, "\x0F")
+		.replace(/<(?:\/span|\/font|font color=\w+)>/g, "\x0F")
 		.replace(/<span class="message-effect-weak">/g, "\x02\x034")
 		.replace(/<span class="message-effect-resist">/g, "\x02\x0312")
 		.replace(/<span class="message-effect-immune">/g, "\x02\x0314")
 		.replace(/<span class="message-learn-canlearn">/g, "\x02\x1F\x033")
 		.replace(/<span class="message-learn-cannotlearn">/g, "\x02\x1F\x034")
-		.replace(/<font color=#585858>/g, "\x0314")
-		.replace(/<font color=#999999>/g, "\x0314")
+		.replace(/<font color="#\d{6}">/g, "\x0314")
+		.replace(/<\/font>/g, "\x0F")
 		.replace(/&nbsp;|&ThickSpace;| +/g, " ")
 		.replace(/&#10003;/g, "✓")
 		.replace(/&lt;/g, "<")

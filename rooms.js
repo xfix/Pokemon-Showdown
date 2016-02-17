@@ -422,10 +422,10 @@ let GlobalRoom = (() => {
 		this.maxUsers = 0;
 		this.maxUsersDate = 0;
 
-		this.reportUserStatsInterval = setInterval(
-			() => this.reportUserStats(),
-			REPORT_USER_STATS_INTERVAL
-		);
+//		this.reportUserStatsInterval = setInterval(
+//			this.reportUserStats.bind(this),
+//			REPORT_USER_STATS_INTERVAL
+//		);
 
 		this.periodicMatchInterval = setInterval(
 			() => this.periodicMatch(),
