@@ -1,5 +1,6 @@
 "use strict";
 
+global.toId = require('./tools.js').includeMods().getId;
 exports.BattleScripts = {
 	init: function () {
 		for (let i in this.data.Pokedex) {
@@ -7,7 +8,7 @@ exports.BattleScripts = {
 			let adjustment = 0;
 
 			if (this.data.FormatsData[i]) tier = this.data.FormatsData[i].tier;
-			if (!tier && this.data.Pokedex[i].baseSpecies) tier = this.data.FormatsData[Tools.getId(this.data.Pokedex[i].baseSpecies)].tier;
+			if (!tier && this.data.Pokedex[i].baseSpecies) tier = this.data.FormatsData[toId(this.data.Pokedex[i].baseSpecies)].tier;
 
 			switch (tier) {
 			case 'UU':

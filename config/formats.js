@@ -945,8 +945,8 @@ exports.Formats = [
 		mod: 'accessorize',
 		ruleset: ['Ubers'],
 		onValidateSet: function (set) {
-			var template = this.getTemplate(set.species || set.name);
-			var item = this.getItem(set.item);
+			let template = this.getTemplate(set.species || set.name);
+			let item = this.getItem(set.item);
 			switch (item.id) {
 			case 'charcoal': case 'spelltag': case 'magnet': case 'sharpbeak': case 'dragonfang': case 'nevermeltice':
 				if (template.baseStats.def <= 5 || template.baseStats.spd <= 5) return ["" + template.species + " does not have enough Def. or Sp. Def. to hold " + item.name + "."];
@@ -961,32 +961,32 @@ exports.Formats = [
 				if (template.baseStats.spd <= 10) return ["" + template.species + " does not have enough Special Defense to hold " + item.name + "."];
 				break;
 			}
-		}
+		},
 	},
 	{
 		name: "Protean Palace",
 		section: "Other Metagames",
-	  
+
 		ruleset: ['Pokemon', 'Standard', 'Team Preview'],
 		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Lucarionite'],
-		onBeforeMove: function(pokemon, target, move) {
+		onBeforeMove: function (pokemon, target, move) {
 			if (!move) return;
-			var moveType = '';
+			let moveType = '';
 			if (move.id === 'hiddenpower') {
 				moveType = pokemon.hpType;
-			} else if (move.type === 'Normal' && pokemon.ignore && !pokemon.ignore['Ability']) {
+			} else if (move.type === 'Normal' && (pokemon.ignore ? !pokemon.ignore['Ability'] : true)) {
 				switch(pokemon.ability) {
-					case 'aerilate':
-						moveType = 'Flying';
-						break;
-					case 'pixilate':
-						moveType = 'Fairy';
-						break;
-					case 'refrigerate':
-						moveType = 'Ice';
-						break;
-					default:
-						moveType = 'Normal';
+				case 'aerilate':
+					moveType = 'Flying';
+					break;
+				case 'pixilate':
+					moveType = 'Fairy';
+					break;
+				case 'refrigerate':
+					moveType = 'Ice';
+					break;
+				default:
+					moveType = 'Normal';
 				}
 			} else {
 				moveType = move.type;
@@ -995,7 +995,7 @@ exports.Formats = [
 				this.add('-start', pokemon, 'typechange', moveType);
 				pokemon.setType(moveType);
 			}
-		}
+		},
 	},
 	// BW2 Singles
 	///////////////////////////////////////////////////////////////////
