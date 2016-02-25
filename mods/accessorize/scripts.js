@@ -4,8 +4,8 @@ exports.BattleScripts = {
 	mixTemplate: function (pokemon, type, deltas) {
 		if (!type || !(type in Tools.data.TypeChart)) throw TypeError("Must specify valid type!");
 		if (!deltas) throw TypeError("Must specify deltas!");
-		var template = Object.clone(this.getTemplate(pokemon.species), true); // Avoid editing original version
-		for (var stat in template.baseStats) {
+		let template = Object.clone(this.getTemplate(pokemon.species), true); // Avoid editing original version
+		for (let stat in template.baseStats) {
 			template.baseStats[stat] += deltas[stat] || 0;
 		}
 		pokemon.formeChange(template);

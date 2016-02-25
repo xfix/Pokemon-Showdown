@@ -119,7 +119,7 @@ function identity(value) {
 
 function parseRaw(message) {
 	return message
-		.replace(/<font color="#\d{6}">Super Effective<\/font><\/b>/g, "\x033Super Effective\x0F")
+		.replace(/<font color="?#\d{6}"?>Super Effective<\/font><\/b>/g, "\x033Super Effective\x0F")
 		.replace(/<a [^>]*room=[^>]*>(.*?)<\/a>/g, "$1")
 		.replace(/<a href="(.+?)">(.*?)<\/a>/g, "[$2]($1)")
 		.replace(/<li>/g, "\n  • ")

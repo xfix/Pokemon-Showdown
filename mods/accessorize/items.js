@@ -269,5 +269,5 @@ exports.BattleItems = {
 				this.mixTemplate(pokemon, 'Psychic', {def: -10, spa: 25, spd: 10, spe: 15});
 			}
 		},
-	}
+	},
 };

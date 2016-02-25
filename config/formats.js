@@ -975,7 +975,7 @@ exports.Formats = [
 			if (move.id === 'hiddenpower') {
 				moveType = pokemon.hpType;
 			} else if (move.type === 'Normal' && (pokemon.ignore ? !pokemon.ignore['Ability'] : true)) {
-				switch(pokemon.ability) {
+				switch (pokemon.ability) {
 				case 'aerilate':
 					moveType = 'Flying';
 					break;
