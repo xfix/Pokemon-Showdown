@@ -352,7 +352,6 @@ exports.Formats = [
 
 	// Other Metagames
 	///////////////////////////////////////////////////////////////////
-
 	{
 		name: "Skillmons OU",
 		section: "Skillmons",
@@ -361,6 +360,15 @@ exports.Formats = [
 		mod: 'skillmons',
 		ruleset: ['Pokemon', 'Team Preview', 'Sleep Clause Mod', 'Species Clause', 'Endless Battle Clause', 'Exact HP Mod', 'Baton Pass Clause'],
 		banlist: ['Unreleased', 'Illegal', 'Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Lucarionite', 'Mawilite', 'Salamencite']
+	},
+	{
+		name: "Skillmons Ubers",
+		section: "Skillmons",
+		searchShow: false,
+
+		mod: 'skillmons',
+		ruleset: ['Pokemon', 'Team Preview', 'Sleep Clause Mod', 'Species Clause', 'Endless Battle Clause', 'Exact HP Mod', 'Baton Pass Clause'],
+		banlist: ['Unreleased', 'Illegal']
 	},
 	{
 		name: "Mix and Mega",
