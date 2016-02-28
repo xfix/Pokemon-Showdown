@@ -367,7 +367,7 @@ exports.Formats = [
 		searchShow: false,
 
 		mod: 'skillmons',
-		ruleset: ['Pokemon', 'Team Preview', 'Sleep Clause Mod', 'Species Clause', 'Endless Battle Clause', 'Exact HP Mod', 'Baton Pass Clause'],
+		ruleset: ['Pokemon', 'Team Preview', 'Sleep Clause Mod', 'Species Clause', 'Endless Battle Clause', 'Exact HP Mod', 'Baton Pass Clause', 'Mega Rayquaza Clause'],
 		banlist: ['Unreleased', 'Illegal']
 	},
 	{
