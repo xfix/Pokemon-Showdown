@@ -211,6 +211,9 @@ exports.commands = {
 						return this.errorReply('The user "' + targetUser.name + '" does not have permission to join "' + innerTarget + '".');
 					}
 				}
+				if (targetRoom.isPrivate && !(user.userid in targetRoom.auth) && !user.can('makeroom')) {
+					return this.errorReply('You do not have permission to invite people to this room.');
+				}
 
 				target = '/invite ' + targetRoom.id;
 				break;
@@ -512,7 +515,7 @@ exports.commands = {
 		} else {
 			if (!this.can('makeroom')) return;
 		}
-		if (room.tour && !room.tour.tour.modjoin) return this.errorReply("You can't do this in tournaments where modjoin is prohibited.");
+		if (room.tour && !room.tour.modjoin) return this.errorReply("You can't do this in tournaments where modjoin is prohibited.");
 		if (target === 'off' || target === 'false') {
 			delete room.modjoin;
 			this.addModCommand("" + user.name + " turned off modjoin.");
@@ -971,7 +974,10 @@ exports.commands = {
 				this.privateModCommand("(" + targetUser.name + "'s ac account: " + acAccount + ")");
 			}
 		}
-		let lastid = this.getLastIdOf(targetUser);
+		if (targetUser.confirmed && room.chatRoomData && !room.isPrivate) {
+			Monitor.log("[CrisisMonitor] Confirmed user " + targetUser.name + (targetUser.confirmed !== targetUser.userid ? " (" + targetUser.confirmed + ")" : "") + " was roombanned from " + room.id + " by " + user.name + ", and should probably be demoted.");
+		}
+		let lastid = targetUser.getLastId();
 		this.add('|unlink|roomhide|' + lastid);
 		if (lastid !== toId(this.inputUsername)) this.add('|unlink|roomhide|' + toId(this.inputUsername));
 	},
@@ -1054,7 +1060,7 @@ exports.commands = {
 
 		this.addModCommand("" + targetUser.name + " was warned by " + user.name + "." + (target ? " (" + target + ")" : ""));
 		targetUser.send('|c|~|/warn ' + target);
-		let userid = this.getLastIdOf(targetUser);
+		let userid = targetUser.getLastId();
 		this.add('|unlink|' + userid);
 		if (userid !== toId(this.inputUsername)) this.add('|unlink|' + toId(this.inputUsername));
 	},
@@ -1117,7 +1123,7 @@ exports.commands = {
 		if (targetUser in room.users) targetUser.popup("|modal|" + user.name + " has muted you in " + room.id + " for " + muteDuration.duration() + ". " + target);
 		this.addModCommand("" + targetUser.name + " was muted by " + user.name + " for " + muteDuration.duration() + "." + (target ? " (" + target + ")" : ""));
 		if (targetUser.autoconfirmed && targetUser.autoconfirmed !== targetUser.userid) this.privateModCommand("(" + targetUser.name + "'s ac account: " + targetUser.autoconfirmed + ")");
-		let userid = this.getLastIdOf(targetUser);
+		let userid = targetUser.getLastId();
 		this.add('|unlink|' + userid);
 		if (userid !== toId(this.inputUsername)) this.add('|unlink|' + toId(this.inputUsername));
 
@@ -1163,43 +1169,44 @@ exports.commands = {
 			return this.errorReply("The reason is too long. It cannot exceed " + MAX_REASON_LENGTH + " characters.");
 		}
 		if (!this.can('lock', targetUser)) return false;
+		let name = targetUser.getLastName();
+		let userid = targetUser.getLastId();
 
 		if ((targetUser.locked || Users.checkBanned(targetUser.latestIp)) && !target) {
 			let problem = " but was already " + (targetUser.locked ? "locked" : "banned");
-			return this.privateModCommand("(" + targetUser.name + " would be locked by " + user.name + problem + ".)");
+			return this.privateModCommand("(" + name + " would be locked by " + user.name + problem + ".)");
 		}
 
 		if (targetUser.confirmed) {
 			if (cmd === 'forcelock') {
 				let from = targetUser.deconfirm();
-				Monitor.log("[CrisisMonitor] " + targetUser.name + " was locked by " + user.name + " and demoted from " + from.join(", ") + ".");
+				Monitor.log("[CrisisMonitor] " + name + " was locked by " + user.name + " and demoted from " + from.join(", ") + ".");
 			} else {
-				return this.sendReply("" + targetUser.name + " is a confirmed user. If you are sure you would like to lock them use /forcelock.");
+				return this.sendReply("" + name + " is a confirmed user. If you are sure you would like to lock them use /forcelock.");
 			}
 		} else if (cmd === 'forcelock') {
-			return this.errorReply("Use /lock; " + targetUser.name + " is not a confirmed user.");
+			return this.errorReply("Use /lock; " + name + " is not a confirmed user.");
 		}
 
 		// Destroy personal rooms of the locked user.
 		for (let i in targetUser.roomCount) {
 			if (i === 'global') continue;
 			let targetRoom = Rooms.get(i);
-			if (targetRoom.isPersonal && targetRoom.auth[targetUser.userid] && targetRoom.auth[targetUser.userid] === '#') {
+			if (targetRoom.isPersonal && targetRoom.auth[userid] && targetRoom.auth[userid] === '#') {
 				targetRoom.destroy();
 			}
 		}
 
 		targetUser.popup("|modal|" + user.name + " has locked you from talking in chats, battles, and PMing regular users." + (target ? "\n\nReason: " + target : "") + "\n\nIf you feel that your lock was unjustified, you can still PM staff members (%, @, &, and ~) to discuss it" + (Config.appealurl ? " or you can appeal:\n" + Config.appealurl : ".") + "\n\nYour lock will expire in a few days.");
 
-		this.addModCommand("" + targetUser.name + " was locked from talking by " + user.name + "." + (target ? " (" + target + ")" : ""));
+		this.addModCommand("" + name + " was locked from talking by " + user.name + "." + (target ? " (" + target + ")" : ""));
 		let alts = targetUser.getAlts();
-		let acAccount = (targetUser.autoconfirmed !== targetUser.userid && targetUser.autoconfirmed);
+		let acAccount = (targetUser.autoconfirmed !== userid && targetUser.autoconfirmed);
 		if (alts.length) {
-			this.privateModCommand("(" + targetUser.name + "'s " + (acAccount ? " ac account: " + acAccount + ", " : "") + "locked alts: " + alts.join(", ") + ")");
+			this.privateModCommand("(" + name + "'s " + (acAccount ? " ac account: " + acAccount + ", " : "") + "locked alts: " + alts.join(", ") + ")");
 		} else if (acAccount) {
-			this.privateModCommand("(" + targetUser.name + "'s ac account: " + acAccount + ")");
+			this.privateModCommand("(" + name + "'s ac account: " + acAccount + ")");
 		}
-		let userid = this.getLastIdOf(targetUser);
 		this.add('|unlink|hide|' + userid);
 		if (userid !== toId(this.inputUsername)) this.add('|unlink|hide|' + toId(this.inputUsername));
 
@@ -1245,50 +1252,51 @@ exports.commands = {
 			return this.errorReply("The reason is too long. It cannot exceed " + MAX_REASON_LENGTH + " characters.");
 		}
 		if (!this.can('ban', targetUser)) return false;
+		let name = targetUser.getLastName();
+		let userid = targetUser.getLastId();
 
 		if (Users.checkBanned(targetUser.latestIp) && !target && !targetUser.connected) {
 			let problem = " but was already banned";
-			return this.privateModCommand("(" + targetUser.name + " would be banned by " + user.name + problem + ".)");
+			return this.privateModCommand("(" + name + " would be banned by " + user.name + problem + ".)");
 		}
 
 		if (targetUser.confirmed) {
 			if (cmd === 'forceban') {
 				let from = targetUser.deconfirm();
-				Monitor.log("[CrisisMonitor] " + targetUser.name + " was banned by " + user.name + " and demoted from " + from.join(", ") + ".");
+				Monitor.log("[CrisisMonitor] " + name + " was banned by " + user.name + " and demoted from " + from.join(", ") + ".");
 			} else {
-				return this.sendReply("" + targetUser.name + " is a confirmed user. If you are sure you would like to ban them use /forceban.");
+				return this.sendReply("" + name + " is a confirmed user. If you are sure you would like to ban them use /forceban.");
 			}
 		} else if (cmd === 'forceban') {
-			return this.errorReply("Use /ban; " + targetUser.name + " is not a confirmed user.");
+			return this.errorReply("Use /ban; " + name + " is not a confirmed user.");
 		}
 
 		// Destroy personal rooms of the banned user.
 		for (let i in targetUser.roomCount) {
 			if (i === 'global') continue;
 			let targetRoom = Rooms.get(i);
-			if (targetRoom.isPersonal && targetRoom.auth[targetUser.userid] && targetRoom.auth[targetUser.userid] === '#') {
+			if (targetRoom.isPersonal && targetRoom.auth[userid] && targetRoom.auth[userid] === '#') {
 				targetRoom.destroy();
 			}
 		}
 
 		targetUser.popup("|modal|" + user.name + " has banned you." + (target ? "\n\nReason: " + target : "") + (Config.appealurl ? "\n\nIf you feel that your ban was unjustified, you can appeal:\n" + Config.appealurl : "") + "\n\nYour ban will expire in a few days.");
 
-		this.addModCommand("" + targetUser.name + " was banned by " + user.name + "." + (target ? " (" + target + ")" : ""), " (" + targetUser.latestIp + ")");
+		this.addModCommand("" + name + " was banned by " + user.name + "." + (target ? " (" + target + ")" : ""), " (" + targetUser.latestIp + ")");
 		let alts = targetUser.getAlts();
-		let acAccount = (targetUser.autoconfirmed !== targetUser.userid && targetUser.autoconfirmed);
+		let acAccount = (targetUser.autoconfirmed !== userid && targetUser.autoconfirmed);
 		if (alts.length) {
 			let guests = alts.length;
 			alts = alts.filter(alt => alt.substr(0, 6) !== 'Guest ');
 			guests -= alts.length;
-			this.privateModCommand("(" + targetUser.name + "'s " + (acAccount ? " ac account: " + acAccount + ", " : "") + "banned alts: " + alts.join(", ") + (guests ? " [" + guests + " guests]" : "") + ")");
+			this.privateModCommand("(" + name + "'s " + (acAccount ? " ac account: " + acAccount + ", " : "") + "banned alts: " + alts.join(", ") + (guests ? " [" + guests + " guests]" : "") + ")");
 			for (let i = 0; i < alts.length; ++i) {
 				this.add('|unlink|' + toId(alts[i]));
 			}
 		} else if (acAccount) {
-			this.privateModCommand("(" + targetUser.name + "'s ac account: " + acAccount + ")");
+			this.privateModCommand("(" + name + "'s ac account: " + acAccount + ")");
 		}
 
-		let userid = this.getLastIdOf(targetUser);
 		this.add('|unlink|hide|' + userid);
 		if (userid !== toId(this.inputUsername)) this.add('|unlink|hide|' + toId(this.inputUsername));
 		targetUser.ban(false, userid);
@@ -1493,6 +1501,7 @@ exports.commands = {
 		if (targetUser.confirmed) return this.errorReply("User '" + name + "' is already confirmed.");
 
 		targetUser.setGroup(' ', true);
+		this.sendReply("User '" + name + "' is now confirmed.");
 	},
 	confirmuserhelp: ["/confirmuser [username] - Confirms the user (makes them immune to locks). Requires: & ~"],
 
@@ -1689,7 +1698,7 @@ exports.commands = {
 		let targetUser = this.targetUser;
 		let name = this.targetUsername;
 		if (!targetUser) return this.errorReply("User '" + name + "' not found.");
-		let userid = this.getLastIdOf(targetUser);
+		let userid = targetUser.getLastId();
 		let hidetype = '';
 		if (!user.can('lock', targetUser) && !user.can('ban', targetUser, room)) {
 			this.errorReply("/hidetext - Access denied.");
@@ -1757,15 +1766,39 @@ exports.commands = {
 		if (isWin) {
 			command = path.normalize(__dirname + '/lib/winmodlog') + ' tail ' + lines + ' ' + filename;
 		} else {
-			command = 'tail -' + lines + ' ' + filename;
+			command = 'tail -' + lines + ' ' + filename + ' | tac';
 		}
 		let grepLimit = 100;
+		let strictMatch = false;
 		if (wordSearch) { // searching for a word instead
-			if (target.match(/^["'].+["']$/)) target = target.substring(1, target.length - 1);
-			if (isWin) {
-				command = path.normalize(__dirname + '/lib/winmodlog') + ' ws ' + grepLimit + ' "' + target.replace(/%/g, "%%").replace(/([\^"&<>\|])/g, "^$1") + '" ' + filename;
+			let searchString = target;
+			strictMatch = true; // search for a 1:1 match?
+
+			if (searchString.match(/^["'].+["']$/)) {
+				searchString = searchString.substring(1, searchString.length - 1);
+			} else if (isWin) {  // ID search with RegEx isn't implemented for windows yet (feel free to add it to winmodlog.cmd)
+				target = '"' + target + '"';  // add quotes to target so the caller knows they are getting a strict match
 			} else {
-				command = "awk '{print NR,$0}' " + filename + " | sort -nr | cut -d' ' -f2- | grep -m" + grepLimit + " -i '" + target.replace(/\\/g, '\\\\\\\\').replace(/["'`]/g, '\'\\$&\'').replace(/[\{\}\[\]\(\)\$\^\.\?\+\-\*]/g, '[$&]') + "'";
+				// search for ID: allow any number of non-word characters (\W*) in between the letters we have to match.
+				// i.e. if searching for "myUsername", also match on "My User-Name".
+				// note that this doesn't really add a lot of unwanted results, since we use \b..\b
+				target = toId(target);
+				searchString = '\\b' + target.split('').join('\\W*') + '\\b';
+				strictMatch = false;
+			}
+
+			if (isWin) {
+				if (strictMatch) {
+					command = path.normalize(__dirname + '/lib/winmodlog') + ' ws ' + grepLimit + ' "' + searchString.replace(/%/g, "%%").replace(/([\^"&<>\|])/g, "^$1") + '" ' + filename;
+				} else {
+					// doesn't happen. ID search with RegEx isn't implemented for windows yet (feel free to add it to winmodlog.cmd and call it from here)
+				}
+			} else {
+				if (strictMatch) {
+					command = "awk '{print NR,$0}' " + filename + " | sort -nr | cut -d' ' -f2- | grep -m" + grepLimit + " -i '" + searchString.replace(/\\/g, '\\\\\\\\').replace(/["'`]/g, '\'\\$&\'').replace(/[\{\}\[\]\(\)\$\^\.\?\+\-\*]/g, '[$&]') + "'";
+				} else {
+					command = "awk '{print NR,$0}' " + filename + " | sort -nr | cut -d' ' -f2- | grep -m" + grepLimit + " -Ei '" + searchString + "'";
+				}
 			}
 		}
 
@@ -1801,9 +1834,11 @@ exports.commands = {
 				}
 			} else {
 				if (!stdout) {
-					connection.popup("No moderator actions containing '" + target + "' were found on " + roomNames + ".");
+					connection.popup("No moderator actions containing " + target + " were found on " + roomNames + "." +
+					                 (strictMatch ? "" : " Add quotes to the search parameter to search for a phrase, rather than a user."));
 				} else {
-					connection.popup("|wide||html|<p>The last " + grepLimit + " logged actions containing '" + target + "' on " + roomNames + ":</p>" + stdout);
+					connection.popup("|wide||html|<p>The last " + grepLimit + " logged actions containing " + target + " on " + roomNames + "." +
+					                 (strictMatch ? "" : " Add quotes to the search parameter to search for a phrase, rather than a user.") + "</p>" + stdout);
 				}
 			}
 		});
@@ -1853,7 +1888,7 @@ exports.commands = {
 			}
 		} else if (target === 'battles') {
 			if (Monitor.hotpatchLock) return this.errorReply("Hotpatch has been disabled. (" + Monitor.hotpatchLock + ")");
-			Simulator.SimulatorProcess.respawn();
+			Simulator.SimulatorProcess.reinit();
 			return this.sendReply("Battles have been hotpatched. Any battles started after now will use the new code; however, in-progress battles will continue to use the old code.");
 		} else if (target === 'formats') {
 			if (Monitor.hotpatchLock) return this.errorReply("Hotpatch has been disabled. (" + Monitor.hotpatchLock + ")");
@@ -1868,7 +1903,7 @@ exports.commands = {
 				// respawn validator processes
 				TeamValidator.ValidatorProcess.respawn();
 				// respawn simulator processes
-				Simulator.SimulatorProcess.respawn();
+				Simulator.SimulatorProcess.reinit();
 				// broadcast the new formats list to clients
 				Rooms.global.send(Rooms.global.formatListText);
 
@@ -2337,13 +2372,7 @@ exports.commands = {
 
 	savereplay: function (target, room, user, connection) {
 		if (!room || !room.battle) return;
-		let logidx = 0; // spectator log (no exact HP)
-		if (room.battle.ended) {
-			// If the battle is finished when /savereplay is used, include
-			// exact HP in the replay log.
-			logidx = 3;
-		}
-		let data = room.getLog(logidx).join("\n");
+		let data = room.getLog(0).join("\n"); // spectator log (no exact HP)
 		let datahash = crypto.createHash('md5').update(data.replace(/[^(\x20-\x7F)]+/g, '')).digest('hex');
 		let players = room.battle.playerNames;
 		LoginServer.request('prepreplay', {

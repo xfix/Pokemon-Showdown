@@ -5,8 +5,6 @@
 
 'use strict';
 
-const permission = 'announce';
-
 class Poll {
 	constructor(room, question, options) {
 		if (room.pollNumber) {
@@ -118,6 +116,12 @@ class Poll {
 		}
 	}
 
+	updateFor(user) {
+		if (user.userid in this.voters) {
+			user.sendTo(this.room, '|uhtmlchange|poll' + this.room.pollNumber + '|' + this.generateResults(false, this.voters[user.userid]));
+		}
+	}
+
 	display() {
 		let votes = this.generateVotes();
 
@@ -170,7 +174,7 @@ exports.commands = {
 			if (target.length > 1024) return this.errorReply("Poll too long.");
 			let params = target.split(target.includes('|') ? '|' : ',').map(param => param.trim());
 
-			if (!this.can(permission, null, room)) return false;
+			if (!this.can('minigame', null, room)) return false;
 			if (!this.canTalk()) return this.errorReply("You cannot do this while unable to talk.");
 			if (room.poll) return this.errorReply("There is already a poll in progress in this room.");
 
@@ -215,7 +219,7 @@ exports.commands = {
 			if (!room.poll) return this.errorReply("There is no poll running in this room.");
 
 			if (target) {
-				if (!this.can(permission, null, room)) return false;
+				if (!this.can('minigame', null, room)) return false;
 				if (target === 'clear') {
 					if (!room.poll.timeout) return this.errorReply("There is no timer to clear.");
 					clearTimeout(room.poll.timeout);
@@ -254,7 +258,7 @@ exports.commands = {
 		close: 'end',
 		stop: 'end',
 		end: function (target, room, user) {
-			if (!this.can(permission, null, room)) return false;
+			if (!this.can('minigame', null, room)) return false;
 			if (!this.canTalk()) return this.errorReply("You cannot do this while unable to talk.");
 			if (!room.poll) return this.errorReply("There is no poll running in this room.");
 			if (room.poll.timeout) clearTimeout(room.poll.timeout);

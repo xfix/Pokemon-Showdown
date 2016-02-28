@@ -61,6 +61,13 @@ exports.loginserverpublickey = "-----BEGIN RSA PUBLIC KEY-----\n" +
 	subject: 'Pokemon Showdown has crashed!'
 };**/
 
+// basic name filter - removes characters used for impersonation
+//   The basic name filter removes Unicode characters that can be used for impersonation,
+//   like the upside-down exclamation mark (looks like an i), the Greek omicron (looks
+//   like an o), etc. Disable only if you need one of the alphabets it disables, such as
+//   Greek or Cyrillic.
+exports.disablebasicnamefilter = false;
+
 // report joins and leaves - shows messages like "<USERNAME> joined"
 //   Join and leave messages are small and consolidated, so there will never
 //   be more than one line of messages.
@@ -233,6 +240,9 @@ exports.replsocketmode = 0o600;
 //     - tournaments: creating tournaments (/tour new, settype etc.)
 //     - tournamentsmoderation: /tour dq, autodq, end etc.
 //     - tournamentsmanagement: enable/disable tournaments.
+//     - minigame: make minigames (hangman, polls, etc.).
+//     - game: make games.
+//     - gamemanagement: enable/disable games and minigames.
 exports.grouplist = [
 	{
 		symbol: '~',
@@ -261,6 +271,7 @@ exports.grouplist = [
 		disableladder: true,
 		globalonly: true,
 		tournamentsmanagement: true,
+		gamemanagement: true,
 	},
 	{
 		symbol: '#',
@@ -275,6 +286,7 @@ exports.grouplist = [
 		modchatall: true,
 		roomonly: true,
 		tournamentsmanagement: true,
+		gamemanagement: true,
 	},
 	{
 		symbol: '\u2605',
@@ -300,6 +312,7 @@ exports.grouplist = [
 		ip: true,
 		alts: '@u',
 		tournaments: true,
+		game: true,
 	},
 	{
 		symbol: '%',
@@ -321,6 +334,7 @@ exports.grouplist = [
 		tournamentsmoderation: true,
 		jeopardy: true,
 		joinbattle: true,
+		minigame: true,
 	},
 	{
 		symbol: '+',
