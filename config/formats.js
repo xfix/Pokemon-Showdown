@@ -647,8 +647,10 @@ exports.Formats = [
 				move.heal = [2, 3];
 			}
 			if (move.id === 'psychic' && name === 'mabel') {
-				move.name = 'Candy Eating Break Time';
+				move.name = 'Grappling Hook';
+				move.basePower = 110;
 				move.heal = [2, 3];
+				this.add('-message', 'GRAPPLING HOOK!');
 			}
 			if (move.id === 'thunder' && name === 'billcipher') {
 				move.basePower = 200;
