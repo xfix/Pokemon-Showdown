@@ -662,7 +662,7 @@ exports.Formats = [
 			}
 			if (move.id === 'dreameater' && name === 'scaryterry') {
 				move.name = 'Super Dream Eater';
-				move.onTryHit = function () {
+				move.onTryHit = function (target, source, move) {
 					this.attrLastMove('[still]');
 					this.add('-anim', source, "Hyper Beam", target);
 				};
