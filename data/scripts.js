@@ -3264,11 +3264,47 @@ exports.BattleScripts = {
 		let team = [];
 		let variant = this.random(2);
 		let sets = {
+			'AM': {
+				species: 'Tyranitar', ability: 'Adaptability', item: (variant === 1 ? 'Lum Berry' : 'Choice Scarf'), gender: 'M',
+				moves: (variant === 1 ? ['earthquake', 'diamondstorm', 'swordsdance', 'meanlook'] : ['knockoff', 'diamondstorm', 'earthquake']),
+				baseSignatureMove: 'pursuit', signatureMove: "Predator",
+				evs: {atk:252, def:4, spe: 252}, nature: 'Jolly',
+			},
+			'awu': {
+				species: 'Mawile', ability: 'Adaptability', item: 'Expert Belt', gender: 'M',
+				moves: ['meteormash', 'bulletpunch', 'playrough'],
+				baseSignatureMove: 'protect', signatureMove: "Shield of Deflection",
+				evs: {hp:252, atk:252, def:4}, nature: 'Adamant',
+			},
+			'Gangnam Style': {
+				species: 'Snorlax', ability: 'Run Away', item: 'Power Herb', gender: 'M',
+				moves: ['geomancy', 'drainpunch', 'bodyslam'],
+				baseSignatureMove: 'furyswipes', signatureMove: "Mother, Father, Gentleman",
+				evs: {hp:252, atk:252, def:4}, nature: 'Adamant',
+			},
 			'Joim': {
 				species: 'Zapdos', ability: 'Download', item: 'Life Orb', gender: 'M', shiny: true,
 				moves: ['thunderbolt', 'hurricane', ['earthpower', 'roost', 'flamethrower', 'worryseed', 'haze', 'spore'][this.random(6)]],
-				baseSignatureMove: 'milkdrink', signatureMove: "Red Bull Drink",
-				evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
+				baseSignatureMove: 'hyperbeam', signatureMove: "Gaster Blaster",
+				evs: {hp:4, spa:252, spe:252}, nature: 'Modest',
+			},
+			'LegitimateUsername': {
+				species: 'Shuckle', ability: 'Unaware', item: 'Leftovers', gender: 'M',
+				moves: ['leechseed', 'rest', 'foulplay'],
+				baseSignatureMove: 'shellsmash', signatureMove: "Shell Fortress",
+				evs: {hp:252, def:228, spd:28}, nature: 'Calm'
+			},
+			'qtrx': {
+				species: 'Missingno.', ability: 'Levitate', item: 'Focus Sash', gender: 'M',
+				moves: [],
+				baseSignatureMove: 'meditate', signatureMove: "Hidden Power... Normal?",
+				evs: {hp:252, def:4, spa:252}, ivs: {atk:0, spe:0}, nature: 'Quiet',
+			},
+			'The Immortal': {
+				species: 'Blastoise', ability: 'Magic Bounce', item: 'Blastoisinite', gender: 'M', shiny: true,
+				moves: ['shellsmash', 'steameruption', 'dragontail'],
+				baseSignatureMove: 'sleeptalk', signatureMove: "Sleep Walk",
+				evs: {hp:252, def:4, spd:252}, nature: 'Sassy',
 			},
 		};
 

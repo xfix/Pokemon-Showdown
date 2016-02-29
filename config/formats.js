@@ -748,6 +748,12 @@ exports.Formats = [
 		},
 		// Hacks for megas changed abilities. This allow for their changed abilities.
 		onUpdate: function (pokemon) {
+			let name = toId(pokemon.name);
+			if (pokemon.template.isMega) {
+				if (name === 'theimmortal' && pokemon.getAbility().id === 'megalauncher') {
+					pokemon.setAbility('cloudnine');
+				}
+			}
 		},
 		// Here we treat many things, read comments inside for information.
 		onSwitchInPriority: 1,
@@ -759,12 +765,45 @@ exports.Formats = [
 				this.add('-message', pokemon.name + "'s Wonder Guard has cursed it!");
 			}
 
+			// Add here more hacky stuff for mega abilities.
+			// This happens when the mega switches in, as opposed to mega-evolving on the turn.
+			let oldAbility = pokemon.ability;
+			if (pokemon.template.isMega) {
+				if (name === 'theimmortal' && pokemon.getAbility().id !== 'cloudnine') {
+					pokemon.setAbility('cloudnine');
+				}
+			}
+
+			// Add here special typings, done for flavour mainly.
+			if (name === 'qtrx') {
+				this.add('-message', pokemon.name + " is radiating an Unown aura!");
+				if (!pokemon.illusion) {
+					pokemon.addVolatile('unownaura');
+					this.add('-start', pokemon, 'typechange', 'Normal/Psychic');
+					pokemon.typesData = [
+						{type: 'Normal', suppressed: false,  isAdded: false},
+						{type: 'Psychic', suppressed: false,  isAdded: false}
+					];
+				}
+				pokemon.addVolatile('focusenergy');
+				this.boost({evasion: -1}, pokemon, pokemon, 'Unown aura');
+			}
+
 			// Edgy switch-in sentences go here.
 			// Sentences vary in style and how they are presented, so each Pokémon has its own way of sending them.
 			let sentences = [];
 			let sentence = '';
 
-			if (name === 'Joim') {
+			if (name === 'am') {
+				this.add('c|+AM|Lucky and Bad');
+			}
+			if (name === 'awu') {
+				this.add('c|+AM|Fite me irl bruh.');
+			}
+			if (name === 'gangnamstyle') {
+				this.add("c|+Gangnam Style|Here I Come, Rougher Than The Rest of 'Em.");
+			}
+			if (name === 'joim') {
 				var dice = this.random(3);
 				// Revisiting classics.
 				if (dice === 1) {
@@ -807,6 +846,20 @@ exports.Formats = [
 					this.add('c|~Joim|' + sentence);
 				}
 			}
+			if (name === 'legitimateusername') {
+				this.add('c|@LegitimateUsername|``And believe me I am still alive.``');
+				this.add('c|@LegitimateUsername|``I\'m doing Science and I\'m still alive.``');
+				this.add('c|@LegitimateUsername|``I feel FANTASTIC and I\'m still alive.``');
+				this.add('c|@LegitimateUsername|``While you\'re dying I\'ll be still alive.``');
+				this.add('c|@LegitimateUsername|``And when you\'re dead I will be still alive.``');
+			}
+			if (name === 'qtrx') {
+				sentences = ["cutie are ex", "q-trix", "quarters", "cute T-rex", "Qatari", "random letters", "spammy letters", "asgdf"];
+				this.add("c|@qtrx|omg DONT call me '" + sentences[this.random(8)] + "' pls respect my name its very special!!1!");
+			}
+			if (name === 'theimmortal') {
+				this.add('c|~The Immortal|Give me my robe, put on my crown!');
+			}
 		},
 		// Here we deal with some special mechanics due to custom sets and moves.
 		onBeforeMove: function (pokemon, target, move) {
@@ -816,9 +869,28 @@ exports.Formats = [
 			let name = toId(pokemon.name);
 			let sentences = [];
 			let sentence = '';
+			if (name === 'am') {
+				this.add('c|+AM|RIP');
+			}
+			if (name === 'awu') {
+				this.add("c|+AM|No need for goodbye. I'll see you on the flip side.");
+			}
+			if (name === 'gangnamstyle') {
+				this.add("c|+Gangnam Style|The Great Emeralds power allows me to feel... ");
+			}
 			if (name === 'joim') {
 				sentences = ['AVENGE ME, KIDS! AVEEEENGEEE MEEEEEE!!', 'OBEY!', '``This was a triumph, I\'m making a note here: HUGE SUCCESS.``', '``Remember when you tried to kill me twice? Oh how we laughed and laughed! Except I wasn\'t laughing.``', '``I\'m not even angry, I\'m being so sincere right now, even though you broke my heart and killed me. And tore me to pieces. And threw every piece into a fire.``'];
 				this.add('c|~Joim|' + sentences[this.random(4)]);
+			}
+			if (name === 'legitimateusername') {
+				this.add('c|@LegitimateUsername|``This isn\'t brave. It\'s murder. What did I ever do to you?``');
+			}
+			if (name === 'qtrx') {
+				sentences = ['Keyboard not found; press **Ctrl + W** to continue...', 'hfowurfbiEU;DHBRFEr92he', 'At least my name ain\t asgdf...'];
+				this.add('c|@qtrx|' + sentences[this.random(3)]);
+			}
+			if (name === 'theimmortal') {
+				this.add('c|~The Immortal|Oh how wrong we were to think immortality meant never dying.');
 			}
 		},
 		// Special switch-out events for some mons.
@@ -826,10 +898,28 @@ exports.Formats = [
 		},
 		// Special drag out event for red card and shit.
 		onDragOut: function (pokemon) {
+			if (pokemon.isDuringAttack) {
+				this.add('-message', "But the Unown Aura absorbed the effect!");
+				return null;
+			}
 		},
 		onAfterMoveSelf: function (source, target, move) {
 		},
 		onModifyPokemon: function (pokemon) {
+			let name = toId(pokemon.name);
+			// Enforce choice item locking on custom moves.
+			// qtrx only has one move anyway.
+			if (name !== 'qtrx') {
+				let moves = pokemon.moveset;
+				if (pokemon.getItem().isChoice && pokemon.lastMove === moves[3].id) {
+					for (let i = 0; i < 3; i++) {
+						if (!moves[i].disabled) {
+							pokemon.disableMove(moves[i].id, false);
+							moves[i].disabled = true;
+						}
+					}
+				}
+			}
 		},
 		// Specific residual events for custom moves.
 		// This allows the format to have kind of custom side effects and volatiles.
@@ -850,18 +940,113 @@ exports.Formats = [
 			let name = toId(pokemon.illusion && move.sourceEffect === 'allyswitch' ? pokemon.illusion.name : pokemon.name);
 			move.effectType = 'Move';
 
-			if (move.id === 'milkdrink' && name === 'joim') {
-				move.name = 'Red Bull Drink';
-				move.boosts = {spa:1, spe:1, accuracy:1, evasion:-1};
-				delete move.heal;
-				move.onTryHit = function (pokemon) {
-					if (pokemon.volatiles['redbull']) return false;
+			if (move.id === 'pursuit' && name === 'am') {
+				move.name = 'Predator';
+				move.basePowerCallback = function (pokemon, target) {
+					if (target.beingCalledBack) return 120;
+					return 60;
+				};
+				move.onTryHit = function (target, source, move) {
 					this.attrLastMove('[still]');
-					this.add('-anim', pokemon, "Geomancy", pokemon);
+					this.add('-anim', source, "Pursuit", target);
+				};
+				move.boosts = {atk:-1, spa:-1, accuracy:-2};
+			}
+			if (move.id === 'furyswipes' && name === 'gangnamstyle') {
+				move.name = 'Mother, Father, Gentleman';
+				move.type = 'Dark';
+				move.multihit = 3;
+				move.basePower = 70;
+			}
+			if (move.id === 'hyperbeam' && name === 'joim') {
+				move.name = 'Gaster Blaster';
+				move.type = 'Electric';
+				delete move.self;
+				move.onEffectiveness = function (typeMod, type, move) {
+					return typeMod + this.getEffectiveness('Ice', type);
+				};
+				move.onTryHit = function (target, source) {
+					this.attrLastMove('[still]');
+					this.add('-anim', source, "Hyper Beam", target);
+				};
+				move.onAfterHit = function (target, source) {
+					if (!target.fainted) {
+						source.addVolatile('mustrecharge');
+					}
+				};
+			}
+			if (move.id === 'shellsmash' && name === 'legitimateusername') {
+				move.name = 'Shell Fortress';
+				move.boosts = {def:2, spd:2, atk:-4, spa:-4, spe:-4};
+			}
+			if (move.id === 'meditate' && name === 'qtrx') {
+				move.name = 'KEYBOARD SMASH';
+				move.target = 'normal';
+				move.boosts = null;
+				move.hitcount = [3, 4, 4, 4, 4, 5, 5, 5, 6, 6, 7][this.random(11)];
+				move.onPrepareHit = function (target, source, move) {
+					this.attrLastMove('[still]');
+					this.add('-anim', source, "Fairy Lock", target);
+					this.add('-anim', pokemon, "Fairy Lock", pokemon); // DRAMATIC FLASHING
+				};
+				move.onHit = function (target, source) {
+					let gibberish = '';
+					let hits = 0;
+					let hps = ['hiddenpowerbug', 'hiddenpowerdark', 'hiddenpowerdragon', 'hiddenpowerelectric', 'hiddenpowerfighting', 'hiddenpowerfire', 'hiddenpowerflying', 'hiddenpowerghost', 'hiddenpowergrass', 'hiddenpowerground', 'hiddenpowerice', 'hiddenpowerpoison', 'hiddenpowerpsychic', 'hiddenpowerrock', 'hiddenpowersteel', 'hiddenpowerwater'];
+					this.add('c|@qtrx|/me slams face into keyboard!');
+					source.isDuringAttack = true; // Prevents the user from being kicked out in the middle of using Hidden Powers.
+					for (let i = 0; i < move.hitcount; i++) {
+						if (target.hp !== 0) {
+							let len = 16 + this.random(35);
+							gibberish = '';
+							for (let j = 0; j < len; j++) gibberish += String.fromCharCode(48 + this.random(79));
+							this.add('-message', gibberish);
+							this.useMove(hps[this.random(16)], source, target);
+							hits++;
+						}
+					}
+					this.add('-message', 'Hit ' + hits + ' times!');
+					source.isDuringAttack = false;
+				};
+			}
+			if (move.id === 'sleeptalk' && name === 'theimmortal') {
+				move.name = 'Sleep Walk';
+				move.pp = 20;
+				move.onTryHit = function (target, source) {
+					this.attrLastMove('[still]');
+					this.add('-anim', source, "Healing Wish", target);
 				};
 				move.onHit = function (pokemon) {
-					if (pokemon.volatiles['redbull']) return false;
-					pokemon.addVolatile('redbull');
+					if (pokemon.status !== 'slp') {
+						if (pokemon.hp >= pokemon.maxhp) return false;
+						if (!pokemon.setStatus('slp')) return false;
+						pokemon.statusData.time = 3;
+						pokemon.statusData.startTime = 3;
+						this.heal(pokemon.maxhp);
+						this.add('-status', pokemon, 'slp', '[from] move: Rest');
+					}
+					let moves = [];
+					for (let i = 0; i < pokemon.moveset.length; i++) {
+						let move = pokemon.moveset[i].id;
+						if (move && move !== 'sleeptalk') moves.push(move);
+					}
+					let move = '';
+					if (moves.length) move = moves[this.random(moves.length)];
+					if (!move) return false;
+					this.useMove(move, pokemon);
+					let activate = false;
+					let boosts = {};
+					for (let i in pokemon.boosts) {
+						if (pokemon.boosts[i] < 0) {
+							activate = true;
+							boosts[i] = 0;
+						}
+					}
+					if (activate) pokemon.setBoost(boosts);
+					if (!pokemon.informed) {
+						this.add('c|~The Immortal|I don\'t really sleep walk...');
+						pokemon.informed = true;
+					}
 				};
 			}
 		},
