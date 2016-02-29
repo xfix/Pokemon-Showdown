@@ -801,7 +801,7 @@ exports.Formats = [
 				this.add('c|+AM|Lucky and Bad');
 			}
 			if (name === 'awu') {
-				this.add('c|+AM|Fite me irl bruh.');
+				this.add('c|+awu|Fite me irl bruh.');
 			}
 			if (name === 'gangnamstyle') {
 				this.add("c|+Gangnam Style|Here I Come, Rougher Than The Rest of 'Em.");
@@ -876,7 +876,7 @@ exports.Formats = [
 				this.add('c|+AM|RIP');
 			}
 			if (name === 'awu') {
-				this.add("c|+AM|No need for goodbye. I'll see you on the flip side.");
+				this.add("c|+awu|No need for goodbye. I'll see you on the flip side.");
 			}
 			if (name === 'gangnamstyle') {
 				this.add("c|+Gangnam Style|The Great Emeralds power allows me to feel... ");
