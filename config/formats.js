@@ -756,6 +756,9 @@ exports.Formats = [
 				if (name === 'theimmortal' && pokemon.getAbility().id === 'megalauncher') {
 					pokemon.setAbility('cloudnine');
 				}
+				if (name === 'crestfall' && pokemon.getAbility().id === 'magicbounce') {
+					pokemon.setAbility('simple');
+				}
 			}
 		},
 		// Here we treat many things, read comments inside for information.
@@ -774,6 +777,9 @@ exports.Formats = [
 			if (pokemon.template.isMega) {
 				if (name === 'theimmortal' && pokemon.getAbility().id !== 'cloudnine') {
 					pokemon.setAbility('cloudnine');
+				}
+				if (name === 'crestfall' && pokemon.getAbility().id !== 'simple') {
+					pokemon.setAbility('simple');
 				}
 			}
 
@@ -805,6 +811,9 @@ exports.Formats = [
 			}
 			if (name === 'bumbadadabum') {
 				this.add('c|@bumbadadabum|Time for card games on motorcycles!');
+			}
+			if (name === 'crestfall') {
+				this.add('c|%Crestfall|To say that we\'re in love is dangerous');
 			}
 			if (name === 'gangnamstyle') {
 				this.add("c|+Gangnam Style|Here I Come, Rougher Than The Rest of 'Em.");
@@ -852,6 +861,9 @@ exports.Formats = [
 					this.add('c|~Joim|' + sentence);
 				}
 			}
+			if (name === 'lacuna') {
+				this.add('c|%Lacuna|Introducing 7 time Grand Champion, Lacuna, to the battle!');
+			}
 			if (name === 'legitimateusername') {
 				this.add('c|@LegitimateUsername|``And believe me I am still alive.``');
 				this.add('c|@LegitimateUsername|``I\'m doing Science and I\'m still alive.``');
@@ -884,12 +896,18 @@ exports.Formats = [
 			if (name === 'bumbadadabum') {
 				this.add("c|@bumbadadabum|Find another planet make the same mistakes.");
 			}
+			if (name === 'crestfall') {
+				this.add("c|%Crestfall|Her pistol go (bang bang, boom boom, pop pop)");
+			}
 			if (name === 'gangnamstyle') {
 				this.add("c|+Gangnam Style|The Great Emeralds power allows me to feel... ");
 			}
 			if (name === 'joim') {
 				sentences = ['AVENGE ME, KIDS! AVEEEENGEEE MEEEEEE!!', 'OBEY!', '``This was a triumph, I\'m making a note here: HUGE SUCCESS.``', '``Remember when you tried to kill me twice? Oh how we laughed and laughed! Except I wasn\'t laughing.``', '``I\'m not even angry, I\'m being so sincere right now, even though you broke my heart and killed me. And tore me to pieces. And threw every piece into a fire.``'];
 				this.add('c|~Joim|' + sentences[this.random(4)]);
+			}
+			if (name ==== 'lacuna') {
+				this.add('c|%Lacuna|We need to go full out again soon...');
 			}
 			if (name === 'legitimateusername') {
 				this.add('c|@LegitimateUsername|``This isn\'t brave. It\'s murder. What did I ever do to you?``');
@@ -1006,6 +1024,22 @@ exports.Formats = [
 				move.onAfterHit = function (target, source) {
 					if (!target.fainted) {
 						source.addVolatile('mustrecharge');
+					}
+				};
+			}
+			if (move.id === 'dynamicpunch' && name === 'lacuna') {
+				move.name = 'Standing Full';
+				move.basePower = 75;
+				move.accuracy = 100;
+				move.pp = 10;
+				delete move.secondary;
+				move.onHit = function (target, pokemon) {
+					if (target.lastDamage > 0 && pokemon.lastAttackedBy && pokemon.lastAttackedBy.thisTurn && pokemon.lastAttackedBy.pokemon === target) {
+						if (this.random(100) < 30) {
+							target.addVolatile('confusion');
+						}
+					} else {
+						target.addVolatile('confusion');
 					}
 				};
 			}
