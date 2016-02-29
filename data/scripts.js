@@ -3271,7 +3271,7 @@ exports.BattleScripts = {
 				evs: {atk:252, def:4, spe: 252}, nature: 'Jolly',
 			},
 			'awu': {
-				species: 'Mawile', ability: 'Adaptability', item: 'Expert Belt', gender: 'M',
+				species: 'Mawile', ability: 'Adaptability', item: 'Expert Belt', gender: 'F',
 				moves: ['meteormash', 'bulletpunch', 'playrough'],
 				baseSignatureMove: 'protect', signatureMove: "Shield of Deflection",
 				evs: {hp:252, atk:252, def:4}, nature: 'Adamant',
