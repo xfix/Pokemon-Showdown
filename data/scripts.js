@@ -3292,7 +3292,7 @@ exports.BattleScripts = {
 				species: 'Shuckle', ability: 'Unaware', item: 'Leftovers', gender: 'M',
 				moves: ['leechseed', 'rest', 'foulplay'],
 				baseSignatureMove: 'shellsmash', signatureMove: "Shell Fortress",
-				evs: {hp:252, def:228, spd:28}, nature: 'Calm'
+				evs: {hp:252, def:228, spd:28}, nature: 'Calm',
 			},
 			'qtrx': {
 				species: 'Missingno.', ability: 'Levitate', item: 'Focus Sash', gender: 'M',
@@ -3310,14 +3310,14 @@ exports.BattleScripts = {
 
 		// Generate the team randomly.
 		let pool = Object.keys(sets).randomize();
-		for (var i = 0; i < 6; i++) {
+		for (let i = 0; i < 6; i++) {
 			let set = sets[pool[i]];
 			set.level = 100;
 			set.name = pool[i];
 			if (!set.ivs) {
 				set.ivs = {hp:31, atk:31, def:31, spa:31, spd:31, spe:31};
 			} else {
-				for (var iv in {hp:31, atk:31, def:31, spa:31, spd:31, spe:31}) {
+				for (let iv in {hp:31, atk:31, def:31, spa:31, spd:31, spe:31}) {
 					set.ivs[iv] = set.ivs[iv] ? set.ivs[iv] : 31;
 				}
 			}

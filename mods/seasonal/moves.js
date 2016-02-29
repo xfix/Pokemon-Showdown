@@ -1,3 +1,5 @@
+"use strict";
+
 exports.BattleMovedex = {
 	// Cura
 	recover: {
@@ -12,18 +14,18 @@ exports.BattleMovedex = {
 		flags: {heal: 1},
 		onHitSide: function (side, source) {
 			this.add('-message', source.name + "'s Cura heals its team!");
-			var targets = [];
-			for (var p in side.active) {
+			let targets = [];
+			for (let p in side.active) {
 				targets.push(side.active[p]);
 			}
 			if (!targets.length) return false;
-			for (var i = 0; i < targets.length; i++) {
+			for (let i = 0; i < targets.length; i++) {
 				this.heal(Math.ceil(source.maxhp * 0.2), targets[i], source);
 			}
 		},
 		secondary: false,
 		target: "allySide",
-		type: "Normal"
+		type: "Normal",
 	},
 	// Curaga
 	softboiled: {
@@ -38,18 +40,18 @@ exports.BattleMovedex = {
 		flags: {heal: 1},
 		onHitSide: function (side, source) {
 			this.add('-message', source.name + "'s Curaga greatly heals its team!");
-			var targets = [];
-			for (var p in side.active) {
+			let targets = [];
+			for (let p in side.active) {
 				targets.push(side.active[p]);
 			}
 			if (!targets.length) return false;
-			for (var i = 0; i < targets.length; i++) {
+			for (let i = 0; i < targets.length; i++) {
 				this.heal(Math.ceil(source.maxhp * 0.33), targets[i], source);
 			}
 		},
 		secondary: false,
 		target: "allySide",
-		type: "Normal"
+		type: "Normal",
 	},
 	// Wild Growth
 	reflect: {
@@ -65,7 +67,7 @@ exports.BattleMovedex = {
 		sideCondition: 'wildgrowth',
 		secondary: false,
 		target: "allySide",
-		type: "Grass"
+		type: "Grass",
 	},
 	// Power Shield
 	acupressure: {
@@ -81,7 +83,7 @@ exports.BattleMovedex = {
 		volatileStatus: 'powershield',
 		secondary: false,
 		target: "adjacentAllyOrSelf",
-		type: "Fairy"
+		type: "Fairy",
 	},
 	// Rejuvenation
 	holdhands: {
@@ -97,7 +99,7 @@ exports.BattleMovedex = {
 		volatileStatus: 'rejuvenation',
 		secondary: false,
 		target: "adjacentAlly",
-		type: "Grass"
+		type: "Grass",
 	},
 	// Fairy Ward
 	luckychant: {
@@ -113,7 +115,7 @@ exports.BattleMovedex = {
 		sideCondition: 'fairyward',
 		secondary: false,
 		target: "allySide",
-		type: "Normal"
+		type: "Normal",
 	},
 	// Taunt
 	followe: {
@@ -129,7 +131,7 @@ exports.BattleMovedex = {
 		volatileStatus: 'taunting',
 		secondary: false,
 		target: "self",
-		type: "Normal"
+		type: "Normal",
 	},
 	// Sacrifice
 	meditate: {
@@ -145,7 +147,7 @@ exports.BattleMovedex = {
 		volatileStatus: 'sacrifice',
 		secondary: false,
 		target: "self",
-		type: "Normal"
+		type: "Normal",
 	},
 	// Cooperation
 	helpinghand: {
@@ -164,14 +166,14 @@ exports.BattleMovedex = {
 		},
 		onHit: function (target, source) {
 			if (!target) return false;
-			var newPosition = target.position;
+			let newPosition = target.position;
 			if (!source.side.active[newPosition]) return false;
 			if (source.side.active[newPosition].fainted) return false;
 			this.swapPosition(source, newPosition, '[from] move: Cooperation');
 		},
 		secondary: false,
 		target: "adjacentAlly",
-		type: "Psychic"
+		type: "Psychic",
 	},
 	// Slow Down
 	spite: {
@@ -194,7 +196,7 @@ exports.BattleMovedex = {
 		},
 		secondary: false,
 		target: "normal",
-		type: "Ghost"
+		type: "Ghost",
 	},
 	// Healing Touch
 	aromaticmist: {
@@ -212,7 +214,7 @@ exports.BattleMovedex = {
 		},
 		secondary: false,
 		target: "adjacentAlly",
-		type: "Grass"
+		type: "Grass",
 	},
 	// Penance
 	healbell: {
@@ -231,7 +233,7 @@ exports.BattleMovedex = {
 		},
 		secondary: false,
 		target: "allyTeam",
-		type: "Grass"
+		type: "Grass",
 	},
 	// Stop
 	fakeout: {
@@ -249,10 +251,10 @@ exports.BattleMovedex = {
 		},
 		secondary: {
 			chance: 100,
-			volatileStatus: 'flinch'
+			volatileStatus: 'flinch',
 		},
 		target: "normal",
-		type: "Psychic"
+		type: "Psychic",
 	},
 	// Last Stand
 	endure: {
@@ -274,7 +276,7 @@ exports.BattleMovedex = {
 		},
 		secondary: false,
 		target: "self",
-		type: "Fighting"
+		type: "Fighting",
 	},
 	// Barkskin
 	withdraw: {
@@ -290,7 +292,7 @@ exports.BattleMovedex = {
 		volatileStatus: 'barkskin',
 		secondary: false,
 		target: "self",
-		type: "Grass"
+		type: "Grass",
 	},
 	// Punishment
 	seismictoss: {
@@ -309,7 +311,7 @@ exports.BattleMovedex = {
 		flags: {contact: 1, protect: 1, mirror: 1, nonsky: 1},
 		secondary: false,
 		target: "normal",
-		type: "Fighting"
+		type: "Fighting",
 	},
 	// Flamestrike
 	flamethrower: {
@@ -328,7 +330,7 @@ exports.BattleMovedex = {
 		flags: {protect: 1, mirror: 1},
 		secondary: false,
 		target: "any",
-		type: "Fire"
+		type: "Fire",
 	},
 	// Conflagration
 	fireblast: {
@@ -343,7 +345,7 @@ exports.BattleMovedex = {
 		flags: {protect: 1, mirror: 1},
 		secondary: {chance: 100, status: 'brn'},
 		target: "any",
-		type: "Fire"
+		type: "Fire",
 	},
 	// Moonfire
 	thunderbolt: {
@@ -358,7 +360,7 @@ exports.BattleMovedex = {
 		flags: {protect: 1, mirror: 1},
 		secondary: {chance: 100, volatileStatus: 'moonfire'},
 		target: "any",
-		type: "Grass"
+		type: "Grass",
 	},
 	// Starfire
 	thunder: {
@@ -376,7 +378,7 @@ exports.BattleMovedex = {
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
 		target: "any",
-		type: "Grass"
+		type: "Grass",
 	},
 	// Corruption
 	toxic: {
@@ -391,7 +393,7 @@ exports.BattleMovedex = {
 		flags: {protect: 1, mirror: 1},
 		volatileStatus: 'corruption',
 		target: "any",
-		type: "Dark"
+		type: "Dark",
 	},
 	// Soul Leech
 	leechseed: {
@@ -415,19 +417,19 @@ exports.BattleMovedex = {
 			},
 			onResidualOrder: 8,
 			onResidual: function (pokemon) {
-				var target = this.effectData.source.side.active[pokemon.volatiles['leechseed'].sourcePosition];
+				let target = this.effectData.source.side.active[pokemon.volatiles['leechseed'].sourcePosition];
 				if (!target || target.fainted || target.hp <= 0) {
 					this.debug('Nothing to leech into');
 					return;
 				}
-				var damage = this.damage(pokemon.maxhp * 0.08, pokemon, target);
+				let damage = this.damage(pokemon.maxhp * 0.08, pokemon, target);
 				if (damage) {
 					this.heal(damage, target, pokemon);
 				}
-			}
+			},
 		},
 		target: "any",
-		type: "Dark"
+		type: "Dark",
 	},
 	// Ice Lance
 	icebeam: {
@@ -446,7 +448,7 @@ exports.BattleMovedex = {
 		flags: {protect: 1, mirror: 1},
 		secondary: false,
 		target: "normal",
-		type: "Ice"
+		type: "Ice",
 	},
 	// Frostbite
 	freezeshock: {
@@ -461,7 +463,7 @@ exports.BattleMovedex = {
 		flags: {protect: 1, mirror: 1},
 		secondary: {chance: 100, volatileStatus: 'chilled'},
 		target: "normal",
-		type: "Ice"
+		type: "Ice",
 	},
 	// Hurricane
 	aircutter: {
@@ -476,7 +478,7 @@ exports.BattleMovedex = {
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
 		target: "allAdjacentFoes",
-		type: "Flying"
+		type: "Flying",
 	},
 	// Storm
 	muddywater: {
@@ -491,7 +493,7 @@ exports.BattleMovedex = {
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
 		target: "allAdjacentFoes",
-		type: "Electric"
+		type: "Electric",
 	},
 	// Fury
 	furyswipes: {
@@ -513,7 +515,7 @@ exports.BattleMovedex = {
 			source.addVolatile('disable');
 		},
 		target: "normal",
-		type: "Fighting"
+		type: "Fighting",
 	},
 	// Garrote
 	scratch: {
@@ -528,7 +530,7 @@ exports.BattleMovedex = {
 		flags: {protect: 1, mirror: 1},
 		secondary: {chance: 100, volatileStatus: 'bleeding'},
 		target: "normal",
-		type: "Dark"
+		type: "Dark",
 	},
 	// Mutilate
 	slash: {
@@ -536,7 +538,7 @@ exports.BattleMovedex = {
 		accuracy: 100,
 		basePower: 35,
 		basePowerCallback: function (pokemon, target) {
-			var bP = 35;
+			let bP = 35;
 			if (target.volatiles['bleed']) bP += 10;
 			if (target.status === 'psn') bP += 10;
 			return bP;
@@ -549,7 +551,7 @@ exports.BattleMovedex = {
 		flags: {protect: 1, mirror: 1},
 		secondary: false,
 		target: "normal",
-		type: "Dark"
+		type: "Dark",
 	},
 	// Poison Gas
 	smog: {
@@ -565,6 +567,6 @@ exports.BattleMovedex = {
 		status: 'psn',
 		secondary: false,
 		target: "normal",
-		type: "Poison"
-	}
+		type: "Poison",
+	},
 };

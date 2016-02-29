@@ -1,19 +1,21 @@
+"use strict";
+
 exports.BattleStatuses = {
 	brn: {
 		inherit: true,
 		onResidual: function (pokemon) {
 			this.damage(pokemon.maxhp * 0.0615);
-		}
+		},
 	},
 	par: {
 		inherit: true,
-		onBeforeMove: function () {}
+		onBeforeMove: function () {},
 	},
 	psn: {
 		inherit: true,
 		onResidual: function (pokemon) {
 			this.damage(pokemon.maxhp * 0.125);
-		}
+		},
 	},
 	chilled: {
 		duration: 3,
@@ -26,7 +28,7 @@ exports.BattleStatuses = {
 		},
 		onModifySpe: function (speMod, pokemon) {
 			return this.chain(speMod, 0.1);
-		}
+		},
 	},
 	bleeding: {
 		duration: 5,
@@ -39,7 +41,7 @@ exports.BattleStatuses = {
 		},
 		onResidual: function (pokemon) {
 			this.damage(pokemon.maxhp * 0.0615);
-		}
+		},
 	},
 	taunting: {
 		duration: 4,
@@ -54,7 +56,7 @@ exports.BattleStatuses = {
 			if (this.validTarget(this.effectData.target, source, move.target)) {
 				return this.effectData.target;
 			}
-		}
+		},
 	},
 	sacrifice: {
 		duration: 4,
@@ -66,7 +68,7 @@ exports.BattleStatuses = {
 			this.add('-end', target, 'sacrifice');
 		},
 		onAnyDamage: function (damage, target, source, effect) {
-			for (var i = 0; i < target.side.active.length; i++) {
+			for (let i = 0; i < target.side.active.length; i++) {
 				if (target !== target.side.active[i] && target.side.active[i].volatiles['sacrifice']) {
 					this.add('-message', target.side.active[i].name + "'s Sacrifice took " + target.name + "'s damage!");
 					this.directDamage(damage, target.side.active[i], source, {id: 'sacrifice'});
@@ -74,7 +76,7 @@ exports.BattleStatuses = {
 				}
 			}
 			return;
-		}
+		},
 	},
 	corruption: {
 		duration: 4,
@@ -87,7 +89,7 @@ exports.BattleStatuses = {
 		onResidual: function (pokemon) {
 			this.damage(pokemon.maxhp * 0.1);
 			this.add('-message', pokemon.name + ' took Corruption damage!');
-		}
+		},
 	},
 	wildgrowth: {
 		duration: 5,
@@ -96,8 +98,8 @@ exports.BattleStatuses = {
 		},
 		onResidualOrder: 21,
 		onResidual: function (side) {
-			for (var i = 0; i < side.active.length; i++) {
-				var pokemon = side.active[i];
+			for (let i = 0; i < side.active.length; i++) {
+				let pokemon = side.active[i];
 				if (pokemon.hp < pokemon.maxhp) {
 					this.heal(pokemon.maxhp * 0.125, pokemon, pokemon);
 					this.add('-message', 'The wild growth recovered some of ' + pokemon.name + "'s HP!");
@@ -106,7 +108,7 @@ exports.BattleStatuses = {
 		},
 		onEnd: function (side) {
 			this.add('-sideend', side, 'Wild Growth');
-		}
+		},
 	},
 	powershield: {
 		onStart: function (pokemon) {
@@ -114,14 +116,14 @@ exports.BattleStatuses = {
 			this.add('-message', pokemon.name + ' has been shielded!');
 		},
 		onDamage: function (damage, target, source, effect) {
-			var h = Math.ceil(damage / 4);
+			let h = Math.ceil(damage / 4);
 			this.heal(h, target, target);
 			this.add('-message', target.name + "'s Power Shield healed it for " + h + "!");
 			target.removeVolatile('powershield');
 		},
 		onEnd: function (pokemon) {
 			this.add('-end', pokemon, 'Power Shield');
-		}
+		},
 	},
 	rejuvenation: {
 		duration: 3,
@@ -137,7 +139,7 @@ exports.BattleStatuses = {
 		},
 		onEnd: function (pokemon) {
 			this.add('-end', pokemon, 'Rejuvenation');
-		}
+		},
 	},
 	fairyward: {
 		duration: 3,
@@ -162,7 +164,7 @@ exports.BattleStatuses = {
 		onDamagePriority: -10,
 		onDamage: function (damage, target, source, effect) {
 			return Math.ceil(damage * 0.95);
-		}
+		},
 	},
 	penance: {
 		onStart: function (pokemon) {
@@ -170,14 +172,14 @@ exports.BattleStatuses = {
 		},
 		onDamagePriority: -10,
 		onDamage: function (damage, target, source, effect) {
-			var d = Math.ceil(damage * 0.0615);
+			let d = Math.ceil(damage * 0.0615);
 			this.heal(d, target, target);
 			this.add('-message', target.name + "'s Penance healed it for " + d + "!");
 			target.removeVolatile('penance');
 		},
 		onEnd: function (pokemon) {
 			this.add('-end', pokemon, 'Penance');
-		}
+		},
 	},
 	barkskin: {
 		duration: 2,
@@ -190,7 +192,7 @@ exports.BattleStatuses = {
 		onDamage: function (damage, target, source, effect) {
 			this.add('-message', target.name + "'s Barkskin reduced the damage!");
 			return Math.ceil(damage * 0.75);
-		}
+		},
 	},
 	laststand: {
 		duration: 1,
@@ -198,12 +200,12 @@ exports.BattleStatuses = {
 			this.add('-singleturn', target, 'move: Last Stand');
 		},
 		onDamage: function (damage, target, source, effect) {
-			var originalDamage = damage;
+			let originalDamage = damage;
 			damage = Math.ceil(damage / 2);
 			if (damage >= target.hp) damage = target.hp - 1;
 			this.add('-message', target.name + "'s Last Stand made it take " + (originalDamage - damage) + " damage less!");
 			return damage;
-		}
+		},
 	},
 	moonfire: {
 		duration: 4,
@@ -216,6 +218,6 @@ exports.BattleStatuses = {
 		onResidual: function (pokemon) {
 			this.damage(pokemon.maxhp * 0.06);
 			this.add('-message', pokemon.name + ' took Moonfire damage!');
-		}
-	}
+		},
+	},
 };

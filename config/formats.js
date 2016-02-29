@@ -359,7 +359,7 @@ exports.Formats = [
 
 		mod: 'skillmons',
 		ruleset: ['Pokemon', 'Team Preview', 'Sleep Clause Mod', 'Species Clause', 'Endless Battle Clause', 'Exact HP Mod', 'Baton Pass Clause'],
-		banlist: ['Unreleased', 'Illegal', 'Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Lucarionite', 'Mawilite', 'Salamencite']
+		banlist: ['Unreleased', 'Illegal', 'Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Lucarionite', 'Mawilite', 'Salamencite'],
 	},
 	{
 		name: "Skillmons Ubers",
@@ -368,7 +368,7 @@ exports.Formats = [
 
 		mod: 'skillmons',
 		ruleset: ['Pokemon', 'Team Preview', 'Sleep Clause Mod', 'Species Clause', 'Endless Battle Clause', 'Exact HP Mod', 'Baton Pass Clause', 'Mega Rayquaza Clause'],
-		banlist: ['Unreleased', 'Illegal']
+		banlist: ['Unreleased', 'Illegal'],
 	},
 	{
 		name: "Mix and Mega",
@@ -601,7 +601,7 @@ exports.Formats = [
 				};
 				switch (this.random(6)) {
 				case 0:
-				move.volatileStatus = 'confusion';
+					move.volatileStatus = 'confusion';
 					move.onHit = function () {
 						this.add('-message', "This weird dimension confuses you!");
 					};
@@ -770,7 +770,7 @@ exports.Formats = [
 
 			// Add here more hacky stuff for mega abilities.
 			// This happens when the mega switches in, as opposed to mega-evolving on the turn.
-			let oldAbility = pokemon.ability;
+			//let oldAbility = pokemon.ability; //TODO
 			if (pokemon.template.isMega) {
 				if (name === 'theimmortal' && pokemon.getAbility().id !== 'cloudnine') {
 					pokemon.setAbility('cloudnine');
@@ -785,7 +785,7 @@ exports.Formats = [
 					this.add('-start', pokemon, 'typechange', 'Normal/Psychic');
 					pokemon.typesData = [
 						{type: 'Normal', suppressed: false,  isAdded: false},
-						{type: 'Psychic', suppressed: false,  isAdded: false}
+						{type: 'Psychic', suppressed: false,  isAdded: false},
 					];
 				}
 				pokemon.addVolatile('focusenergy');
@@ -807,7 +807,7 @@ exports.Formats = [
 				this.add("c|+Gangnam Style|Here I Come, Rougher Than The Rest of 'Em.");
 			}
 			if (name === 'joim') {
-				var dice = this.random(3);
+				let dice = this.random(3);
 				// Revisiting classics.
 				if (dice === 1) {
 					this.add('-message', '░░░░░░░░▄▄▄▀▀▀▄▄███▄');
@@ -843,8 +843,8 @@ exports.Formats = [
 					sentences = [
 						"Gen 1 OU is a true skill metagame.", "Finally a good reason to punch a teenager in the face!",
 						"So here we are again, it's always such a pleasure.", "My ex-wife still misses me, BUT HER AIM IS GETTING BETTER!",
-						"A man chooses, a slave obeys.", "You're gonna have a bad time."
-						].randomize();
+						"A man chooses, a slave obeys.", "You're gonna have a bad time.",
+					].randomize();
 					sentence = sentences[0];
 					this.add('c|~Joim|' + sentence);
 				}
@@ -871,7 +871,7 @@ exports.Formats = [
 		onFaint: function (pokemon) {
 			let name = toId(pokemon.name);
 			let sentences = [];
-			let sentence = '';
+			//let sentence = ''; //TO USE
 			if (name === 'am') {
 				this.add('c|+AM|RIP');
 			}

@@ -1,9 +1,11 @@
+"use strict";
+
 exports.BattleScripts = {
 	init: function () {
-		var tankStats = {hp:90, atk:30, def:120, spa:130, spd:120, spe:50};
-		var healerStats = {hp:50, atk:10, def:100, spa:80, spd:100, spe:10};
-		var supportStats = {hp:75, atk:50, def:80, spa:50, spd:80, spe:100};
-		var dpsStats = {hp:65, atk:130, def:60, spa:130, spd:60, spe:150};
+		let tankStats = {hp:90, atk:30, def:120, spa:130, spd:120, spe:50};
+		let healerStats = {hp:50, atk:10, def:100, spa:80, spd:100, spe:10};
+		let supportStats = {hp:75, atk:50, def:80, spa:50, spd:80, spe:100};
+		let dpsStats = {hp:65, atk:130, def:60, spa:130, spd:60, spe:150};
 		// Modify tanks
 		this.modData('Pokedex', 'registeel').baseStats = tankStats;
 		this.modData('Pokedex', 'golurk').baseStats = tankStats;
@@ -48,8 +50,8 @@ exports.BattleScripts = {
 		this.modData('Pokedex', 'raticate').baseStats = dpsStats;
 	},
 	randomSeasonalMay2015Team: function (side) {
-		var team = [];
-		var healers, tanks, supports, dps = [];
+		let team = [];
+		let healers, tanks, supports, dps = [];
 		// Teams on this seasonal have: A tank. A healer. A dps. A support. An off-tank. Another dps.
 		// We have a pool of them, depending on the team, and give them.
 		// If the other team has been chosen, we get its opposing force.
@@ -72,8 +74,8 @@ exports.BattleScripts = {
 			supports = ['Bobba Fett', 'Zapp Brannigan'].randomize();
 			dps = ['An angel', 'Darth Vader', 'Emperor Palpatine', 'Fender', 'Storm Trooper'].randomize();
 		}
-		var pool = [healers[0], tanks[0], dps[0], supports[0], dps[1], supports[1]];
-		var sets = {
+		let pool = [healers[0], tanks[0], dps[0], supports[0], dps[1], supports[1]];
+		let sets = {
 			'Amy': {species: 'Jynx', role: 'healer'},
 			'Princess Leia': {species: 'Gardevoir', gender: 'F', role: 'healer'},
 			'Scruffy': {species: 'Alakazam', gender: 'M', role: 'healer'},
@@ -111,37 +113,37 @@ exports.BattleScripts = {
 			'Darth Vader': {species: 'Dusknoir', gender: 'M', role: 'dps'},
 			'Emperor Palpatine': {species: 'Cofagrigus', gender: 'M', role: 'dps'},
 			'Fender': {species: 'Toxicroak', gender: 'M', role: 'dps'},
-			'Storm Trooper': {species: 'Raticate', gender: 'M', role: 'dps'}
+			'Storm Trooper': {species: 'Raticate', gender: 'M', role: 'dps'},
 		};
-		var movesets = {
+		let movesets = {
 			'healer': [
 				['softboiled', 'icebeam', 'reflect', 'holdhands'],
 				['softboiled', 'icebeam', 'luckychant', 'holdhands'],
-				['softboiled', 'icebeam', 'reflect', 'aromaticmist']
+				['softboiled', 'icebeam', 'reflect', 'aromaticmist'],
 			],
 			'tank': [
 				['followe', 'meditate', 'helpinghand', 'seismictoss'],
 				['followe', 'endure', 'withdraw', 'seismictoss'],
 				['followe', 'meditate', 'endure', 'seismictoss'],
-				['meditate', 'helpinghand', 'protect', 'seismictoss']
+				['meditate', 'helpinghand', 'protect', 'seismictoss'],
 			],
 			'support': [
 				['recover', 'acupressure', 'healbell', 'withdraw'],
 				['spite', 'fakeout', 'protect', 'withdraw'],
 				['recover', 'acupressure', 'spite', 'healbell'],
 				['recover', 'acupressure', 'healbell', 'fakeout'],
-				['acupressure', 'spite', 'healbell', 'protect']
+				['acupressure', 'spite', 'healbell', 'protect'],
 			],
 			'dps': [
 				['fireblast', 'flamethrower', 'aircutter', 'freezeshock'],
 				['freezeshock', 'icebeam', 'aircutter', 'muddywater'],
 				['thunderbolt', 'thunder', 'aircutter', 'freezeshock'],
 				['toxic', 'leechseed', 'muddywater', 'aircutter'],
-				['furyswipes', 'scratch', 'slash', 'smog']
-			]
+				['furyswipes', 'scratch', 'slash', 'smog'],
+			],
 		};
-		for (var i = 0; i < 6; i++) {
-			var set = sets[pool[i]];
+		for (let i = 0; i < 6; i++) {
+			let set = sets[pool[i]];
 			set.level = 100;
 			set.name = pool[i];
 			set.moves = movesets[set.role][this.random(movesets[set.role].length)];
@@ -153,12 +155,14 @@ exports.BattleScripts = {
 	getDamage: function (pokemon, target, move, suppressMessages) {
 		if (typeof move === 'string') move = this.getMove(move);
 
-		if (typeof move === 'number') move = {
-			basePower: move,
-			type: '???',
-			category: 'Physical',
-			flags: {}
-		};
+		if (typeof move === 'number') {
+			move = {
+				basePower: move,
+				type: '???',
+				category: 'Physical',
+				flags: {},
+			};
+		}
 
 		if (move.damageCallback) {
 			return move.damageCallback.call(this, pokemon, target);
@@ -172,11 +176,10 @@ exports.BattleScripts = {
 
 		if (!move) move = {};
 		if (!move.type) move.type = '???';
-		var type = move.type;
-		var category = this.getCategory(move);
-		var defensiveCategory = move.defensiveCategory || category;
+		let category = this.getCategory(move);
+		let defensiveCategory = move.defensiveCategory || category;
 
-		var basePower = move.basePower;
+		let basePower = move.basePower;
 		if (move.basePowerCallback) {
 			basePower = move.basePowerCallback.call(this, pokemon, target, move);
 		}
@@ -190,32 +193,35 @@ exports.BattleScripts = {
 		if (!basePower) return 0;
 		basePower = this.clampIntRange(basePower, 1);
 
-		var level = pokemon.level;
-		var attacker = pokemon;
-		var defender = target;
-		var attackStat = category === 'Physical' ? 'atk' : 'spa';
-		var defenseStat = defensiveCategory === 'Physical' ? 'def' : 'spd';
-		var statTable = {atk:'Atk', def:'Def', spa:'SpA', spd:'SpD', spe:'Spe'};
-		var attack;
-		var defense;
-		var atkBoosts = move.useTargetOffensive ? defender.boosts[attackStat] : attacker.boosts[attackStat];
-		var defBoosts = move.useSourceDefensive ? attacker.boosts[defenseStat] : defender.boosts[defenseStat];
-		var ignoreNegativeOffensive = !!move.ignoreNegativeOffensive;
-		var ignorePositiveDefensive = !!move.ignorePositiveDefensive;
+		let attacker = pokemon;
+		let defender = target;
+		let attackStat = category === 'Physical' ? 'atk' : 'spa';
+		let defenseStat = defensiveCategory === 'Physical' ? 'def' : 'spd';
+		let statTable = {atk:'Atk', def:'Def', spa:'SpA', spd:'SpD', spe:'Spe'};
+		let attack;
+		let defense;
+		let atkBoosts = move.useTargetOffensive ? defender.boosts[attackStat] : attacker.boosts[attackStat];
+		let defBoosts = move.useSourceDefensive ? attacker.boosts[defenseStat] : defender.boosts[defenseStat];
 
-		if (move.useTargetOffensive) attack = defender.calculateStat(attackStat, atkBoosts);
-		else attack = attacker.calculateStat(attackStat, atkBoosts);
+		if (move.useTargetOffensive) {
+			attack = defender.calculateStat(attackStat, atkBoosts);
+		} else {
+			attack = attacker.calculateStat(attackStat, atkBoosts);
+		}
 
-		if (move.useSourceDefensive) defense = attacker.calculateStat(defenseStat, defBoosts);
-		else defense = defender.calculateStat(defenseStat, defBoosts);
+		if (move.useSourceDefensive) {
+			defense = attacker.calculateStat(defenseStat, defBoosts);
+		} else {
+			defense = defender.calculateStat(defenseStat, defBoosts);
+		}
 
 		// Apply Stat Modifiers
 		attack = this.runEvent('Modify' + statTable[attackStat], attacker, defender, move, attack);
 		defense = this.runEvent('Modify' + statTable[defenseStat], defender, attacker, move, defense);
 
 		// In this mod, basePower is the %HP of the caster that is used on the damage calcualtion.
-		//var baseDamage = Math.floor(Math.floor(Math.floor(2 * level / 5 + 2) * basePower * attack / defense) / 50) + 2;
-		var baseDamage = Math.floor(pokemon.maxhp * basePower / 100);
+		//let baseDamage = Math.floor(Math.floor(Math.floor(2 * level / 5 + 2) * basePower * attack / defense) / 50) + 2;
+		let baseDamage = Math.floor(pokemon.maxhp * basePower / 100);
 
 		// Now this is varied by stats slightly.
 		baseDamage += Math.floor(baseDamage * (attack - defense * 0.9) / 100);
@@ -239,5 +245,5 @@ exports.BattleScripts = {
 		baseDamage = this.runEvent('Damage', target, pokemon, move, baseDamage);
 
 		return Math.floor(baseDamage);
-	}
+	},
 };

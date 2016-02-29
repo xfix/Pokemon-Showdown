@@ -1,7 +1,9 @@
+"use strict";
+
 exports.BattleStatuses = {
 	par: {
 		inherit: true,
-		onBeforeMove: function (pokemon) {}
+		onBeforeMove: function (pokemon) {},
 	},
 	slp: {
 		inherit: true,
@@ -9,14 +11,14 @@ exports.BattleStatuses = {
 			this.add('-status', target, 'slp');
 			this.effectData.startTime = 3;
 			this.effectData.time = this.effectData.startTime;
-		}
+		},
 	},
 	frz: {
 		inherit: true,
 		onStart: function (target) {
 			this.add('-status', target, 'frz');
 			if (target.species === 'Shaymin-Sky' && target.baseTemplate.species === target.species) {
-				var template = this.getTemplate('Shaymin');
+				let template = this.getTemplate('Shaymin');
 				target.formeChange(template);
 				target.baseTemplate = template;
 				target.setAbility(template.abilities['0']);
@@ -42,12 +44,12 @@ exports.BattleStatuses = {
 			}
 			this.add('cant', pokemon, 'frz');
 			return false;
-		}
+		},
 	},
 	confusion: {
 		// this is a volatile status
 		onStart: function (target, source, sourceEffect) {
-			var result = this.runEvent('TryConfusion', target, source, sourceEffect);
+			let result = this.runEvent('TryConfusion', target, source, sourceEffect);
 			if (!result) return result;
 			this.add('-start', target, 'confusion');
 			this.effectData.time = 4;
@@ -62,9 +64,9 @@ exports.BattleStatuses = {
 				return;
 			}
 			this.add('-activate', source, 'confusion');
-			this.directDamage(this.getDamage(pokemon, pokemon, 20));
+			this.directDamage(this.getDamage(source, target, 20));
 			return this.chainModify(0.5);
-		}
+		},
 	},
 	partiallytrapped: {
 		inherit: true,
@@ -72,7 +74,7 @@ exports.BattleStatuses = {
 		durationCallback: function (target, source) {
 			if (source.hasItem('gripclaw')) return 8;
 			return 5;
-		}
+		},
 	},
 	lockedmove: {
 		// Outrage, Thrash, Petal Dance...
@@ -86,7 +88,7 @@ exports.BattleStatuses = {
 			if (this.effectData.trueDuration >= 2) {
 				this.effectData.duration = 2;
 			}
-		}
+		},
 	},
 	stall: {
 		// Protect, Detect, Endure counter
@@ -97,7 +99,7 @@ exports.BattleStatuses = {
 		},
 		onStallMove: function () {
 			// Don't allow pointless Endure stall
-			var move = this.activeMove.id;
+			let move = this.activeMove.id;
 			if (move === 'endure' || move === 'craftyshield') {
 				return !this.effectData.counter;
 			}
@@ -108,13 +110,13 @@ exports.BattleStatuses = {
 				move.isNotProtectable = true;
 			}
 			if (move.secondaries) {
-				for (var i = 0; i < move.secondaries.length; i++) {
+				for (let i = 0; i < move.secondaries.length; i++) {
 					move.secondaries[i].chance *= 1 - Math.pow(2, 1 - this.effectData.counter);
 				}
 			}
 		},
 		onSourceModifyDamage: function () {
-			var move = this.effectData.move;
+			let move = this.effectData.move;
 			if (move === 'endure' || move === 'craftyshield' || this.effectData.duration === 1) return;
 			return this.chainModify(1 - Math.pow(2, 1 - this.effectData.counter));
 		},
@@ -122,6 +124,6 @@ exports.BattleStatuses = {
 			this.effectData.counter += 1;
 			this.effectData.duration = 2;
 			this.effectData.move = this.activeMove.id;
-		}
-	}
+		},
+	},
 };

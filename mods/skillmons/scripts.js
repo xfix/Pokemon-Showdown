@@ -1,3 +1,5 @@
+"use strict";
+
 exports.BattleScripts = {
 	gen: 6,
 	side: {
@@ -19,18 +21,22 @@ exports.BattleScripts = {
 			slp: 'Sleep status',
 			frz: 'Frozen',
 			flinch: 'Flinch',
-			confusion: 'Confusion'
-		}
+			confusion: 'Confusion',
+		},
 	},
 	// Edit getDamage so there is no crits and no random damage.
 	getDamage: function (pokemon, target, move, suppressMessages) {
-		if (typeof move === 'string') move = this.getMove(move);
+		if (typeof move === 'string') {
+			move = this.getMove(move);
+		}
 
-		if (typeof move === 'number') move = {
-			basePower: move,
-			type: '???',
-			category: 'Physical'
-		};
+		if (typeof move === 'number') {
+			move = {
+				basePower: move,
+				type: '???',
+				category: 'Physical',
+			};
+		}
 
 		if (move.affectedByImmunities) {
 			if (!target.runImmunity(move.type, true)) {
@@ -52,16 +58,16 @@ exports.BattleScripts = {
 			move = {};
 		}
 		if (!move.type) move.type = '???';
-		var type = move.type;
+		let type = move.type;
 		// '???' is typeless damage: used for Struggle and Confusion etc
-		var category = this.getCategory(move);
-		var defensiveCategory = move.defensiveCategory || category;
+		let category = this.getCategory(move);
+		let defensiveCategory = move.defensiveCategory || category;
 
-		var accuracy = move.accuracy;
+		let accuracy = move.accuracy;
 		if (accuracy === true) {
 			accuracy = 100;
 		}
-		var basePower = move.basePower * accuracy / 100;
+		let basePower = move.basePower * accuracy / 100;
 		if (move.basePowerCallback) {
 			basePower = move.basePowerCallback.call(this, pokemon, target, move);
 		}
@@ -78,24 +84,24 @@ exports.BattleScripts = {
 		if (!basePower) return 0;
 		basePower = this.clampIntRange(basePower, 1);
 
-		var level = pokemon.level;
+		let level = pokemon.level;
 
-		var attacker = pokemon;
-		var defender = target;
-		var attackStat = category === 'Physical' ? 'atk' : 'spa';
-		var defenseStat = defensiveCategory === 'Physical' ? 'def' : 'spd';
-		var statTable = {atk:'Atk', def:'Def', spa:'SpA', spd:'SpD', spe:'Spe'};
-		var attack;
-		var defense;
+		let attacker = pokemon;
+		let defender = target;
+		let attackStat = category === 'Physical' ? 'atk' : 'spa';
+		let defenseStat = defensiveCategory === 'Physical' ? 'def' : 'spd';
+		let statTable = {atk:'Atk', def:'Def', spa:'SpA', spd:'SpD', spe:'Spe'};
+		let attack;
+		let defense;
 
-		var atkBoosts = move.useTargetOffensive ? defender.boosts[attackStat] : attacker.boosts[attackStat];
-		var defBoosts = move.useSourceDefensive ? attacker.boosts[defenseStat] : defender.boosts[defenseStat];
+		let atkBoosts = move.useTargetOffensive ? defender.boosts[attackStat] : attacker.boosts[attackStat];
+		let defBoosts = move.useSourceDefensive ? attacker.boosts[defenseStat] : defender.boosts[defenseStat];
 
-		var ignoreNegativeOffensive = !!move.ignoreNegativeOffensive;
-		var ignorePositiveDefensive = !!move.ignorePositiveDefensive;
+		let ignoreNegativeOffensive = !!move.ignoreNegativeOffensive;
+		let ignorePositiveDefensive = !!move.ignorePositiveDefensive;
 
-		var ignoreOffensive = !!(move.ignoreOffensive || (ignoreNegativeOffensive && atkBoosts < 0));
-		var ignoreDefensive = !!(move.ignoreDefensive || (ignorePositiveDefensive && defBoosts > 0));
+		let ignoreOffensive = !!(move.ignoreOffensive || (ignoreNegativeOffensive && atkBoosts < 0));
+		let ignoreDefensive = !!(move.ignoreDefensive || (ignorePositiveDefensive && defBoosts > 0));
 
 		if (ignoreOffensive) {
 			this.debug('Negating (sp)atk boost/penalty.');
@@ -106,22 +112,28 @@ exports.BattleScripts = {
 			defBoosts = 0;
 		}
 
-		if (move.useTargetOffensive) attack = defender.calculateStat(attackStat, atkBoosts);
-		else attack = attacker.calculateStat(attackStat, atkBoosts);
+		if (move.useTargetOffensive) {
+			attack = defender.calculateStat(attackStat, atkBoosts);
+		} else {
+			attack = attacker.calculateStat(attackStat, atkBoosts);
+		}
 
-		if (move.useSourceDefensive) defense = attacker.calculateStat(defenseStat, defBoosts);
-		else defense = defender.calculateStat(defenseStat, defBoosts);
+		if (move.useSourceDefensive) {
+			defense = attacker.calculateStat(defenseStat, defBoosts);
+		} else {
+			defense = defender.calculateStat(defenseStat, defBoosts);
+		}
 
 		// Apply Stat Modifiers
 		attack = this.runEvent('Modify' + statTable[attackStat], attacker, defender, move, attack);
 		defense = this.runEvent('Modify' + statTable[defenseStat], defender, attacker, move, defense);
 
 		//int(int(int(2 * L / 5 + 2) * A * P / D) / 50);
-		var baseDamage = Math.floor(Math.floor(Math.floor(2 * level / 5 + 2) * basePower * attack / defense) / 50) + 2;
+		let baseDamage = Math.floor(Math.floor(Math.floor(2 * level / 5 + 2) * basePower * attack / defense) / 50) + 2;
 
 		// multi-target modifier (doubles only)
 		if (move.spreadHit) {
-			var spreadModifier = move.spreadModifier || 0.75;
+			let spreadModifier = move.spreadModifier || 0.75;
 			this.debug('Spread modifier: ' + spreadModifier);
 			baseDamage = this.modify(baseDamage, spreadModifier);
 		}
@@ -136,7 +148,7 @@ exports.BattleScripts = {
 			baseDamage = this.modify(baseDamage, move.stab || 1.5);
 		}
 		// types
-		var totalTypeMod = 0;
+		let totalTypeMod = 0;
 
 		if (target.negateImmunity[move.type] !== 'IgnoreEffectiveness' || this.getImmunity(move.type, target)) {
 			totalTypeMod = target.runEffectiveness(move);
@@ -146,14 +158,14 @@ exports.BattleScripts = {
 		if (totalTypeMod > 0) {
 			if (!suppressMessages) this.add('-supereffective', target);
 
-			for (var i = 0; i < totalTypeMod; i++) {
+			for (let i = 0; i < totalTypeMod; i++) {
 				baseDamage *= 2;
 			}
 		}
 		if (totalTypeMod < 0) {
 			if (!suppressMessages) this.add('-resisted', target);
 
-			for (var i = 0; i > totalTypeMod; i--) {
+			for (let i = 0; i > totalTypeMod; i--) {
 				baseDamage = Math.floor(baseDamage / 2);
 			}
 		}
@@ -171,7 +183,7 @@ exports.BattleScripts = {
 		if (move.selfdestruct && spreadHit) pokemon.hp = 0;
 
 		this.setActiveMove(move, pokemon, target);
-		var hitResult = true;
+		let hitResult = true;
 
 		hitResult = this.singleEvent('PrepareHit', move, {}, target, pokemon, move);
 		if (!hitResult) {
@@ -208,20 +220,20 @@ exports.BattleScripts = {
 			return false;
 		}
 
-		var totalDamage = 0;
-		var damage = 0;
+		let totalDamage = 0;
+		let damage = 0;
 		pokemon.lastDamage = 0;
 		if (move.multihit) {
-			var hits = move.multihit;
+			let hits = move.multihit;
 			if (hits.length) {
 				hits = 3;
 			}
 			hits = Math.floor(hits);
-			var nullDamage = true;
-			var moveDamage;
+			let nullDamage = true;
+			let moveDamage;
 			// There is no need to recursively check the ´sleepUsable´ flag as Sleep Talk can only be used while asleep.
-			var isSleepUsable = move.sleepUsable || this.getMove(move.sourceEffect).sleepUsable;
-			var i;
+			let isSleepUsable = move.sleepUsable || this.getMove(move.sourceEffect).sleepUsable;
+			let i;
 			for (i = 0; i < hits && target.hp && pokemon.hp; i++) {
 				if (pokemon.status === 'slp' && !isSleepUsable) break;
 
@@ -258,11 +270,11 @@ exports.BattleScripts = {
 		return damage;
 	},
 	moveHit: function (target, pokemon, move, moveData, isSecondary, isSelf) {
-		var damage;
+		let damage;
 		move = this.getMoveCopy(move);
 
 		if (!moveData) moveData = move;
-		var hitResult = true;
+		let hitResult = true;
 
 		if (move.target === 'all' && !isSelf) {
 			hitResult = this.singleEvent('TryHitField', moveData, {}, target, pokemon, move);
@@ -275,7 +287,6 @@ exports.BattleScripts = {
 			if (hitResult === false) this.add('-fail', target);
 			return false;
 		}
-
 		if (target && !isSecondary && !isSelf) {
 			hitResult = this.runEvent('TryPrimaryHit', target, pokemon, moveData);
 			if (hitResult === 0) {
@@ -292,7 +303,7 @@ exports.BattleScripts = {
 		}
 
 		if (target) {
-			var didSomething = false;
+			let didSomething = false;
 
 			damage = this.getDamage(pokemon, target, moveData);
 
@@ -320,7 +331,7 @@ exports.BattleScripts = {
 				didSomething = didSomething || hitResult;
 			}
 			if (moveData.heal && !target.fainted) {
-				var d = target.heal(Math.round(target.maxhp * moveData.heal[0] / moveData.heal[1]));
+				let d = target.heal(Math.round(target.maxhp * moveData.heal[0] / moveData.heal[1]));
 				if (!d && d !== 0) {
 					this.add('-fail', target);
 					this.debug('heal interrupted');
@@ -397,7 +408,7 @@ exports.BattleScripts = {
 			}
 		}
 		if (moveData.self) {
-			var selfRoll;
+			let selfRoll;
 			if (!isSecondary && moveData.self.boosts) selfRoll = this.random(100);
 			// This is done solely to mimic in-game RNG behaviour. All self drops have a 100% chance of happening but still grab a random number.
 			if (typeof moveData.self.chance === 'undefined' || selfRoll < moveData.self.chance) {
@@ -405,21 +416,20 @@ exports.BattleScripts = {
 			}
 		}
 		if (moveData.secondaries && this.runEvent('TrySecondaryHit', target, pokemon, moveData)) {
+			let messages = [];
 			// We gather the effects to apply them.
-			for (var i = 0; i < moveData.secondaries.length; i++) {
-				var buffDebuff = 'none';
-				var accuracy = moveData.accuracy;
+			for (let i = 0; i < moveData.secondaries.length; i++) {
+				let buffDebuff = 'none';
+				let accuracy = moveData.accuracy;
 				if (accuracy === true) {
 					accuracy = 100;
 				}
-				var points = Math.floor(moveData.secondaries[i].chance * accuracy / 100);
-				var messages = [];
-				var buffing = 'nothing';
-				var boosts = false;
-				var status = false;
-				var volatileStatus = false;
-				var secTarget = false;
-				var isSecSelf = false;
+				let points = Math.floor(moveData.secondaries[i].chance * accuracy / 100);
+				let boosts = false;
+				let status = false;
+				let volatileStatus = false;
+				let secTarget = false;
+				let isSecSelf = false;
 				if (moveData.secondaries[i].self) {
 					boosts = moveData.secondaries[i].self.boosts;
 					status = moveData.secondaries[i].self.status;
@@ -432,10 +442,10 @@ exports.BattleScripts = {
 					volatileStatus = moveData.secondaries[i].volatileStatus;
 					secTarget = target;
 				}
-				
+
 				// If boosts, go through all of them.
 				if (boosts) {
-					for (var b in boosts) {
+					for (let b in boosts) {
 						buffDebuff = (boosts[b] > 0) ? b : 'minus' + b;
 						messages.push([points, buffDebuff, secTarget, isSecSelf, 'boosts', b, boosts[b]]);
 					}
@@ -446,12 +456,12 @@ exports.BattleScripts = {
 				}
 			}
 			// After having gathered the effects, add points and trigger them.
-			for (var i = 0; i < messages.length; i++) {
-				var pointsBuff = messages[i][0];
-				var buffing = messages[i][1];
-				var secTarget = messages[i][2];
-				var isSecSelf = messages[i][3];
-				var actualWhat = messages[i][4];
+			for (let i = 0; i < messages.length; i++) {
+				let pointsBuff = messages[i][0];
+				let buffing = messages[i][1];
+				let secTarget = messages[i][2];
+				//let isSecSelf = messages[i][3];
+				let actualWhat = messages[i][4];
 				if (!!buffing && !!pointsBuff && !!secTarget) {
 					if (!secTarget.side.points) secTarget.side.points = {};
 					if (!secTarget.side.points[buffing] && secTarget.side.points[buffing] !== 0) secTarget.side.points[buffing] = 50;
@@ -465,7 +475,7 @@ exports.BattleScripts = {
 							this.add('-message', 'A secondary effect on ' + secTarget.side.pnames[buffing] + ' triggered! [-100 points]');
 							// Actually trigger here the secondaries to avoid recursion.
 							if (actualWhat === 'boosts') {
-								var boosting = {};
+								let boosting = {};
 								boosting[messages[i][5]] = messages[i][6];
 								this.boost(boosting, secTarget, pokemon, move);
 							}
@@ -553,7 +563,7 @@ exports.BattleScripts = {
 	addQueue: function (decision, noSort, side) {
 		if (decision) {
 			if (Array.isArray(decision)) {
-				for (var i = 0; i < decision.length; i++) {
+				for (let i = 0; i < decision.length; i++) {
 					this.addQueue(decision[i], noSort);
 				}
 				return;
@@ -562,7 +572,7 @@ exports.BattleScripts = {
 			if (!decision.side && decision.pokemon) decision.side = decision.pokemon.side;
 			if (!decision.choice && decision.move) decision.choice = 'move';
 			if (!decision.priority) {
-				var priorities = {
+				let priorities = {
 					'beforeTurn': 100,
 					'beforeTurnMove': 99,
 					'switch': 6,
@@ -570,7 +580,7 @@ exports.BattleScripts = {
 					'megaEvo': 5.9,
 					'residual': -100,
 					'team': 102,
-					'start': 101
+					'start': 101,
 				};
 				if (priorities[decision.choice]) {
 					decision.priority = priorities[decision.choice];
@@ -588,7 +598,7 @@ exports.BattleScripts = {
 				if (!decision.speed && decision.pokemon && decision.pokemon.isActive) decision.speed = decision.pokemon.speed;
 			}
 			if (decision.move) {
-				var target;
+				let target;
 
 				if (!decision.targetPosition) {
 					target = this.resolveTarget(decision.pokemon, decision.move);
@@ -598,7 +608,7 @@ exports.BattleScripts = {
 
 				decision.move = this.getMoveCopy(decision.move);
 				if (!decision.priority) {
-					var priority = decision.move.priority;
+					let priority = decision.move.priority;
 					priority = this.runEvent('ModifyPriority', decision.pokemon, target, decision.move, priority);
 					decision.priority = priority;
 					// In Gen 6, Quick Guard blocks moves with artificially enhanced priority.
@@ -614,7 +624,7 @@ exports.BattleScripts = {
 			if (!decision.pokemonLeft && decision.side) decision.pokemonLeft = decision.side.pokemonLeft;
 			if (!decision.totalSpeed && decision.side) {
 				decision.totalSpeed = 0;
-				for (var i = 0; i < decision.side.pokemon.length; i++) {
+				for (let i = 0; i < decision.side.pokemon.length; i++) {
 					decision.totalSpeed += decision.side.pokemon[i].speed;
 				}
 			}
@@ -629,5 +639,5 @@ exports.BattleScripts = {
 		if (!noSort) {
 			this.queue.sort(this.comparePriority);
 		}
-	}
+	},
 };

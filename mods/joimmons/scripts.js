@@ -1,14 +1,18 @@
+"use strict";
+
 exports.BattleScripts = {
 	inherit: 'gen5',
 	gen: 5,
-	getDamage: function(pokemon, target, move, suppressMessages) {
+	getDamage: function (pokemon, target, move, suppressMessages) {
 		if (typeof move === 'string') move = this.getMove(move);
 
-		if (typeof move === 'number') move = {
-			basePower: move,
-			type: '???',
-			category: 'Physical'
-		};
+		if (typeof move === 'number') {
+			move = {
+				basePower: move,
+				type: '???',
+				category: 'Physical',
+			};
+		}
 
 		if (move.affectedByImmunities) {
 			if (!target.runImmunity(move.type, true)) {
@@ -43,12 +47,12 @@ exports.BattleScripts = {
 			move = {};
 		}
 		if (!move.type) move.type = '???';
-		var type = move.type;
+		let type = move.type;
 		// '???' is typeless damage: used for Struggle and Confusion etc
-		var category = this.getCategory(move);
-		var defensiveCategory = move.defensiveCategory || category;
+		let category = this.getCategory(move);
+		let defensiveCategory = move.defensiveCategory || category;
 
-		var basePower = move.basePower;
+		let basePower = move.basePower;
 		if (move.basePowerCallback) {
 			basePower = move.basePowerCallback.call(this, pokemon, target, move);
 		}
@@ -56,10 +60,10 @@ exports.BattleScripts = {
 			if (basePower === 0) return; // returning undefined means not dealing damage
 			return basePower;
 		}
-		basePower = clampIntRange(basePower, 1);
+		basePower = this.clampIntRange(basePower, 1);
 
-		move.critRatio = clampIntRange(move.critRatio, 0, 5);
-		var critMult = [0, 16, 8, 4, 3, 2];
+		move.critRatio = this.clampIntRange(move.critRatio, 0, 5);
+		let critMult = [0, 16, 8, 4, 3, 2];
 
 		move.crit = move.willCrit || false;
 		if (typeof move.willCrit === 'undefined') {
@@ -80,43 +84,43 @@ exports.BattleScripts = {
 			}
 		}
 		if (!basePower) return 0;
-		basePower = clampIntRange(basePower, 1);
+		basePower = this.clampIntRange(basePower, 1);
 
-		var level = pokemon.level;
+		let level = pokemon.level;
 
-		var attacker = pokemon;
-		var defender = target;
+		let attacker = pokemon;
+		let defender = target;
 		if (move.useTargetOffensive) attacker = target;
 		if (move.useSourceDefensive) defender = pokemon;
 
-		var attack = attacker.getStat(category==='Physical'?'atk':'spa');
-		var defense = defender.getStat(defensiveCategory==='Physical'?'def':'spd');
+		let attack = attacker.getStat(category === 'Physical' ? 'atk' : 'spa');
+		let defense = defender.getStat(defensiveCategory === 'Physical' ? 'def' : 'spd');
 
 		if (move.crit) {
 			move.ignoreNegativeOffensive = true;
 			move.ignorePositiveDefensive = true;
 		}
-		if (move.ignoreNegativeOffensive && attack < attacker.getStat(category==='Physical'?'atk':'spa', true)) {
+		if (move.ignoreNegativeOffensive && attack < attacker.getStat(category === 'Physical' ? 'atk' : 'spa', true)) {
 			move.ignoreOffensive = true;
 		}
 		if (move.ignoreOffensive) {
 			this.debug('Negating (sp)atk boost/penalty.');
-			attack = attacker.getStat(category==='Physical'?'atk':'spa', true);
+			attack = attacker.getStat(category === 'Physical' ? 'atk' : 'spa', true);
 		}
-		if (move.ignorePositiveDefensive && defense > target.getStat(defensiveCategory==='Physical'?'def':'spd', true)) {
+		if (move.ignorePositiveDefensive && defense > target.getStat(defensiveCategory === 'Physical' ? 'def' : 'spd', true)) {
 			move.ignoreDefensive = true;
 		}
 		if (move.ignoreDefensive) {
 			this.debug('Negating (sp)def boost/penalty.');
-			defense = target.getStat(defensiveCategory==='Physical'?'def':'spd', true);
+			defense = target.getStat(defensiveCategory === 'Physical' ? 'def' : 'spd', true);
 		}
 
 		//int(int(int(2*L/5+2)*A*P/D)/50);
-		var baseDamage = Math.floor(Math.floor(Math.floor(2*level/5+2) * basePower * attack/defense)/50) + 2;
+		let baseDamage = Math.floor(Math.floor(Math.floor(2 * level / 5 + 2) * basePower * attack / defense) / 50) + 2;
 
 		// multi-target modifier (doubles only)
 		if (move.spreadHit) {
-			var spreadModifier = move.spreadModifier || 0.75;
+			let spreadModifier = move.spreadModifier || 0.75;
 			this.debug('Spread modifier: ' + spreadModifier);
 			baseDamage = this.modify(baseDamage, spreadModifier);
 		}
@@ -142,7 +146,7 @@ exports.BattleScripts = {
 			baseDamage = this.modify(baseDamage, move.stab || 1.5);
 		}
 		// types
-		var totalTypeMod = this.getEffectiveness(type, target);
+		let totalTypeMod = this.getEffectiveness(type, target);
 		if (totalTypeMod > 0) {
 			if (!suppressMessages) this.add('-supereffective', target);
 			baseDamage *= 2;
@@ -152,9 +156,9 @@ exports.BattleScripts = {
 		}
 		if (totalTypeMod < 0) {
 			if (!suppressMessages) this.add('-resisted', target);
-			baseDamage = Math.floor(baseDamage/2);
+			baseDamage = Math.floor(baseDamage / 2);
 			if (totalTypeMod <= -2) {
-				baseDamage = Math.floor(baseDamage/2);
+				baseDamage = Math.floor(baseDamage / 2);
 			}
 		}
 
@@ -163,5 +167,5 @@ exports.BattleScripts = {
 		}
 
 		return Math.floor(baseDamage);
-	}
+	},
 };
