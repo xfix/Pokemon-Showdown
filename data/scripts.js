@@ -3276,6 +3276,12 @@ exports.BattleScripts = {
 				baseSignatureMove: 'protect', signatureMove: "Shield of Deflection",
 				evs: {hp:252, atk:252, def:4}, nature: 'Adamant',
 			},
+			'bumbadadabum': {
+				species: 'Samurott', ability: 'Analytic', item: 'Leftovers', gender: 'M',
+				moves: ['calmmind', 'originpulse', 'icebeam'],
+				baseSignatureMove: 'triattack', signatureMove: "Free Software",
+				evs: {hp:252, spa:252, spd:4}, nature: 'Modest',
+			},
 			'Gangnam Style': {
 				species: 'Snorlax', ability: 'Run Away', item: 'Power Herb', gender: 'M',
 				moves: ['geomancy', 'drainpunch', 'bodyslam'],

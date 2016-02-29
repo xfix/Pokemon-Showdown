@@ -803,6 +803,9 @@ exports.Formats = [
 			if (name === 'awu') {
 				this.add('c|+awu|Fite me irl bruh.');
 			}
+			if (name === 'bumbadadabum') {
+				this.add('c|@bumbadadabum|Time for card games on motorcycles!');
+			}
 			if (name === 'gangnamstyle') {
 				this.add("c|+Gangnam Style|Here I Come, Rougher Than The Rest of 'Em.");
 			}
@@ -877,6 +880,9 @@ exports.Formats = [
 			}
 			if (name === 'awu') {
 				this.add("c|+awu|No need for goodbye. I'll see you on the flip side.");
+			}
+			if (name === 'bumbadadabum') {
+				this.add("c|@bumbadadabum|Find another planet make the same mistakes.");
 			}
 			if (name === 'gangnamstyle') {
 				this.add("c|+Gangnam Style|The Great Emeralds power allows me to feel... ");
@@ -972,6 +978,19 @@ exports.Formats = [
 				move.type = 'Dark';
 				move.multihit = 3;
 				move.basePower = 70;
+			}
+			if (move.id === 'triattack' && name === 'bumbadadabum') {
+				move.name = 'Free Software';
+				move.type = 'Electric';
+				move.basePower = 110;
+				move.accuracy = 95;
+				move.secondary = {chance:30, status: 'par'};
+
+				move.onHit = function () {
+					this.add('c|@bumbadadabum|I\'d just like to interject for a moment. What you\'re referring to as Linux, is in fact, GNU/Linux, or as I\'ve recently taken to calling it, GNU plus Linux. Linux is not an operating system unto itself, but rather another free component of a fully functioning GNU system made useful by the GNU corelibs, shell utilities and vital system components comprising a full OS as defined by POSIX.');
+					this.add('c|@bumbadadabum|Many computer users run a modified version of the GNU system every day, without realizing it. Through a peculiar turn of events, the version of GNU which is widely used today is often called Linux, and many of its users are not aware that it is basically the GNU system, developed by the GNU Project.');
+					this.add('c|@bumbadadabum|There really is a Linux, and these people are using it, but it is just a part of the system they use. Linux is the kernel: the program in the system that allocates the machine\'s resources to the other programs that you run. The kernel is an essential part of an operating system, but useless by itself; it can only function in the context of a complete operating system. Linux is normally used in combination with the GNU operating system: the whole system is basically GNU with Linux added, or GNU/Linux. All the so-called Linux distributions are really distributions of GNU/Linux!');
+				};
 			}
 			if (move.id === 'hyperbeam' && name === 'joim') {
 				move.name = 'Gaster Blaster';
