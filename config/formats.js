@@ -532,6 +532,18 @@ exports.Formats = [
 		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod', 'Cancel Mod'],
 		onBegin: function () {
 			this.add('-message', "The world is about to end!");
+			let allPokemon = this.p1.pokemon.concat(this.p2.pokemon);
+			for (let i = 0, len = allPokemon.length; i < len; i++) {
+				let pokemon = allPokemon[i];
+				if (pokemon.set.signatureMove) {
+					let last = pokemon.moves.length - 1;
+					if (pokemon.moves[last]) {
+						pokemon.moves[last] = toId(pokemon.set.signatureMove);
+						pokemon.moveset[last].move = pokemon.set.signatureMove;
+						pokemon.baseMoveset[last].move = pokemon.set.signatureMove;
+					}
+				}
+			}
 		},
 		onSwitchIn: function (pokemon) {
 			let name = toId(pokemon.illusion ? pokemon.illusion.name : pokemon.name);
@@ -630,7 +642,7 @@ exports.Formats = [
 					break;
 				}
 			}
-			if (move.id === 'outrage' && name in {'morty':1, 'evilmorty':1}) {
+			if (move.id === 'outrage' && name === 'morty') {
 				move.name = 'Morty Rage';
 				move.type = 'Fighting';
 				move.basePower = 200;
@@ -640,8 +652,20 @@ exports.Formats = [
 					this.add('-message', 'Morty grew tired of your shennanigans!');
 				};
 			}
+			if (move.id === 'kinesis' && name === 'evilmorty') {
+				move.name = 'Mind Control';
+				move.volatileStatus = 'confusion';
+				move.category = 'Special';
+				move.type = 'Fire';
+				move.basePower = 50;
+				move.boosts = {accuracy: -1};
+			}
 			if (move.id === 'dreameater' && name === 'scaryterry') {
-				move.onTryHit = function () {};
+				move.name = 'Super Dream Eater';
+				move.onTryHit = function () {
+					this.attrLastMove('[still]');
+					this.add('-anim', source, "Hyper Beam", target);
+				};
 				move.onBasePower = function (basePower, attacker, defender) {
 					if (defender.status && defender.status === 'slp') {
 						return this.chainModify(2);
@@ -649,9 +673,11 @@ exports.Formats = [
 				};
 			}
 			if (move.id === 'bulkup' && name === 'squanchy') {
+				move.name = 'Squanch Up';
 				move.boosts = {atk: 2, def: 2};
 			}
 			if (move.id === 'recycle') {
+				move.name = 'Pines Recycle';
 				move.heal = [2, 3];
 			}
 			if (move.id === 'psychic' && name === 'mabel') {
@@ -661,14 +687,15 @@ exports.Formats = [
 				this.add('-message', 'GRAPPLING HOOK!');
 			}
 			if (move.id === 'thunder' && name === 'billcipher') {
+				move.name = 'Bill Thunder';
 				move.basePower = 200;
 			}
-			if (move.id === 'tackle') {
+			if (move.id === 'tackle' && name === 'stanley') {
 				move.name = 'Baseball Bat';
 				move.basePower = 135;
 				move.volatileStatus = 'confusion';
 			}
-			if (move.id === 'hyperbeam') {
+			if (move.id === 'hyperbeam' && name === 'stanford') {
 				move.name = 'Dimensional Sniper';
 				move.category = 'Physical';
 				move.basePower = 300;
