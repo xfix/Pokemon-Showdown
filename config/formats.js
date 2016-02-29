@@ -502,7 +502,7 @@ exports.Formats = [
 			"All Pok&eacute;mon automatically switch out upon using a move that affects the opponent.",
 			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3527847/\">VoltTurn Mayhem</a>",
 		],
-		column: 2
+		column: 2,
 		section: "Seasonals",
 
 		ruleset: ['OU'],
