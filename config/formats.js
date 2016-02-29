@@ -717,6 +717,9 @@ exports.Formats = [
 			this.add("raw|Super Staff Bros. **MELEEEEEEEEEEEEEE**!!");
 			this.add('message', "SURVIVAL! GET READY FOR THE NEXT BATTLE!");
 
+			let globalRenamedMoves = {};
+			let customRenamedMoves = {};
+
 			let allPokemon = this.p1.pokemon.concat(this.p2.pokemon);
 			for (let i = 0, len = allPokemon.length; i < len; i++) {
 				let pokemon = allPokemon[i];
