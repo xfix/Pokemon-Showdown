@@ -502,7 +502,8 @@ exports.Formats = [
 			"All Pok&eacute;mon automatically switch out upon using a move that affects the opponent.",
 			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3527847/\">VoltTurn Mayhem</a>",
 		],
-		section: "OM of the Month",
+		column: 2
+		section: "Seasonals",
 
 		ruleset: ['OU'],
 		banlist: [],
@@ -702,6 +703,165 @@ exports.Formats = [
 				move.onTryHit = function (target, source, move) {
 					this.attrLastMove('[still]');
 					this.add('-anim', source, "Origin Pulse", target);
+				};
+			}
+		},
+	},
+	{
+		name: "[Seasonal] Super Staff Bros. Melee",
+		section: "Seasonals",
+
+		team: 'randomSeasonalMelee',
+		ruleset: ['Sleep Clause Mod', 'HP Percentage Mod', 'Cancel Mod'],
+		onBegin: function () {
+			this.add("raw|Super Staff Bros. **MELEEEEEEEEEEEEEE**!!");
+			this.add('message', "SURVIVAL! GET READY FOR THE NEXT BATTLE!");
+
+			let allPokemon = this.p1.pokemon.concat(this.p2.pokemon);
+			for (let i = 0, len = allPokemon.length; i < len; i++) {
+				let pokemon = allPokemon[i];
+				let last = pokemon.moves.length - 1;
+				if (pokemon.moves[last]) {
+					pokemon.moves[last] = toId(pokemon.set.signatureMove);
+					pokemon.moveset[last].move = pokemon.set.signatureMove;
+					pokemon.baseMoveset[last].move = pokemon.set.signatureMove;
+				}
+				for (let j = 0; j < pokemon.moveset.length; j++) {
+					let moveData = pokemon.moveset[j];
+					if (globalRenamedMoves[moveData.id]) {
+						pokemon.moves[j] = toId(pokemon.set.signatureMove);
+						moveData.move = globalRenamedMoves[moveData.id];
+						pokemon.baseMoveset[j].move = globalRenamedMoves[moveData.id];
+					}
+
+					let customRenamedSet = customRenamedMoves[toId(pokemon.name)];
+					if (customRenamedSet && customRenamedSet[moveData.id]) {
+						pokemon.moves[j] = toId(pokemon.set.signatureMove);
+						moveData.move = customRenamedSet[moveData.id];
+						pokemon.baseMoveset[j].move = customRenamedSet[moveData.id];
+					}
+				}
+			}
+		},
+		// Here we add some flavour or design immunities.
+		onImmunity: function (type, pokemon) {
+		},
+		// Hacks for megas changed abilities. This allow for their changed abilities.
+		onUpdate: function (pokemon) {
+		},
+		// Here we treat many things, read comments inside for information.
+		onSwitchInPriority: 1,
+		onSwitchIn: function (pokemon) {
+			let name = toId(pokemon.illusion ? pokemon.illusion.name : pokemon.name);
+			// Wonder Guard is available, but it curses you.
+			if (pokemon.getAbility().id === 'wonderguard') {
+				pokemon.addVolatile('curse', pokemon);
+				this.add('-message', pokemon.name + "'s Wonder Guard has cursed it!");
+			}
+
+			// Edgy switch-in sentences go here.
+			// Sentences vary in style and how they are presented, so each Pokémon has its own way of sending them.
+			let sentences = [];
+			let sentence = '';
+
+			if (name === 'Joim') {
+				var dice = this.random(3);
+				// Revisiting classics.
+				if (dice === 1) {
+					this.add('-message', '░░░░░░░░▄▄▄▀▀▀▄▄███▄');
+					this.add('-message', '░░░░░▄▀▀░░░░░░░▐░▀██▌');
+					this.add('-message', '░░░▄▀░░░░▄▄███░▌▀▀░▀█');
+					this.add('-message', '░░▄█░░▄▀▀▒▒▒▒▒▄▐░░░░█▌');
+					this.add('-message', '░▐█▀▄▀▄▄▄▄▀▀▀▀▌░░░░░▐█▄');
+					this.add('-message', '░▌▄▄▀▀░░░░░░░░▌░░░░▄███████▄');
+					this.add('-message', '░░░░░░░░░░░░░▐░░░░▐███████████▄');
+					this.add('-message', '░░blessed by░░░░▐░░░░▐█████████████▄');
+					this.add('-message', '░░le toucan░░░░░░▀▄░░░▐██████████████▄');
+					this.add('-message', '░░░░░░ of ░░░░░░░░▀▄▄████████████████▄');
+					this.add('-message', '░░░░░luck░░░░░░░░░░░░░█▀██████');
+				} else if (dice === 2) {
+					this.add('c|~Joim|░░░░░░░░░░░░▄▐');
+					this.add('c|~Joim|░░░░░░▄▄▄░░▄██▄');
+					this.add('c|~Joim|░░░░░▐▀█▀▌░░░░▀█▄');
+					this.add('c|~Joim|░░░░░▐█▄█▌░░░░░░▀█▄');
+					this.add('c|~Joim|░░░░░░▀▄▀░░░▄▄▄▄▄▀▀');
+					this.add('c|~Joim|░░░░▄▄▄██▀▀▀▀');
+					this.add('c|~Joim|░░░█▀▄▄▄█░▀▀');
+					this.add('c|~Joim|░░░▌░▄▄▄▐▌▀▀▀');
+					this.add('c|~Joim|▄░▐░░░▄▄░█░▀▀ U HAVE BEEN SPOOKED');
+					this.add('c|~Joim|▀█▌░░░▄░▀█▀░▀');
+					this.add('c|~Joim|░░░░░░░▄▄▐▌▄▄ BY THE');
+					this.add('c|~Joim|░░░░░░░▀███▀█░▄');
+					this.add('c|~Joim|░░░░░░▐▌▀▄▀▄▀▐▄ SPOOKY SKILENTON');
+					this.add('c|~Joim|░░░░░░▐▀░░░░░░▐▌');
+					this.add('c|~Joim|░░░░░░█░░░░░░░░█');
+					this.add('c|~Joim|░░░░░▐▌░░░░░░░░░█');
+					this.add('c|~Joim|░░░░░█░░░░░░░░░░▐▌ SEND THIS TO 7 PPL OR SKELINTONS WILL EAT YOU');
+				} else {
+					sentences = [
+						"Gen 1 OU is a true skill metagame.", "Finally a good reason to punch a teenager in the face!",
+						"So here we are again, it's always such a pleasure.", "My ex-wife still misses me, BUT HER AIM IS GETTING BETTER!",
+						"A man chooses, a slave obeys.", "You're gonna have a bad time."
+						].randomize();
+					sentence = sentences[0];
+					this.add('c|~Joim|' + sentence);
+				}
+			}
+		},
+		// Here we deal with some special mechanics due to custom sets and moves.
+		onBeforeMove: function (pokemon, target, move) {
+		},
+		// Add here salty tears, that is, custom faint phrases.
+		onFaint: function (pokemon) {
+			let name = toId(pokemon.name);
+			let sentences = [];
+			let sentence = '';
+			if (name === 'joim') {
+				sentences = ['AVENGE ME, KIDS! AVEEEENGEEE MEEEEEE!!', 'OBEY!', '``This was a triumph, I\'m making a note here: HUGE SUCCESS.``', '``Remember when you tried to kill me twice? Oh how we laughed and laughed! Except I wasn\'t laughing.``', '``I\'m not even angry, I\'m being so sincere right now, even though you broke my heart and killed me. And tore me to pieces. And threw every piece into a fire.``'];
+				this.add('c|~Joim|' + sentences[this.random(4)]);
+			}
+		},
+		// Special switch-out events for some mons.
+		onSwitchOut: function (pokemon) {
+		},
+		// Special drag out event for red card and shit.
+		onDragOut: function (pokemon) {
+		},
+		onAfterMoveSelf: function (source, target, move) {
+		},
+		onModifyPokemon: function (pokemon) {
+		},
+		// Specific residual events for custom moves.
+		// This allows the format to have kind of custom side effects and volatiles.
+		onResidual: function (battle) {
+		},
+		// This is where the signature moves are actually done.
+		onModifyMove: function (move, pokemon) {
+			// This is to make signature moves work when transformed.
+			if (move.id === 'transform') {
+				move.onHit = function (target, pokemon) {
+					if (!pokemon.transformInto(target, pokemon)) return false;
+					pokemon.originalName = pokemon.name;
+					pokemon.name = target.name;
+				};
+			}
+
+			// Prepare for Illusion.
+			let name = toId(pokemon.illusion && move.sourceEffect === 'allyswitch' ? pokemon.illusion.name : pokemon.name);
+			move.effectType = 'Move';
+
+			if (move.id === 'milkdrink' && name === 'joim') {
+				move.name = 'Red Bull Drink';
+				move.boosts = {spa:1, spe:1, accuracy:1, evasion:-1};
+				delete move.heal;
+				move.onTryHit = function (pokemon) {
+					if (pokemon.volatiles['redbull']) return false;
+					this.attrLastMove('[still]');
+					this.add('-anim', pokemon, "Geomancy", pokemon);
+				};
+				move.onHit = function (pokemon) {
+					if (pokemon.volatiles['redbull']) return false;
+					pokemon.addVolatile('redbull');
 				};
 			}
 		},

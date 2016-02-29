@@ -3260,6 +3260,39 @@ exports.BattleScripts = {
 
 		return team;
 	},
+	randomSeasonalMeleeTeam: function (side) {
+		let team = [];
+		let variant = this.random(2);
+		let sets = {
+			'Joim': {
+				species: 'Zapdos', ability: 'Download', item: 'Life Orb', gender: 'M', shiny: true,
+				moves: ['thunderbolt', 'hurricane', ['earthpower', 'roost', 'flamethrower', 'worryseed', 'haze', 'spore'][this.random(6)]],
+				baseSignatureMove: 'milkdrink', signatureMove: "Red Bull Drink",
+				evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
+			},
+		};
+
+		// Generate the team randomly.
+		let pool = Object.keys(sets).randomize();
+		for (var i = 0; i < 6; i++) {
+			let set = sets[pool[i]];
+			set.level = 100;
+			set.name = pool[i];
+			if (!set.ivs) {
+				set.ivs = {hp:31, atk:31, def:31, spa:31, spd:31, spe:31};
+			} else {
+				for (var iv in {hp:31, atk:31, def:31, spa:31, spd:31, spe:31}) {
+					set.ivs[iv] = set.ivs[iv] ? set.ivs[iv] : 31;
+				}
+			}
+			// Assuming the hardcoded set evs are all legal.
+			if (!set.evs) set.evs = {hp:84, atk:84, def:84, spa:84, spd:84, spe:84};
+			set.moves = set.moves.sample(3).concat(set.baseSignatureMove);
+			team.push(set);
+		}
+
+		return team;
+	},
 	randomFactorySets: require('./factory-sets.json'),
 	randomFactorySet: function (template, slot, teamData, tier) {
 		let speciesId = toId(template.species);
