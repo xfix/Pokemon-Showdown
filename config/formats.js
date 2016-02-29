@@ -906,7 +906,7 @@ exports.Formats = [
 				sentences = ['AVENGE ME, KIDS! AVEEEENGEEE MEEEEEE!!', 'OBEY!', '``This was a triumph, I\'m making a note here: HUGE SUCCESS.``', '``Remember when you tried to kill me twice? Oh how we laughed and laughed! Except I wasn\'t laughing.``', '``I\'m not even angry, I\'m being so sincere right now, even though you broke my heart and killed me. And tore me to pieces. And threw every piece into a fire.``'];
 				this.add('c|~Joim|' + sentences[this.random(4)]);
 			}
-			if (name ==== 'lacuna') {
+			if (name === 'lacuna') {
 				this.add('c|%Lacuna|We need to go full out again soon...');
 			}
 			if (name === 'legitimateusername') {
