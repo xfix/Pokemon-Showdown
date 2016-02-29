@@ -3295,9 +3295,9 @@ exports.BattleScripts = {
 				evs: {hp:252, atk:252, def:4}, nature: 'Adamant',
 			},
 			'Joim': {
-				species: 'Zapdos', ability: 'Download', item: 'Life Orb', gender: 'M', shiny: true,
-				moves: ['thunderbolt', 'hurricane', ['earthpower', 'roost', 'flamethrower', 'worryseed', 'haze', 'spore'][this.random(6)]],
-				baseSignatureMove: 'hyperbeam', signatureMove: "Gaster Blaster",
+				species: 'Zapdos', ability: 'Tinted Lens', item: 'Life Orb', gender: 'M', shiny: true,
+				moves: ['thunderbolt', 'hurricane', 'quiverdance'],
+				baseSignatureMove: 'bubblebeam', signatureMove: "Gaster Blaster",
 				evs: {hp:4, spa:252, spe:252}, nature: 'Modest',
 			},
 			'Lacuna': {

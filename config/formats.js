@@ -1016,10 +1016,12 @@ exports.Formats = [
 				move.drain = [1, 2];
 				move.self = {boosts: {def: -1, spd: -1}};
 			}
-			if (move.id === 'hyperbeam' && name === 'joim') {
+			if (move.id === 'bubblebeam' && name === 'joim') {
 				move.name = 'Gaster Blaster';
 				move.type = 'Electric';
-				delete move.self;
+				move.basePower = 150;
+				move.accuracy = 90;
+				move.secondary = {};
 				move.onEffectiveness = function (typeMod, type, move) {
 					return typeMod + this.getEffectiveness('Ice', type);
 				};
