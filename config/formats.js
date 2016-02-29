@@ -924,6 +924,17 @@ exports.Formats = [
 		// Specific residual events for custom moves.
 		// This allows the format to have kind of custom side effects and volatiles.
 		onResidual: function (battle) {
+			for (let s in battle.sides) {
+				for (let p in thisSide.active) {
+					let pokemon = thisSide.active[p];
+					let name = toId(pokemon.name);
+
+					if (name === 'gangnamstyle' && !pokemon.fainted && !pokemon.illusion) {
+						this.heal(this.modify(pokemon.maxhp, 0.15), pokemon, pokemon);
+						this.add('-message', pokemon.name + "'s Gonna Make You Sweat healed itself!");
+					}
+				}
+			}
 		},
 		// This is where the signature moves are actually done.
 		onModifyMove: function (move, pokemon) {
