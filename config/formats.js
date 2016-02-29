@@ -928,6 +928,7 @@ exports.Formats = [
 		// This allows the format to have kind of custom side effects and volatiles.
 		onResidual: function (battle) {
 			for (let s in battle.sides) {
+				let thisSide = battle.sides[s];
 				for (let p in thisSide.active) {
 					let pokemon = thisSide.active[p];
 					let name = toId(pokemon.name);
