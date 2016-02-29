@@ -3276,6 +3276,18 @@ exports.BattleScripts = {
 				baseSignatureMove: 'protect', signatureMove: "Shield of Deflection",
 				evs: {hp:252, atk:252, def:4}, nature: 'Adamant',
 			},
+			'bumbadadabum': {
+				species: 'Samurott', ability: 'Analytic', item: 'Leftovers', gender: 'M',
+				moves: ['calmmind', 'originpulse', 'icebeam'],
+				baseSignatureMove: 'triattack', signatureMove: "Free Software",
+				evs: {hp:252, spa:252, spd:4}, nature: 'Modest',
+			},
+			'Crestfall': {
+				species: 'Diancie', item: 'Diancite',
+				moves: ['shellsmash', 'diamondstorm', 'earthpower'],
+				baseSignatureMove: 'lightofruin', signatureMove: "Light of Unruin",
+				evs: {hp:252, spa:4, spe:252}, nature: 'Timid',
+			},
 			'Gangnam Style': {
 				species: 'Snorlax', ability: 'Run Away', item: 'Power Herb', gender: 'M',
 				moves: ['geomancy', 'drainpunch', 'bodyslam'],
@@ -3287,6 +3299,12 @@ exports.BattleScripts = {
 				moves: ['thunderbolt', 'hurricane', ['earthpower', 'roost', 'flamethrower', 'worryseed', 'haze', 'spore'][this.random(6)]],
 				baseSignatureMove: 'hyperbeam', signatureMove: "Gaster Blaster",
 				evs: {hp:4, spa:252, spe:252}, nature: 'Modest',
+			},
+			'Lacuna': {
+				species: 'Gallade', ability: 'Defiant', item: 'Fighting Gem', gender: 'M',
+				moves: ['thunderwave', 'agility', 'zenheadbutt'],
+				baseSignatureMove: 'dynamicpunch', signatureMove: "Standing Full",
+				evs: {atk:252, def:4, spe:252}, nature: 'Jolly',
 			},
 			'LegitimateUsername': {
 				species: 'Shuckle', ability: 'Unaware', item: 'Leftovers', gender: 'M',

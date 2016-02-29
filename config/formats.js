@@ -756,6 +756,9 @@ exports.Formats = [
 				if (name === 'theimmortal' && pokemon.getAbility().id === 'megalauncher') {
 					pokemon.setAbility('cloudnine');
 				}
+				if (name === 'crestfall' && pokemon.getAbility().id === 'magicbounce') {
+					pokemon.setAbility('simple');
+				}
 			}
 		},
 		// Here we treat many things, read comments inside for information.
@@ -774,6 +777,9 @@ exports.Formats = [
 			if (pokemon.template.isMega) {
 				if (name === 'theimmortal' && pokemon.getAbility().id !== 'cloudnine') {
 					pokemon.setAbility('cloudnine');
+				}
+				if (name === 'crestfall' && pokemon.getAbility().id !== 'simple') {
+					pokemon.setAbility('simple');
 				}
 			}
 
@@ -802,6 +808,12 @@ exports.Formats = [
 			}
 			if (name === 'awu') {
 				this.add('c|+awu|Fite me irl bruh.');
+			}
+			if (name === 'bumbadadabum') {
+				this.add('c|@bumbadadabum|Time for card games on motorcycles!');
+			}
+			if (name === 'crestfall') {
+				this.add('c|%Crestfall|To say that we\'re in love is dangerous');
 			}
 			if (name === 'gangnamstyle') {
 				this.add("c|+Gangnam Style|Here I Come, Rougher Than The Rest of 'Em.");
@@ -849,6 +861,9 @@ exports.Formats = [
 					this.add('c|~Joim|' + sentence);
 				}
 			}
+			if (name === 'lacuna') {
+				this.add('c|%Lacuna|Introducing 7 time Grand Champion, Lacuna, to the battle!');
+			}
 			if (name === 'legitimateusername') {
 				this.add('c|@LegitimateUsername|``And believe me I am still alive.``');
 				this.add('c|@LegitimateUsername|``I\'m doing Science and I\'m still alive.``');
@@ -878,12 +893,21 @@ exports.Formats = [
 			if (name === 'awu') {
 				this.add("c|+awu|No need for goodbye. I'll see you on the flip side.");
 			}
+			if (name === 'bumbadadabum') {
+				this.add("c|@bumbadadabum|Find another planet make the same mistakes.");
+			}
+			if (name === 'crestfall') {
+				this.add("c|%Crestfall|Her pistol go (bang bang, boom boom, pop pop)");
+			}
 			if (name === 'gangnamstyle') {
 				this.add("c|+Gangnam Style|The Great Emeralds power allows me to feel... ");
 			}
 			if (name === 'joim') {
 				sentences = ['AVENGE ME, KIDS! AVEEEENGEEE MEEEEEE!!', 'OBEY!', '``This was a triumph, I\'m making a note here: HUGE SUCCESS.``', '``Remember when you tried to kill me twice? Oh how we laughed and laughed! Except I wasn\'t laughing.``', '``I\'m not even angry, I\'m being so sincere right now, even though you broke my heart and killed me. And tore me to pieces. And threw every piece into a fire.``'];
 				this.add('c|~Joim|' + sentences[this.random(4)]);
+			}
+			if (name ==== 'lacuna') {
+				this.add('c|%Lacuna|We need to go full out again soon...');
 			}
 			if (name === 'legitimateusername') {
 				this.add('c|@LegitimateUsername|``This isn\'t brave. It\'s murder. What did I ever do to you?``');
@@ -973,6 +997,19 @@ exports.Formats = [
 				move.multihit = 3;
 				move.basePower = 70;
 			}
+			if (move.id === 'triattack' && name === 'bumbadadabum') {
+				move.name = 'Free Software';
+				move.type = 'Electric';
+				move.basePower = 110;
+				move.accuracy = 95;
+				move.secondary = {chance:30, status: 'par'};
+
+				move.onHit = function () {
+					this.add('c|@bumbadadabum|I\'d just like to interject for a moment. What you\'re referring to as Linux, is in fact, GNU/Linux, or as I\'ve recently taken to calling it, GNU plus Linux. Linux is not an operating system unto itself, but rather another free component of a fully functioning GNU system made useful by the GNU corelibs, shell utilities and vital system components comprising a full OS as defined by POSIX.');
+					this.add('c|@bumbadadabum|Many computer users run a modified version of the GNU system every day, without realizing it. Through a peculiar turn of events, the version of GNU which is widely used today is often called Linux, and many of its users are not aware that it is basically the GNU system, developed by the GNU Project.');
+					this.add('c|@bumbadadabum|There really is a Linux, and these people are using it, but it is just a part of the system they use. Linux is the kernel: the program in the system that allocates the machine\'s resources to the other programs that you run. The kernel is an essential part of an operating system, but useless by itself; it can only function in the context of a complete operating system. Linux is normally used in combination with the GNU operating system: the whole system is basically GNU with Linux added, or GNU/Linux. All the so-called Linux distributions are really distributions of GNU/Linux!');
+				};
+			}
 			if (move.id === 'hyperbeam' && name === 'joim') {
 				move.name = 'Gaster Blaster';
 				move.type = 'Electric';
@@ -987,6 +1024,22 @@ exports.Formats = [
 				move.onAfterHit = function (target, source) {
 					if (!target.fainted) {
 						source.addVolatile('mustrecharge');
+					}
+				};
+			}
+			if (move.id === 'dynamicpunch' && name === 'lacuna') {
+				move.name = 'Standing Full';
+				move.basePower = 75;
+				move.accuracy = 100;
+				move.pp = 10;
+				delete move.secondary;
+				move.onHit = function (target, pokemon) {
+					if (target.lastDamage > 0 && pokemon.lastAttackedBy && pokemon.lastAttackedBy.thisTurn && pokemon.lastAttackedBy.pokemon === target) {
+						if (this.random(100) < 30) {
+							target.addVolatile('confusion');
+						}
+					} else {
+						target.addVolatile('confusion');
 					}
 				};
 			}
