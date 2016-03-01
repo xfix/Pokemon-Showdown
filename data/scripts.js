@@ -3318,6 +3318,12 @@ exports.BattleScripts = {
 				baseSignatureMove: 'meditate', signatureMove: "Hidden Power... Normal?",
 				evs: {hp:252, def:4, spa:252}, ivs: {atk:0, spe:0}, nature: 'Quiet',
 			},
+			'SolarisFox': {
+				species: 'Delphox', ability: 'Klutz', item: ['Choice Scarf', 'Choice Band', 'Choice Specs', 'Assault Vest', 'Lagging Tail', 'Flame Orb', 'Toxic Orb'].randomize()[0], gender: 'M',
+				moves: ['trick', 'lavaplume', 'psyshock'],
+				baseSignatureMove: 'snatch', signatureMove: "Wonder Bark",
+				evs: {hp:40, spa:216, spe:252}, ivs: {atk:0}, nature: 'Timid',
+			},
 			'The Immortal': {
 				species: 'Blastoise', ability: 'Magic Bounce', item: 'Blastoisinite', gender: 'M', shiny: true,
 				moves: ['shellsmash', 'steameruption', 'dragontail'],
