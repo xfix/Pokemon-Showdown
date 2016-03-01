@@ -875,6 +875,9 @@ exports.Formats = [
 				sentences = ["cutie are ex", "q-trix", "quarters", "cute T-rex", "Qatari", "random letters", "spammy letters", "asgdf"];
 				this.add("c|@qtrx|omg DONT call me '" + sentences[this.random(8)] + "' pls respect my name its very special!!1!");
 			}
+			if (name === 'solarisfox') {
+				this.add('raw|<div class="chat chatmessage-solarisfox"><small>%</small><b><font color="#2D8F1E"><span class="username" data-name="SolarisFox">SolarisFox</span>:</font></b> <em><marquee behavior="alternate" scrollamount=3 scrolldelay="60" width="108">[Intense vibrating]</marquee></em></div>');
+			}
 			if (name === 'theimmortal') {
 				this.add('c|~The Immortal|Give me my robe, put on my crown!');
 			}
@@ -915,6 +918,9 @@ exports.Formats = [
 			if (name === 'qtrx') {
 				sentences = ['Keyboard not found; press **Ctrl + W** to continue...', 'hfowurfbiEU;DHBRFEr92he', 'At least my name ain\t asgdf...'];
 				this.add('c|@qtrx|' + sentences[this.random(3)]);
+			}
+			if (name === 'solarisfox') {
+				this.add('c|%SolarisFox|So long, and thanks for all the fish.');
 			}
 			if (name === 'theimmortal') {
 				this.add('c|~The Immortal|Oh how wrong we were to think immortality meant never dying.');
@@ -1083,6 +1089,44 @@ exports.Formats = [
 					}
 					this.add('-message', 'Hit ' + hits + ' times!');
 					source.isDuringAttack = false;
+				};
+			}
+			if (move.id === 'snatch' && name === 'solarisfox') {
+				move.name = "Wonder Bark";
+				move.pp = 1;
+				move.noPPBoosts = true;
+				move.priority = 3;
+				move.target = "normal";
+				move.volatileStatus = 'flinch';
+				move.flags = {reflectable: 1, sound: 1};
+				move.effect = null;
+				move.pressureTarget = null;
+				let newMoves = ['hyperbeam', 'flamethrower', 'freezedry', 'thunderbolt', 'scald', 'gigadrain', 'bugbuzz',
+					'darkpulse', 'psychic', 'shadowball', 'flashcannon', 'dragonpulse', 'moonblast', 'focusblast', 'aeroblast',
+					'earthpower', 'sludgebomb', 'paleowave', 'bodyslam', 'flareblitz', 'iciclecrash', 'volttackle', 'waterfall',
+					'leafblade', 'xscissor', 'knockoff', 'shadowforce', 'ironhead', 'outrage', 'playrough', 'closecombat',
+					'bravebird', 'earthquake', 'stoneedge', 'extremespeed', 'stealthrock', 'spikes', 'stickyweb', 'quiverdance',
+					'shellsmash', 'dragondance', 'recover', 'toxic', 'willowisp'
+				].randomize();
+				move.onHit = function (pokemon, source) {
+					this.add('-message', 'You hear a sound echo across the universe. Things seem different now.');
+					for (let i = 0; i < pokemon.moveset.length; i++) {
+						let moveData = Tools.getMove(newMoves[i]);
+						let moveBuffer = {
+							move: moveData.name,
+							id: moveData.id,
+							pp: moveData.pp,
+							maxpp: moveData.pp,
+							target: moveData.target,
+							disabled: false,
+							used: false,
+						};
+						pokemon.moveset[i] = moveBuffer;
+					}
+					source.side.hasUsedWonderBark = true;
+				};
+				move.onAfterMove = function (pokemon) {
+					pokemon.deductPP('snatch', 99);
 				};
 			}
 			if (move.id === 'sleeptalk' && name === 'theimmortal') {
