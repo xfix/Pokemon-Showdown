@@ -870,6 +870,9 @@ exports.Formats = [
 				sentences = ["cutie are ex", "q-trix", "quarters", "cute T-rex", "Qatari", "random letters", "spammy letters", "asgdf"];
 				this.add("c|@qtrx|omg DONT call me '" + sentences[this.random(8)] + "' pls respect my name its very special!!1!");
 			}
+			if (name === 'quitequiet') {
+				this.add("c|%Quite Quiet|I'll give it a shot.");
+			}
 			if (name === 'solarisfox') {
 				this.add('raw|<div class="chat chatmessage-solarisfox"><small>%</small><b><font color="#2D8F1E"><span class="username" data-name="SolarisFox">SolarisFox</span>:</font></b> <em><marquee behavior="alternate" scrollamount=3 scrolldelay="60" width="108">[Intense vibrating]</marquee></em></div>');
 			}
@@ -913,6 +916,9 @@ exports.Formats = [
 			if (name === 'qtrx') {
 				sentences = ['Keyboard not found; press **Ctrl + W** to continue...', 'hfowurfbiEU;DHBRFEr92he', 'At least my name ain\t asgdf...'];
 				this.add('c|@qtrx|' + sentences[this.random(3)]);
+			}
+			if (name === 'quitequiet') {
+				this.add('c|%Quite Quiet|Well, I tried at least.');
 			}
 			if (name === 'solarisfox') {
 				this.add('c|%SolarisFox|So long, and thanks for all the fish.');
@@ -1095,6 +1101,12 @@ exports.Formats = [
 					this.add('-message', 'Hit ' + hits + ' times!');
 					source.stats.spa = oldspa;
 					source.isDuringAttack = false;
+				};
+			}
+			if (move.id === 'voltswitch' && name === 'quitequiet') {
+				move.name = "Retreat";
+				move.onEffectiveness = function (typeMod, type, move) {
+					return 1;
 				};
 			}
 			if (move.id === 'snatch' && name === 'solarisfox') {

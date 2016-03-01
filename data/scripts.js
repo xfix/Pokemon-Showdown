@@ -3318,6 +3318,12 @@ exports.BattleScripts = {
 				baseSignatureMove: 'meditate', signatureMove: "Hidden Power... Normal?",
 				evs: {hp:252, def:4, spa:252}, ivs: {atk:0, spe:0}, nature: 'Quiet',
 			},
+			'Quite Quiet': {
+				species: 'Heliolisk', ability: 'Regenerator', item: 'Life Orb', gender: 'F',
+				moves: ['hypervoice', 'nastyplot', 'nuzzle'],
+				baseSignatureMove: 'voltswitch', signatureMove: "Retreat",
+				evs: {def:4, spa:252, spe:252}, nature: 'Timid',
+			},
 			'SolarisFox': {
 				species: 'Delphox', ability: 'Klutz', item: ['Choice Scarf', 'Choice Band', 'Choice Specs', 'Assault Vest', 'Lagging Tail', 'Flame Orb', 'Toxic Orb'].randomize()[0], gender: 'M',
 				moves: ['trick', 'lavaplume', 'psyshock'],
