@@ -766,7 +766,7 @@ exports.Formats = [
 		onSwitchIn: function (pokemon) {
 			let name = toId(pokemon.illusion ? pokemon.illusion.name : pokemon.name);
 			// Wonder Guard is available, but it curses you.
-			if (pokemon.getAbility().id === 'wonderguard') {
+			if (pokemon.getAbility().id === 'wonderguard' && pokemon.baseTemplate.baseSpecies !== 'shedinja') {
 				pokemon.addVolatile('curse', pokemon);
 				this.add('-message', pokemon.name + "'s Wonder Guard has cursed it!");
 			}
@@ -784,18 +784,13 @@ exports.Formats = [
 			}
 
 			// Add here special typings, done for flavour mainly.
+
+			// Innate effects.
 			if (name === 'qtrx') {
-				this.add('-message', pokemon.name + " is radiating an Unown aura!");
 				if (!pokemon.illusion) {
-					pokemon.addVolatile('unownaura');
-					this.add('-start', pokemon, 'typechange', 'Normal/Psychic');
-					pokemon.typesData = [
-						{type: 'Normal', suppressed: false,  isAdded: false},
-						{type: 'Psychic', suppressed: false,  isAdded: false},
-					];
+					pokemon.addVolatile('qtrxeffects');
 				}
 				pokemon.addVolatile('focusenergy');
-				this.boost({evasion: -1}, pokemon, pokemon, 'Unown aura');
 			}
 
 			// Edgy switch-in sentences go here.
@@ -932,7 +927,7 @@ exports.Formats = [
 		// Special drag out event for red card and shit.
 		onDragOut: function (pokemon) {
 			if (pokemon.isDuringAttack) {
-				this.add('-message', "But the Unown Aura absorbed the effect!");
+				this.add('-message', "But it had no effect!");
 				return null;
 			}
 		},
@@ -966,6 +961,14 @@ exports.Formats = [
 					if (name === 'gangnamstyle' && !pokemon.fainted && !pokemon.illusion) {
 						this.heal(this.modify(pokemon.maxhp, 0.15), pokemon, pokemon);
 						this.add('-message', pokemon.name + "'s Gonna Make You Sweat healed itself!");
+					}
+					if (pokemon.volatiles['qtrxeffects'] && !pokemon.fainted && !pokemon.illusion) {
+						this.add('-message', pokemon.name + "emanates spammy letters, tearing at the very fabric of reality!");
+						if (this.random(2) === 1) {
+							this.useMove('trickroom', pokemon);
+						} else {
+							this.useMove('wonderroom', pokemon);
+						}
 					}
 				}
 			}
@@ -1074,9 +1077,11 @@ exports.Formats = [
 				move.onHit = function (target, source) {
 					let gibberish = '';
 					let hits = 0;
+					let oldspa = source.stats.spa;
 					let hps = ['hiddenpowerbug', 'hiddenpowerdark', 'hiddenpowerdragon', 'hiddenpowerelectric', 'hiddenpowerfighting', 'hiddenpowerfire', 'hiddenpowerflying', 'hiddenpowerghost', 'hiddenpowergrass', 'hiddenpowerground', 'hiddenpowerice', 'hiddenpowerpoison', 'hiddenpowerpsychic', 'hiddenpowerrock', 'hiddenpowersteel', 'hiddenpowerwater'];
 					this.add('c|@qtrx|/me slams face into keyboard!');
 					source.isDuringAttack = true; // Prevents the user from being kicked out in the middle of using Hidden Powers.
+					source.stats.spa = source.stats.atk;
 					for (let i = 0; i < move.hitcount; i++) {
 						if (target.hp !== 0) {
 							let len = 16 + this.random(35);
@@ -1088,6 +1093,7 @@ exports.Formats = [
 						}
 					}
 					this.add('-message', 'Hit ' + hits + ' times!');
+					source.stats.spa = oldspa;
 					source.isDuringAttack = false;
 				};
 			}
