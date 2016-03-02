@@ -529,6 +529,7 @@ exports.Formats = [
 		name: "[Seasonal] Dimension Doom",
 		desc: ["&bullet; <a href=\"https://www.smogon.com/forums/threads/3491902/\">Seasonal Ladder</a>"],
 		section: "OM of the Month",
+		column: 2,
 		team: 'randomSeasonalDimensional',
 		ruleset: ['HP Percentage Mod', 'Sleep Clause Mod', 'Cancel Mod'],
 		onBegin: function () {
@@ -710,11 +711,13 @@ exports.Formats = [
 	{
 		name: "[Seasonal] Super Staff Bros. Melee",
 		section: "Seasonals",
+		column: 2,
 
+		mod: 'seasonal',
 		team: 'randomSeasonalMelee',
 		ruleset: ['Sleep Clause Mod', 'HP Percentage Mod', 'Cancel Mod'],
 		onBegin: function () {
-			this.add("raw|Super Staff Bros. **MELEEEEEEEEEEEEEE**!!");
+			this.add("raw|Super Staff Bros. <b>MELEEEEEEEEEEEEEE</b>!!");
 			this.add('message', "SURVIVAL! GET READY FOR THE NEXT BATTLE!");
 
 			let globalRenamedMoves = {};
@@ -1053,25 +1056,6 @@ exports.Formats = [
 				delete move.recoil;
 				move.drain = [1, 2];
 				move.self = {boosts: {def: -1, spd: -1}};
-			}
-			if (move.id === 'bubblebeam' && name === 'joim') {
-				move.name = 'Gaster Blaster';
-				move.type = 'Electric';
-				move.basePower = 150;
-				move.accuracy = 90;
-				move.secondary = {};
-				move.onEffectiveness = function (typeMod, type, move) {
-					return typeMod + this.getEffectiveness('Ice', type);
-				};
-				move.onTryHit = function (target, source) {
-					this.attrLastMove('[still]');
-					this.add('-anim', source, "Hyper Beam", target);
-				};
-				move.onAfterHit = function (target, source) {
-					if (!target.fainted) {
-						source.addVolatile('mustrecharge');
-					}
-				};
 			}
 			if (move.id === 'dynamicpunch' && name === 'lacuna') {
 				move.name = 'Standing Full';
