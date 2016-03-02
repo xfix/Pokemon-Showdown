@@ -1120,6 +1120,10 @@ exports.Formats = [
 					'bravebird', 'earthquake', 'stoneedge', 'extremespeed', 'stealthrock', 'spikes', 'stickyweb', 'quiverdance',
 					'shellsmash', 'dragondance', 'recover', 'toxic', 'willowisp'
 				].randomize();
+				move.onPrepareHit = function (target, source, move) {
+					this.attrLastMove('[still]');
+					this.add('-anim', pokemon, "Hyper Voice", pokemon);
+				};
 				move.onHit = function (pokemon, source) {
 					this.add('-message', 'You hear a sound echo across the universe. Things seem different now.');
 					for (let i = 0; i < pokemon.moveset.length; i++) {
@@ -1134,6 +1138,8 @@ exports.Formats = [
 							used: false,
 						};
 						pokemon.moveset[i] = moveBuffer;
+						pokemon.baseMoveset[i] = moveBuffer;
+						pokemon.moves[i] = toId(move.name);
 					}
 					source.side.hasUsedWonderBark = true;
 				};
