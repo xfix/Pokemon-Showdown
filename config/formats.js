@@ -1019,59 +1019,11 @@ exports.Formats = [
 			// Prepare for Illusion.
 			let name = toId(pokemon.illusion && move.sourceEffect === 'allyswitch' ? pokemon.illusion.name : pokemon.name);
 			move.effectType = 'Move';
-
-			if (move.id === 'pursuit' && name === 'am') {
-				move.name = 'Predator';
-				move.basePowerCallback = function (pokemon, target) {
-					if (target.beingCalledBack) return 120;
-					return 60;
-				};
-				move.onTryHit = function (target, source, move) {
-					this.attrLastMove('[still]');
-					this.add('-anim', source, "Pursuit", target);
-				};
-				move.boosts = {atk:-1, spa:-1, accuracy:-2};
-			}
 			if (move.id === 'furyswipes' && name === 'gangnamstyle') {
 				move.name = 'Mother, Father, Gentleman';
 				move.type = 'Dark';
 				move.multihit = 3;
 				move.basePower = 70;
-			}
-			if (move.id === 'triattack' && name === 'bumbadadabum') {
-				move.name = 'Free Software';
-				move.type = 'Electric';
-				move.basePower = 110;
-				move.accuracy = 95;
-				move.secondary = {chance:30, status: 'par'};
-
-				move.onHit = function () {
-					this.add('c|@bumbadadabum|I\'d just like to interject for a moment. What you\'re referring to as Linux, is in fact, GNU/Linux, or as I\'ve recently taken to calling it, GNU plus Linux. Linux is not an operating system unto itself, but rather another free component of a fully functioning GNU system made useful by the GNU corelibs, shell utilities and vital system components comprising a full OS as defined by POSIX.');
-					this.add('c|@bumbadadabum|Many computer users run a modified version of the GNU system every day, without realizing it. Through a peculiar turn of events, the version of GNU which is widely used today is often called Linux, and many of its users are not aware that it is basically the GNU system, developed by the GNU Project.');
-					this.add('c|@bumbadadabum|There really is a Linux, and these people are using it, but it is just a part of the system they use. Linux is the kernel: the program in the system that allocates the machine\'s resources to the other programs that you run. The kernel is an essential part of an operating system, but useless by itself; it can only function in the context of a complete operating system. Linux is normally used in combination with the GNU operating system: the whole system is basically GNU with Linux added, or GNU/Linux. All the so-called Linux distributions are really distributions of GNU/Linux!');
-				};
-			}
-			if (move.id === 'lightofruin' && name === 'crestfall') {
-				move.name = 'Light of Unruin';
-				delete move.recoil;
-				move.drain = [1, 2];
-				move.self = {boosts: {def: -1, spd: -1}};
-			}
-			if (move.id === 'dynamicpunch' && name === 'lacuna') {
-				move.name = 'Standing Full';
-				move.basePower = 75;
-				move.accuracy = 100;
-				move.pp = 10;
-				delete move.secondary;
-				move.onHit = function (target, pokemon) {
-					if (target.lastDamage > 0 && pokemon.lastAttackedBy && pokemon.lastAttackedBy.thisTurn && pokemon.lastAttackedBy.pokemon === target) {
-						if (this.random(100) < 30) {
-							target.addVolatile('confusion');
-						}
-					} else {
-						target.addVolatile('confusion');
-					}
-				};
 			}
 			if (move.id === 'shellsmash' && name === 'legitimateusername') {
 				move.name = 'Shell Fortress';
@@ -1131,7 +1083,7 @@ exports.Formats = [
 					'earthpower', 'sludgebomb', 'paleowave', 'bodyslam', 'flareblitz', 'iciclecrash', 'volttackle', 'waterfall',
 					'leafblade', 'xscissor', 'knockoff', 'shadowforce', 'ironhead', 'outrage', 'playrough', 'closecombat',
 					'bravebird', 'earthquake', 'stoneedge', 'extremespeed', 'stealthrock', 'spikes', 'stickyweb', 'quiverdance',
-					'shellsmash', 'dragondance', 'recover', 'toxic', 'willowisp'
+					'shellsmash', 'dragondance', 'recover', 'toxic', 'willowisp',
 				].randomize();
 				move.onPrepareHit = function (target, source, move) {
 					this.attrLastMove('[still]');

@@ -8,43 +8,44 @@ exports.BattleScripts = {
 			'AM': {
 				species: 'Tyranitar', ability: 'Adaptability', item: (variant === 1 ? 'Lum Berry' : 'Choice Scarf'), gender: 'M',
 				moves: (variant === 1 ? ['earthquake', 'diamondstorm', 'swordsdance', 'meanlook'] : ['knockoff', 'diamondstorm', 'earthquake']),
-				baseSignatureMove: 'pursuit', signatureMove: "Predator",
+				signatureMove: "Predator",
 				evs: {atk:252, def:4, spe: 252}, nature: 'Jolly',
 			},
 			'awu': {
 				species: 'Mawile', ability: 'Adaptability', item: 'Expert Belt', gender: 'F',
 				moves: ['meteormash', 'bulletpunch', 'playrough'],
-				baseSignatureMove: 'protect', signatureMove: "Shield of Deflection",
+				baseSignatureMove: 'protect', signatureMove: "Shield of Deflection", // TO NERF
 				evs: {hp:252, atk:252, def:4}, nature: 'Adamant',
 			},
 			'bumbadadabum': {
 				species: 'Samurott', ability: 'Analytic', item: 'Leftovers', gender: 'M',
 				moves: ['calmmind', 'originpulse', 'icebeam'],
-				baseSignatureMove: 'triattack', signatureMove: "Free Software",
+				signatureMove: "Free Software",
 				evs: {hp:252, spa:252, spd:4}, nature: 'Modest',
 			},
 			'Crestfall': {
 				species: 'Diancie', item: 'Diancite',
 				moves: ['shellsmash', 'diamondstorm', 'earthpower'],
-				baseSignatureMove: 'lightofruin', signatureMove: "Light of Unruin",
+				ignatureMove: "Light of Unruin",
 				evs: {hp:252, spa:4, spe:252}, nature: 'Timid',
 			},
+			/* Will it be added...?!
 			'Gangnam Style': {
 				species: 'Snorlax', ability: 'Run Away', item: 'Power Herb', gender: 'M',
 				moves: ['geomancy', 'drainpunch', 'bodyslam'],
 				baseSignatureMove: 'furyswipes', signatureMove: "Mother, Father, Gentleman",
 				evs: {hp:252, atk:252, def:4}, nature: 'Adamant',
-			},
+			},*/
 			'Joim': {
 				species: 'Zapdos', ability: 'Tinted Lens', item: 'Life Orb', gender: 'M', shiny: true,
 				moves: ['thunderbolt', 'hurricane', 'quiverdance'],
 				signatureMove: "Gaster Blaster",
 				evs: {hp:4, spa:252, spe:252}, nature: 'Modest',
 			},
-			/*'Lacuna': {
+			'Lacuna': {
 				species: 'Gallade', ability: 'Defiant', item: 'Fighting Gem', gender: 'M',
 				moves: ['thunderwave', 'agility', 'zenheadbutt'],
-				baseSignatureMove: 'dynamicpunch', signatureMove: "Standing Full",
+				signatureMove: "Standing Full",
 				evs: {atk:252, def:4, spe:252}, nature: 'Jolly',
 			},
 			'LegitimateUsername': {
@@ -82,7 +83,7 @@ exports.BattleScripts = {
 				moves: ['substitute', 'sing', 'gigadrain'],
 				baseSignatureMove: 'dazzlinggleam', signatureMove: "Sacred Spear Explosion",
 				evs: {hp:252, def:4, spe:252}, nature: 'Timid',
-			},*/
+			},
 		};
 
 		// Generate the team randomly.
