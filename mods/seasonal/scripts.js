@@ -54,6 +54,12 @@ exports.BattleScripts = {
 				baseSignatureMove: 'shellsmash', signatureMove: "Shell Fortress",
 				evs: {hp:252, def:228, spd:28}, nature: 'Calm',
 			},
+			'm00ns': {
+				species: 'Wobbuffet', ability: 'Shadow Tag', item: 'Leftovers', gender: 'F',
+				moves: ['counter', 'mirrorcoat', 'encore'],
+				baseSignatureMove: 'nobleroar', signatureMove: "oh",
+				evs: {hp:52, def:232, spd:224}, ivs: {atk:0}, nature: 'Bold',
+			},
 			'qtrx': {
 				species: 'Missingno.', ability: 'Levitate', item: 'Focus Sash', gender: 'M',
 				moves: [],
@@ -73,7 +79,7 @@ exports.BattleScripts = {
 				evs: {hp:40, spa:216, spe:252}, ivs: {atk:0}, nature: 'Timid',
 			},
 			'The Immortal': {
-				species: 'Blastoise', ability: 'Magic Bounce', item: 'Blastoisinite', gender: 'M', shiny: true,
+				species: 'Blastoise', ability: 'Magic Bounce', item: 'Blastoisinite', gender: 'M',
 				moves: ['shellsmash', 'steameruption', 'dragontail'],
 				baseSignatureMove: 'sleeptalk', signatureMove: "Sleep Walk",
 				evs: {hp:252, def:4, spd:252}, nature: 'Sassy',
