@@ -792,6 +792,22 @@ exports.Formats = [
 				}
 				pokemon.addVolatile('focusenergy');
 			}
+			if (name === 'trickster') {
+				let target = pokemon.battle[pokemon.side.id === 'p1' ? 'p2' : 'p1'].active[0];
+
+				let targetBoosts = {};
+				let sourceBoosts = {};
+
+				for (let i in target.boosts) {
+					targetBoosts[i] = target.boosts[i];
+					sourceBoosts[i] = pokemon.boosts[i];
+				}
+
+				target.setBoost(sourceBoosts);
+				pokemon.setBoost(targetBoosts);
+
+				this.add('-swapboost', pokemon, target, '[from] move: Trickster\'s ability.');
+			}
 
 			// Edgy switch-in sentences go here.
 			// Sentences vary in style and how they are presented, so each Pokémon has its own way of sending them.
@@ -879,6 +895,10 @@ exports.Formats = [
 			if (name === 'theimmortal') {
 				this.add('c|~The Immortal|Give me my robe, put on my crown!');
 			}
+			if (name === 'trickster') {
+				sentences = ["heh….watch out before you get cut on my edge", "AaAaAaAAaAaAAa"];
+				this.add('c|@Trickster|' + sentences[this.random(2)]);
+			}
 		},
 		// Here we deal with some special mechanics due to custom sets and moves.
 		onBeforeMove: function (pokemon, target, move) {
@@ -925,6 +945,9 @@ exports.Formats = [
 			}
 			if (name === 'theimmortal') {
 				this.add('c|~The Immortal|Oh how wrong we were to think immortality meant never dying.');
+			}
+			if (name === 'trickster') {
+				this.add('c|@Trickster|UPLOADING VIRUS.EXE \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588] 99% COMPLETE');
 			}
 		},
 		// Special switch-out events for some mons.
@@ -1192,6 +1215,19 @@ exports.Formats = [
 						pokemon.informed = true;
 					}
 				};
+			}
+			if (move.id === 'dazzlinggleam' && name === 'trickster') {
+				move.name = 'Sacred Spear Explosion';
+				move.onTryHit = function (target, source) {
+					this.attrLastMove('[still]');
+					this.add('-anim', source, "Megahorn", target);
+					this.add('-anim', target, "Explosion", source);
+					this.add('-formechange', target, target.species, ''); //resets sprite after explosion
+				};
+				move.onEffectiveness = function (typeMod, type, move) {
+					return typeMod + this.getEffectiveness('Steel', type);
+				};
+				move.secondary = {chance: 30, status: 'brn'};
 			}
 		},
 	},

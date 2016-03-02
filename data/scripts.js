@@ -3336,6 +3336,12 @@ exports.BattleScripts = {
 				baseSignatureMove: 'sleeptalk', signatureMove: "Sleep Walk",
 				evs: {hp:252, def:4, spd:252}, nature: 'Sassy',
 			},
+			'Trickster': {
+				species: 'Whimsicott', ability: 'Illuminate', item: 'Quick Claw', gender: 'M',
+				moves: ['substitute', 'sing', 'gigadrain'],
+				baseSignatureMove: 'dazzlinggleam', signatureMove: "Sacred Spear Explosion",
+				evs: {hp:252, def:4, spe:252}, nature: 'Timid',
+			},
 		};
 
 		// Generate the team randomly.
