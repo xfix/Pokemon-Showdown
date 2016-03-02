@@ -3320,7 +3320,7 @@ exports.BattleScripts = {
 			},
 			'Quite Quiet': {
 				species: 'Heliolisk', ability: 'Regenerator', item: 'Life Orb', gender: 'F',
-				moves: ['hypervoice', 'nastyplot', 'nuzzle'],
+				moves: ['stealthrock', 'perishsong', 'nuzzle'],
 				baseSignatureMove: 'voltswitch', signatureMove: "Retreat",
 				evs: {def:4, spa:252, spe:252}, nature: 'Timid',
 			},
