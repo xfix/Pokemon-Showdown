@@ -1068,31 +1068,34 @@ exports.BattleMovedex = {
 			onStart: function (side) {
 				this.add('-sidestart', side, 'move: Set Mine');
 				this.add('c|' + this.effectData.source.name + '|Tick tick boom!');
+				this.effectData.moveData = {
+					id: 'mine',
+					name: 'Mine',
+					accuracy: 100,
+					basePower: 160,
+					category: 'Special',
+					flags: {},
+					ignoreImmunity: false,
+					effectType: 'Move',
+					type: 'Fire',
+					onPrepareHit: function (target, source, move) { // animation
+						this.attrLastMove('[still]');
+						this.add('-anim', target, 'Explosion', target);
+						this.add('-anim', target, 'Sky Drop', target);
+					},
+				}
+				this.effectData.moveSource = this.effectData.source;
 			},
 			onSwitchIn: function (pokemon) {
 				if (!pokemon.isGrounded()) return;
-				this.useMove('Mine', this.effectData.source, pokemon);
+				this.tryMoveHit(pokemon, this.effectData.moveSource, this.effectData.moveData);
+				this.add('raw|' + pokemon.name + ' took a Mine to their face!');
+				
 				pokemon.side.removeSideCondition('setmine');
 			},
 		},
 		target: 'foeSide',
 		type: 'Fire',
-	},
-	'mine': {
-		num: 663,
-		accuracy: true,
-		basePower: 160,
-		category: 'Special',
-		target: 'normal',
-		onPrepareHit: function (target, source, move) { // animation
-			this.attrLastMove('[still]');
-			this.add('-anim', target, 'Explosion', target);
-			this.add('-anim', target, 'Sky Drop', target);
-		},
-		id: 'mine',
-		name: 'Mine',
-		type: 'Fire',
-		pp: 20,
 	},
 	'locknload': {
 		num: 664,
