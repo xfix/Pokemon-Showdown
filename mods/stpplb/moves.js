@@ -1088,9 +1088,8 @@ exports.BattleMovedex = {
 			},
 			onSwitchIn: function (pokemon) {
 				if (!pokemon.isGrounded()) return;
-				this.tryMoveHit(pokemon, this.effectData.moveSource, this.effectData.moveData);
 				this.add('raw|' + pokemon.name + ' took a Mine to their face!');
-				
+				this.tryMoveHit(pokemon, this.effectData.moveSource, this.effectData.moveData);
 				pokemon.side.removeSideCondition('setmine');
 			},
 		},
