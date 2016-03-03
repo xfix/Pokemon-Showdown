@@ -127,6 +127,25 @@ exports.BattleMovedex = {
 		target: "normal",
 		type: "Dark",
 	},
+	reversetransform: {
+		num: -144,
+		accuracy: true,
+		category: "Status",
+		id: "reversetransform",
+		name: "Reverse Transform",
+		pp: 1,
+		noPPBoosts: true,
+		priority: 0,
+		flags: {protect: 1, mirror: 1, authentic: 1},
+		onHit: function (target, source) {
+			if (!target.transformInto(source, target)) {
+				return false;
+			}
+			target.canMegaEvo = false;
+		},
+		target: "nomral",
+		type: "Normal",
+	},
 	standingfull: {
 		num: -223,
 		accuracy: 100,

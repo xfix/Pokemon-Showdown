@@ -36,6 +36,12 @@ exports.BattleScripts = {
 				baseSignatureMove: 'furyswipes', signatureMove: "Mother, Father, Gentleman",
 				evs: {hp:252, atk:252, def:4}, nature: 'Adamant',
 			},*/
+			'Jasmine': {
+				species: 'Mew', ability: 'Speed Boost', item: 'Focus Sash', gender: 'F',
+				moves: ['taunt', 'explosion', 'protect'],
+				baseSignatureMove: 'transform', signatureMove: "Reverse Transform",
+				evs: {hp:84, atk:84, def:84, spa:84, spd:84, spe:84}, nature: 'Quirky',
+			},
 			'Joim': {
 				species: 'Zapdos', ability: 'Tinted Lens', item: 'Life Orb', gender: 'M', shiny: true,
 				moves: ['thunderbolt', 'hurricane', 'quiverdance'],
