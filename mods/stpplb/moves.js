@@ -1083,7 +1083,7 @@ exports.BattleMovedex = {
 						this.add('-anim', target, 'Explosion', target);
 						this.add('-anim', target, 'Sky Drop', target);
 					},
-				}
+				};
 				this.effectData.moveSource = this.effectData.source;
 			},
 			onSwitchIn: function (pokemon) {
