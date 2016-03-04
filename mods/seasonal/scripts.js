@@ -13,8 +13,8 @@ exports.BattleScripts = {
 			},
 			'awu': {
 				species: 'Mawile', ability: 'Adaptability', item: 'Expert Belt', gender: 'F',
-				moves: ['meteormash', 'bulletpunch', 'playrough'],
-				baseSignatureMove: 'protect', signatureMove: "Shield of Deflection", // TO NERF
+				moves: ['meteormash', 'bulletpunch', 'uturn'],
+				signatureMove: "Ancestor's Rage",
 				evs: {hp:252, atk:252, def:4}, nature: 'Adamant',
 			},
 			'bumbadadabum': {
@@ -24,10 +24,10 @@ exports.BattleScripts = {
 				evs: {hp:252, spa:252, spd:4}, nature: 'Modest',
 			},
 			'Crestfall': {
-				species: 'Diancie', item: 'Diancite',
+				species: 'Diancie', ability: 'Shield Dust', item: 'Diancite',
 				moves: ['shellsmash', 'diamondstorm', 'earthpower'],
 				ignatureMove: "Light of Unruin",
-				evs: {hp:252, spa:4, spe:252}, nature: 'Timid',
+				evs: {hp:252, spd: 68, spe:188}, nature: 'Timid',
 			},
 			'Gangnam Style': {
 				species: 'Munchlax', ability: 'Run Away', item: 'Power Herb', gender: 'M',
