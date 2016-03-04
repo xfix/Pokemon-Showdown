@@ -29,17 +29,16 @@ exports.BattleScripts = {
 				ignatureMove: "Light of Unruin",
 				evs: {hp:252, spa:4, spe:252}, nature: 'Timid',
 			},
-			/* Will it be added...?!
 			'Gangnam Style': {
-				species: 'Snorlax', ability: 'Run Away', item: 'Power Herb', gender: 'M',
+				species: 'Munchlax', ability: 'Run Away', item: 'Power Herb', gender: 'M',
 				moves: ['geomancy', 'drainpunch', 'bodyslam'],
-				baseSignatureMove: 'furyswipes', signatureMove: "Mother, Father, Gentleman",
+				signatureMove: "Mother, Father, Gentleman",
 				evs: {hp:252, atk:252, def:4}, nature: 'Adamant',
-			},*/
+			},
 			'Jasmine': {
 				species: 'Mew', ability: 'Speed Boost', item: 'Focus Sash', gender: 'F',
 				moves: ['taunt', 'explosion', 'protect'],
-				baseSignatureMove: 'transform', signatureMove: "Reverse Transform",
+				signatureMove: "Reverse Transform",
 				evs: {hp:84, atk:84, def:84, spa:84, spd:84, spe:84}, nature: 'Quirky',
 			},
 			'Joim': {
@@ -69,31 +68,31 @@ exports.BattleScripts = {
 			'qtrx': {
 				species: 'Missingno.', ability: 'Levitate', item: 'Focus Sash', gender: 'M',
 				moves: [],
-				baseSignatureMove: 'meditate', signatureMove: "Hidden Power... Normal?",
+				signatureMove: "Hidden Power... Normal?",
 				evs: {hp:252, def:4, spa:252}, ivs: {atk:0, spe:0}, nature: 'Quiet',
 			},
 			'Quite Quiet': {
 				species: 'Heliolisk', ability: 'Regenerator', item: 'Life Orb', gender: 'F',
 				moves: ['stealthrock', 'perishsong', 'nuzzle'],
-				baseSignatureMove: 'voltswitch', signatureMove: "Retreat",
+				signatureMove: "Retreat",
 				evs: {def:4, spa:252, spe:252}, nature: 'Timid',
 			},
 			'SolarisFox': {
 				species: 'Delphox', ability: 'Klutz', item: ['Choice Scarf', 'Choice Band', 'Choice Specs', 'Assault Vest', 'Lagging Tail', 'Flame Orb', 'Toxic Orb'].randomize()[0], gender: 'M',
 				moves: ['trick', 'lavaplume', 'psyshock'],
-				baseSignatureMove: 'snatch', signatureMove: "Wonder Bark",
+				signatureMove: "Wonder Bark",
 				evs: {hp:40, spa:216, spe:252}, ivs: {atk:0}, nature: 'Timid',
 			},
 			'The Immortal': {
 				species: 'Blastoise', ability: 'Magic Bounce', item: 'Blastoisinite', gender: 'M',
 				moves: ['shellsmash', 'steameruption', 'dragontail'],
-				baseSignatureMove: 'sleeptalk', signatureMove: "Sleep Walk",
+				signatureMove: "Sleep Walk",
 				evs: {hp:252, def:4, spd:252}, nature: 'Sassy',
 			},
 			'Trickster': {
 				species: 'Whimsicott', ability: 'Illuminate', item: 'Quick Claw', gender: 'M',
 				moves: ['substitute', 'sing', 'gigadrain'],
-				baseSignatureMove: 'dazzlinggleam', signatureMove: "Sacred Spear Explosion",
+				signatureMove: "Sacred Spear Explosion",
 				evs: {hp:252, def:4, spe:252}, nature: 'Timid',
 			},
 		};

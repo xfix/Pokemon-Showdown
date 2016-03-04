@@ -797,18 +797,14 @@ exports.Formats = [
 			}
 			if (name === 'trickster') {
 				let target = pokemon.battle[pokemon.side.id === 'p1' ? 'p2' : 'p1'].active[0];
-
 				let targetBoosts = {};
 				let sourceBoosts = {};
-
 				for (let i in target.boosts) {
 					targetBoosts[i] = target.boosts[i];
 					sourceBoosts[i] = pokemon.boosts[i];
 				}
-
 				target.setBoost(sourceBoosts);
 				pokemon.setBoost(targetBoosts);
-
 				this.add('-swapboost', pokemon, target, '[from] move: Trickster\'s ability.');
 			}
 
@@ -833,7 +829,7 @@ exports.Formats = [
 				this.add("c|+Gangnam Style|Here I Come, Rougher Than The Rest of 'Em.");
 			}
 			if (name === 'jasmine') {
-				this.add("c|~Jasmine|I'm still relevant!");
+				this.add("c|+Jasmine|I'm still relevant!");
 			}
 			if (name === 'joim') {
 				let dice = this.random(3);
@@ -1011,7 +1007,6 @@ exports.Formats = [
 				}
 			}
 		},
-		// This is where the signature moves are actually done.
 		onModifyMove: function (move, pokemon) {
 			// This is to make signature moves work when transformed.
 			if (move.id === 'transform') {
@@ -1020,156 +1015,6 @@ exports.Formats = [
 					pokemon.originalName = pokemon.name;
 					pokemon.name = target.name;
 				};
-			}
-
-			// Prepare for Illusion.
-			let name = toId(pokemon.illusion && move.sourceEffect === 'allyswitch' ? pokemon.illusion.name : pokemon.name);
-			move.effectType = 'Move';
-			if (move.id === 'furyswipes' && name === 'gangnamstyle') {
-				move.name = 'Mother, Father, Gentleman';
-				move.type = 'Dark';
-				move.multihit = 3;
-				move.basePower = 70;
-			}
-			if (move.id === 'shellsmash' && name === 'legitimateusername') {
-				move.name = 'Shell Fortress';
-				move.boosts = {def:2, spd:2, atk:-4, spa:-4, spe:-4};
-			}
-			if (move.id === 'meditate' && name === 'qtrx') {
-				move.name = 'KEYBOARD SMASH';
-				move.target = 'normal';
-				move.boosts = null;
-				move.hitcount = [3, 4, 4, 4, 4, 5, 5, 5, 6, 6, 7][this.random(11)];
-				move.onPrepareHit = function (target, source, move) {
-					this.attrLastMove('[still]');
-					this.add('-anim', source, "Fairy Lock", target);
-					this.add('-anim', pokemon, "Fairy Lock", pokemon); // DRAMATIC FLASHING
-				};
-				move.onHit = function (target, source) {
-					let gibberish = '';
-					let hits = 0;
-					let oldspa = source.stats.spa;
-					let hps = ['hiddenpowerbug', 'hiddenpowerdark', 'hiddenpowerdragon', 'hiddenpowerelectric', 'hiddenpowerfighting', 'hiddenpowerfire', 'hiddenpowerflying', 'hiddenpowerghost', 'hiddenpowergrass', 'hiddenpowerground', 'hiddenpowerice', 'hiddenpowerpoison', 'hiddenpowerpsychic', 'hiddenpowerrock', 'hiddenpowersteel', 'hiddenpowerwater'];
-					this.add('c|@qtrx|/me slams face into keyboard!');
-					source.isDuringAttack = true; // Prevents the user from being kicked out in the middle of using Hidden Powers.
-					source.stats.spa = source.stats.atk;
-					for (let i = 0; i < move.hitcount; i++) {
-						if (target.hp !== 0) {
-							let len = 16 + this.random(35);
-							gibberish = '';
-							for (let j = 0; j < len; j++) gibberish += String.fromCharCode(48 + this.random(79));
-							this.add('-message', gibberish);
-							this.useMove(hps[this.random(16)], source, target);
-							hits++;
-						}
-					}
-					this.add('-message', 'Hit ' + hits + ' times!');
-					source.stats.spa = oldspa;
-					source.isDuringAttack = false;
-				};
-			}
-			if (move.id === 'voltswitch' && name === 'quitequiet') {
-				move.name = "Retreat";
-				move.onEffectiveness = function (typeMod, type, move) {
-					return 1;
-				};
-			}
-			if (move.id === 'snatch' && name === 'solarisfox') {
-				move.name = "Wonder Bark";
-				move.pp = 1;
-				move.noPPBoosts = true;
-				move.priority = 3;
-				move.target = "normal";
-				move.volatileStatus = 'flinch';
-				move.flags = {reflectable: 1, sound: 1};
-				move.effect = null;
-				move.pressureTarget = null;
-				let newMoves = ['hyperbeam', 'flamethrower', 'freezedry', 'thunderbolt', 'scald', 'gigadrain', 'bugbuzz',
-					'darkpulse', 'psychic', 'shadowball', 'flashcannon', 'dragonpulse', 'moonblast', 'focusblast', 'aeroblast',
-					'earthpower', 'sludgebomb', 'paleowave', 'bodyslam', 'flareblitz', 'iciclecrash', 'volttackle', 'waterfall',
-					'leafblade', 'xscissor', 'knockoff', 'shadowforce', 'ironhead', 'outrage', 'playrough', 'closecombat',
-					'bravebird', 'earthquake', 'stoneedge', 'extremespeed', 'stealthrock', 'spikes', 'stickyweb', 'quiverdance',
-					'shellsmash', 'dragondance', 'recover', 'toxic', 'willowisp',
-				].randomize();
-				move.onPrepareHit = function (target, source, move) {
-					this.attrLastMove('[still]');
-					this.add('-anim', pokemon, "Hyper Voice", pokemon);
-				};
-				move.onHit = function (pokemon, source) {
-					this.add('-message', 'You hear a sound echo across the universe. Things seem different now.');
-					for (let i = 0; i < pokemon.moveset.length; i++) {
-						let moveData = Tools.getMove(newMoves[i]);
-						let moveBuffer = {
-							move: moveData.name,
-							id: moveData.id,
-							pp: moveData.pp,
-							maxpp: moveData.pp,
-							target: moveData.target,
-							disabled: false,
-							used: false,
-						};
-						pokemon.moveset[i] = moveBuffer;
-						pokemon.baseMoveset[i] = moveBuffer;
-						pokemon.moves[i] = toId(move.name);
-					}
-					source.side.hasUsedWonderBark = true;
-				};
-				move.onAfterMove = function (pokemon) {
-					pokemon.deductPP('snatch', 99);
-				};
-			}
-			if (move.id === 'sleeptalk' && name === 'theimmortal') {
-				move.name = 'Sleep Walk';
-				move.pp = 20;
-				move.onTryHit = function (target, source) {
-					this.attrLastMove('[still]');
-					this.add('-anim', source, "Healing Wish", target);
-				};
-				move.onHit = function (pokemon) {
-					if (pokemon.status !== 'slp') {
-						if (pokemon.hp >= pokemon.maxhp) return false;
-						if (!pokemon.setStatus('slp')) return false;
-						pokemon.statusData.time = 3;
-						pokemon.statusData.startTime = 3;
-						this.heal(pokemon.maxhp);
-						this.add('-status', pokemon, 'slp', '[from] move: Rest');
-					}
-					let moves = [];
-					for (let i = 0; i < pokemon.moveset.length; i++) {
-						let move = pokemon.moveset[i].id;
-						if (move && move !== 'sleeptalk') moves.push(move);
-					}
-					let move = '';
-					if (moves.length) move = moves[this.random(moves.length)];
-					if (!move) return false;
-					this.useMove(move, pokemon);
-					let activate = false;
-					let boosts = {};
-					for (let i in pokemon.boosts) {
-						if (pokemon.boosts[i] < 0) {
-							activate = true;
-							boosts[i] = 0;
-						}
-					}
-					if (activate) pokemon.setBoost(boosts);
-					if (!pokemon.informed) {
-						this.add('c|~The Immortal|I don\'t really sleep walk...');
-						pokemon.informed = true;
-					}
-				};
-			}
-			if (move.id === 'dazzlinggleam' && name === 'trickster') {
-				move.name = 'Sacred Spear Explosion';
-				move.onTryHit = function (target, source) {
-					this.attrLastMove('[still]');
-					this.add('-anim', source, "Megahorn", target);
-					this.add('-anim', target, "Explosion", source);
-					this.add('-formechange', target, target.species, ''); //resets sprite after explosion
-				};
-				move.onEffectiveness = function (typeMod, type, move) {
-					return typeMod + this.getEffectiveness('Steel', type);
-				};
-				move.secondary = {chance: 30, status: 'brn'};
 			}
 		},
 	},
