@@ -884,6 +884,9 @@ exports.Formats = [
 				this.add('c|@LegitimateUsername|``While you\'re dying I\'ll be still alive.``');
 				this.add('c|@LegitimateUsername|``And when you\'re dead I will be still alive.``');
 			}
+			if (name === 'm00ns') {
+				this.add('c|%m00ns|oh');
+			}
 			if (name === 'qtrx') {
 				sentences = ["cutie are ex", "q-trix", "quarters", "cute T-rex", "Qatari", "random letters", "spammy letters", "asgdf"];
 				this.add("c|@qtrx|omg DONT call me '" + sentences[this.random(8)] + "' pls respect my name its very special!!1!");
@@ -937,6 +940,9 @@ exports.Formats = [
 			}
 			if (name === 'legitimateusername') {
 				this.add('c|@LegitimateUsername|``This isn\'t brave. It\'s murder. What did I ever do to you?``');
+			}
+			if (name === 'm00ns') {
+				this.add('c|%m00ns|o-oh');
 			}
 			if (name === 'qtrx') {
 				sentences = ['Keyboard not found; press **Ctrl + W** to continue...', 'hfowurfbiEU;DHBRFEr92he', 'At least my name ain\t asgdf...'];

@@ -62,7 +62,7 @@ exports.BattleScripts = {
 			'm00ns': {
 				species: 'Wobbuffet', ability: 'Shadow Tag', item: 'Leftovers', gender: 'F',
 				moves: ['counter', 'mirrorcoat', 'encore'],
-				baseSignatureMove: 'nobleroar', signatureMove: "oh",
+				signatureMove: "oh",
 				evs: {hp:52, def:232, spd:224}, ivs: {atk:0}, nature: 'Bold',
 			},
 			'qtrx': {
