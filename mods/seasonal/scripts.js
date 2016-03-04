@@ -23,6 +23,12 @@ exports.BattleScripts = {
 				signatureMove: "Free Software",
 				evs: {hp:252, spa:252, spd:4}, nature: 'Modest',
 			},
+			'Bummer': {
+				species: 'Quagsire', ability: 'Trace', item: 'Leftovers', gender: 'M',
+				moves: ['earthquake', 'icebeam', 'recover'],
+				signatureMove: "Speedpaint",
+				evs: {hp:252, atk:252, spa:4}, nature: 'Docile',
+			},
 			'Crestfall': {
 				species: 'Diancie', ability: 'Shield Dust', item: 'Diancite',
 				moves: ['shellsmash', 'diamondstorm', 'earthpower'],
