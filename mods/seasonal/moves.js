@@ -150,7 +150,7 @@ exports.BattleMovedex = {
 	},
 	// m00ns
 	oh: {
-		num: -568;
+		num: -568,
 		accuracy: 100,
 		category: "Status",
 		id: "oh",
@@ -426,7 +426,7 @@ exports.BattleMovedex = {
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
-		id: "Solaris",
+		id: "wonderbark",
 		name: "Wonder Bark",
 		pp: 1,
 		noPPBoosts: true,
