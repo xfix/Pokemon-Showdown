@@ -360,6 +360,43 @@ exports.BattleMovedex = {
 		target: "self",
 		type: "Normal",
 	},
+	// Bummer
+	speedpaint: {
+		num: -381,
+		accuracy: true,
+		category: "Status",
+		id: "speedpaint",
+		name: "Speedpaint",
+		pp: 10,
+		priority: 1,
+		flags: {protect: 1, authentic: 1},
+		onTryHit: function (target, pokemon) {
+			let decision = this.willMove(target);
+			if (decision) {
+				let noMeFirst = {
+					chatter:1, counter:1, covet:1, focuspunch:1, mefirst:1, metalburst:1, mirrorcoat:1, struggle:1, thief:1, speedpaint: 1,
+				};
+				let move = this.getMoveCopy(decision.move.id);
+				if (!noMeFirst[move]) {
+					pokemon.addVolatile('mefirst');
+					this.useMove(move, pokemon, target);
+					return null;
+				}
+			}
+			return false;
+		},
+		effect: {
+			duration: 1,
+			onBasePowerPriority: 4,
+			onBasePower: function (basePower) {
+				return this.chainModify(1);
+			},
+		},
+		secondary: false,
+		pressureTarget: "foeSide",
+		target: "normal",
+		type: "Normal",
+	},
 	// Lacuna
 	standingfull: {
 		num: -223,
