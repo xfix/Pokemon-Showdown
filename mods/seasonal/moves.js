@@ -20,6 +20,33 @@ exports.BattleMovedex = {
 		target: "normal",
 		type: "Fairy",
 	},
+	// Aelita
+	energyfield: {
+		num: -87,
+		accuracy: 100,
+		basePower: 150,
+		category: "Special",
+		id: "energyfield",
+		isViable: true,
+		name: "Energy Field",
+		pp: 10,
+		priority: 0,
+		flags: {protect: 1, mirror: 1},
+		onModifyMove: function (move) {
+			if (this.isWeather(['raindance', 'primordialsea'])) {
+				move.accuracy = true;
+			} else if (this.isWeather(['sunnyday', 'desolateland'])) {
+				move.accuracy = 50;
+			}
+		},
+		self: {boosts:{spa:-1, spd:-1, spe:-1}},
+		secondary: {
+			chance: 40,
+			status: 'par',
+		},
+		target: "normal",
+		type: "Electric",
+	},
 	// bumbadadabum
 	freesoftware: {
 		num: -161,
@@ -67,6 +94,28 @@ exports.BattleMovedex = {
 		secondary: false,
 		target: "normal",
 		type: "Electric",
+	},
+	// Hippopotas
+	hazardpass: {
+		num: -575,
+		accuracy: 100,
+		basePower: 0,
+		category: "Status",
+		id: "hazardpass",
+		isViable: true,
+		name: "Hazard Pass",
+		pp: 20,
+		priority: 0,
+		flags: {protect: 1, reflectable: 1, mirror: 1, sound: 1, authentic: 1},
+		selfSwitch: true,
+		onHit: function (pokemon) {
+			let hazards = ['stealthrock', 'spikes', 'toxicspikes', 'stickyweb'].randomize();
+			pokemon.side.addSideCondition(hazards[0]);
+			pokemon.side.addSideCondition(hazards[1]);
+		},
+		secondary: false,
+		target: "normal",
+		type: "Dark",
 	},
 	// qtrx
 	keyboardsmash: {
@@ -148,6 +197,30 @@ exports.BattleMovedex = {
 		target: "normal",
 		type: "Dark",
 	},
+	// Level 51
+	nextlevelstrats: {
+		num: -376,
+		accuracy: true,
+		category: "Status",
+		id: "nextlevelstrats",
+		name: "Next Level Strats",
+		pp: 5,
+		noPPBoosts: true,
+		priority: 0,
+		flags: {contact: 1, protect: 1, mirror: 1},
+		boosts: {spe: 1},
+		onTryHit: function (pokemon) {
+			if (pokemon.level >= 200) return false;
+		},
+		onHit: function (pokemon) {
+			pokemon.level += 10;
+			if (pokemon.level > 200) pokemon.level = 200;
+			this.add('-message', 'Level 51 advanced 10 levels! It is now level ' + pokemon.level + '!');
+		},
+		secondary: false,
+		target: "self",
+		type: "Normal",
+	},
 	// m00ns
 	oh: {
 		num: -568,
@@ -222,6 +295,24 @@ exports.BattleMovedex = {
 		secondary: false,
 		target: "normal",
 		type: "Dark",
+	},
+	// Raseri
+	purifysoul: {
+		num: -105,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		id: "purifysoul",
+		isViable: true,
+		name: "Purify Soul",
+		pp: 10,
+		priority: 0,
+		flags: {snatch: 1, heal: 1},
+		heal: [1, 2],
+		boosts: {spa:1, spd:1},
+		secondary: false,
+		target: "self",
+		type: "Normal",
 	},
 	// Quite Quiet
 	retreat: {

@@ -813,6 +813,9 @@ exports.Formats = [
 			let sentences = [];
 			let sentence = '';
 
+			if (name === 'aelita') {
+				this.add('c|%Aelita|Transfer, Aelita. Scanner, Aelita. Virtualization!');
+			}
 			if (name === 'am') {
 				this.add('c|+AM|Lucky and Bad');
 			}
@@ -831,24 +834,27 @@ exports.Formats = [
 			if (name === 'gangnamstyle') {
 				this.add("c|+Gangnam Style|Here I Come, Rougher Than The Rest of 'Em.");
 			}
+			if (name === 'hippopotas') {
+				this.add('-message', '@Hippopotas\'s Sand Stream whipped up a sandstorm!');
+			}
 			if (name === 'jasmine') {
 				this.add("c|+Jasmine|I'm still relevant!");
 			}
 			if (name === 'joim') {
-				let dice = this.random(3);
+				let dice = this.random(10);
 				// Revisiting classics.
 				if (dice === 1) {
-					this.add('-message', '░░░░░░░░▄▄▄▀▀▀▄▄███▄');
-					this.add('-message', '░░░░░▄▀▀░░░░░░░▐░▀██▌');
-					this.add('-message', '░░░▄▀░░░░▄▄███░▌▀▀░▀█');
-					this.add('-message', '░░▄█░░▄▀▀▒▒▒▒▒▄▐░░░░█▌');
-					this.add('-message', '░▐█▀▄▀▄▄▄▄▀▀▀▀▌░░░░░▐█▄');
-					this.add('-message', '░▌▄▄▀▀░░░░░░░░▌░░░░▄███████▄');
-					this.add('-message', '░░░░░░░░░░░░░▐░░░░▐███████████▄');
-					this.add('-message', '░░blessed by░░░░▐░░░░▐█████████████▄');
-					this.add('-message', '░░le toucan░░░░░░▀▄░░░▐██████████████▄');
-					this.add('-message', '░░░░░░ of ░░░░░░░░▀▄▄████████████████▄');
-					this.add('-message', '░░░░░luck░░░░░░░░░░░░░█▀██████');
+					this.add('c|~Joim|░░░░░░░░▄▄▄▀▀▀▄▄███▄');
+					this.add('c|~Joim|░░░░░▄▀▀░░░░░░░▐░▀██▌');
+					this.add('c|~Joim|░░░▄▀░░░░▄▄███░▌▀▀░▀█');
+					this.add('c|~Joim|░░▄█░░▄▀▀▒▒▒▒▒▄▐░░░░█▌');
+					this.add('c|~Joim|░▐█▀▄▀▄▄▄▄▀▀▀▀▌░░░░░▐█▄');
+					this.add('c|~Joim|░▌▄▄▀▀░░░░░░░░▌░░░░▄███████▄');
+					this.add('c|~Joim|░░░░░░░░░░░░░▐░░░░▐███████████▄');
+					this.add('c|~Joim|░░blessed by░░░░▐░░░░▐█████████████▄');
+					this.add('c|~Joim|░░le toucan░░░░░░▀▄░░░▐██████████████▄');
+					this.add('c|~Joim|░░░░░░ of ░░░░░░░░▀▄▄████████████████▄');
+					this.add('c|~Joim|░░░░░luck░░░░░░░░░░░░░█▀██████');
 				} else if (dice === 2) {
 					this.add('c|~Joim|░░░░░░░░░░░░▄▐');
 					this.add('c|~Joim|░░░░░░▄▄▄░░▄██▄');
@@ -871,7 +877,7 @@ exports.Formats = [
 					sentences = [
 						"Gen 1 OU is a true skill metagame.", "Finally a good reason to punch a teenager in the face!",
 						"So here we are again, it's always such a pleasure.", "My ex-wife still misses me, BUT HER AIM IS GETTING BETTER!",
-						"A man chooses, a slave obeys.", "You're gonna have a bad time.",
+						"A man chooses, a slave obeys.", "You're gonna have a bad time.", "Would you kindly let me win?",
 					].randomize();
 					sentence = sentences[0];
 					this.add('c|~Joim|' + sentence);
@@ -887,6 +893,9 @@ exports.Formats = [
 				this.add('c|@LegitimateUsername|``While you\'re dying I\'ll be still alive.``');
 				this.add('c|@LegitimateUsername|``And when you\'re dead I will be still alive.``');
 			}
+			if (name === 'level51') {
+				this.add('c|@Level 51|Happiness and rainbows, hurrah!');
+			}
 			if (name === 'm00ns') {
 				this.add('c|%m00ns|oh');
 			}
@@ -896,6 +905,10 @@ exports.Formats = [
 			}
 			if (name === 'quitequiet') {
 				this.add("c|%Quite Quiet|I'll give it a shot.");
+			}
+			if (name === 'raseri') {
+				this.add('c|%Raseri|gg');
+				this.useMove('hypnosis', pokemon);
 			}
 			if (name === 'solarisfox') {
 				this.add('raw|<div class="chat chatmessage-solarisfox"><small>%</small><b><font color="#2D8F1E"><span class="username" data-name="SolarisFox">SolarisFox</span>:</font></b> <em><marquee behavior="alternate" scrollamount=3 scrolldelay="60" width="108">[Intense vibrating]</marquee></em></div>');
@@ -915,7 +928,9 @@ exports.Formats = [
 		onFaint: function (pokemon) {
 			let name = toId(pokemon.name);
 			let sentences = [];
-			//let sentence = ''; //TO USE
+			if (name === 'aelita') {
+				this.add('c|%Aelita|CODE: LYOKO. Tower deactivated...');
+			}
 			if (name === 'am') {
 				this.add('c|+AM|RIP');
 			}
@@ -934,6 +949,9 @@ exports.Formats = [
 			if (name === 'gangnamstyle') {
 				this.add("c|+Gangnam Style|The Great Emeralds power allows me to feel... ");
 			}
+			if (name === 'hippopotas') {
+				this.add('-message', 'The sandstorm subsided.');
+			}
 			if (name === 'jasmine') {
 				this.add("raw|<div class=\"broadcast-red\"><b>The server is restarting soon.</b><br />Please finish your battles quickly. No new battles can be started until the server resets in a few minutes.</div>");
 			}
@@ -947,6 +965,9 @@ exports.Formats = [
 			if (name === 'legitimateusername') {
 				this.add('c|@LegitimateUsername|``This isn\'t brave. It\'s murder. What did I ever do to you?``');
 			}
+			if (name === 'level51') {
+				this.add('c|@Level 51|You made me sad. That\'s the opposite of happy.');
+			}
 			if (name === 'm00ns') {
 				this.add('c|%m00ns|o-oh');
 			}
@@ -956,6 +977,9 @@ exports.Formats = [
 			}
 			if (name === 'quitequiet') {
 				this.add('c|%Quite Quiet|Well, I tried at least.');
+			}
+			if (name === 'raseri') {
+				this.add('c|%Raseri|you killed a mush :(');
 			}
 			if (name === 'solarisfox') {
 				this.add('c|%SolarisFox|So long, and thanks for all the fish.');
@@ -969,6 +993,11 @@ exports.Formats = [
 		},
 		// Special switch-out events for some mons.
 		onSwitchOut: function (pokemon) {
+			if (toId(pokemon.name) === 'hippopotas' && !pokemon.illusion) {
+				this.add('-message', 'The sandstorm subsided.');
+			}
+			// Transform
+			if (pokemon.originalName) pokemon.name = pokemon.originalName;
 		},
 		// Special drag out event for red card and shit.
 		onDragOut: function (pokemon) {
@@ -976,8 +1005,6 @@ exports.Formats = [
 				this.add('-message', "But it had no effect!");
 				return null;
 			}
-		},
-		onAfterMoveSelf: function (source, target, move) {
 		},
 		onModifyPokemon: function (pokemon) {
 			let name = toId(pokemon.name);

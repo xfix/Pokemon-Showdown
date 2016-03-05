@@ -5,6 +5,12 @@ exports.BattleScripts = {
 		let team = [];
 		let variant = this.random(2);
 		let sets = {
+			'Aelita': {
+				species: 'Porygon-Z', ability: 'Protean', item: 'Life Orb', gender: 'N',
+				moves: [['boomburst', 'moonblast'][this.random(2)], 'quiverdance', 'chatter'],
+				signatureMove: "Energy Field",
+				evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
+			}
 			'AM': {
 				species: 'Tyranitar', ability: 'Adaptability', item: (variant === 1 ? 'Lum Berry' : 'Choice Scarf'), gender: 'M',
 				moves: (variant === 1 ? ['earthquake', 'diamondstorm', 'swordsdance', 'meanlook'] : ['knockoff', 'diamondstorm', 'earthquake']),
@@ -41,6 +47,12 @@ exports.BattleScripts = {
 				signatureMove: "Mother, Father, Gentleman",
 				evs: {hp:252, atk:252, def:4}, nature: 'Adamant',
 			},
+			'Hippopotas': {
+				species: 'Hippopotas', ability: 'Regenerator', item: 'Eviolite', gender: 'M',
+				moves: ['protect', 'stealthrock', 'spikes', 'toxicspikes', 'stickyweb'],
+				signatureMove: "Hazard Pass",
+				evs: {hp:252, def:252, spd:4}, ivs: {atk:0, spa:0}, nature: 'Bold'
+			},
 			'Jasmine': {
 				species: 'Mew', ability: 'Speed Boost', item: 'Focus Sash', gender: 'F',
 				moves: ['taunt', 'explosion', 'protect'],
@@ -65,6 +77,12 @@ exports.BattleScripts = {
 				signatureMove: "Shell Fortress",
 				evs: {hp:252, def:228, spd:28}, nature: 'Calm',
 			},
+			'Level 51': {
+				species: 'Togekiss', ability: 'Parental Bond', item: 'Leftovers', gender: 'M',
+				moves: ['superfang', ['roost', 'cottonguard'][this.random(2)], ['seismictoss', 'nightshade'][this.random(2)]],
+				baseSignatureMove: 'trumpcard', signatureMove: "Next Level Strats",
+				evs: {hp:252, spd:196, spe:60}, nature: 'Calm'
+			},
 			'm00ns': {
 				species: 'Wobbuffet', ability: 'Shadow Tag', item: 'Leftovers', gender: 'F',
 				moves: ['counter', 'mirrorcoat', 'encore'],
@@ -82,6 +100,12 @@ exports.BattleScripts = {
 				moves: ['stealthrock', 'perishsong', 'nuzzle'],
 				signatureMove: "Retreat",
 				evs: {def:4, spa:252, spe:252}, nature: 'Timid',
+			},
+			'Raseri': {
+				species: 'Musharna', ability: 'Synchronize', item: 'Leftovers', gender: ['M', 'F', 'N'][this.random(3)],
+				moves: ['barrier', 'storedpower', 'moonblast'],
+				signatureMove: "Purify Soul",
+				evs: {hp:248, def:252, spd:8}, nature: 'Bold'
 			},
 			'SolarisFox': {
 				species: 'Delphox', ability: 'Klutz', item: ['Choice Scarf', 'Choice Band', 'Choice Specs', 'Assault Vest', 'Lagging Tail', 'Flame Orb', 'Toxic Orb'].randomize()[0], gender: 'M',
