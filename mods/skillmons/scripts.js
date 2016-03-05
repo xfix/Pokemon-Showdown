@@ -150,7 +150,7 @@ exports.BattleScripts = {
 		// types
 		let totalTypeMod = 0;
 
-		if (target.negateImmunity[move.type] !== 'IgnoreEffectiveness' || this.getImmunity(move.type, target)) {
+		if (target.negateImmunity && target.negateImmunity[move.type] !== 'IgnoreEffectiveness' || this.getImmunity(move.type, target)) {
 			totalTypeMod = target.runEffectiveness(move);
 		}
 
