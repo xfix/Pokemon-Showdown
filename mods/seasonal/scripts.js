@@ -9,8 +9,8 @@ exports.BattleScripts = {
 				species: 'Porygon-Z', ability: 'Protean', item: 'Life Orb', gender: 'N',
 				moves: [['boomburst', 'moonblast'][this.random(2)], 'quiverdance', 'chatter'],
 				signatureMove: "Energy Field",
-				evs: {hp:4, spa:252, spe:252}, nature: 'Modest'
-			}
+				evs: {hp:4, spa:252, spe:252}, nature: 'Modest',
+			},
 			'AM': {
 				species: 'Tyranitar', ability: 'Adaptability', item: (variant === 1 ? 'Lum Berry' : 'Choice Scarf'), gender: 'M',
 				moves: (variant === 1 ? ['earthquake', 'diamondstorm', 'swordsdance', 'meanlook'] : ['knockoff', 'diamondstorm', 'earthquake']),
@@ -51,7 +51,7 @@ exports.BattleScripts = {
 				species: 'Hippopotas', ability: 'Regenerator', item: 'Eviolite', gender: 'M',
 				moves: ['protect', 'stealthrock', 'spikes', 'toxicspikes', 'stickyweb'],
 				signatureMove: "Hazard Pass",
-				evs: {hp:252, def:252, spd:4}, ivs: {atk:0, spa:0}, nature: 'Bold'
+				evs: {hp:252, def:252, spd:4}, ivs: {atk:0, spa:0}, nature: 'Bold',
 			},
 			'Jasmine': {
 				species: 'Mew', ability: 'Speed Boost', item: 'Focus Sash', gender: 'F',
@@ -81,7 +81,7 @@ exports.BattleScripts = {
 				species: 'Togekiss', ability: 'Parental Bond', item: 'Leftovers', gender: 'M',
 				moves: ['superfang', ['roost', 'cottonguard'][this.random(2)], ['seismictoss', 'nightshade'][this.random(2)]],
 				baseSignatureMove: 'trumpcard', signatureMove: "Next Level Strats",
-				evs: {hp:252, spd:196, spe:60}, nature: 'Calm'
+				evs: {hp:252, spd:196, spe:60}, nature: 'Calm',
 			},
 			'm00ns': {
 				species: 'Wobbuffet', ability: 'Shadow Tag', item: 'Leftovers', gender: 'F',
@@ -105,7 +105,7 @@ exports.BattleScripts = {
 				species: 'Musharna', ability: 'Synchronize', item: 'Leftovers', gender: ['M', 'F', 'N'][this.random(3)],
 				moves: ['barrier', 'storedpower', 'moonblast'],
 				signatureMove: "Purify Soul",
-				evs: {hp:248, def:252, spd:8}, nature: 'Bold'
+				evs: {hp:248, def:252, spd:8}, nature: 'Bold',
 			},
 			'SolarisFox': {
 				species: 'Delphox', ability: 'Klutz', item: ['Choice Scarf', 'Choice Band', 'Choice Specs', 'Assault Vest', 'Lagging Tail', 'Flame Orb', 'Toxic Orb'].randomize()[0], gender: 'M',
