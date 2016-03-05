@@ -26,7 +26,7 @@ exports.BattleScripts = {
 			'Crestfall': {
 				species: 'Diancie', ability: 'Shield Dust', item: 'Diancite',
 				moves: ['shellsmash', 'diamondstorm', 'earthpower'],
-				ignatureMove: "Light of Unruin",
+				signatureMove: "Light of Unruin",
 				evs: {hp:252, spd: 68, spe:188}, nature: 'Timid',
 			},
 			'Gangnam Style': {
@@ -56,7 +56,7 @@ exports.BattleScripts = {
 			'LegitimateUsername': {
 				species: 'Shuckle', ability: 'Unaware', item: 'Leftovers', gender: 'M',
 				moves: ['leechseed', 'rest', 'foulplay'],
-				baseSignatureMove: 'shellsmash', signatureMove: "Shell Fortress",
+				signatureMove: "Shell Fortress",
 				evs: {hp:252, def:228, spd:28}, nature: 'Calm',
 			},
 			'm00ns': {
@@ -68,7 +68,7 @@ exports.BattleScripts = {
 			'qtrx': {
 				species: 'Missingno.', ability: 'Levitate', item: 'Focus Sash', gender: 'M',
 				moves: [],
-				signatureMove: "Hidden Power... Normal?",
+				signatureMove: "KEYBOARD SMASH",
 				evs: {hp:252, def:4, spa:252}, ivs: {atk:0, spe:0}, nature: 'Quiet',
 			},
 			'Quite Quiet': {
