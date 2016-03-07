@@ -807,6 +807,13 @@ exports.Formats = [
 				pokemon.setBoost(targetBoosts);
 				this.add('-swapboost', pokemon, target, '[from] move: Trickster\'s ability.');
 			}
+			if (name === 'eeveegeneral') {
+				this.add('detailschange', pokemon, pokemon.details); //run mega evo animation
+				this.add('-mega', pokemon, 'eevee', null);
+				for (let i = 0; i < pokemon.stats.length; i++) {
+					pokemon.stats[i] += 50;
+				}
+			}
 
 			// Edgy switch-in sentences go here.
 			// Sentences vary in style and how they are presented, so each Pokémon has its own way of sending them.
@@ -830,6 +837,10 @@ exports.Formats = [
 			}
 			if (name === 'crestfall') {
 				this.add('c|%Crestfall|To say that we\'re in love is dangerous');
+			}
+			if (name === 'eeveegeneral') {
+				sentences = ['yo', 'anyone seen goku?'];
+				this.add('c|~Eevee General|' + sentences[this.random(2)]);
 			}
 			if (name === 'gangnamstyle') {
 				this.add("c|+Gangnam Style|Here I Come, Rougher Than The Rest of 'Em.");
@@ -945,6 +956,11 @@ exports.Formats = [
 			}
 			if (name === 'crestfall') {
 				this.add("c|%Crestfall|Her pistol go (bang bang, boom boom, pop pop)");
+			}
+			if (name === 'eeveegeneral') {
+				sentences = ["Electrolyte is in charge", "/me secretly cries", "inap!"];
+				this.add("c|~Eevee General|bye room");
+				this.add("c|!Eevee General|" + sentences[this.random(3)]);
 			}
 			if (name === 'gangnamstyle') {
 				this.add("c|+Gangnam Style|The Great Emeralds power allows me to feel... ");
