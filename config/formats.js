@@ -826,7 +826,7 @@ exports.Formats = [
 				this.add('c|@bumbadadabum|Time for card games on motorcycles!');
 			}
 			if (name === 'bummer') {
-				this.add('c|&Bummer|Thanks for considering me!');
+				this.add("c|&Bummer|Oh hi.");
 			}
 			if (name === 'crestfall') {
 				this.add('c|%Crestfall|To say that we\'re in love is dangerous');
@@ -941,7 +941,7 @@ exports.Formats = [
 				this.add("c|@bumbadadabum|Find another planet make the same mistakes.");
 			}
 			if (name === 'bummer') {
-				this.add("c|&Bummer|Oh hi.");
+				this.add('c|&Bummer|Thanks for considering me!');
 			}
 			if (name === 'crestfall') {
 				this.add("c|%Crestfall|Her pistol go (bang bang, boom boom, pop pop)");
