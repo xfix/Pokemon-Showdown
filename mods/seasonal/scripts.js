@@ -131,6 +131,12 @@ exports.BattleScripts = {
 				signatureMove: "Sacred Spear Explosion",
 				evs: {hp:252, def:4, spe:252}, nature: 'Timid',
 			},
+			'xfix': {
+				species: 'Xatu', ability: 'Magic Bounce', item: 'Focus Sash', gender: 'M',
+				moves: ['substitute', 'thunderwave', 'roost'],
+				signatureMove: '(Glitch Dimension)',
+				evs: {hp:252, spd:252, def:4}, nature: 'Calm',
+			},
 		};
 
 		// Generate the team randomly.
