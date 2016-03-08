@@ -41,6 +41,12 @@ exports.BattleScripts = {
 				signatureMove: "Light of Unruin",
 				evs: {hp:252, spd: 68, spe:188}, nature: 'Timid',
 			},
+			'Eevee General': {
+				species: 'Eevee', ability: 'Prankster', item: 'Eviolite', gender: 'M',
+				moves: ['extremespeed', 'swordsdance', ['milkdrink', 'knockoff', 'encore'][this.random(3)]],
+				signatureMove: "Admin Things",
+				evs: {hp:252, def:4, spe: 252}, nature: 'Jolly',
+			},
 			'Gangnam Style': {
 				species: 'Munchlax', ability: 'Run Away', item: 'Power Herb', gender: 'M',
 				moves: ['geomancy', 'drainpunch', 'bodyslam'],

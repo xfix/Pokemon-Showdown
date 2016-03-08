@@ -1,6 +1,27 @@
 "use strict";
 
 exports.BattleMovedex = {
+	// Eevee General
+	adminthings: {
+		num: -575,
+		accuracy: 100,
+		category: "Status",
+		id: "adminthings",
+		name: "Admin Things",
+		pp: 5,
+		priority: 0,
+		flags: {protect: 1, reflectable: 1, mirror: 1, authentic: 1},
+		selfSwitch: true,
+		boosts: {atk: -1, spa: -1,},
+		status: 'psn',
+		volatileStatus: 'taunt',
+		secondary: false,
+		onHit: function (target, source) {
+			this.add("c|~Eevee General|Sorry but I have to go! Please submit your request in <<adminrequests>> and we'll look at it soon.");
+		},
+		target: "normal",
+		type: "Normal",
+	},
 	// awu
 	ancestorsrage: {
 		num: -583,
