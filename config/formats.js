@@ -931,6 +931,26 @@ exports.Formats = [
 				sentences = ["heh….watch out before you get cut on my edge", "AaAaAaAAaAaAAa"];
 				this.add('c|@Trickster|' + sentences[this.random(2)]);
 			}
+			if (name === 'xfix') {
+				if (this.random(2)) {
+					// The classic one
+					const hazards = {stealthrock: 1, spikes: 1, toxicspikes: 1, stickyweb: 1};
+					let hasHazards = false;
+					for (const hazard in hazards) {
+						if (pokemon.side.getSideCondition(hazard)) {
+							hasHazards = true;
+							break;
+						}
+					}
+					if (hasHazards) {
+						this.add('c|+xfix|(no haz... too late)');
+					} else {
+						this.add('c|+xfix|(no hazards, attacks only, final destination)');
+					}
+				} else {
+					this.add("c|+xfix|//starthunt 1 + 1 | 2 | 2 + 2 | 4 | Opponent's status soon (answer with three letters) | FNT :)");
+				}
+			}
 		},
 		// Here we deal with some special mechanics due to custom sets and moves.
 		onBeforeMove: function (pokemon, target, move) {
@@ -1005,6 +1025,16 @@ exports.Formats = [
 			}
 			if (name === 'trickster') {
 				this.add('c|@Trickster|UPLOADING VIRUS.EXE \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588] 99% COMPLETE');
+			}
+			if (name === 'xfix') {
+				const foe = pokemon.side.foe.active[0];
+				if (foe.name === 'xfix') {
+					this.add("c|+xfix|(I won. I lost. I... huh... ~~can somebody tell me what actually happened?~~)");
+				} else if (foe.ability === 'magicbounce') {
+					this.add('c|+xfix|(How do mirrors work... oh right, when you use a mirror, your opponent has a mirror as well... or something, ~~that\'s how you "balance" this game~~)');
+				} else {
+					this.add('c|+xfix|~~That must have been a glitch. Hackers.~~');
+				}
 			}
 		},
 		// Special switch-out events for some mons.

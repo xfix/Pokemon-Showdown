@@ -116,6 +116,73 @@ exports.BattleMovedex = {
 		target: "normal",
 		type: "Electric",
 	},
+	// xfix
+	glitchdimension: {
+		num: -42,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		id: "glitchdimension",
+		name: "(Glitch Dimension)",
+		pp: 10,
+		priority: 0,
+		multihit: [2, 5],
+		flags: {},
+		onHit: function (target, source) {
+			// The PP could be increased properly, instead of this silly hack,
+			// but I like this hack, so it stays. It's intentionally buggy move, after all.
+			const ppData = source.getMoveData('glitchdimension');
+			if (ppData && ppData.pp) {
+				ppData.pp = Math.round(ppData.pp * 10 + this.random(3) + 5) / 10;
+			}
+			this.useMove(Object.keys(exports.BattleMovedex).sample(), target);
+		},
+		onTryHit: function (target, source, effect) {
+			if (!source.isActive) return null;
+			// This easter egg shouldn't happen too often.
+			// The values here are meaningful, but I will provide the exercise in
+			// figuring them out to whoever reads the code. Don't want to spoil
+			// the fun in that.
+			if (this.random(722) === 66) {
+				this.addPseudoWeather('glitchdimension', source, effect, '[of] ' + source);
+			}
+		},
+		effect: {
+			duration: 5,
+			onStart: function (target, source) {
+				// Why do I make way too complex easter eggs that nobody will
+				// notice? I don't know, but I did that in previous Super Staff
+				// Bros., so let's continue with the tradition.
+				const colors = [
+					// CSS basic colors
+					"black (is that even a color)", "silver", "gray", "white",
+					"maroon", "red", "purple", "fuchsia", "green", "lime",
+					"olive", "yellow", "navy", "blue", "teal", "aqua", "orange",
+					// Pokemon Games
+					"gold", "crystal", "ruby", "sapphire", "emerald", "diamond",
+					"pearl", "platinum", "X", "Y",
+					// PMD gummis (some don't make sense as colors, but whatever)
+					"brown", "clear", "grass", "pink", "royal", "sky", "wander", "wonder",
+					// Game Boy Color colors
+					"strawberry", "grape", "kiwi", "dandelion", "atomic purple", "Pikachu & Pichu",
+					// Game Boy Color palettes
+					"dark brown", "pastel mix", "dark blue", "dark green", "reverse",
+					// Why not?
+					"shiny", "randomly", "'); DROP TABLE colors; --", "Ho-Oh", "blue screen",
+				];
+				this.add('-message', "Ho-Oh is now colored " + colors.sample(this.random(3) + 1).join(" and ") + "! As well as every other \u3069\u25C0mon.");
+			},
+			onEffectiveness: function () {
+				return this.random(3) - 1;
+			},
+			onEnd: function () {
+				this.add('-message', "Ho-Oh is no longer colored!");
+			},
+		},
+		secondary: false,
+		target: "self",
+		type: "Normal",
+	},
 	// Hippopotas
 	hazardpass: {
 		num: -575,
