@@ -544,6 +544,36 @@ exports.BattleMovedex = {
 		target: "allAdjacentFoes",
 		type: "Fairy",
 	},
+	// f(x)
+	shakethatbrass: {
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		id: "shakethatbrass",
+		name: "shake that brass",
+		pp: 20,
+		priority: 0,
+		onTryHit: function (target, pokemon) {
+			const move = pokemon.moveset.map(x => x.id).filter(x => x !== 'shakethatbrass').sample();
+			pokemon.addVolatile('shakethatbrass');
+			this.useMove(move, pokemon, target);
+			return null;
+		},
+		flags: {protect: 1, authentic: 1},
+		effect: {
+			duration: 1,
+			onBasePowerPriority: 4,
+			onBasePower: function (basePower) {
+				return this.chainModify(1.5);
+			},
+			onAccuracy: function (accuracy) {
+				return 100;
+			},
+		},
+		secondary: false,
+		target: "adjacentFoe",
+		type: "Normal",
+	},
 	// Legitimate Username
 	shellfortress: {
 		num: -504,
