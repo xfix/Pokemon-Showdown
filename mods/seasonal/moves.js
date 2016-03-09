@@ -41,6 +41,34 @@ exports.BattleMovedex = {
 		target: "normal",
 		type: "Fairy",
 	},
+	// boTTT
+	automoderation: {
+		num: -919,
+		accuracy: true,
+		basePower: 40,
+		basePowerCallback: function (pokemon, target) {
+			let boosts = target.positiveBoosts();
+			if (boosts) {
+				this.add('-message', target.name + " was " + ['warned', 'muted', 'roombanned', 'locked', 'blacklisted', 'banned', 'permabanned'][(boosts < 8 ? boosts - 1 : 7)] + " by boTTT. (Automated moderation: spamming boosts)");
+			}
+			return 40 * Math.pow(1.5, boosts);
+		},
+		category: "Physical",
+		id: "automoderation",
+		isViable: true,
+		name: "Auto-Moderation",
+		pp: 35,
+		priority: 3,
+		flags: { authentic: 1, mirror: 1 },
+		onTryHit: function (target, source) {
+			this.attrLastMove('[still]');
+			this.add('-anim', source, "Luster Purge", target);
+		},
+		ignoreDefensive: true,
+		secondary: false,
+		target: "normal",
+		type: "Ghost",
+	},
 	// galbia
 	dog: {
 		accuracy: 80,
@@ -201,6 +229,24 @@ exports.BattleMovedex = {
 		target: "self",
 		type: "Normal",
 	},
+	goindalikelinda: {
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		id: "goindalikelinda",
+		isViable: true,
+		name: "Go Inda Like Linda",
+		pp: 30,
+		priority: 0,
+		flags: {snatch: 1},
+		boosts: {
+			spe: 2,
+			atk: 2,
+		},
+		secondary: false,
+		target: "self",
+		type: "Flying",
+	},
 	// Hippopotas
 	hazardpass: {
 		num: -575,
@@ -286,6 +332,53 @@ exports.BattleMovedex = {
 		secondary: false,
 		target: "normal",
 		type: "Fairy",
+	},
+	// scpinion
+	lolroom: {
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		id: "lolroom",
+		pp: 5,
+		priority: 0,
+		flags: {mirror: 1},
+		onHit: function (target, source, effect) {
+			if (this.pseudoWeather['trickroom']) {
+				this.removePseudoWeather('trickroom', source, effect, '[of] ' + source);
+			} else {
+				this.addPseudoWeather('trickroom', source, effect, '[of] ' + source);
+			}
+		},
+		volatileStatus: 'lolroom',
+		effect: {
+			onStart: function (pokemon) {
+				this.add('-start', pokemon, 'LOL! Room');
+				let newatk = pokemon.stats.spd;
+				let newdef = pokemon.stats.spa;
+				pokemon.stats.spa = newatk;
+				pokemon.stats.spd = newdef;
+			},
+			onCopy: function (pokemon) {
+				this.add('-start', pokemon, 'LOL! Room');
+				let newatk = pokemon.stats.spd;
+				let newdef = pokemon.stats.spa;
+				pokemon.stats.spa = newatk;
+				pokemon.stats.spd = newdef;
+			},
+			onEnd: function (pokemon) {
+				this.add('-end', pokemon, 'LOL! Room');
+				let newatk = pokemon.stats.spd;
+				let newdef = pokemon.stats.spa;
+				pokemon.stats.spa = newatk;
+				pokemon.stats.spd = newdef;
+			},
+			onRestart: function (pokemon) {
+				pokemon.removeVolatile('LOL! Room');
+			},
+		},
+		secondary: false,
+		target: "self",
+		type: "Psychic",
 	},
 	// gangnam style
 	motherfathergentleman: {
@@ -486,6 +579,36 @@ exports.BattleMovedex = {
 		secondary: {chance: 30, status: 'brn'},
 		target: "allAdjacentFoes",
 		type: "Fairy",
+	},
+	// f(x)
+	shakethatbrass: {
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		id: "shakethatbrass",
+		name: "shake that brass",
+		pp: 20,
+		priority: 0,
+		onTryHit: function (target, pokemon) {
+			const move = pokemon.moveset.map(x => x.id).filter(x => x !== 'shakethatbrass').sample();
+			pokemon.addVolatile('shakethatbrass');
+			this.useMove(move, pokemon, target);
+			return null;
+		},
+		flags: {protect: 1, authentic: 1},
+		effect: {
+			duration: 1,
+			onBasePowerPriority: 4,
+			onBasePower: function (basePower) {
+				return this.chainModify(1.5);
+			},
+			onAccuracy: function (accuracy) {
+				return 100;
+			},
+		},
+		secondary: false,
+		target: "adjacentFoe",
+		type: "Normal",
 	},
 	// Legitimate Username
 	shellfortress: {

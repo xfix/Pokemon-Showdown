@@ -842,6 +842,9 @@ exports.Formats = [
 				sentences = ['yo', 'anyone seen goku?'];
 				this.add('c|~Eevee General|' + sentences[this.random(2)]);
 			}
+			if (name === 'fx') {
+				this.add("c|+f(x)|love is 4 wawawawawawawalls");
+			}
 			if (name === 'galbia') {
 				this.add('c|@galbia|(dog)');
 			}
@@ -924,6 +927,9 @@ exports.Formats = [
 				this.add('c|%Raseri|gg');
 				this.useMove('hypnosis', pokemon);
 			}
+			if (name === 'scpinion') {
+				this.add('c|%scpinion|/me welcomes funbro');
+			}
 			if (name === 'solarisfox') {
 				this.add('raw|<div class="chat chatmessage-solarisfox"><small>%</small><b><font color="#2D8F1E"><span class="username" data-name="SolarisFox">SolarisFox</span>:</font></b> <em><marquee behavior="alternate" scrollamount=3 scrolldelay="60" width="108">[Intense vibrating]</marquee></em></div>');
 			}
@@ -953,6 +959,9 @@ exports.Formats = [
 				} else {
 					this.add("c|+xfix|//starthunt 1 + 1 | 2 | 2 + 2 | 4 | Opponent's status soon (answer with three letters) | FNT :)");
 				}
+			}
+			if (name === 'xshiba') {
+				this.add("c|+xShiba|LINDA IS INDA");
 			}
 		},
 		// Here we deal with some special mechanics due to custom sets and moves.
@@ -987,6 +996,9 @@ exports.Formats = [
 				sentences = ["Electrolyte is in charge", "/me secretly cries", "inap!"];
 				this.add("c|~Eevee General|bye room");
 				this.add("c|!Eevee General|" + sentences[this.random(3)]);
+			}
+			if (name === 'fx') {
+				this.add("c|+f(x)|mirror, mirror");
 			}
 			if (name === 'galbia') {
 				this.add('c|@galbia|(dog)');
@@ -1026,6 +1038,9 @@ exports.Formats = [
 			if (name === 'raseri') {
 				this.add('c|%Raseri|you killed a mush :(');
 			}
+			if (name === 'scpinion') {
+				this.add("c|%scpinion|guys, I don't even know how to pronounce scpinion");
+			}
 			if (name === 'solarisfox') {
 				this.add('c|%SolarisFox|So long, and thanks for all the fish.');
 			}
@@ -1044,6 +1059,9 @@ exports.Formats = [
 				} else {
 					this.add('c|+xfix|~~That must have been a glitch. Hackers.~~');
 				}
+			}
+			if (name === 'xshiba') {
+				this.add("c|+xShiba|Lol that feeling when you just win but get haxed..");
 			}
 		},
 		// Special switch-out events for some mons.
