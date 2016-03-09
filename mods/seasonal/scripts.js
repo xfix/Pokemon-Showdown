@@ -113,6 +113,12 @@ exports.BattleScripts = {
 				signatureMove: "Purify Soul",
 				evs: {hp:248, def:252, spd:8}, nature: 'Bold',
 			},
+			'scpinion': {
+				species: 'Slowbro', ability: 'Unaware', item: 'Slowbronite',
+				moves: ['slackoff', 'amnesia', 'steameruption'],
+				signatureMove: "LOL! Room",
+				evs: {hp:248, def:136, spd:124}, ivs: {spe:0}, nature: 'Relaxed',
+			},
 			'SolarisFox': {
 				species: 'Delphox', ability: 'Klutz', item: ['Choice Scarf', 'Choice Band', 'Choice Specs', 'Assault Vest', 'Lagging Tail', 'Flame Orb', 'Toxic Orb'].randomize()[0], gender: 'M',
 				moves: ['trick', 'lavaplume', 'psyshock'],
