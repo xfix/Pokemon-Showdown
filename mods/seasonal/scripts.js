@@ -3,7 +3,7 @@
 exports.BattleScripts = {
 	randomSeasonalMeleeTeam: function (side) {
 		let team = [];
-		let variant = this.random(2);
+		let variant = (this.random(2) === 1);
 		let sets = {
 			'Aelita': {
 				species: 'Porygon-Z', ability: 'Protean', item: 'Life Orb', gender: 'N',
@@ -12,8 +12,8 @@ exports.BattleScripts = {
 				evs: {hp:4, spa:252, spe:252}, nature: 'Modest',
 			},
 			'AM': {
-				species: 'Tyranitar', ability: 'Adaptability', item: (variant === 1 ? 'Lum Berry' : 'Choice Scarf'), gender: 'M',
-				moves: (variant === 1 ? ['earthquake', 'diamondstorm', 'swordsdance', 'meanlook'] : ['knockoff', 'diamondstorm', 'earthquake']),
+				species: 'Tyranitar', ability: 'Adaptability', item: (variant ? 'Lum Berry' : 'Choice Scarf'), gender: 'M',
+				moves: (variant ? ['earthquake', 'diamondstorm', 'swordsdance', 'meanlook'] : ['knockoff', 'diamondstorm', 'earthquake']),
 				signatureMove: "Predator",
 				evs: {atk:252, def:4, spe: 252}, nature: 'Jolly',
 			},
@@ -22,6 +22,12 @@ exports.BattleScripts = {
 				moves: ['meteormash', 'bulletpunch', 'uturn'],
 				signatureMove: "Ancestor's Rage",
 				evs: {hp:252, atk:252, def:4}, nature: 'Adamant',
+			},
+			'boTTT': {
+				species: 'Regigigas', ability: ['Scrappy', 'Magic Guard'][this.random(2)], item: (variant ? 'Leftovers' : 'Chesto Berry'), gender: 'N', shiny: variant, 
+				moves: ['megakick', 'drainpunch', (variant ? 'aromatherapy' : 'rest')],
+				signatureMove: "Auto-Moderation",
+				evs: {hp:60, atk:252, spd:196}, nature: 'Adamant',
 			},
 			'bumbadadabum': {
 				species: 'Samurott', ability: 'Analytic', item: 'Leftovers', gender: 'M',

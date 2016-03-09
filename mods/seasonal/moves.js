@@ -41,6 +41,34 @@ exports.BattleMovedex = {
 		target: "normal",
 		type: "Fairy",
 	},
+	// boTTT
+	automoderation: {
+		num: -919,
+		accuracy: true,
+		basePower: 40,
+		basePowerCallback: function (pokemon, target) {
+			let boosts = target.positiveBoosts();
+			if (boosts) {
+				this.add('-message', target.name + " was " + ['warned', 'muted', 'roombanned', 'locked', 'blacklisted', 'banned', 'permabanned'][(boosts < 8 ? boosts - 1 : 7)] + " by boTTT. (Automated moderation: spamming boosts)");
+			}
+			return 40 * Math.pow(1.5, boosts);
+		},
+		category: "Physical",
+		id: "automoderation",
+		isViable: true,
+		name: "Auto-Moderation",
+		pp: 35,
+		priority: 3,
+		flags: { authentic: 1, mirror: 1 },
+		onTryHit: function (target, source) {
+			this.attrLastMove('[still]');
+			this.add('-anim', source, "Luster Purge", target);
+		},
+		ignoreDefensive: true,
+		secondary: false,
+		target: "normal",
+		type: "Ghost",
+	},
 	// Aelita
 	energyfield: {
 		num: -87,
