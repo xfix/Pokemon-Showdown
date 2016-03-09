@@ -137,6 +137,12 @@ exports.BattleScripts = {
 				signatureMove: '(Glitch Dimension)',
 				evs: {hp:252, spd:252, def:4}, nature: 'Calm',
 			},
+			'xShiba': {
+				species: 'Fletchinder', ability: 'Gale Wings', item: 'Eviolite', gender: 'F',
+				moves: ['dragonascent', 'sacredfire', 'roost'],
+				signatureMove: "Go Inda Like Linda",
+				evs: {hp:248, atk:252, spe:8}, nature: 'Adamant',
+			},
 		};
 
 		// Generate the team randomly.

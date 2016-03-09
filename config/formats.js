@@ -951,6 +951,9 @@ exports.Formats = [
 					this.add("c|+xfix|//starthunt 1 + 1 | 2 | 2 + 2 | 4 | Opponent's status soon (answer with three letters) | FNT :)");
 				}
 			}
+			if (name === 'xshiba') {
+				this.add("c|+xShiba|LINDA IS INDA");
+			}
 		},
 		// Here we deal with some special mechanics due to custom sets and moves.
 		onBeforeMove: function (pokemon, target, move) {
@@ -1035,6 +1038,9 @@ exports.Formats = [
 				} else {
 					this.add('c|+xfix|~~That must have been a glitch. Hackers.~~');
 				}
+			}
+			if (name === 'xshiba') {
+				this.add("c|+xShiba|Lol that feeling when you just win but get haxed..");
 			}
 		},
 		// Special switch-out events for some mons.
