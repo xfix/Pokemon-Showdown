@@ -842,6 +842,9 @@ exports.Formats = [
 				sentences = ['yo', 'anyone seen goku?'];
 				this.add('c|~Eevee General|' + sentences[this.random(2)]);
 			}
+			if (name === 'galbia') {
+				this.add('c|@galbia|(dog)');
+			}
 			if (name === 'gangnamstyle') {
 				this.add("c|+Gangnam Style|Here I Come, Rougher Than The Rest of 'Em.");
 			}
@@ -981,6 +984,9 @@ exports.Formats = [
 				sentences = ["Electrolyte is in charge", "/me secretly cries", "inap!"];
 				this.add("c|~Eevee General|bye room");
 				this.add("c|!Eevee General|" + sentences[this.random(3)]);
+			}
+			if (name === 'galbia') {
+				this.add('c|@galbia|(dog)');
 			}
 			if (name === 'gangnamstyle') {
 				this.add("c|+Gangnam Style|The Great Emeralds power allows me to feel... ");

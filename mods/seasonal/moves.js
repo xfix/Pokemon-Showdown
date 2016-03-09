@@ -41,6 +41,24 @@ exports.BattleMovedex = {
 		target: "normal",
 		type: "Fairy",
 	},
+	// galbia
+	dog: {
+		accuracy: 80,
+		basePower: 110,
+		category: "Physical",
+		id: "dog",
+		name: "(dog)",
+		pp: 15,
+		priority: 0,
+		flags: {contact: 1, protect: 1},
+		onModifyMove: function (move) {
+			if (this.isWeather('sandstorm')) move.accuracy = true;
+		},
+		ignoreImmunity: true,
+		secondary: false,
+		target: "normal",
+		type: "Normal",
+	},
 	// Aelita
 	energyfield: {
 		num: -87,

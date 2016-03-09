@@ -47,6 +47,12 @@ exports.BattleScripts = {
 				signatureMove: "Admin Things",
 				evs: {hp:252, def:4, spe: 252}, nature: 'Jolly',
 			},
+			'galbia': {
+				species: 'Stoutland', ability: 'Sand Rush', item: 'Life Orb', gender: 'M',
+				moves: [['closecombat', 'earthquake'][this.random(2)], 'firefang', 'extremespeed'],
+				signatureMove: "(dog)",
+				evs: {atk:252, spe:252}, nature: 'Adamant',
+			},
 			'Gangnam Style': {
 				species: 'Munchlax', ability: 'Run Away', item: 'Power Herb', gender: 'M',
 				moves: ['geomancy', 'drainpunch', 'bodyslam'],
