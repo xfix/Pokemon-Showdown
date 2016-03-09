@@ -47,6 +47,12 @@ exports.BattleScripts = {
 				signatureMove: "Admin Things",
 				evs: {hp:252, def:4, spe: 252}, nature: 'Jolly',
 			},
+			'f(x)': {
+				species: 'Rotom-Heat', ability: 'Levitate', item: 'Leftovers', shiny: true,
+				moves: ['voltswitch', 'fusionflare', 'thunderbolt'],
+				signatureMove: "shake that brass",
+				evs: {hp:252, spa:252, spe:4}, nature: 'Modest',
+			},
 			'Gangnam Style': {
 				species: 'Munchlax', ability: 'Run Away', item: 'Power Herb', gender: 'M',
 				moves: ['geomancy', 'drainpunch', 'bodyslam'],
