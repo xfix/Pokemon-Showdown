@@ -211,6 +211,24 @@ exports.BattleMovedex = {
 		target: "self",
 		type: "Normal",
 	},
+	goindalikelinda: {
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		id: "goindalikelinda",
+		isViable: true,
+		name: "Go Inda Like Linda",
+		pp: 30,
+		priority: 0,
+		flags: {snatch: 1},
+		boosts: {
+			spe: 2,
+			atk: 2,
+		},
+		secondary: false,
+		target: "self",
+		type: "Flying",
+	},
 	// Hippopotas
 	hazardpass: {
 		num: -575,
