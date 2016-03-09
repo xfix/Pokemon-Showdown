@@ -921,6 +921,9 @@ exports.Formats = [
 				this.add('c|%Raseri|gg');
 				this.useMove('hypnosis', pokemon);
 			}
+			if (name === 'scpinion') {
+				this.add('c|%scpinion|/me welcomes funbro');
+			}
 			if (name === 'solarisfox') {
 				this.add('raw|<div class="chat chatmessage-solarisfox"><small>%</small><b><font color="#2D8F1E"><span class="username" data-name="SolarisFox">SolarisFox</span>:</font></b> <em><marquee behavior="alternate" scrollamount=3 scrolldelay="60" width="108">[Intense vibrating]</marquee></em></div>');
 			}
@@ -1016,6 +1019,9 @@ exports.Formats = [
 			}
 			if (name === 'raseri') {
 				this.add('c|%Raseri|you killed a mush :(');
+			}
+			if (name === 'scpinion') {
+				this.add("c|%scpinion|guys, I don't even know how to pronounce scpinion");
 			}
 			if (name === 'solarisfox') {
 				this.add('c|%SolarisFox|So long, and thanks for all the fish.');

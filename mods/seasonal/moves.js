@@ -297,6 +297,53 @@ exports.BattleMovedex = {
 		target: "normal",
 		type: "Fairy",
 	},
+	// scpinion
+	lolroom: {
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		id: "lolroom",
+		pp: 5,
+		priority: 0,
+		flags: {mirror: 1},
+		onHit: function (target, source, effect) {
+			if (this.pseudoWeather['trickroom']) {
+				this.removePseudoWeather('trickroom', source, effect, '[of] ' + source);
+			} else {
+				this.addPseudoWeather('trickroom', source, effect, '[of] ' + source);
+			}
+		},
+		volatileStatus: 'lolroom',
+		effect: {
+			onStart: function (pokemon) {
+				this.add('-start', pokemon, 'LOL! Room');
+				let newatk = pokemon.stats.spd;
+				let newdef = pokemon.stats.spa;
+				pokemon.stats.spa = newatk;
+				pokemon.stats.spd = newdef;
+			},
+			onCopy: function (pokemon) {
+				this.add('-start', pokemon, 'LOL! Room');
+				let newatk = pokemon.stats.spd;
+				let newdef = pokemon.stats.spa;
+				pokemon.stats.spa = newatk;
+				pokemon.stats.spd = newdef;
+			},
+			onEnd: function (pokemon) {
+				this.add('-end', pokemon, 'LOL! Room');
+				let newatk = pokemon.stats.spd;
+				let newdef = pokemon.stats.spa;
+				pokemon.stats.spa = newatk;
+				pokemon.stats.spd = newdef;
+			},
+			onRestart: function (pokemon) {
+				pokemon.removeVolatile('LOL! Room');
+			},
+		},
+		secondary: false,
+		target: "self",
+		type: "Psychic",
+	},
 	// gangnam style
 	motherfathergentleman: {
 		num: -154,
