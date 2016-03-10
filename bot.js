@@ -133,7 +133,7 @@ function parseRaw(message) {
 		.replace(/<span class="message-effect-immune">/g, "\x02\x0314")
 		.replace(/<span class="message-learn-canlearn">/g, "\x02\x1F\x033")
 		.replace(/<span class="message-learn-cannotlearn">/g, "\x02\x1F\x034")
-		.replace(/<font color="#\d{6}">/g, "\x0314")
+		.replace(/<font color="?#\d{6}"?>/g, "\x0314")
 		.replace(/<\/font>/g, "\x0F")
 		.replace(/&nbsp;|&ThickSpace;| +/g, " ")
 		.replace(/&#10003;/g, "✓")
