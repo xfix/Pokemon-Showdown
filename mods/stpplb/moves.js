@@ -1632,4 +1632,41 @@ exports.BattleMovedex = {
 		},
 		num: 681,
 	},
+	'drama': {
+		id: 'drama',
+		name: 'Drama',
+		pp: 10,
+		priority: 0,
+		category: 'Status',
+		type: 'Normal',
+		target: 'normal',
+		basePower: 0,
+		accuracy: true,
+		flags: {mirror: 1},
+		status: 'tox',
+		self: {status: 'tox'},
+		onHit: function(target, source, move) {
+			target.addVolatile('trapped', source, move, 'trapper');
+			source.addVolatile('trapped', source, move, 'trapper');
+		}
+	},
+	'loratory': {
+		id: 'loratory',
+		name: 'Loratory',
+		pp: 10,
+		priority: 0,
+		category: 'Status',
+		type: 'Normal',
+		target: 'normal',
+		basePower: 0,
+		accuracy: 80,
+		flags: {mirror: 1, reflectable: 1},
+		onHit: function(target, source, move) {
+			if (Math.random() < 0.5) {
+				target.addVolatile('confusion');
+			} else {
+				target.trySetStatus('slp', source);
+			}
+		}
+	}
 };
