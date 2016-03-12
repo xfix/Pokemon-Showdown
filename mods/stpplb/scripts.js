@@ -257,6 +257,12 @@ exports.BattleScripts = {
 				signatureMoves: ['quityourbullshit', 'keepcalmandfocus'],
 				evs: {hp: 252, atk: 252, spe: 4}, nature: 'Adamant',
 			},
+			'Trollkitten': {
+				species: 'Mew', ability: 'No Guard', item: 'Eject Button', gender: 'M',
+				moves: ['recover', 'echoedvoice'],
+				signatureMoves: ['drama', 'loratory'],
+				evs: {hp: 252, def: 128, spd: 128}, nature: 'Modest' 
+			}
 		};
 		let pool = Object.keys(sets).randomize();
 		for (let i = 0; i < Math.min(6, pool.length); i++) {
@@ -490,6 +496,12 @@ exports.BattleScripts = {
 				signatureMove: 'godswrath',
 				nature: 'Serious',
 			},
+			'Trollkitten': {
+				species: 'Mew', ability: 'No Guard', item: 'Eject Button', gender: 'M',
+				moves: ['recover', 'echoedvoice'],
+				signatureMoves: ['drama', 'loratory'],
+				evs: {hp: 252, def: 128, spd: 128}, nature: 'Modest' 
+			}
 		};
 		let pool = Object.keys(sets).randomize();
 		for (let i = 0; i < Math.min(6, pool.length); i++) {
@@ -729,6 +741,12 @@ exports.BattleScripts = {
 				signatureMove: 'godswrath',
 				nature: 'Serious',
 			},
+			'Trollkitten': {
+				species: 'Mew', ability: 'No Guard', item: 'Eject Button', gender: 'M',
+				moves: ['recover', 'echoedvoice'],
+				signatureMoves: ['drama', 'loratory'],
+				evs: {hp: 252, def: 128, spd: 128}, nature: 'Modest' 
+			}
 		};
 		let pool = Object.keys(sets).randomize();
 		for (let i = 0; i < Math.min(6, pool.length); i++) {
