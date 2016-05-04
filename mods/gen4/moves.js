@@ -71,16 +71,22 @@ exports.BattleMovedex = {
 		effect: {
 			duration: 1,
 			onStart: function (pokemon) {
-				this.effectData.index = 0;
-				while (!pokemon.side.pokemon[this.effectData.index] || pokemon.side.pokemon[this.effectData.index].fainted || pokemon.side.pokemon[this.effectData.index].status) {
-					this.effectData.index++;
+				let index = 0;
+				let team = pokemon.side.pokemon;
+				while (!team[index] || team[index].fainted || team[index].status) {
+					index++;
+					if (index >= team.length) break;
 				}
+				this.effectData.index = index;
 			},
 			onRestart: function (pokemon) {
+				let index = this.effectData.index;
+				let team = pokemon.side.pokemon;
 				do {
-					this.effectData.index++;
-					if (this.effectData.index >= 6) break;
-				} while (!pokemon.side.pokemon[this.effectData.index] || pokemon.side.pokemon[this.effectData.index].fainted || pokemon.side.pokemon[this.effectData.index].status);
+					index++;
+					if (index >= team.length) break;
+				} while (!team[index] || team[index].fainted || team[index].status);
+				this.effectData.index = index;
 			},
 			onModifyAtkPriority: -101,
 			onModifyAtk: function (atk, pokemon) {
@@ -141,6 +147,10 @@ exports.BattleMovedex = {
 	bonerush: {
 		inherit: true,
 		accuracy: 80,
+	},
+	bravebird: {
+		inherit: true,
+		recoil: [1, 3],
 	},
 	brickbreak: {
 		inherit: true,
@@ -333,6 +343,10 @@ exports.BattleMovedex = {
 			return null;
 		},
 	},
+	doubleedge: {
+		inherit: true,
+		recoil: [1, 3],
+	},
 	drainpunch: {
 		inherit: true,
 		basePower: 60,
@@ -394,13 +408,13 @@ exports.BattleMovedex = {
 			onEnd: function (target) {
 				this.add('-end', target, 'Encore');
 			},
-			onModifyPokemon: function (pokemon) {
+			onDisableMove: function (pokemon) {
 				if (!this.effectData.move || !pokemon.hasMove(this.effectData.move)) {
 					return;
 				}
 				for (let i = 0; i < pokemon.moveset.length; i++) {
 					if (pokemon.moveset[i].id !== this.effectData.move) {
-						pokemon.moveset[i].disabled = true;
+						pokemon.disableMove(pokemon.moveset[i].id);
 					}
 				}
 			},
@@ -465,6 +479,10 @@ exports.BattleMovedex = {
 			}
 			return 20;
 		},
+	},
+	flareblitz: {
+		inherit: true,
+		recoil: [1, 3],
 	},
 	focuspunch: {
 		inherit: true,
@@ -1193,9 +1211,9 @@ exports.BattleMovedex = {
 				if (pokemon.volatiles['substitute']) {
 					return;
 				} else if (this.effectData.layers >= 2) {
-					pokemon.trySetStatus('tox');
+					pokemon.trySetStatus('tox', pokemon.side.foe.active[0]);
 				} else {
-					pokemon.trySetStatus('psn');
+					pokemon.trySetStatus('psn', pokemon.side.foe.active[0]);
 				}
 			},
 		},
@@ -1207,6 +1225,10 @@ exports.BattleMovedex = {
 	uproar: {
 		inherit: true,
 		basePower: 50,
+	},
+	volttackle: {
+		inherit: true,
+		recoil: [1, 3],
 	},
 	whirlpool: {
 		inherit: true,
@@ -1234,6 +1256,10 @@ exports.BattleMovedex = {
 				}
 			},
 		},
+	},
+	woodhammer: {
+		inherit: true,
+		recoil: [1, 3],
 	},
 	worryseed: {
 		inherit: true,

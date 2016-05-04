@@ -104,7 +104,7 @@ exports.BattleItems = {
 				pokemon.eatItem();
 			}
 		},
-		onEatItem: function (item, pokemon) {
+		onTryEatItem: function (item, pokemon) {
 			if (!this.runEvent('TryHeal', pokemon)) return false;
 		},
 		onEat: function (pokemon) {
@@ -129,9 +129,7 @@ exports.BattleItems = {
 				this.add('-item', target, 'Air Balloon');
 			}
 		},
-		onImmunity: function (type) {
-			if (type === 'Ground') return false;
-		},
+		// airborneness implemented in battle-engine.js:BattlePokemon#isGrounded
 		onAfterDamage: function (damage, target, source, effect) {
 			this.debug('effect: ' + effect.id);
 			if (effect.effectType === 'Move' && effect.id !== 'confused') {
@@ -1292,7 +1290,7 @@ exports.BattleItems = {
 				target.eatItem();
 			}
 		},
-		onEatItem: function (item, pokemon) {
+		onTryEatItem: function (item, pokemon) {
 			if (!this.runEvent('TryHeal', pokemon)) return false;
 		},
 		onEat: function (pokemon) {
@@ -1401,7 +1399,7 @@ exports.BattleItems = {
 				pokemon.eatItem();
 			}
 		},
-		onEatItem: function (item, pokemon) {
+		onTryEatItem: function (item, pokemon) {
 			if (!this.runEvent('TryHeal', pokemon)) return false;
 		},
 		onEat: function (pokemon) {
@@ -1937,7 +1935,7 @@ exports.BattleItems = {
 				pokemon.eatItem();
 			}
 		},
-		onEatItem: function (item, pokemon) {
+		onTryEatItem: function (item, pokemon) {
 			if (!this.runEvent('TryHeal', pokemon)) return false;
 		},
 		onEat: function (pokemon) {
@@ -2033,11 +2031,9 @@ exports.BattleItems = {
 		},
 		onEffectiveness: function (typeMod, target, type, move) {
 			if (target.volatiles['ingrain'] || target.volatiles['smackdown'] || this.getPseudoWeather('gravity')) return;
-			if (move.type === 'Ground' && !this.getImmunity(move.type, target)) return 0;
+			if (move.type === 'Ground' && target.hasType('Flying')) return 0;
 		},
-		onNegateImmunity: function (pokemon, type) {
-			if (type === 'Ground') return false;
-		},
+		// airborneness negation implemented in battle-engine.js:BattlePokemon#isGrounded
 		onModifySpe: function (spe) {
 			return this.chainModify(0.5);
 		},
@@ -2339,8 +2335,8 @@ exports.BattleItems = {
 			if (pokemon.item !== 'leppaberry') {
 				let foeActive = pokemon.side.foe.active;
 				let foeIsStale = false;
-				for (let i = 0; i < 1; i++) {
-					if (foeActive.isStale >= 2) {
+				for (let i = 0; i < foeActive.length; i++) {
+					if (foeActive[i].hp && foeActive[i].isStale >= 2) {
 						foeIsStale = true;
 						break;
 					}
@@ -2481,9 +2477,9 @@ exports.BattleItems = {
 		fling: {
 			basePower: 40,
 		},
-		onModifyMove: function (move, user) {
+		onModifyCritRatio: function (critRatio, user) {
 			if (user.baseTemplate.species === 'Chansey') {
-				move.critRatio += 2;
+				return critRatio + 2;
 			}
 		},
 		num: 256,
@@ -2606,7 +2602,7 @@ exports.BattleItems = {
 				pokemon.eatItem();
 			}
 		},
-		onEatItem: function (item, pokemon) {
+		onTryEatItem: function (item, pokemon) {
 			if (!this.runEvent('TryHeal', pokemon)) return false;
 		},
 		onEat: function (pokemon) {
@@ -3143,7 +3139,7 @@ exports.BattleItems = {
 				pokemon.eatItem();
 			}
 		},
-		onEatItem: function (item, pokemon) {
+		onTryEatItem: function (item, pokemon) {
 			if (!this.runEvent('TryHeal', pokemon)) return false;
 		},
 		onEat: function (pokemon) {
@@ -3567,8 +3563,8 @@ exports.BattleItems = {
 		fling: {
 			basePower: 80,
 		},
-		onModifyMove: function (move) {
-			move.critRatio++;
+		onModifyCritRatio: function (critRatio) {
+			return critRatio + 1;
 		},
 		num: 326,
 		gen: 4,
@@ -3697,9 +3693,7 @@ exports.BattleItems = {
 		fling: {
 			basePower: 10,
 		},
-		onNegateImmunity: function (pokemon, type) {
-			if (type in this.data.TypeChart && this.runEvent('Immunity', pokemon, null, null, type)) return false;
-		},
+		onNegateImmunity: false,
 		num: 543,
 		gen: 5,
 		desc: "The holder's type immunities granted solely by its typing are negated.",
@@ -3940,8 +3934,8 @@ exports.BattleItems = {
 		fling: {
 			basePower: 30,
 		},
-		onModifyMove: function (move) {
-			move.critRatio++;
+		onModifyCritRatio: function (critRatio) {
+			return critRatio + 1;
 		},
 		num: 232,
 		gen: 2,
@@ -4113,7 +4107,7 @@ exports.BattleItems = {
 				pokemon.eatItem();
 			}
 		},
-		onEatItem: function (item, pokemon) {
+		onTryEatItem: function (item, pokemon) {
 			if (!this.runEvent('TryHeal', pokemon)) return false;
 		},
 		onEat: function (pokemon) {
@@ -4391,9 +4385,9 @@ exports.BattleItems = {
 			basePower: 60,
 		},
 		spritenum: 475,
-		onModifyMove: function (move, user) {
+		onModifyCritRatio: function (critRatio, user) {
 			if (user.baseTemplate.species === 'Farfetch\'d') {
-				move.critRatio += 2;
+				return critRatio + 2;
 			}
 		},
 		num: 259,
@@ -4779,7 +4773,7 @@ exports.BattleItems = {
 				pokemon.eatItem();
 			}
 		},
-		onEatItem: function (item, pokemon) {
+		onTryEatItem: function (item, pokemon) {
 			if (!this.runEvent('TryHeal', pokemon)) return false;
 		},
 		onEat: function (pokemon) {
@@ -4900,7 +4894,7 @@ exports.BattleItems = {
 				pokemon.eatItem();
 			}
 		},
-		onEatItem: function (item, pokemon) {
+		onTryEatItem: function (item, pokemon) {
 			if (!this.runEvent('TryHeal', pokemon)) return false;
 		},
 		onEat: function (pokemon) {
@@ -4985,7 +4979,7 @@ exports.BattleItems = {
 				pokemon.eatItem();
 			}
 		},
-		onEatItem: function (item, pokemon) {
+		onTryEatItem: function (item, pokemon) {
 			if (!this.runEvent('TryHeal', pokemon)) return false;
 		},
 		onEat: function (pokemon) {

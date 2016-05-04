@@ -142,11 +142,16 @@ exports.BattleScripts = {
 			}
 			if (targets.length > 1) move.spreadHit = true;
 			damage = 0;
+			let hitTargets = [];
 			for (let i = 0; i < targets.length; i++) {
 				let hitResult = this.tryMoveHit(targets[i], pokemon, move, true);
-				if (hitResult || hitResult === 0 || hitResult === undefined) moveResult = true;
+				if (hitResult || hitResult === 0 || hitResult === undefined) {
+					moveResult = true;
+					hitTargets.push(targets[i].toString().substr(0, 3));
+				}
 				damage += hitResult || 0;
 			}
+			if (move.spreadHit) this.attrLastMove('[spread] ' + hitTargets.join(','));
 			if (!pokemon.hp) pokemon.faint();
 		} else {
 			target = targets[0];
@@ -235,7 +240,7 @@ exports.BattleScripts = {
 		let boosts, boost;
 		if (accuracy !== true) {
 			if (!move.ignoreAccuracy) {
-				boosts = this.runEvent('ModifyBoost', pokemon, null, null, Object.clone(pokemon.boosts));
+				boosts = this.runEvent('ModifyBoost', pokemon, null, null, Object.assign({}, pokemon.boosts));
 				boost = this.clampIntRange(boosts['accuracy'], -6, 6);
 				if (boost > 0) {
 					accuracy *= boostTable[boost];
@@ -244,7 +249,7 @@ exports.BattleScripts = {
 				}
 			}
 			if (!move.ignoreEvasion) {
-				boosts = this.runEvent('ModifyBoost', target, null, null, Object.clone(target.boosts));
+				boosts = this.runEvent('ModifyBoost', target, null, null, Object.assign({}, target.boosts));
 				boost = this.clampIntRange(boosts['evasion'], -6, 6);
 				if (boost > 0) {
 					accuracy /= boostTable[boost];
@@ -322,6 +327,35 @@ exports.BattleScripts = {
 			for (i = 0; i < hits && target.hp && pokemon.hp; i++) {
 				if (pokemon.status === 'slp' && !isSleepUsable) break;
 
+				if (move.multiaccuracy && i > 0) {
+					accuracy = move.accuracy;
+					if (accuracy !== true) {
+						if (!move.ignoreAccuracy) {
+							boosts = this.runEvent('ModifyBoost', pokemon, null, null, Object.assign({}, pokemon.boosts));
+							boost = this.clampIntRange(boosts['accuracy'], -6, 6);
+							if (boost > 0) {
+								accuracy *= boostTable[boost];
+							} else {
+								accuracy /= boostTable[-boost];
+							}
+						}
+						if (!move.ignoreEvasion) {
+							boosts = this.runEvent('ModifyBoost', target, null, null, Object.assign({}, target.boosts));
+							boost = this.clampIntRange(boosts['evasion'], -6, 6);
+							if (boost > 0) {
+								accuracy /= boostTable[boost];
+							} else if (boost < 0) {
+								accuracy *= boostTable[-boost];
+							}
+						}
+					}
+					accuracy = this.runEvent('ModifyAccuracy', target, pokemon, move, accuracy);
+					if (!move.alwaysHit) {
+						accuracy = this.runEvent('Accuracy', target, pokemon, move, accuracy);
+						if (accuracy !== true && this.random(100) >= accuracy) break;
+					}
+				}
+
 				moveDamage = this.moveHit(target, pokemon, move);
 				if (moveDamage === false) break;
 				if (nullDamage && (moveDamage || moveDamage === 0 || moveDamage === undefined)) nullDamage = false;
@@ -341,7 +375,7 @@ exports.BattleScripts = {
 		}
 
 		if (move.recoil && totalDamage) {
-			this.damage(this.clampIntRange(Math.round(totalDamage * move.recoil[0] / move.recoil[1]), 1), pokemon, target, 'recoil');
+			this.damage(this.calcRecoilDamage(totalDamage, move), pokemon, target, 'recoil');
 		}
 
 		if (target && pokemon !== target) target.gotAttacked(move, damage, pokemon);
@@ -581,6 +615,10 @@ exports.BattleScripts = {
 		return damage;
 	},
 
+	calcRecoilDamage: function (damageDealt, move) {
+		return this.clampIntRange(Math.round(damageDealt * move.recoil[0] / move.recoil[1]), 1);
+	},
+
 	canMegaEvo: function (pokemon) {
 		let altForme = pokemon.baseTemplate.otherFormes && this.getTemplate(pokemon.baseTemplate.otherFormes[0]);
 		if (altForme && altForme.isMega && altForme.requiredMove && pokemon.moves.indexOf(toId(altForme.requiredMove)) >= 0) return altForme.species;
@@ -613,6 +651,8 @@ exports.BattleScripts = {
 		for (let i = 0; i < side.pokemon.length; i++) {
 			side.pokemon[i].canMegaEvo = false;
 		}
+
+		this.runEvent('AfterMega', pokemon);
 		return true;
 	},
 
@@ -638,6 +678,16 @@ exports.BattleScripts = {
 		if (!isValid) selectedAbilities.push(selectedAbility);
 		return isValid;
 	},
+	fastPop: function (list, index) {
+		// If an array doesn't need to be in order, replacing the
+		// element at the given index with the removed element
+		// is much, much faster than using list.splice(index, 1).
+		let length = list.length;
+		let element = list[index];
+		list[index] = list[length - 1];
+		list.pop();
+		return element;
+	},
 	sampleNoReplace: function (list) {
 		// The cute code to sample no replace is:
 		//   return list.splice(this.random(length), 1)[0];
@@ -646,10 +696,7 @@ exports.BattleScripts = {
 		// we just replace the removed element with the last element.
 		let length = list.length;
 		let index = this.random(length);
-		let element = list[index];
-		list[index] = list[length - 1];
-		list.pop();
-		return element;
+		return this.fastPop(list, index);
 	},
 	checkBattleForme: function (template) {
 		// If the Pokémon has a Mega or Primal alt forme, that's its preferred battle forme.
@@ -666,14 +713,15 @@ exports.BattleScripts = {
 		return !!firstForme.isMega;
 	},
 	getTeam: function (side, team) {
-		let format = side.battle.getFormat();
-		if (typeof format.team === 'string' && format.team.substr(0, 6) === 'random') {
-			return this[format.team + 'Team'](side);
-		} else if (team) {
-			return team;
-		} else {
-			return this.randomTeam(side);
-		}
+		const format = side.battle.getFormat();
+		const teamGenerator = typeof format.team === 'string' && format.team.startsWith('random') ? format.team + 'Team' : '';
+		if (!teamGenerator && team) return team;
+		// Reinitialize the RNG seed to create random teams.
+		this.startingSeed = this.startingSeed.concat(this.generateSeed());
+		team = this[teamGenerator || 'randomTeam'](side);
+		// Restore the default seed
+		this.seed = this.startingSeed.slice(0, 4);
+		return team;
 	},
 	randomCCTeam: function (side) {
 		let team = [];
@@ -721,31 +769,30 @@ exports.BattleScripts = {
 			}
 
 			// Make sure forme/item combo is correct
-			while ((poke === 'Giratina' && item === 'griseousorb') ||
-					(poke === 'Arceus' && item.substr(-5) === 'plate') ||
-					(poke === 'Genesect' && item.substr(-5) === 'drive')) {
-				item = items[this.random(items.length)];
+			switch (poke) {
+			case 'Giratina':
+				while (item === 'griseousorb') item = items[this.random(items.length)];
+				break;
+			case 'Arceus':
+				while (item.substr(-5) === 'plate') item = items[this.random(items.length)];
+				break;
+			case 'Genesect':
+				while (item.substr(-5) === 'drive') item = items[this.random(items.length)];
 			}
 
 			// Random ability
-			let abilities = [template.abilities['0']];
-			if (template.abilities['1']) {
-				abilities.push(template.abilities['1']);
-			}
-			if (template.abilities['H']) {
-				abilities.push(template.abilities['H']);
-			}
+			let abilities = Object.values(template.abilities);
 			let ability = abilities[this.random(abilities.length)];
 
 			// Four random unique moves from the movepool
 			let moves;
 			let pool = ['struggle'];
 			if (poke === 'Smeargle') {
-				pool = Object.keys(this.data.Movedex).exclude('chatter', 'struggle', 'paleowave', 'shadowstrike', 'magikarpsrevenge');
+				pool = Object.keys(this.data.Movedex).filter(moveid => !(moveid in {'chatter':1, 'struggle':1, 'paleowave':1, 'shadowstrike':1, 'magikarpsrevenge':1}));
 			} else if (template.learnset) {
 				pool = Object.keys(template.learnset);
 				if (template.species.substr(0, 6) === 'Rotom-' || template.species.substr(0, 10) === 'Pumpkaboo-') {
-					pool = pool.union(Object.keys(this.getTemplate(template.baseSpecies).learnset));
+					pool = Array.from(new Set(pool.concat(Object.keys(this.getTemplate(template.baseSpecies).learnset))));
 				}
 			} else {
 				pool = Object.keys(this.getTemplate(template.baseSpecies).learnset);
@@ -878,12 +925,12 @@ exports.BattleScripts = {
 
 			// Random unique moves
 			let m = [];
-			while (true) {
+			do {
 				let moveid = this.sampleNoReplace(movePool);
 				if (!this.data.Movedex[moveid].isNonstandard && (moveid === 'hiddenpower' || moveid.substr(0, 11) !== 'hiddenpower')) {
-					if (m.push(moveid) >= 4) break;
+					m.push(moveid);
 				}
-			}
+			} while (m.length < 4);
 
 			// Random EVs
 			let evs = {hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0};
@@ -992,7 +1039,7 @@ exports.BattleScripts = {
 		};
 		// Moves that shouldn't be the only STAB moves:
 		let NoStab = {
-			aquajet:1, bounce:1, fakeout:1, flamecharge:1, iceshard:1, pursuit:1, quickattack:1, skyattack:1,
+			aquajet:1, bounce:1, explosion:1, fakeout:1, flamecharge:1, iceshard:1, pursuit:1, quickattack:1, skyattack:1,
 			chargebeam:1, clearsmog:1, eruption:1, vacuumwave:1, waterspout:1,
 		};
 
@@ -1220,7 +1267,7 @@ exports.BattleScripts = {
 					if (!hasMove['rest']) rejected = true;
 					if (movePool.length > 1) {
 						let rest = movePool.indexOf('rest');
-						if (rest >= 0) movePool.splice(rest, 1);
+						if (rest >= 0) this.fastPop(movePool, rest);
 					}
 					break;
 				case 'storedpower':
@@ -1229,7 +1276,9 @@ exports.BattleScripts = {
 
 				// Set up once and only if we have the moves for it
 				case 'bellydrum': case 'bulkup': case 'coil': case 'curse': case 'dragondance': case 'honeclaws': case 'swordsdance':
-					if (counter.setupType !== 'Physical' || counter['physicalsetup'] > 1) rejected = true;
+					if (counter.setupType !== 'Physical' || counter['physicalsetup'] > 1) {
+						if (!hasMove['growth'] || hasMove['sunnyday']) rejected = true;
+					}
 					if (counter.Physical + counter['physicalpool'] < 2 && !hasMove['batonpass'] && (!hasMove['rest'] || !hasMove['sleeptalk'])) rejected = true;
 					isSetup = true;
 					break;
@@ -1272,7 +1321,7 @@ exports.BattleScripts = {
 					if (counter.setupType || !!counter['speedsetup'] || (hasMove['rest'] && hasMove['sleeptalk'])) rejected = true;
 					break;
 				case 'healbell':
-					if (!!counter['speedsetup']) rejected = true;
+					if (counter['speedsetup']) rejected = true;
 					break;
 				case 'healingwish': case 'memento':
 					if (counter.setupType || !!counter['recovery'] || hasMove['substitute']) rejected = true;
@@ -1291,7 +1340,7 @@ exports.BattleScripts = {
 					if (counter.setupType || !!counter['speedsetup'] || hasMove['rest'] || teamDetails.stealthRock) rejected = true;
 					break;
 				case 'switcheroo': case 'trick':
-					if (counter.Physical + counter.Special < 3) rejected = true;
+					if (counter.Physical + counter.Special < 3 || counter.setupType) rejected = true;
 					if (hasMove['acrobatics'] || hasMove['lightscreen'] || hasMove['reflect'] || hasMove['suckerpunch'] || hasMove['trickroom']) rejected = true;
 					break;
 				case 'toxicspikes':
@@ -1428,7 +1477,7 @@ exports.BattleScripts = {
 					if (hasMove['freezedry']) rejected = true;
 					break;
 				case 'bodyslam':
-					if (hasMove['glare']) rejected = true;
+					if (hasMove['glare'] || hasMove['headbutt']) rejected = true;
 					break;
 				case 'endeavor':
 					if (slot > 0) rejected = true;
@@ -1466,6 +1515,12 @@ exports.BattleScripts = {
 				case 'psychic':
 					if (hasMove['psyshock'] || hasMove['storedpower']) rejected = true;
 					break;
+				case 'psyshock':
+					if (movePool.length > 1) {
+						let psychic = movePool.indexOf('psychic');
+						if (psychic >= 0) this.fastPop(movePool, psychic);
+					}
+					break;
 				case 'zenheadbutt':
 					if ((hasMove['psychic'] || hasMove['psyshock']) && counter.setupType !== 'Physical') rejected = true;
 					break;
@@ -1499,6 +1554,14 @@ exports.BattleScripts = {
 				case 'sunnyday':
 					if (counter.Physical + counter.Special < 2 || hasMove['rest'] && hasMove['sleeptalk']) rejected = true;
 					if (!hasAbility['Chlorophyll'] && !hasAbility['Flower Gift'] && !hasMove['solarbeam']) rejected = true;
+					if (rejected && movePool.length > 1) {
+						let solarbeam = movePool.indexOf('solarbeam');
+						if (solarbeam >= 0) this.fastPop(movePool, solarbeam);
+						if (movePool.length > 1) {
+							let weatherball = movePool.indexOf('weatherball');
+							if (weatherball >= 0) this.fastPop(movePool, weatherball);
+						}
+					}
 					break;
 				case 'stunspore': case 'thunderwave':
 					if (counter.setupType || !!counter['speedsetup'] || (hasMove['rest'] && hasMove['sleeptalk'])) rejected = true;
@@ -1555,10 +1618,12 @@ exports.BattleScripts = {
 					(hasAbility['Dark Aura'] && !counter['Dark']) ||
 					(hasAbility['Gale Wings'] && !counter['Flying']) ||
 					(hasAbility['Guts'] && hasType['Normal'] && movePool.indexOf('facade') >= 0) ||
+					(hasAbility['Stance Change'] && !counter.setupType && movePool.indexOf('kingsshield') >= 0) ||
 					(hasType['Dark'] && hasMove['suckerpunch'] && counter.stab < template.types.length) ||
 					(hasType['Dragon'] && !counter['Dragon'] && !hasAbility['Aerilate'] && !hasAbility['Pixilate'] && !hasMove['rest'] && !hasMove['sleeptalk']) ||
 					(hasType['Electric'] && !counter['Electric']) ||
 					(hasType['Fighting'] && !counter['Fighting'] && counter.setupType) ||
+					(hasType['Flying'] && !!counter['Flying'] && !hasType['Normal'] && !hasType['Poison'] && !hasType['Psychic'] && counter.Status < 3 && !hasAbility['Aerilate'] && template.types.length > 1 && counter.stab < 2) ||
 					(hasType['Fire'] && !counter['Fire']) ||
 					(hasType['Ground'] && !counter['Ground'] && (counter.setupType || counter['speedsetup'])) ||
 					(hasType['Ice'] && !counter['Ice']) ||
@@ -1577,7 +1642,7 @@ exports.BattleScripts = {
 						if (movePool.length < 2) {
 							rejected = false;
 						} else {
-							movePool.splice(sleeptalk, 1);
+							this.fastPop(movePool, sleeptalk);
 						}
 					}
 				}
@@ -1633,16 +1698,14 @@ exports.BattleScripts = {
 			}
 		} while (moves.length < 4 && movePool.length);
 
+		// Moveset modifications
+		if (hasMove['autotomize'] && hasMove['heavyslam']) {
+			moves[moves.indexOf('autotomize')] = 'rockpolish';
+		}
+
 		// If Hidden Power has been removed, reset the IVs
 		if (!hasMove['hiddenpower']) {
-			ivs = {
-				hp: 31,
-				atk: 31,
-				def: 31,
-				spa: 31,
-				spd: 31,
-				spe: 31,
-			};
+			ivs = {hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31};
 		}
 
 		let abilities = Object.values(baseTemplate.abilities);
@@ -1903,7 +1966,7 @@ exports.BattleScripts = {
 			item = (!!counter['Normal'] || (hasMove['suckerpunch'] && !hasType['Dark'])) ? 'Life Orb' : 'Expert Belt';
 		} else if (counter.damagingMoves.length >= 3 && !!counter['speedsetup'] && template.baseStats.hp + template.baseStats.def + template.baseStats.spd >= 300) {
 			item = 'Weakness Policy';
-		} else if (counter.damagingMoves.length >= 3 && ability !== 'Sturdy' && !hasMove['dragontail'] && !hasMove['superfang']) {
+		} else if (counter.damagingMoves.length >= 3 && ability !== 'Sturdy' && !hasMove['dragontail'] && !hasMove['foulplay'] && !hasMove['superfang']) {
 			item = (template.baseStats.hp + template.baseStats.def + template.baseStats.spd < 285 || !!counter['speedsetup'] || hasMove['trickroom']) ? 'Life Orb' : 'Leftovers';
 		} else if (template.species === 'Palkia' && (hasMove['dracometeor'] || hasMove['spacialrend']) && hasMove['hydropump']) {
 			item = 'Lustrous Orb';
@@ -2226,6 +2289,9 @@ exports.BattleScripts = {
 
 			// Only certain NFE Pokemon are allowed
 			if (template.evos.length && !allowedNFE[template.species]) continue;
+
+			// Slaking, without ability swap or a similar gimmick, makes the battle 5v6 at best
+			if (template.species === 'Slaking') continue;
 
 			let tier = template.tier;
 			switch (tier) {
@@ -3190,87 +3256,6 @@ exports.BattleScripts = {
 			shiny: !this.random(template.id === 'missingno' ? 4 : 1024),
 		};
 	},
-	randomSeasonalPolarTeam: function () {
-		let pokemonLeft = 0;
-		let pokemon = [];
-
-		let pokemonPool = [];
-		for (let id in this.data.FormatsData) {
-			let template = this.getTemplate(id);
-			if (!template.evos.length && !template.isMega && !template.isNonstandard && template.randomBattleMoves && template.types.indexOf("Ice") >= 0) {
-				pokemonPool.push(id);
-			}
-		}
-
-		let baseFormes = {};
-		let uberCount = 0;
-		let puCount = 0;
-		let weakCount = 0;
-		let teamDetails = {};
-
-		while (pokemonPool.length && pokemonLeft < 6) {
-			let template = this.getTemplate(this.sampleNoReplace(pokemonPool));
-			if (!template.exists) continue;
-			let types = template.types.sort().join('/');
-
-			// Limit to one of each species (Species Clause)
-			if (baseFormes[template.baseSpecies]) continue;
-
-			// Limit to 2 Water/Ice Pokemon (double weakness to Ice in an Ice-dominant format)
-			if (weakCount > 2 && types === 'Ice/Water' && this.random(5) >= 1) continue;
-
-			let tier = template.tier;
-			switch (tier) {
-			case 'Uber':
-				// Ubers are limited to 1 but have a 20% chance of being added anyway.
-				if (uberCount && this.random(5) >= 1) continue;
-				break;
-			case 'PU':
-				// PUs are limited to 2 but have a 20% chance of being added anyway.
-				if (puCount > 1 && this.random(5) >= 1) continue;
-				break;
-			case 'Unreleased':
-				// Unreleased Pokémon have 20% the normal rate
-				if (this.random(5) >= 1) continue;
-				break;
-			case 'CAP':
-				// CAPs have 20% the normal rate
-				if (this.random(5) >= 1) continue;
-			}
-
-			let set = this.randomSet(template, pokemon.length, teamDetails);
-
-			// Freeze-Dry is pointless because of Inverse Battle rules
-			let freezedry = set.moves.indexOf('freezedry');
-			if (freezedry >= 0 && set.moves.indexOf('icebeam') < 0) {
-				set.moves[freezedry] = 'icebeam';
-			}
-
-			pokemon.push(set);
-
-			// Now that our Pokemon has passed all checks, we can increment our counters
-			baseFormes[template.baseSpecies] = 1;
-			if (types === 'Ice/Water') weakCount++;
-			pokemonLeft++;
-
-			// Increment Uber/NU counters
-			if (tier === 'Uber') {
-				uberCount++;
-			} else if (tier === 'PU') {
-				puCount++;
-			}
-
-			// Team has Mega/weather/hazards
-			if (this.getItem(set.item).megaStone) teamDetails['megaCount'] = 1;
-			if (set.ability === 'Snow Warning') teamDetails['hail'] = 1;
-			if (set.ability === 'Drizzle' || set.moves.indexOf('raindance') >= 0) teamDetails['rain'] = 1;
-			if (set.ability === 'Sand Stream') teamDetails['sand'] = 1;
-			if (set.moves.indexOf('stealthrock') >= 0) teamDetails['stealthRock'] = 1;
-			if (set.moves.indexOf('toxicspikes') >= 0) teamDetails['toxicSpikes'] = 1;
-			if (set.moves.indexOf('defog') >= 0 || set.moves.indexOf('rapidspin') >= 0) teamDetails['hazardClear'] = 1;
-		}
-		return pokemon;
-	},
 	randomFactorySets: require('./factory-sets.json'),
 	randomFactorySet: function (template, slot, teamData, tier) {
 		let speciesId = toId(template.species);
@@ -3358,12 +3343,10 @@ exports.BattleScripts = {
 		let forceResult = (depth >= 4);
 
 		let availableTiers = ['Uber', 'OU', 'UU', 'RU', 'NU', 'PU'];
-		let chosenTier;
-
-		let currentSeed = this.seed.slice();
-		this.seed = this.startingSeed.slice();
-		chosenTier = availableTiers[this.random(availableTiers.length)];
-		this.seed = currentSeed;
+		const prevSeed = this.seed;
+		this.seed = this.startingSeed.slice(0, 4);
+		const chosenTier = availableTiers[this.random(availableTiers.length)];
+		this.seed = prevSeed;
 
 		let pokemonLeft = 0;
 		let pokemon = [];

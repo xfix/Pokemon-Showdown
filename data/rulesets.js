@@ -57,6 +57,7 @@ exports.BattleFormats = {
 			'Zygarde',
 			'Diancie',
 			'Hoopa', 'Hoopa-Unbound',
+			'Volcanion',
 		],
 	},
 	standarddoubles: {
@@ -251,8 +252,12 @@ exports.BattleFormats = {
 				}
 			}
 
-			if (set.shiny && template.unobtainableShiny) {
-				problems.push("It's currently not possible to get a shiny " + template.species + ".");
+			if (set.shiny) {
+				if (template.unobtainableShiny) {
+					problems.push("It's currently not possible to get a shiny " + template.species + ".");
+				} else if (template.unobtainableShinyPentagon && format.requirePentagon) {
+					problems.push("It's currently not possible to get a shiny " + template.species + " in gen 6 and this format requires gen 6 Pokémon.");
+				}
 			}
 
 			return problems;
@@ -629,7 +634,7 @@ exports.BattleFormats = {
 				template = this.getTemplate(team[i].species);
 				if (!template.types) return ["Your team must share a type."];
 
-				typeTable = typeTable.intersect(template.types);
+				typeTable = typeTable.filter(type => template.types.indexOf(type) >= 0);
 				if (!typeTable.length) return ["Your team must share a type."];
 			}
 			if (format.id === 'monotype') {

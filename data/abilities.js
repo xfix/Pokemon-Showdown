@@ -115,7 +115,7 @@ exports.BattleAbilities = {
 	"angerpoint": {
 		desc: "If this Pokemon, but not its substitute, is struck by a critical hit, its Attack is raised by 12 stages.",
 		shortDesc: "If this Pokemon (not its substitute) takes a critical hit, its Attack is raised 12 stages.",
-		onAfterDamage: function (damage, target, source, move) {
+		onHit: function (target, source, move) {
 			if (!target.hp) return;
 			if (move && move.effectType === 'Move' && move.crit) {
 				target.setBoost({atk: 6});
@@ -339,7 +339,6 @@ exports.BattleAbilities = {
 			if (target.isActive && move.effectType === 'Move' && move.category !== 'Status' && type !== '???' && !target.hasType(type)) {
 				if (!target.setType(type)) return false;
 				this.add('-start', target, 'typechange', type, '[from] Color Change');
-				target.update();
 			}
 		},
 		id: "colorchange",
@@ -475,9 +474,6 @@ exports.BattleAbilities = {
 			if (pokemon.hp <= pokemon.maxhp / 2) {
 				return this.chainModify(0.5);
 			}
-		},
-		onResidual: function (pokemon) {
-			pokemon.update();
 		},
 		id: "defeatist",
 		name: "Defeatist",
@@ -655,7 +651,7 @@ exports.BattleAbilities = {
 		desc: "30% chance a Pokemon making contact with this Pokemon will be poisoned, paralyzed, or fall asleep.",
 		shortDesc: "30% chance of poison/paralysis/sleep on others making contact with this Pokemon.",
 		onAfterDamage: function (damage, target, source, move) {
-			if (move && move.flags['contact'] && !source.status && source.runImmunity('powder')) {
+			if (move && move.flags['contact'] && !source.status && source.runStatusImmunity('powder')) {
 				let r = this.random(100);
 				if (r < 11) {
 					source.setStatus('slp', target);
@@ -1193,6 +1189,7 @@ exports.BattleAbilities = {
 		desc: "On switch-in, this Pokemon Transforms into the opposing Pokemon that is facing it. If there is no Pokemon at that position, this Pokemon does not Transform.",
 		shortDesc: "On switch-in, this Pokemon Transforms into the opposing Pokemon that is facing it.",
 		onStart: function (pokemon) {
+			if (this.activeMove && this.activeMove.id === 'skillswap') return;
 			let target = pokemon.side.foe.active[pokemon.side.foe.active.length - 1 - pokemon.position];
 			if (target) {
 				pokemon.transformInto(target, pokemon, this.getAbility('imposter'));
@@ -1351,9 +1348,7 @@ exports.BattleAbilities = {
 	"levitate": {
 		desc: "This Pokemon is immune to Ground. Gravity, Ingrain, Smack Down, Thousand Arrows, and Iron Ball nullify the immunity.",
 		shortDesc: "This Pokemon is immune to Ground; Gravity/Ingrain/Smack Down/Iron Ball nullify it.",
-		onImmunity: function (type) {
-			if (type === 'Ground') return false;
-		},
+		// airborneness implemented in battle-engine.js:BattlePokemon#isGrounded
 		id: "levitate",
 		name: "Levitate",
 		rating: 3.5,
@@ -1446,7 +1441,7 @@ exports.BattleAbilities = {
 			}
 			let newMove = this.getMoveCopy(move.id);
 			newMove.hasBounced = true;
-			this.useMove(newMove, target, source);
+			this.useMove(newMove, this.effectData.target, source);
 			return null;
 		},
 		effect: {
@@ -1474,7 +1469,7 @@ exports.BattleAbilities = {
 		onSourceHit: function (target, source, move) {
 			if (!move || !target) return;
 			if (target !== source && move.category !== 'Status') {
-				if (source.item) return;
+				if (source.item || source.volatiles['gem'] || source.volatiles['fling']) return;
 				let yourItem = target.takeItem(source);
 				if (!yourItem) return;
 				if (!source.setItem(yourItem)) {
@@ -1708,9 +1703,7 @@ exports.BattleAbilities = {
 				}
 				let template = Tools.getTemplate(curPoke.species);
 				// pokemon can't get Natural Cure
-				if (template.abilities['0'] !== 'Natural Cure' &&
-					template.abilities['1'] !== 'Natural Cure' &&
-					template.abilities['H'] !== 'Natural Cure') {
+				if (Object.values(template.abilities).indexOf('Natural Cure') < 0) {
 					// this.add('-message', "" + curPoke + " skipped: no Natural Cure");
 					continue;
 				}
@@ -1787,7 +1780,7 @@ exports.BattleAbilities = {
 		shortDesc: "This Pokemon's moves are changed to be Normal type.",
 		onModifyMovePriority: 1,
 		onModifyMove: function (move) {
-			if (move.id !== 'struggle') {
+			if (move.id !== 'struggle' && this.getMove(move.id).type !== 'Normal') {
 				move.type = 'Normal';
 			}
 		},
@@ -1930,8 +1923,7 @@ exports.BattleAbilities = {
 			pokemon.setItem(randomTarget.lastItem);
 			randomTarget.lastItem = '';
 			let item = pokemon.getItem();
-			this.add('-item', pokemon, item, '[from] Pickup');
-			if (item.isBerry) pokemon.update();
+			this.add('-item', pokemon, item, '[from] ability: Pickup');
 		},
 		id: "pickup",
 		name: "Pickup",
@@ -2481,6 +2473,9 @@ exports.BattleAbilities = {
 			if (move.multihit && move.multihit.length) {
 				move.multihit = move.multihit[1];
 			}
+			if (move.multiaccuracy) {
+				delete move.multiaccuracy;
+			}
 		},
 		id: "skilllink",
 		name: "Skill Link",
@@ -2697,7 +2692,7 @@ exports.BattleAbilities = {
 	"stickyhold": {
 		shortDesc: "This Pokemon cannot lose its held item due to another Pokemon's attack.",
 		onTakeItem: function (item, pokemon, source) {
-			if (this.suppressingAttackEvents() && pokemon !== this.activePokemon || !pokemon.hp) return;
+			if (this.suppressingAttackEvents() && pokemon !== this.activePokemon || !pokemon.hp || pokemon.item === 'stickybarb') return;
 			if ((source && source !== pokemon) || this.activeMove.id === 'knockoff') {
 				this.add('-activate', pokemon, 'ability: Sticky Hold');
 				return false;
@@ -2782,8 +2777,8 @@ exports.BattleAbilities = {
 	},
 	"superluck": {
 		shortDesc: "This Pokemon's critical hit ratio is raised by 1 stage.",
-		onModifyMove: function (move) {
-			move.critRatio++;
+		onModifyCritRatio: function (critRatio) {
+			return critRatio + 1;
 		},
 		id: "superluck",
 		name: "Super Luck",
@@ -3052,7 +3047,7 @@ exports.BattleAbilities = {
 		onBeforeMovePriority: 9,
 		onBeforeMove: function (pokemon, target, move) {
 			if (pokemon.removeVolatile('truant')) {
-				this.add('cant', pokemon, 'ability: Truant', move);
+				this.add('cant', pokemon, 'ability: Truant');
 				return false;
 			}
 			pokemon.addVolatile('truant');
@@ -3128,7 +3123,7 @@ exports.BattleAbilities = {
 		onStart: function (pokemon) {
 			this.add('-ability', pokemon, 'Unnerve', pokemon.side.foe);
 		},
-		onFoeEatItem: false,
+		onFoeTryEatItem: false,
 		id: "unnerve",
 		name: "Unnerve",
 		rating: 1.5,
@@ -3323,9 +3318,10 @@ exports.BattleAbilities = {
 				return false;
 			}
 		},
-		onImmunity: function (type, target) {
-			if (type === 'Rock' && !target.activeTurns) {
-				return false;
+		onTryHit: function (target, source, move) {
+			if (move.type === 'Rock' && !target.activeTurns) {
+				this.add('-immune', target, '[msg]', '[from] ability: Mountaineer');
+				return null;
 			}
 		},
 		id: "mountaineer",
@@ -3360,7 +3356,7 @@ exports.BattleAbilities = {
 			}
 			let newMove = this.getMoveCopy(move.id);
 			newMove.hasBounced = true;
-			this.useMove(newMove, target, source);
+			this.useMove(newMove, this.effectData.target, source);
 			return null;
 		},
 		effect: {
