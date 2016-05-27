@@ -125,7 +125,7 @@ BattlePokemon = (() => {
 			this.battle.debug('Unidentified species: ' + this.species);
 			this.baseTemplate = this.battle.getTemplate('Unown');
 		}
-		this.species = this.baseTemplate.species;
+		this.species = Tools.getSpecies(set.species);
 		if (set.name === set.species || !set.name) {
 			set.name = this.baseTemplate.baseSpecies;
 		}
@@ -940,9 +940,7 @@ BattlePokemon = (() => {
 		return d;
 	};
 	BattlePokemon.prototype.trySetStatus = function (status, source, sourceEffect) {
-		if (!this.hp) return false;
-		if (this.status) return false;
-		return this.setStatus(status, source, sourceEffect);
+		return this.setStatus(this.status || status, source, sourceEffect);
 	};
 	BattlePokemon.prototype.cureStatus = function () {
 		if (!this.hp) return false;
@@ -960,20 +958,31 @@ BattlePokemon = (() => {
 			if (!sourceEffect) sourceEffect = this.battle.effect;
 		}
 
+		if (this.status === status.id) {
+			if (sourceEffect && sourceEffect.status === this.status) {
+				this.battle.add('-fail', this, this.status);
+			} else if (sourceEffect && sourceEffect.status) {
+				this.battle.add('-fail', this);
+			}
+			return false;
+		}
+
 		if (!ignoreImmunities && status.id) {
 			// the game currently never ignores immunities
 			if (!this.runStatusImmunity(status.id === 'tox' ? 'psn' : status.id)) {
 				this.battle.debug('immune to status');
+				if (sourceEffect && sourceEffect.status) this.battle.add('-immune', this, '[msg]');
 				return false;
 			}
 		}
-
-		if (this.status === status.id) return false;
 		let prevStatus = this.status;
 		let prevStatusData = this.statusData;
-		if (status.id && !this.battle.runEvent('SetStatus', this, source, sourceEffect, status)) {
-			this.battle.debug('set status [' + status.id + '] interrupted');
-			return false;
+		if (status.id) {
+			let result = this.battle.runEvent('SetStatus', this, source, sourceEffect, status);
+			if (!result) {
+				this.battle.debug('set status [' + status.id + '] interrupted');
+				return result;
+			}
 		}
 
 		this.status = status.id;
@@ -1627,24 +1636,21 @@ Battle = (() => {
 	let Battle = {};
 
 	Battle.construct = (() => {
-		let battleProtoCache = {};
+		let battleProtoCache = new Map();
 		return (roomid, formatarg, rated) => {
-			let battle = Object.create((() => {
-				if (battleProtoCache[formatarg] !== undefined) {
-					return battleProtoCache[formatarg];
-				}
-
+			let format = Tools.getFormat(formatarg);
+			let mod = format.mod || 'base';
+			if (!battleProtoCache.has(mod)) {
 				// Scripts overrides Battle overrides Scripts overrides Tools
-				let tools = Tools.mod(formatarg);
+				let tools = Tools.mod(mod);
 				let proto = Object.create(tools);
-				for (let i in Battle.prototype) {
-					proto[i] = Battle.prototype[i];
-				}
+				Object.assign(proto, Battle.prototype);
 				let battle = Object.create(proto);
 				tools.install(battle);
-				return (battleProtoCache[formatarg] = battle);
-			})());
-			Battle.prototype.init.call(battle, roomid, formatarg, rated);
+				battleProtoCache.set(mod, battle);
+			}
+			let battle = Object.create(battleProtoCache.get(mod));
+			Battle.prototype.init.call(battle, roomid, format, rated);
 			return battle;
 		};
 	})();
@@ -1656,9 +1662,7 @@ Battle = (() => {
 
 	Battle.prototype = {};
 
-	Battle.prototype.init = function (roomid, formatarg, rated) {
-		let format = Tools.getFormat(formatarg);
-
+	Battle.prototype.init = function (roomid, format, rated) {
 		this.log = [];
 		this.sides = [null, null];
 		this.roomid = roomid;
@@ -3415,6 +3419,7 @@ Battle = (() => {
 				basePower: move,
 				type: '???',
 				category: 'Physical',
+				willCrit: false,
 				flags: {},
 			};
 		}

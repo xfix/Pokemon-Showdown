@@ -2573,7 +2573,10 @@ exports.BattleMovedex = {
 		boosts: {
 			def: 1,
 		},
-		volatileStatus: 'DefenseCurl',
+		volatileStatus: 'defensecurl',
+		effect: {
+			noCopy: true,
+		},
 		secondary: false,
 		target: "self",
 		type: "Normal",
@@ -4907,6 +4910,7 @@ exports.BattleMovedex = {
 			if (target.volatiles['miracleeye']) return false;
 		},
 		effect: {
+			noCopy: true,
 			onStart: function (pokemon) {
 				this.add('-start', pokemon, 'Foresight');
 			},
@@ -6986,7 +6990,7 @@ exports.BattleMovedex = {
 		basePower: 100,
 		category: "Physical",
 		desc: "Lowers the user's Defense by 1 stage. This move cannot be used successfully unless the user's current form, while considering Transform, is Hoopa Unbound. If this move is successful, it breaks through the target's Detect, King's Shield, Protect, or Spiky Shield for this turn, allowing other Pokemon to attack the target normally. If the target's side is protected by Crafty Shield, Mat Block, Quick Guard, or Wide Guard, that protection is also broken for this turn and other Pokemon may attack the target's side normally.",
-		shortDesc: "Hoopa-U: Lowers user's Def. by 1; breaks protection.",
+		shortDesc: "Hoopa-U: Lowers user's Def by 1; breaks protection.",
 		id: "hyperspacefury",
 		isViable: true,
 		name: "Hyperspace Fury",
@@ -8973,6 +8977,7 @@ exports.BattleMovedex = {
 			if (target.volatiles['foresight']) return false;
 		},
 		effect: {
+			noCopy: true,
 			onStart: function (pokemon) {
 				this.add('-start', pokemon, 'Miracle Eye');
 			},
@@ -9603,6 +9608,7 @@ exports.BattleMovedex = {
 		flags: {protect: 1, mirror: 1},
 		volatileStatus: 'nightmare',
 		effect: {
+			noCopy: true,
 			onStart: function (pokemon) {
 				if (pokemon.status !== 'slp') {
 					return false;
@@ -13080,6 +13086,7 @@ exports.BattleMovedex = {
 		flags: {protect: 1, mirror: 1, nonsky: 1},
 		volatileStatus: 'smackdown',
 		effect: {
+			noCopy: true,
 			onStart: function (pokemon) {
 				let applies = false;
 				if (pokemon.hasType('Flying') || pokemon.hasAbility('levitate')) applies = true;
@@ -13734,6 +13741,7 @@ exports.BattleMovedex = {
 		},
 		volatileStatus: 'stockpile',
 		effect: {
+			noCopy: true,
 			onStart: function (target) {
 				this.effectData.layers = 1;
 				this.add('-start', target, 'stockpile' + this.effectData.layers);
@@ -14975,6 +14983,7 @@ exports.BattleMovedex = {
 		flags: {protect: 1, reflectable: 1, mirror: 1, authentic: 1},
 		volatileStatus: 'torment',
 		effect: {
+			noCopy: true,
 			onStart: function (pokemon) {
 				this.add('-start', pokemon, 'Torment');
 			},
