@@ -5,6 +5,8 @@
 
 'use strict';
 
+const moment = require('moment');
+
 class Poll {
 	constructor(room, questionData, options) {
 		if (room.pollNumber) {
@@ -20,6 +22,8 @@ class Poll {
 		this.totalVotes = 0;
 		this.timeout = null;
 		this.timeoutMins = 0;
+		this.startTime = Date.now();
+		this.startedUser = '<font color=' + Wisp.hashColor(questionData.username) + '>' + Tools.escapeHTML(questionData.username) + '</font>';
 
 		this.options = new Map();
 		for (let i = 0; i < options.length; i++) {
@@ -61,6 +65,7 @@ class Poll {
 		let count = 0;
 		let output = '<div class="infobox"><p style="margin: 2px 0 5px 0"><span style="border:1px solid #6A6;color:#484;border-radius:4px;padding:0 3px"><i class="fa fa-bar-chart"></i> Poll</span> <strong style="font-size:11pt">' + this.getQuestionMarkup() +
 			'</strong></p><table style="text-align: center; background-color: #FFC775; border: #FF560E, solid, 1px ; color: white; border-collapse: collapse; padding: 5px;">';
+		output += '<br><p align="left">[Total Votes: ' + this.totalVotes + '] <i>(Started by ' + this.startedUser + ' ' + moment(this.startTime).fromNow() + '.)</i></p>';
 		this.options.forEach((option, number) => {
 			count++;
 			if (count === 1) output += "<tr>";
@@ -78,7 +83,9 @@ class Poll {
 
 	generateResults(ended, option) {
 		let icon = '<span style="border:1px solid #' + (ended ? '777;color:#555' : '6A6;color:#484') + ';border-radius:4px;padding:0 3px"><i class="fa fa-bar-chart"></i> ' + (ended ? "Poll ended" : "Poll") + '</span>';
+		let totalVotes = '<p align="left">[Total Votes: ' + this.totalVotes + '] <i>(Started by ' + this.startedUser + ' ' + moment(this.startTime).fromNow() + '.)</i></p>';
 		let output = '<div class="infobox"><p style="margin: 2px 0 5px 0">' + icon + ' <strong style="font-size:11pt">' + this.getQuestionMarkup() + '</strong></p>';
+		output += totalVotes;
 		output += "<br /><font color=grey><small>(Options with 0 votes are not shown)</small></font>";
 		let iter = this.options.entries();
 
@@ -212,7 +219,7 @@ exports.commands = {
 				return this.errorReply("Too many options for poll (maximum is 36).");
 			}
 
-			room.poll = new Poll(room, {source: params[0], supportHTML: supportHTML}, options);
+			room.poll = new Poll(room, {source: params[0], supportHTML: supportHTML, username: user.name}, options);
 			room.poll.display();
 
 			this.logEntry("" + user.name + " used " + message);
