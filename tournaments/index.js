@@ -810,6 +810,15 @@ class Tournament {
 		}
 
 		let tourSize = this.generator.users.size;
+
+		if (this.room.id === 'monotype') {
+			try {
+				Wisp.givePoints(winner, tourSize, this.room);
+			} catch (e) {
+				console.log('Error giving monoladder points: ' + e);
+			}
+		}
+
 		try { // this code is a bigger mess than I remember... I should clean it up some day.
 			let runnerUp = false;
 
