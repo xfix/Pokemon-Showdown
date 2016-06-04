@@ -51,7 +51,7 @@ function writeMoney(userid, amount, callback) {
 }
 function logTransaction(message) {
 	if (!message) return false;
-	fs.appendFile('logs/transactions.log', '[' + new Date().toUTCString() + '] ' + message + '\n');
+	fs.appendFile('logs/credit.log', '[' + new Date().toUTCString() + '] ' + message + '\n');
 }
 
 exports.commands = {
@@ -61,7 +61,12 @@ exports.commands = {
 		if (!target) return this.sendReply("Usage: /creditlog [number] to view the last x lines OR /creditlog [text] to search for text.");
 		let word = false;
 		if (isNaN(Number(target))) word = true;
-		let lines = fs.readFileSync('logs/transactions.log', 'utf8').split('\n').reverse();
+		let lines;
+		try {
+			lines = fs.readFileSync('logs/credit.log', 'utf8').split('\n').reverse();
+		} catch (e) {
+			return this.sendReply("The credit log is empty.");
+		}
 		let output = '';
 		let count = 0;
 		let regex = new RegExp(target.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), "gi");
@@ -117,7 +122,10 @@ exports.commands = {
 		writeMoney(targetUser, amount);
 		this.sendReply(Tools.escapeHTML(targetUser) + " has received " + amount + ((amount === 1) ? " credits." : " credits."));
 		logTransaction(user.name + " has given " + amount + ((amount === 1) ? " credit " : " credits ") + " to " + targetUser);
-		Rooms.get('marketplace').add('|raw|' + (user.name + " has given " + amount + ((amount === 1) ? " credit " : " credits ") + " to " + targetUser);
+		Rooms.get('marketplace').add('|raw|' + (user.name + " has given " + amount + ((amount === 1) ? " credit " : " credits ") + " to " + targetUser));
+		if (Users.get(targetUser) && Users.get(targetUser).connected) {
+			Users.get(targetUser).popup(user.name + " has given you  " + amount + ((amount === 1) ? " credit " : " credits "));
+		}
 	},
 
 	takecredits: function (target, room, user) {
