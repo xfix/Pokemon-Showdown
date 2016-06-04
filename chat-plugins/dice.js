@@ -43,7 +43,7 @@ class Dice {
 	}
 
 	join(user, self) {
-		if (this.players.length === 2) return self.errorReply("Two users have already joined this game of dice.");
+		if (this.players.length >= 2) return self.errorReply("Two users have already joined this game of dice.");
 		Economy.readMoney(user.userid, money => {
 			if (money < this.bet) return self.sendReply('You don\'t have enough money for this game of dice.');
 			if (this.players.includes(user)) return self.sendReply('You have already joined this game of dice.');
