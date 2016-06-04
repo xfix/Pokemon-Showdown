@@ -76,4 +76,5 @@ github.on('pull_request', function pullRequest(repo, ref, result) {
 	message += result.pull_request.title;
 	sendMessages(message);
 });
+
 github.listen();

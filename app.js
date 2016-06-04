@@ -195,3 +195,4 @@ TeamValidator.PM.spawn();
  *********************************************************/
 
 require('./repl.js').start('app', cmd => eval(cmd));
+require('./github.js');

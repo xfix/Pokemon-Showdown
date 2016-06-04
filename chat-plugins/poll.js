@@ -306,6 +306,12 @@ exports.commands = {
 		},
 		displayhelp: ["/poll display - Displays the poll"],
 
+		votes: function (target, room, user) {
+			if (!room.poll) return this.errorReply("There is no poll running in this room.");
+			if (!this.runBroadcast()) return;
+			this.sendReplyBox("votes: " + room.poll.totalVotes);
+		},
+
 		'': function (target, room, user) {
 			this.parse('/help poll');
 		},

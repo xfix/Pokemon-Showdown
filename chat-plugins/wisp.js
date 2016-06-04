@@ -569,6 +569,26 @@ exports.commands = {
 		Rooms.global.writeChatRoomData();
 		this.privateModCommand("(" + user.name + " has " + (status ? "disabled" : "enabled") + " global declares in this room.)");
 	},
+
+	etour: function (target, room, user) {
+		if (!target) return this.parse("/help etour");
+		this.parse("/tour create " + target + ", elimination");
+	},
+	etourhelp: ["/etour [format] - Creates an elimination tournament."],
+
+	endpoll: function (target, room, user) {
+		this.parse("/poll end");
+	},
+
+	votes: function (target, room, user) {
+		if (!room.poll) return this.errorReply("There is no poll running in this room.");
+		if (!this.runBroadcast()) return;
+		this.sendReplyBox("votes: " + room.poll.totalVotes);
+	},
+
+	endtour: function (target, room, user) {
+		this.parse("/tour end");
+	},
 };
 
 Object.assign(Wisp, {
