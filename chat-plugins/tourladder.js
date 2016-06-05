@@ -10,7 +10,7 @@ Wisp.updateTourLadder = function (p1, p2, result, room) {
 		if (err) return console.log(err);
 		let p1entry = users.find(player => player.userid === p1.userid);
 		let p2entry = users.find(player => player.userid === p2.userid);
-		let p1elo = p1entry ? p1entry.elo : 1000, p2elo = p1entry ? p1entry.elo : 1000;
+		let p1elo = p1entry ? p1entry.elo : 1000, p2elo = p2entry ? p2entry.elo : 1000;
 
 		//Messy Elo calcs, pretty much just ripped out of ladders.js
 		let K1 = 50, K2 = 50;
