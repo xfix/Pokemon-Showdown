@@ -66,7 +66,7 @@ Wisp.updateTourLadder = function (p1, p2, result, room) {
 				if (reasons.charAt(0) !== '-') reasons = '+' + reasons;
 				room.addRaw('<br />' + Tools.escapeHTML(p1.name) + '\'s rating: ' + Math.round(p1elo) + ' &rarr; <strong>' + Math.round(newP1Elo) + '</strong><br />(' + reasons + ')');
 
-				reasons = '' + (Math.round(newP1Elo) - Math.round(p1elo)) + ' for ' + (result === 'win' ? 'losing' : (result === 'loss' ? 'winning' : 'tying'));
+				reasons = '' + (Math.round(newP2Elo) - Math.round(p2elo)) + ' for ' + (result === 'win' ? 'losing' : (result === 'loss' ? 'winning' : 'tying'));
 				if (reasons.charAt(0) !== '-') reasons = '+' + reasons;
 				room.addRaw(Tools.escapeHTML(p2.name) + '\'s rating: ' + Math.round(p2elo) + ' &rarr; <strong>' + Math.round(newP2Elo) + '</strong><br />(' + reasons + ')');
 
