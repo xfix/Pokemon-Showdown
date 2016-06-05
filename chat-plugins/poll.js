@@ -111,6 +111,11 @@ class Poll {
 		return Tools.escapeHTML(this.question);
 	}
 
+	getOptionMarkup(option) {
+		if (this.supportHTML) return option.name;
+		return Tools.escapeHTML(option.name);
+	}
+
 	update() {
 		let results = [];
 
@@ -190,6 +195,8 @@ class Poll {
 	}
 }
 
+exports.Poll = Poll;
+
 exports.commands = {
 	poll: {
 		htmlcreate: 'new',
@@ -197,8 +204,16 @@ exports.commands = {
 		new: function (target, room, user, connection, cmd, message) {
 			if (!target) return this.parse('/help poll new');
 			if (target.length > 1024) return this.errorReply("Poll too long.");
-			let params = target.split(target.includes('|') ? '|' : ',').map(param => param.trim());
+
 			const supportHTML = cmd === 'htmlcreate';
+			const separator = target.match(/[\n\|,]/);
+			if (!separator) return this.errorReply("Not enough arguments for /poll new.");
+			if (separator[0] !== '\n') {
+				if (/\n\//.test(target)) return this.errorReply("/poll " + cmd + " is a multiline command now. Please send queued commands separately instead.");
+				target = target.replace(/[\r\n]+/g, '');
+			}
+
+			let params = target.split(separator[0]).map(param => param.trim());
 
 			if (!this.can('minigame', null, room)) return false;
 			if (supportHTML && !this.can('declare', null, room)) return false;
@@ -206,8 +221,8 @@ exports.commands = {
 			if (room.poll) return this.errorReply("There is already a poll in progress in this room.");
 			if (params.length < 3) return this.errorReply("Not enough arguments for /poll new.");
 
-			const questionSource = supportHTML ? this.canHTML(params[0]) : params[0];
-			if (!questionSource) return;
+			if (supportHTML) params = params.map(parameter => this.canHTML(parameter));
+			if (params.some(parameter => !parameter)) return;
 
 			let options = [];
 
@@ -332,3 +347,7 @@ exports.commands = {
 				"/poll display - Displays the poll",
 				"/poll end - Ends a poll and displays the results. Requires: % @ # & ~"],
 };
+
+process.nextTick(() => {
+	CommandParser.multiLinePattern.register('/poll (new|create|htmlcreate) ');
+});
