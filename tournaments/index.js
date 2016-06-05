@@ -750,6 +750,8 @@ class Tournament {
 		} else if (to === winner) {
 			result = 'loss';
 		}
+		let tourSize = this.generator.users.size;
+		if (this.room.isOfficial && tourSize >= 4 && room.battle.endType !== 'forced') Wisp.updateTourLadder(from, to, result, room);
 
 		if (result === 'draw' && !this.generator.isDrawingSupported) {
 			this.room.add('|tournament|battleend|' + from.name + '|' + to.name + '|' + result + '|' + room.battle.score.join(',') + '|fail');
@@ -876,6 +878,7 @@ class Tournament {
 		}
 
 		if (this.room.isOfficial && tourSize >= 4) {
+			Wisp.addTourWin(winner);
 			try {
 				let tourRarity = Wisp.tourCard(tourSize, toId(winner));
 				this.room.addRaw("<b><font color='#088cc7'>" + Tools.escapeHTML(winner) + "</font> has also won a <font color=" + tourRarity[0] + ">" + tourRarity[1] + "</font> card: <button class='tourcard-btn' style='border-radius: 20px; box-shadow: 1px 1px rgba(255, 255, 255, 0.3) inset, -1px -1px rgba(0, 0, 0, 0.2) inset, 2px 2px 2px rgba(0, 0, 0, 0.5);' name='send' value='/card " + tourRarity[2] + "'>" + tourRarity[3] + "</button> from the tournament.");
