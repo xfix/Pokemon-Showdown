@@ -57,7 +57,7 @@ function logTransaction(message) {
 exports.commands = {
 	creditlog: function (target, room, user) {
 		if (room.id !== 'marketplace' && room.id !== 'marketplacestaff') return this.errorReply("Credits can only be given out in the Marketplace.");
-		if (!this.can('ban', null, room)) return false;
+		if (!this.can('warn', null, room)) return false;
 		if (!target) return this.sendReply("Usage: /creditlog [number] to view the last x lines OR /creditlog [text] to search for text.");
 		let word = false;
 		if (isNaN(Number(target))) word = true;
@@ -104,7 +104,7 @@ exports.commands = {
 	gcr: 'givecredits',
 	givecredits: function (target, room, user) {
 		if (room.id !== 'marketplace' && room.id !== 'marketplacestaff') return this.errorReply("Credits can only be given out in the Marketplace.");
-		if (!this.can('ban', null, room)) return false;
+		if (!this.can('warn', null, room)) return false;
 		if (!target) return this.sendReply("Usage: /givecredits [user], [amount]");
 		let splitTarget = target.split(',');
 		if (!splitTarget[1]) return this.sendReply("Usage: /givecredits [user], [amount]");
@@ -130,7 +130,7 @@ exports.commands = {
 
 	takecredits: function (target, room, user) {
 		if (room.id !== 'marketplace' && room.id !== 'marketplacestaff') return this.errorReply("Credits can only be given out in the Marketplace.");
-		if (!this.can('ban', null, room)) return false;
+		if (!this.can('warn', null, room)) return false;
 		if (!target) return this.sendReply("Usage: /takecredits [user], [amount]");
 		let splitTarget = target.split(',');
 		if (!splitTarget[1]) return this.sendReply("Usage: /takecredits [user], [amount]");
