@@ -5,6 +5,7 @@ const http = require('http');
 const fs = require('fs');
 const moment = require('moment');
 const nani = require('nani').init("niisama1-uvake", "llbgsBx3inTdyGizCPMgExBVmQ5fU");
+let amCache = {anime:{}, manga:{}};
 let colorCache = {};
 let mainColors = {};
 Wisp.customColors = {};
@@ -478,6 +479,9 @@ exports.commands = {
 		if (!this.runBroadcast()) return;
 		if (!target) return this.errorReply("No target.");
 		let targetAnime = Tools.escapeHTML(target.trim());
+		let id = targetAnime.toLowerCase().replace(/ /g, '');
+		if (amCache.anime[id]) return this.sendReply('|raw|' + amCache.anime[id]);
+
 		nani.get('anime/search/' + targetAnime)
 		.then(data => {
 			nani.get('anime/' + data[0].id)
@@ -497,6 +501,7 @@ exports.commands = {
 					output += '<tr><td style="' + css + '"><b>Rating: </b> ' + data.average_score + '/100</td></tr>';
 					output += '<tr><td colspan="2" style="' + css + '"><b>Description: </b>' + description + '</td></tr>';
 					output += '</table></div>';
+					amCache.anime[id] = output;
 					this.sendReply('|raw|' + output);
 					room.update();
 				});
@@ -510,6 +515,9 @@ exports.commands = {
 		if (!this.runBroadcast()) return;
 		if (!target) return this.errorReply("No target.");
 		let targetAnime = Tools.escapeHTML(target.trim());
+		let id = targetAnime.toLowerCase().replace(/ /g, '');
+		if (amCache.anime[id]) return this.sendReply('|raw|' + amCache.anime[id]);
+
 		nani.get('manga/search/' + targetAnime)
 		.then(data => {
 			nani.get('manga/' + data[0].id)
@@ -531,6 +539,7 @@ exports.commands = {
 					output += '<tr><td style="' + css + '"><b>Rating: </b> ' + data.average_score + '/100</td></tr>';
 					output += '<tr><td colspan="2" style="' + css + '"><b>Description: </b>' + description + '</td></tr>';
 					output += '</table></div>';
+					amCache.manga[id] = output;
 					this.sendReply('|raw|' + output);
 					room.update();
 				});
