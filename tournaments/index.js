@@ -802,11 +802,12 @@ class Tournament {
 		let data = {results: this.generator.getResults().map(usersToNames), bracketData: this.getBracketData()};
 		let data2 = data;
 		data = data['results'].toString();
-		let winner = '';
+		let winner, runnerUp;
 
 		if (data.indexOf(',') >= 0) {
 			data = data.split(',');
 			winner = data[0];
+			runnerUp = data[1];
 		} else {
 			winner = data;
 		}
@@ -822,15 +823,6 @@ class Tournament {
 		}
 
 		try { // this code is a bigger mess than I remember... I should clean it up some day.
-			let runnerUp = false;
-
-			// there's probably a better way to do this but I'm lazy
-			if (data2['bracketData']['rootNode']) {
-				if (data2['bracketData']['rootNode']['children']) {
-					if (data2['bracketData']['rootNode']['children'][0]['team'] !== winner) runnerUp = data2['bracketData']['rootNode']['children'][0]['team'];
-					if (data2['bracketData']['rootNode']['children'][1]['team'] !== winner) runnerUp = data2['bracketData']['rootNode']['children'][1]['team'];
-				}
-			}
 			if (this.prizeMoney !== 0) {
 				this.room.add('|raw|<b>' + Wisp.nameColor(winner, false) + ' has won the bucks tournament for <font color=#24678d>' + this.prizeMoney + '</font> bucks!');
 				Economy.writeMoney(toId(winner), Number(this.prizeMoney));
