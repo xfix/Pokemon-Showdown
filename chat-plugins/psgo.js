@@ -204,7 +204,7 @@ exports.commands = {
 		Economy.readMoney(user.userid, amount => {
 			if (cleanShop.indexOf(packId) < 0) return self.sendReply("This is not a valid pack. Use /packshop to see all packs.");
 			let shopIndex = cleanShop.indexOf(toId(target));
-			if (packId !== 'xybase' && packId !== 'xyfuriousfists' && packId !== 'xyflashfire' && packId !== 'xyphantomforces' && packId !== 'xyroaringskies' && packId !== 'xyprimalclash' && packId !== 'xyancientorigins') return self.sendReply("This pack is not currently in circulation.  Please use /packshop to see the current packs.");
+			if (packId !== 'xybase' && packId !== 'xyfuriousfists' && packId !== 'xyflashfire' && packId !== 'xyphantomforces' && packId !== 'xyroaringskies' && packId !== 'xyprimalclash' && packId !== 'xyancientorigins' && packId !== 'xygenerations') return self.sendReply("This pack is not currently in circulation.  Please use /packshop to see the current packs.");
 			let cost = shop[shopIndex][2];
 			if (cost > amount) return self.sendReply("You need " + (cost - amount) + " more bucks to buy this pack.");
 			Economy.writeMoney(user.userid, -1 * cost);
