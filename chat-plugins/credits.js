@@ -148,7 +148,7 @@ exports.commands = {
 		writeMoney(targetUser, -amount);
 		this.sendReply("You removed " + amount + ((amount === 1) ? " credit " : " credits ") + " from " + Tools.escapeHTML(targetUser));
 		logTransaction(user.name + " has taken " + amount + ((amount === 1) ? " credit " : " credits ") + " from " + targetUser);
-		Rooms.get('marketplace').add('|raw|' + user.name + " has given " + amount + ((amount === 1) ? " credit " : " credits ") + " to " + targetUser);
+		Rooms.get('marketplace').add('|raw|' + user.name + " has taken " + amount + ((amount === 1) ? " credit " : " credits ") + " from " + targetUser);
 	},
 
 	transfercredits: function (target, room, user) {
