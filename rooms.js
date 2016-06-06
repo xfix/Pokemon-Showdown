@@ -103,7 +103,7 @@ let Room = (() => {
 		message = CommandParser.parse(message, this, user, connection);
 
 		if (message && message !== true && typeof message.then !== 'function') {
-			let emoticons = Wisp.parseEmoticons(user.getIdentity(this.roomid), message);
+			let emoticons = Wisp.parseEmoticons(user.getIdentity(this.id), message, this);
 			if (emoticons && !this.disableEmoticons) {
 				if (Users.ShadowBan.checkBanned(user)) {
 					Users.ShadowBan.addMessage(user, "To " + this.id, message);
