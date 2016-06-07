@@ -107,7 +107,27 @@ exports.BattleMovedex = {
 		multihit: [2, 5],
 		flags: {},
 		onHit: function (target) {
-			this.useMove(Object.keys(exports.BattleMovedex).sample(), target);
+			let moves = [];
+			for (let i in exports.BattleMovedex) {
+				let move = exports.BattleMovedex[i];
+				if (i !== move.id) continue;
+				if (move.isNonstandard) continue;
+				let noMetronome = {
+					afteryou:1, assist:1, belch:1, bestow:1, celebrate:1, chatter:1, copycat:1, counter:1, covet:1, craftyshield:1, destinybond:1, detect:1, diamondstorm:1, dragonascent:1, endure:1, feint:1, focuspunch:1, followme:1, freezeshock:1, happyhour:1, helpinghand:1, holdhands:1, hyperspacefury:1, hyperspacehole:1, iceburn:1, kingsshield:1, lightofruin:1, matblock:1, mefirst:1, metronome:1, mimic:1, mirrorcoat:1, mirrormove:1, naturepower:1, originpulse:1, precipiceblades:1, protect:1, quash:1, quickguard:1, ragepowder:1, relicsong:1, secretsword:1, sketch:1, sleeptalk:1, snarl:1, snatch:1, snore:1, spikyshield:1, steameruption:1, struggle:1, switcheroo:1, technoblast:1, thief:1, thousandarrows:1, thousandwaves:1, transform:1, trick:1, vcreate:1, wideguard:1,
+				};
+				if (!noMetronome[move.id]) {
+					moves.push(move);
+				}
+			}
+			let randomMove = '';
+			if (moves.length) {
+				moves.sort((a, b) => a.num - b.num);
+				randomMove = moves[this.random(moves.length)].id;
+			}
+			if (!randomMove) {
+				return false;
+			}
+			this.useMove(randomMove, target);
 		},
 		onTryHit: function (target, source) { // can cause TMTRAINER effect randomly
 			if (!source.isActive) return null;
@@ -147,7 +167,7 @@ exports.BattleMovedex = {
 		target: "self",
 		type: "Normal",
 	},
-	'tm56': {
+	/*'tm56': {
 		num: 625,
 		name: 'TM56',
 		id: 'tm56',
@@ -175,7 +195,7 @@ exports.BattleMovedex = {
 		onMoveFail: function (target, source, move) {
 			this.boost({accuracy:1, evasion:1}, source);
 		},
-	},
+	},*/
 	'hexattack': {
 		num: 626,
 		name: 'Hex Attack',
@@ -1645,10 +1665,10 @@ exports.BattleMovedex = {
 		flags: {mirror: 1},
 		status: 'tox',
 		self: {status: 'tox'},
-		onHit: function(target, source, move) {
+		onHit: function (target, source, move) {
 			target.addVolatile('trapped', source, move, 'trapper');
 			source.addVolatile('trapped', source, move, 'trapper');
-		}
+		},
 	},
 	'loratory': {
 		id: 'loratory',
@@ -1661,12 +1681,12 @@ exports.BattleMovedex = {
 		basePower: 0,
 		accuracy: 80,
 		flags: {mirror: 1, reflectable: 1},
-		onHit: function(target, source, move) {
+		onHit: function (target, source, move) {
 			if (Math.random() < 0.5) {
 				target.addVolatile('confusion');
 			} else {
 				target.trySetStatus('slp', source);
 			}
-		}
-	}
+		},
+	},
 };

@@ -1,7 +1,7 @@
 'use strict';
 
 exports.BattleAbilities = { // define custom abilities here.
-	"glitchiate": {
+	/*"glitchiate": {
 		desc: "This Pokemon's moves become Bird-type moves and have their power multiplied by 1.3. This effect comes after other effects that change a move's type, but before Ion Deluge and Electrify's effects.",
 		shortDesc: "This Pokemon's moves become Bird type and have 1.3x power.",
 		onModifyMovePriority: -1,
@@ -22,7 +22,7 @@ exports.BattleAbilities = { // define custom abilities here.
 		name: "Glitchiate",
 		rating: 4,
 		num: 192,
-	},
+	},*/
 	"serenegraceplus": {
 		desc: "This Pokemon's moves have their secondary chances multiplied by 3.",
 		shortDesc: "This Pokemon's moves have their secondary chances multiplied by 3.",
@@ -47,13 +47,13 @@ exports.BattleAbilities = { // define custom abilities here.
 			for (let i = 0; i < activeFoe.length; i++) {
 				let foe = activeFoe[i];
 				if (!foe.hasType('Ghost')) {
-					foe.typesData[0] = {type: 'Ghost', suppressed: false,  isAdded: false};
-				} else if (foe.typesData[0].type !== 'Ghost') {
+					foe.types[0] = 'Ghost';
+				} else if (foe.types[0] !== 'Ghost') {
 					foe.typesData.shift();
 				} else {
 					continue;
 				}
-				this.add('-start', foe, 'typechange', foe.typesData.map(function (x) {return x.type;}).join('/'));
+				this.add('-start', foe, 'typechange', foe.types.join('/'));
 			}
 		},
 		id: "spoopify",
@@ -603,8 +603,8 @@ exports.BattleAbilities = { // define custom abilities here.
 		onPrepareHit: function (source, target, move) {
 			let type = move.type;
 			if (!source.hasType(type)) {
-				source.typesData.push({type: type, suppressed: false,  isAdded: false});
-				this.add('-start', source, 'typechange', source.typesData.map(function (x) {return x.type;}).join('/'));
+				source.types.push(type);
+				this.add('-start', source, 'typechange', source.types.join('/'));
 			}
 		},
 		id: 'superprotean',

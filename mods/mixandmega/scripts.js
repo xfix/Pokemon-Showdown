@@ -25,7 +25,6 @@ exports.BattleScripts = {
 	},
 	runMegaEvo: function (pokemon) {
 		if (pokemon.template.isMega || pokemon.template.isPrimal) return false;
-
 		let template = this.getMixedTemplate(pokemon.originalSpecies, pokemon.canMegaEvo);
 		let side = pokemon.side;
 
@@ -69,9 +68,9 @@ exports.BattleScripts = {
 	doGetMixedTemplate: function (template, deltas) {
 		if (!deltas) throw new TypeError("Must specify deltas!");
 		if (!template || typeof template === 'string') template = this.getTemplate(template);
-		template = Object.clone(template); // shallow is enough
+		template = Object.assign({}, template);
 		template.abilities = {'0': deltas.ability};
-		template.types = Object.merge(template.types.slice(), deltas.types).compact().unique();
+		template.types = Array.from(new Set(Object.assign(template.types.slice(), deltas.types).filter(type => type)));
 		let baseStats = template.baseStats;
 		template.baseStats = {};
 		for (let statName in baseStats) template.baseStats[statName] = baseStats[statName] + deltas.baseStats[statName];

@@ -1,5 +1,6 @@
 "use strict";
 
+
 let megaStoneList = [
 	'Abomasite',
 	'Absolite',
@@ -54,6 +55,21 @@ let megaStoneList = [
 exports.BattleScripts = {
 	randomtpplbTeam: function (side) {
 		let team = [];
+		let sample = function (array, num) {
+			let indices = [];
+			let result = [];
+			for (let i = 0; i < num; i++) {
+				if (i < array.length) {
+					let n = Math.floor(Math.random() * (array.length - i));
+					for (let j = 0; j < indices.length; j++) {
+						if (n >= indices[j]) n += 1;
+					}
+					result.push(array[n]);
+					indices.push(n);
+				}
+			}
+			return result;
+		};
 		let sets = { // this is where all the movesets are defined. Add new mons here.
 			'darkfiregamer': {
 				species: "Houndoom", ability: "Dark Aura", item: "Dark Gem", gender: "M",
@@ -67,12 +83,12 @@ exports.BattleScripts = {
 				signatureMove: 'superglitch',
 				evs: {hp:252, spd:252, def:4}, nature: 'Calm',
 			},
-			'azum4roll': {
+			/*'azum4roll': {
 				species: "Azumarill", ability: "Glitchiate", item: "Metronome", gender: 'M',
 				moves: ['rollout', 'batonpass', 'swordsdance', 'bellydrum', 'extremespeed', 'playrough', 'thunderwave'],
 				signatureMove: 'tm56',
 				evs: {hp:4, atk:252, spe:252}, nature: 'Adamant',
-			},
+			},*/
 			'Iwamiger': {
 				species: "Gengar", ability: 'Serene Grace Plus', item: "Life Orb", gender: 'M',
 				moves: ['shadowball', 'flamethrower', 'icebeam', 'crunch'],
@@ -172,7 +188,7 @@ exports.BattleScripts = {
 				evs: {hp: 4, spa: 252, spe: 252}, nature: 'Timid',
 			},
 			'Natsugan': {
-				species: 'Flygon', ability: 'Mega Plunder', item: megaStoneList.sample(1)[0], gender: 'M',
+				species: 'Flygon', ability: 'Mega Plunder', item: sample(megaStoneList, 1)[0], gender: 'M',
 				moves: ['earthquake', 'earthpower', 'uturn', 'dragonclaw', 'fireblast', 'boomburst', 'dragonpulse', 'return', 'stoneedge', 'crunch', 'ironhead', 'dragondance', 'quiverdance'],
 				signatureMove: 'reroll',
 				evs: {hp:88, atk: 84, def: 84, spa: 84, spd: 84, spe: 84}, nature: 'Serious',
@@ -261,10 +277,10 @@ exports.BattleScripts = {
 				species: 'Mew', ability: 'No Guard', item: 'Eject Button', gender: 'M',
 				moves: ['recover', 'echoedvoice'],
 				signatureMoves: ['drama', 'loratory'],
-				evs: {hp: 252, def: 128, spd: 128}, nature: 'Modest' 
-			}
+				evs: {hp: 252, def: 128, spd: 128}, nature: 'Modest',
+			},
 		};
-		let pool = Object.keys(sets).randomize();
+		let pool = sample(Object.keys(sets), 6);
 		for (let i = 0; i < Math.min(6, pool.length); i++) {
 			let set = sets[pool[i]];
 			set.level = 100;
@@ -280,7 +296,7 @@ exports.BattleScripts = {
 			if (!set.evs) set.evs = {hp:88, atk:84, def:84, spa:84, spd:84, spe:84};
 			if (set.signatureMove) set.signatureMoves = [set.signatureMove];
 			let len = set.signatureMoves.length;
-			set.moves = set.moves.sample(4 - len).concat(set.signatureMoves); // always have sig move.
+			set.moves = sample(set.moves, 4 - len).concat(set.signatureMoves); // always have sig move.
 			team.push(set);
 		}
 		return team;
@@ -300,12 +316,12 @@ exports.BattleScripts = {
 				signatureMove: 'superglitch',
 				evs: {hp:252, spd:252, def:4}, nature: 'Calm',
 			},
-			'azum4roll': {
+			/*'azum4roll': {
 				species: "Azumarill", ability: "Glitchiate", item: "Metronome", gender: 'M',
 				moves: ['rollout', 'batonpass', 'swordsdance', 'bellydrum', 'extremespeed', 'playrough', 'thunderwave'],
 				signatureMove: 'tm56',
 				evs: {hp:4, atk:252, spe:252}, nature: 'Adamant',
-			},
+			},*/
 			'Iwamiger': {
 				species: "Gengar", ability: 'Serene Grace Plus', item: "Life Orb", gender: 'M',
 				moves: ['shadowball', 'flamethrower', 'icebeam', 'crunch'],
@@ -338,7 +354,7 @@ exports.BattleScripts = {
 			},
 			"Lass zeowx": { // STPPLB+ only
 				species: 'Liepard', ability: 'Protean', item: 'Focus Sash', gender: 'F',
-				moves: ['suckerpunch', 'shadowsneak', 'bulletpunch', 'playrough', 'spikes', 'acrobatics'].sample(2).concat('fakeout'), // always have Fake Out.
+				moves: sample(['suckerpunch', 'shadowsneak', 'bulletpunch', 'playrough', 'spikes', 'acrobatics'], 2).concat('fakeout'), // always have Fake Out.
 				signatureMove: 'partingvoltturn',
 				evs: {atk:252, spa:12, spe:244}, nature: 'Hasty',
 			},
@@ -405,7 +421,7 @@ exports.BattleScripts = {
 				evs: {hp: 4, spa: 252, spe: 252}, nature: 'Timid',
 			},
 			'Natsugan': {
-				species: 'Flygon', ability: 'Mega Plunder', item: megaStoneList.sample(1)[0], gender: 'M',
+				species: 'Flygon', ability: 'Mega Plunder', item: sample(megaStoneList, 1)[0], gender: 'M',
 				moves: ['earthquake', 'earthpower', 'uturn', 'dragonclaw', 'fireblast', 'boomburst', 'dragonpulse', 'return', 'stoneedge', 'crunch', 'ironhead', 'dragondance', 'quiverdance'],
 				signatureMove: 'reroll',
 				nature: 'Serious',
@@ -500,10 +516,10 @@ exports.BattleScripts = {
 				species: 'Mew', ability: 'No Guard', item: 'Eject Button', gender: 'M',
 				moves: ['recover', 'echoedvoice'],
 				signatureMoves: ['drama', 'loratory'],
-				evs: {hp: 252, def: 128, spd: 128}, nature: 'Modest' 
-			}
+				evs: {hp: 252, def: 128, spd: 128}, nature: 'Modest',
+			},
 		};
-		let pool = Object.keys(sets).randomize();
+		let pool = sample(Object.keys(sets), 6);
 		for (let i = 0; i < Math.min(6, pool.length); i++) {
 			let set = sets[pool[i]];
 			set.level = 100;
@@ -519,7 +535,7 @@ exports.BattleScripts = {
 			if (!set.evs) set.evs = {hp:88, atk:84, def:84, spa:84, spd:84, spe:84};
 			if (set.signatureMove) set.signatureMoves = [set.signatureMove];
 			let len = set.signatureMoves.length;
-			set.moves = set.moves.sample(4 - len).concat(set.signatureMoves); // always have sig move.
+			set.moves = sample(set.moves, 4 - len).concat(set.signatureMoves); // always have sig move.
 			team.push(set);
 		}
 		return team;
@@ -539,12 +555,12 @@ exports.BattleScripts = {
 				signatureMove: 'superglitch',
 				evs: {hp:252, spd:252, def:4}, nature: 'Calm',
 			},
-			'azum4roll': {
+			/*'azum4roll': {
 				species: "Azumarill", ability: "Glitchiate", item: "Metronome", gender: 'M',
 				moves: ['rollout', 'batonpass', 'swordsdance', 'bellydrum', 'extremespeed', 'playrough', 'thunderwave'],
 				signatureMove: 'tm56',
 				evs: {hp:4, atk:252, spe:252}, nature: 'Adamant',
-			},
+			},*/
 			'Iwamiger': {
 				species: "Gengar", ability: 'Serene Grace Plus', item: "Life Orb", gender: 'M',
 				moves: ['shadowball', 'flamethrower', 'icebeam', 'crunch'],
@@ -577,7 +593,7 @@ exports.BattleScripts = {
 			},
 			"Lass zeowx": { // STPPLB+ only
 				species: 'Liepard', ability: 'Protean', item: 'Focus Sash', gender: 'F',
-				moves: ['suckerpunch', 'shadowsneak', 'bulletpunch', 'playrough', 'spikes', 'acrobatics'].sample(2).concat('fakeout'), // always have Fake Out.
+				moves: sample(['suckerpunch', 'shadowsneak', 'bulletpunch', 'playrough', 'spikes', 'acrobatics'], 2).concat('fakeout'), // always have Fake Out.
 				signatureMove: 'partingvoltturn',
 				evs: {atk:252, spa:12, spe:244}, nature: 'Hasty',
 			},
@@ -644,7 +660,7 @@ exports.BattleScripts = {
 				evs: {hp: 4, spa: 252, spe: 252}, nature: 'Timid',
 			},
 			'Natsugan': {
-				species: 'Flygon', ability: 'Mega Plunder', item: megaStoneList.sample(1)[0], gender: 'M',
+				species: 'Flygon', ability: 'Mega Plunder', item: sample(megaStoneList, 1)[0], gender: 'M',
 				moves: ['earthquake', 'earthpower', 'uturn', 'dragonclaw', 'fireblast', 'boomburst', 'dragonpulse', 'return', 'stoneedge', 'crunch', 'ironhead', 'dragondance', 'quiverdance'],
 				signatureMove: 'reroll',
 				nature: 'Serious',
@@ -745,10 +761,10 @@ exports.BattleScripts = {
 				species: 'Mew', ability: 'No Guard', item: 'Eject Button', gender: 'M',
 				moves: ['recover', 'echoedvoice'],
 				signatureMoves: ['drama', 'loratory'],
-				evs: {hp: 252, def: 128, spd: 128}, nature: 'Modest' 
-			}
+				evs: {hp: 252, def: 128, spd: 128}, nature: 'Modest',
+			},
 		};
-		let pool = Object.keys(sets).randomize();
+		let pool = sample(Object.keys(sets), 6);
 		for (let i = 0; i < Math.min(6, pool.length); i++) {
 			let set = sets[pool[i]];
 			set.level = 100;
@@ -764,7 +780,7 @@ exports.BattleScripts = {
 			if (!set.evs) set.evs = {hp:88, atk:84, def:84, spa:84, spd:84, spe:84};
 			if (set.signatureMove) set.signatureMoves = [set.signatureMove];
 			let len = set.signatureMoves.length;
-			set.moves = set.moves.sample(4 - len).concat(set.signatureMoves); // always have sig move.
+			set.moves = sample(set.moves, 4 - len).concat(set.signatureMoves); // always have sig move.
 			team.push(set);
 		}
 		return team;
@@ -797,7 +813,7 @@ exports.BattleScripts = {
 		let template = this.getMixedTemplate(pokemon.originalSpecies, pokemon.canMegaEvo);
 		let side = pokemon.side;
 
-		// PokÃ©mon affected by Sky Drop cannot mega evolve. Enforce it here for now.
+		// Pokémon affected by Sky Drop cannot mega evolve. Enforce it here for now.
 		let foeActive = side.foe.active;
 		for (let i = 0; i < foeActive.length; i++) {
 			if (foeActive[i].volatiles['skydrop'] && foeActive[i].volatiles['skydrop'].source === pokemon) {
@@ -837,9 +853,9 @@ exports.BattleScripts = {
 	doGetMixedTemplate: function (template, deltas) {
 		if (!deltas) throw new TypeError("Must specify deltas!");
 		if (!template || typeof template === 'string') template = this.getTemplate(template);
-		template = Object.clone(template); // shallow is enough
+		template = Object.assign({}, template);
 		template.abilities = {'0': deltas.ability};
-		template.types = Object.merge(template.types.slice(), deltas.types).compact().unique();
+		template.types = Array.from(new Set(Object.assign(template.types.slice(), deltas.types).filter(type => type)));
 		let baseStats = template.baseStats;
 		template.baseStats = {};
 		for (let statName in baseStats) template.baseStats[statName] = baseStats[statName] + deltas.baseStats[statName];
@@ -861,10 +877,8 @@ exports.BattleScripts = {
 	getMegaDeltas: function (megaTemplate) {
 		let baseTemplate = this.getTemplate(megaTemplate.baseSpecies);
 		let deltas = {
-			ability: megaTemplate.abilities['0'], baseStats: {},
-			weightkg: megaTemplate.weightkg - baseTemplate.weightkg, types: Array(baseTemplate.types.length),
-			originalMega: megaTemplate.species,
-			requiredItem: megaTemplate.requiredItem,
+			ability: megaTemplate.abilities['0'], baseStats: {}, weightkg: megaTemplate.weightkg - baseTemplate.weightkg, types: Array(baseTemplate.types.length),
+			originalMega: megaTemplate.species, requiredItem: megaTemplate.requiredItem,
 		};
 		for (let statId in megaTemplate.baseStats) deltas.baseStats[statId] = megaTemplate.baseStats[statId] - baseTemplate.baseStats[statId];
 		if (megaTemplate.types.length > baseTemplate.types.length) {

@@ -1,7 +1,7 @@
 "use strict";
 
 exports.BattleScripts = {
-	// Mix and Mega mechanics just for Natsugon EleGiggle
+	// Mix and Mega mechanics
 	init: function () {
 		let onTakeMegaStone = function (item, source) {
 			return false;
@@ -29,7 +29,7 @@ exports.BattleScripts = {
 		let template = this.getMixedTemplate(pokemon.originalSpecies, pokemon.canMegaEvo);
 		let side = pokemon.side;
 
-		// PokÃ©mon affected by Sky Drop cannot mega evolve. Enforce it here for now.
+		// Pokémon affected by Sky Drop cannot mega evolve. Enforce it here for now.
 		let foeActive = side.foe.active;
 		for (let i = 0; i < foeActive.length; i++) {
 			if (foeActive[i].volatiles['skydrop'] && foeActive[i].volatiles['skydrop'].source === pokemon) {
@@ -69,9 +69,9 @@ exports.BattleScripts = {
 	doGetMixedTemplate: function (template, deltas) {
 		if (!deltas) throw new TypeError("Must specify deltas!");
 		if (!template || typeof template === 'string') template = this.getTemplate(template);
-		template = Object.clone(template); // shallow is enough
+		template = Object.assign({}, template);
 		template.abilities = {'0': deltas.ability};
-		template.types = Object.merge(template.types.slice(), deltas.types).compact().unique();
+		template.types = Array.from(new Set(Object.assign(template.types.slice(), deltas.types).filter(type => type)));
 		let baseStats = template.baseStats;
 		template.baseStats = {};
 		for (let statName in baseStats) template.baseStats[statName] = baseStats[statName] + deltas.baseStats[statName];
@@ -93,10 +93,8 @@ exports.BattleScripts = {
 	getMegaDeltas: function (megaTemplate) {
 		let baseTemplate = this.getTemplate(megaTemplate.baseSpecies);
 		let deltas = {
-			ability: megaTemplate.abilities['0'], baseStats: {},
-			weightkg: megaTemplate.weightkg - baseTemplate.weightkg, types: Array(baseTemplate.types.length),
-			originalMega: megaTemplate.species,
-			requiredItem: megaTemplate.requiredItem,
+			ability: megaTemplate.abilities['0'], baseStats: {}, weightkg: megaTemplate.weightkg - baseTemplate.weightkg, types: Array(baseTemplate.types.length),
+			originalMega: megaTemplate.species, requiredItem: megaTemplate.requiredItem,
 		};
 		for (let statId in megaTemplate.baseStats) deltas.baseStats[statId] = megaTemplate.baseStats[statId] - baseTemplate.baseStats[statId];
 		if (megaTemplate.types.length > baseTemplate.types.length) {

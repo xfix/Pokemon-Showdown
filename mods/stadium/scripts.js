@@ -57,7 +57,6 @@ exports.BattleScripts = {
 				if (delta) changed = true;
 			}
 			this.recalculateStats();
-			this.update();
 			return changed;
 		},
 	},
@@ -408,6 +407,7 @@ exports.BattleScripts = {
 				basePower: move,
 				type: '???',
 				category: 'Physical',
+				willCrit: false,
 				flags: {},
 			};
 		}

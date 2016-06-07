@@ -26,9 +26,9 @@ let pool = new Pool({
 		client.connect(function (err) {
 			if (err) {
 				callback(err, null);
-			} else {
-				callback(null, client);
+				return;
 			}
+			callback(null, client);
 		});
 	},
 	destroy: function (client) {

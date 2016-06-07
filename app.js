@@ -57,7 +57,7 @@ const path = require('path');
 // aren't
 
 try {
-	require('sugar');
+	require.resolve('sockjs');
 } catch (e) {
 	if (require.main !== module) throw new Error("Dependencies unmet");
 
@@ -92,7 +92,9 @@ if (Config.watchconfig) {
 			global.Config = require('./config/config.js');
 			if (global.Users) Users.cacheGroupData();
 			console.log('Reloaded config/config.js');
-		} catch (e) {}
+		} catch (e) {
+			console.log('Error reloading config/config.js: ' + e.stack);
+		}
 	});
 }
 
@@ -113,10 +115,15 @@ global.Ladders = require(Config.remoteladder ? './ladders-remote.js' : './ladder
 
 global.Users = require('./users.js');
 
+global.Cidr = require('./cidr.js');
+
+global.Punishments = require('./punishments.js');
+
 global.Rooms = require('./rooms.js');
 
 delete process.send; // in case we're a child process
 global.Verifier = require('./verifier.js');
+Verifier.PM.spawn();
 
 global.CommandParser = require('./command-parser.js');
 
@@ -130,20 +137,21 @@ try {
 	global.Dnsbl = {query: () => {}, reverse: require('dns').reverse};
 }
 
-global.Cidr = require('./cidr.js');
-
 if (Config.crashguard) {
 	// graceful crash - allow current battles to finish before restarting
 	process.on('uncaughtException', err => {
 		let crashMessage = require('./crashlogger.js')(err, 'The main process');
 		if (crashMessage !== 'lockdown') return;
-		let stack = ("" + err.stack).escapeHTML().split("\n").slice(0, 2).join("<br />");
+		let stack = Tools.escapeHTML(err.stack).split("\n").slice(0, 2).join("<br />");
 		if (Rooms.lobby) {
 			Rooms.lobby.addRaw('<div class="broadcast-red"><b>THE SERVER HAS CRASHED:</b> ' + stack + '<br />Please restart the server.</div>');
 			Rooms.lobby.addRaw('<div class="broadcast-red">You will not be able to start new battles until the server restarts.</div>');
 			Rooms.lobby.update();
 		}
 		Rooms.global.lockdown = true;
+	});
+	process.on('unhandledRejection', function (err) {
+		throw err;
 	});
 }
 
@@ -176,23 +184,7 @@ Tools.includeFormats();
 Rooms.global.formatListText = Rooms.global.getFormatListText();
 
 global.TeamValidator = require('./team-validator.js');
-
-// load ipbans at our leisure
-fs.readFile(path.resolve(__dirname, 'config/ipbans.txt'), (err, data) => {
-	if (err) return;
-	data = ('' + data).split("\n");
-	let rangebans = [];
-	for (let i = 0; i < data.length; i++) {
-		data[i] = data[i].split('#')[0].trim();
-		if (!data[i]) continue;
-		if (data[i].includes('/')) {
-			rangebans.push(data[i]);
-		} else if (!Users.bannedIps[data[i]]) {
-			Users.bannedIps[data[i]] = '#ipban';
-		}
-	}
-	Users.checkRangeBanned = Cidr.checker(rangebans);
-});
+TeamValidator.PM.spawn();
 
 /*********************************************************
  * Start up the REPL server

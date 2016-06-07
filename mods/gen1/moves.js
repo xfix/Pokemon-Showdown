@@ -179,25 +179,9 @@ exports.BattleMovedex = {
 		volatileStatus: 'conversion',
 		accuracy: true,
 		target: "normal",
-		effect: {
-			noCopy: true,
-			onStart: function (target, source) {
-				this.effectData.typesData = [];
-				for (let i = 0, l = target.typesData.length; i < l; i++) {
-					this.effectData.typesData.push(Object.clone(target.typesData[i]));
-				}
-				this.add('-start', source, 'typechange', target.getTypes(true).join(', '), '[from] move: Conversion', '[of] ' + target);
-			},
-			onRestart: function (target, source) {
-				this.effectData.typesData = [];
-				for (let i = 0, l = target.typesData.length; i < l; i++) {
-					this.effectData.typesData.push(Object.clone(target.typesData[i]));
-				}
-				this.add('-start', source, 'typechange', target.getTypes(true).join(', '), '[from] move: Conversion', '[of] ' + target);
-			},
-			onModifyPokemon: function (pokemon) {
-				pokemon.typesData = this.effectData.typesData;
-			},
+		onHit: function (target, source) {
+			source.types = target.types;
+			this.add('-start', source, 'typechange', source.types.join(', '), '[from] move: Conversion', '[of] ' + source);
 		},
 	},
 	counter: {
@@ -809,12 +793,14 @@ exports.BattleMovedex = {
 				} else {
 					this.add('-activate', target, 'Substitute', '[damage]');
 				}
-				if (move.recoil) {
-					this.damage(Math.round(damage * move.recoil[0] / move.recoil[1]), source, target, 'recoil');
-				}
-				// Attacker does not heal from drain if substitute breaks
-				if (move.drain && target.volatiles['substitute'] && target.volatiles['substitute'].hp > 0) {
-					this.heal(Math.ceil(damage * move.drain[0] / move.drain[1]), source, target, 'drain');
+				// Drain/recoil does not happen if the substitute breaks
+				if (target.volatiles['substitute']) {
+					if (move.recoil) {
+						this.damage(Math.round(damage * move.recoil[0] / move.recoil[1]), source, target, 'recoil');
+					}
+					if (move.drain) {
+						this.heal(Math.ceil(damage * move.drain[0] / move.drain[1]), source, target, 'drain');
+					}
 				}
 				this.runEvent('AfterSubDamage', target, source, move, damage);
 				// Add here counter damage
