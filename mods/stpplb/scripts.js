@@ -55,16 +55,16 @@ let megaStoneList = [
 exports.BattleScripts = {
 	randomtpplbTeam: function (side) {
 		let team = [];
-		Array.prototype.sample = function(num) {
+		let sample = function (array, num) {
 			let indices = [];
 			let result = [];
 			for (let i = 0; i < num; i++) {
-				if (i < this.length) {
-					let n = Math.floor(Math.random()*(this.length-i));
+				if (i < array.length) {
+					let n = Math.floor(Math.random()*(array.length-i));
 					for (let j = 0; j < indices.length; j++) {
 						if (n >= indices[j]) n += 1;
 					}
-					result.push(this[n]);
+					result.push(array[n]);
 					indices.push(n);
 				}
 			}
@@ -188,7 +188,7 @@ exports.BattleScripts = {
 				evs: {hp: 4, spa: 252, spe: 252}, nature: 'Timid',
 			},
 			'Natsugan': {
-				species: 'Flygon', ability: 'Mega Plunder', item: megaStoneList.sample(1)[0], gender: 'M',
+				species: 'Flygon', ability: 'Mega Plunder', item: sample(megaStoneList, 1)[0], gender: 'M',
 				moves: ['earthquake', 'earthpower', 'uturn', 'dragonclaw', 'fireblast', 'boomburst', 'dragonpulse', 'return', 'stoneedge', 'crunch', 'ironhead', 'dragondance', 'quiverdance'],
 				signatureMove: 'reroll',
 				evs: {hp:88, atk: 84, def: 84, spa: 84, spd: 84, spe: 84}, nature: 'Serious',
@@ -277,10 +277,10 @@ exports.BattleScripts = {
 				species: 'Mew', ability: 'No Guard', item: 'Eject Button', gender: 'M',
 				moves: ['recover', 'echoedvoice'],
 				signatureMoves: ['drama', 'loratory'],
-				evs: {hp: 252, def: 128, spd: 128}, nature: 'Modest' 
-			}
+				evs: {hp: 252, def: 128, spd: 128}, nature: 'Modest',
+			},
 		};
-		let pool = Object.keys(sets).sample(6);
+		let pool = sample(Object.keys(sets), 6);
 		for (let i = 0; i < Math.min(6, pool.length); i++) {
 			let set = sets[pool[i]];
 			set.level = 100;
@@ -296,7 +296,7 @@ exports.BattleScripts = {
 			if (!set.evs) set.evs = {hp:88, atk:84, def:84, spa:84, spd:84, spe:84};
 			if (set.signatureMove) set.signatureMoves = [set.signatureMove];
 			let len = set.signatureMoves.length;
-			set.moves = set.moves.sample(4 - len).concat(set.signatureMoves); // always have sig move.
+			set.moves = sample(set.moves, 4 - len).concat(set.signatureMoves); // always have sig move.
 			team.push(set);
 		}
 		return team;
@@ -354,7 +354,7 @@ exports.BattleScripts = {
 			},
 			"Lass zeowx": { // STPPLB+ only
 				species: 'Liepard', ability: 'Protean', item: 'Focus Sash', gender: 'F',
-				moves: ['suckerpunch', 'shadowsneak', 'bulletpunch', 'playrough', 'spikes', 'acrobatics'].sample(2).concat('fakeout'), // always have Fake Out.
+				moves: sample(['suckerpunch', 'shadowsneak', 'bulletpunch', 'playrough', 'spikes', 'acrobatics'], 2).concat('fakeout'), // always have Fake Out.
 				signatureMove: 'partingvoltturn',
 				evs: {atk:252, spa:12, spe:244}, nature: 'Hasty',
 			},
@@ -421,7 +421,7 @@ exports.BattleScripts = {
 				evs: {hp: 4, spa: 252, spe: 252}, nature: 'Timid',
 			},
 			'Natsugan': {
-				species: 'Flygon', ability: 'Mega Plunder', item: megaStoneList.sample(1)[0], gender: 'M',
+				species: 'Flygon', ability: 'Mega Plunder', item: sample(megaStoneList, 1)[0], gender: 'M',
 				moves: ['earthquake', 'earthpower', 'uturn', 'dragonclaw', 'fireblast', 'boomburst', 'dragonpulse', 'return', 'stoneedge', 'crunch', 'ironhead', 'dragondance', 'quiverdance'],
 				signatureMove: 'reroll',
 				nature: 'Serious',
@@ -516,10 +516,10 @@ exports.BattleScripts = {
 				species: 'Mew', ability: 'No Guard', item: 'Eject Button', gender: 'M',
 				moves: ['recover', 'echoedvoice'],
 				signatureMoves: ['drama', 'loratory'],
-				evs: {hp: 252, def: 128, spd: 128}, nature: 'Modest' 
-			}
+				evs: {hp: 252, def: 128, spd: 128}, nature: 'Modest',
+			},
 		};
-		let pool = Object.keys(sets).sample(6);
+		let pool = sample(Object.keys(sets), 6);
 		for (let i = 0; i < Math.min(6, pool.length); i++) {
 			let set = sets[pool[i]];
 			set.level = 100;
@@ -535,7 +535,7 @@ exports.BattleScripts = {
 			if (!set.evs) set.evs = {hp:88, atk:84, def:84, spa:84, spd:84, spe:84};
 			if (set.signatureMove) set.signatureMoves = [set.signatureMove];
 			let len = set.signatureMoves.length;
-			set.moves = set.moves.sample(4 - len).concat(set.signatureMoves); // always have sig move.
+			set.moves = sample(set.moves, 4 - len).concat(set.signatureMoves); // always have sig move.
 			team.push(set);
 		}
 		return team;
@@ -593,7 +593,7 @@ exports.BattleScripts = {
 			},
 			"Lass zeowx": { // STPPLB+ only
 				species: 'Liepard', ability: 'Protean', item: 'Focus Sash', gender: 'F',
-				moves: ['suckerpunch', 'shadowsneak', 'bulletpunch', 'playrough', 'spikes', 'acrobatics'].sample(2).concat('fakeout'), // always have Fake Out.
+				moves: sample(['suckerpunch', 'shadowsneak', 'bulletpunch', 'playrough', 'spikes', 'acrobatics'], 2).concat('fakeout'), // always have Fake Out.
 				signatureMove: 'partingvoltturn',
 				evs: {atk:252, spa:12, spe:244}, nature: 'Hasty',
 			},
@@ -660,7 +660,7 @@ exports.BattleScripts = {
 				evs: {hp: 4, spa: 252, spe: 252}, nature: 'Timid',
 			},
 			'Natsugan': {
-				species: 'Flygon', ability: 'Mega Plunder', item: megaStoneList.sample(1)[0], gender: 'M',
+				species: 'Flygon', ability: 'Mega Plunder', item: sample(megaStoneList, 1)[0], gender: 'M',
 				moves: ['earthquake', 'earthpower', 'uturn', 'dragonclaw', 'fireblast', 'boomburst', 'dragonpulse', 'return', 'stoneedge', 'crunch', 'ironhead', 'dragondance', 'quiverdance'],
 				signatureMove: 'reroll',
 				nature: 'Serious',
@@ -761,10 +761,10 @@ exports.BattleScripts = {
 				species: 'Mew', ability: 'No Guard', item: 'Eject Button', gender: 'M',
 				moves: ['recover', 'echoedvoice'],
 				signatureMoves: ['drama', 'loratory'],
-				evs: {hp: 252, def: 128, spd: 128}, nature: 'Modest' 
-			}
+				evs: {hp: 252, def: 128, spd: 128}, nature: 'Modest',
+			},
 		};
-		let pool = Object.keys(sets).sample(6);
+		let pool = sample(Object.keys(sets), 6);
 		for (let i = 0; i < Math.min(6, pool.length); i++) {
 			let set = sets[pool[i]];
 			set.level = 100;
@@ -780,7 +780,7 @@ exports.BattleScripts = {
 			if (!set.evs) set.evs = {hp:88, atk:84, def:84, spa:84, spd:84, spe:84};
 			if (set.signatureMove) set.signatureMoves = [set.signatureMove];
 			let len = set.signatureMoves.length;
-			set.moves = set.moves.sample(4 - len).concat(set.signatureMoves); // always have sig move.
+			set.moves = sample(set.moves, 4 - len).concat(set.signatureMoves); // always have sig move.
 			team.push(set);
 		}
 		return team;

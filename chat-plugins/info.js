@@ -731,7 +731,7 @@ exports.commands = {
 					for (let i = 0; i < moveGroups[group].length; i++) {
 						let problem = TeamValidator.checkLearnsetSync('anythinggoes', moveGroups[group][i], mon, lsetData);
 						if (!problem) break;
-						if (i === moveGroups[group].length - 1) return;
+						if (i === moveGroups[group].length - 1) return false;
 					}
 				}
 				return true;

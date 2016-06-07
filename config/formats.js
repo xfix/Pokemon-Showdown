@@ -2848,10 +2848,7 @@ exports.Formats = [
 			}
 			if (name === 'somasghost' && !pokemon.illusion) {
 				this.add('-start', pokemon, 'typechange', 'Normal/Ghost');
-				pokemon.typesData = [
-					{type: 'Normal', suppressed: false,  isAdded: false},
-					{type: 'Ghost', suppressed: false,  isAdded: false},
-				];
+				pokemon.types = ['Normal', 'Ghost'];
 			}
 			if (name === 'pikalaxalt') {
 				this.boost({def:1, spd:1}, pokemon);
