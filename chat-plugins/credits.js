@@ -10,16 +10,17 @@ let prices = {
 	"cyanticket": 30,
 	"blueticket": 35,
 	"orangeticket": 50,
+	"silverticket": 55,
 	"violetticket": 75,
 	"yellowticket": 80,
 	"whiteticket": 90,
 	"greenticket": 100,
-	"blackticket": 175,
-	"silverticket": 55,
 	"crystalticket": 100,
 	"goldticket": 120,
+	"blackticket": 175,
 	"rubyticket": 200,
 	"sapphireticket": 280,
+	"magentaticket": 325,
 	"rainbowticket": 450,
 	"emeraldticket": 600,
 };
@@ -230,6 +231,14 @@ exports.commands = {
 				this.sendReply("You have purchased a Orange Ticket.");
 				matched = true;
 				break;
+				case 'silverticket':
+				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Silver Ticket.");
+				writeMoney(user.userid, prices[itemid] * -1);
+				logTransaction(user.name + " has purchased a Silver Ticket for " + prices[itemid] + " credits.");
+				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Silver Ticket.");
+				this.sendReply("You have purchased a Silver Ticket.");
+				matched = true;
+				break;
 			case 'violetticket':
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Violet Ticket.");
 				writeMoney(user.userid, prices[itemid] * -1);
@@ -262,22 +271,6 @@ exports.commands = {
 				this.sendReply("You have purchased a Green Ticket.");
 				matched = true;
 				break;
-			case 'blackticket':
-				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Black Ticket.");
-				writeMoney(user.userid, prices[itemid] * -1);
-				logTransaction(user.name + " has purchased a Black Ticket for " + prices[itemid] + " credits.");
-				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Black Ticket.");
-				this.sendReply("You have purchased a Black Ticket.");
-				matched = true;
-				break;
-			case 'silverticket':
-				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Silver Ticket.");
-				writeMoney(user.userid, prices[itemid] * -1);
-				logTransaction(user.name + " has purchased a Silver Ticket for " + prices[itemid] + " credits.");
-				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Silver Ticket.");
-				this.sendReply("You have purchased a Silver Ticket.");
-				matched = true;
-				break;
 			case 'crystalticket':
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Crystal Ticket.");
 				writeMoney(user.userid, prices[itemid] * -1);
@@ -292,6 +285,14 @@ exports.commands = {
 				logTransaction(user.name + " has purchased a Gold Ticket for " + prices[itemid] + " credits.");
 				Wisp.messageSeniorStaff(user.name + " has purchased a Gold Ticket.");
 				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Gold Ticket.");
+				matched = true;
+				break;
+			case 'blackticket':
+				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Black Ticket.");
+				writeMoney(user.userid, prices[itemid] * -1);
+				logTransaction(user.name + " has purchased a Black Ticket for " + prices[itemid] + " credits.");
+				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Black Ticket.");
+				this.sendReply("You have purchased a Black Ticket.");
 				matched = true;
 				break;
 			case 'rubyticket':
@@ -310,12 +311,12 @@ exports.commands = {
 				this.sendReply("You have purchased a Sapphire Ticket.");
 				matched = true;
 				break;
-			case 'emeraldticket':
-				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Emerald Ticket.");
+                        case 'magentaticket':
+				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Magenta Ticket.");
 				writeMoney(user.userid, prices[itemid] * -1);
-				logTransaction(user.name + " has purchased a Emerald Ticket for " + prices[itemid] + " credits.");
-				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Emerald Ticket.");
-				this.sendReply("You have purchased a Emerald Ticket.");
+				logTransaction(user.name + " has purchased a Magenta Ticket for " + prices[itemid] + " credits.");
+				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Magenta Ticket.");
+				this.sendReply("You have purchased a Magenta Ticket.");
 				matched = true;
 				break;
 			case 'rainbowticket':
@@ -324,6 +325,14 @@ exports.commands = {
 				logTransaction(user.name + " has purchased a Rainbow Ticket for " + prices[itemid] + " credits.");
 				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Rainbow Ticket.");
 				this.sendReply("You have purchased a Rainbow Ticket.");
+				matched = true;
+				break;
+			case 'emeraldticket':
+				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Emerald Ticket.");
+				writeMoney(user.userid, prices[itemid] * -1);
+				logTransaction(user.name + " has purchased a Emerald Ticket for " + prices[itemid] + " credits.");
+				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Emerald Ticket.");
+				this.sendReply("You have purchased a Emerald Ticket.");
 				matched = true;
 				break;
 
@@ -337,24 +346,26 @@ exports.commands = {
 		if (!this.runBroadcast()) return;
 		this.sendReplyBox('<center><h4><b><u>' + shopTitle + '</u></b></h4><table border="1" cellspacing ="0" cellpadding="3"><tr><th>Item</th><th>Description</th><th>Price</th></tr>' +
 			'<tr><td><button name="send" value="/claim roseticket">Rose Ticket</button></td><td>Can be exchanged for 5 bucks</td><td>' + prices['roseticket'] + '</td></tr>' +
-			'<tr><td><button name="send" value="/claim redticket">Red TIcket</button></td><td>Can be exchanged for one PSGO pack</td><td>' + prices['redticket'] + '</td></tr>' +
+			'<tr><td><button name="send" value="/claim redticket">Red Ticket</button></td><td>Can be exchanged for one PSGO pack</td><td>' + prices['redticket'] + '</td></tr>' +
 			'<tr><td><button name="send" value="/claim cyanticket">Cyan Ticket</button></td><td>Can be exchanged for 15 bucks</td><td>' + prices['cyanticket'] + '</td></tr>' +
 			'<tr><td><button name="send" value="/claim blueticket">Blue Ticket</button></td><td>Can be exchanged for 2 PSGO packs</td><td>' + prices['blueticket'] + '</td></tr>' +
 			'<tr><td><button name="send" value="/claim orangeticket">Orange Ticket</button></td><td>Can be exchanged for a recolored avatar and 10 bucks</td><td>' + prices['orangeticket'] + '</td></tr>' +
+			'<tr><td><button name="send" value="/claim silverticket">Silver Ticket</button></td><td>Can be exchanged for 1 PSGO pack and 20 bucks</td><td>' + prices['silverticket'] + '</td></tr>' +
 			'<tr><td><button name="send" value="/claim violeticket">Violet Ticket</button></td><td>Can be exchanged for a recolored avatar, 1 PSGO pack and 20 bucks</td><td>' + prices['violetticket'] + '</td></tr>' +
-			'<tr><td><button name="send" value="/claim roseticket">Yellow Ticket</button></td><td>Can be exchanged for 5 PSGO packs</td><td>' + prices['yellowticket'] + '</td></tr>' +
+			'<tr><td><button name="send" value="/claim yellowticket">Yellow Ticket</button></td><td>Can be exchanged for 5 PSGO packs</td><td>' + prices['yellowticket'] + '</td></tr>' +
 			'<tr><td><button name="send" value="/claim whiteticket">White Ticket</button></td><td>Can be exchanged for 50 bucks</td><td>' + prices['whiteticket'] + '</td></tr>' +
 			'<tr><td><button name="send" value="/claim greenticket">Green Ticket</button></td><td>Can be exchanged for a recolored avatar, 30 bucks and 2 PSGO packs</td><td>' + prices['greenticket'] + '</td></tr>' +
-			'<tr><td><button name="send" value="/claim blackticket">Black Ticket</button></td><td>Can be exchanged for 100 bucks</td><td>' + prices['blackticket'] + '</td></tr>' +
-			'<tr><td><button name="send" value="/claim silverticket">Silver Ticket</button></td><td>Can be exchanged for 1 PSGO pack and 20 bucks</td><td>' + prices['silverticket'] + '</td></tr>' +
 			'<tr><td><button name="send" value="/claim crystalticket">Crystal Ticket</button></td><td>Can be exchanged for 3 cards from the <button name="send" value="/showcase marketplaceatm">Marketplace ATM showcase</button></td><td>' + prices['crystalticket'] + '</td></tr>' +
 			'<tr><td><button name="send" value="/claim goldticket">Gold Ticket</button></td><td>Can be exchanged for 2 PSGO packs and 50 bucks</td><td>' + prices['goldticket'] + '</td></tr>' +
+			'<tr><td><button name="send" value="/claim blackticket">Black Ticket</button></td><td>Can be exchanged for 100 bucks</td><td>' + prices['blackticket'] + '</td></tr>' +
 			'<tr><td><button name="send" value="/claim rubyticket">Ruby ticket</button></td><td>Can be exchanged for 5 PSGO packs, 50 bucks and an avatar recolor</td><td>' + prices['rubyticket'] + '</td></tr>' +
 			'<tr><td><button name="send" value="/claim sapphireticket">Sapphire Ticket</button></td><td>Can be exchanged for 7 PSGO packs and 100 bucks</td><td>' + prices['sapphireticket'] + '</td></tr>' +
+                        '<tr><td><button name="send" value="/claim magentaticket">Magenta Ticket</button></td><td>Can be exchanged for a Custom Feature in the Room Intro for 5 days! Example: http://prntscr.com/bdq3uh</td><td>' + prices['magentaticket'] + '</td></tr>' +
 			'<tr><td><button name="send" value="/claim rainbowticket">Rainbow Ticket</button></td><td>Can be exchanged for 10 PSGO packs and 200 bucks</td><td>' + prices['rainbowticket'] + '</td></tr>' +
 			'<tr><td><button name="send" value="/claim emeraldticket">Emerald Ticket</button></td><td>Can be exchanged for 5 PSGO packs, 100 bucks, Marketplace Partner, Custom Title and Partner Badge</td><td>' + prices['emeraldticket'] + '</td></tr>' +
 			'</table><br />To buy an item from the shop, use /claim [item].<br />All sales final, no refunds will be provided.</center>'
 		);
+
 	},
 
 	credits: function (target, room, user) {
