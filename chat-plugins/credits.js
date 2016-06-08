@@ -123,9 +123,9 @@ exports.commands = {
 		writeMoney(targetUser, amount);
 		this.sendReply(Tools.escapeHTML(targetUser) + " has received " + amount + ((amount === 1) ? " credits." : " credits."));
 		logTransaction(user.name + " has given " + amount + ((amount === 1) ? " credit " : " credits ") + " to " + targetUser);
-		Rooms.get('marketplace').add('|raw|' + (user.name + " has given " + amount + ((amount === 1) ? " credit " : " credits ") + " to " + targetUser));
+		Rooms.get('marketplace').add('|raw|' + (user.name + " has given " + amount + ((amount === 1) ? " credit " : " credits ") + " to " + targetUser + "."));
 		if (Users.get(targetUser) && Users.get(targetUser).connected) {
-			Users.get(targetUser).popup(user.name + " has given you  " + amount + ((amount === 1) ? " credit " : " credits "));
+			Users.get(targetUser).popup(user.name + " has given you " + amount + ((amount === 1) ? " credit " : " credits "));
 		}
 	},
 
@@ -149,7 +149,11 @@ exports.commands = {
 		writeMoney(targetUser, -amount);
 		this.sendReply("You removed " + amount + ((amount === 1) ? " credit " : " credits ") + " from " + Tools.escapeHTML(targetUser));
 		logTransaction(user.name + " has taken " + amount + ((amount === 1) ? " credit " : " credits ") + " from " + targetUser);
-		Rooms.get('marketplace').add('|raw|' + user.name + " has taken " + amount + ((amount === 1) ? " credit " : " credits ") + " from " + targetUser);
+		Rooms.get('marketplace').add('|raw|' + user.name + " has taken " + amount + ((amount === 1) ? " credit " : " credits ") + " from " + targetUser + ".");
+		if (Users.get(targetUser) && Users.get(targetUser).connected) {
+			Users.get(targetUser).popup(user.name + " has taken " + amount + ((amount === 1) ? " credit " : " credits from you."));
+		}	
+	
 	},
 
 	transfercredits: function (target, room, user) {
@@ -195,7 +199,8 @@ exports.commands = {
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Rose Ticket.");
 				writeMoney(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Rose Ticket for " + prices[itemid] + " credits.");
-				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Rose Ticket.");
+				Wisp.messageSeniorStaff(user.name + " has purchased a Rose Ticket.");
+				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Rose Ticket.**");
 				this.sendReply("You have purchased a Rose Ticket.");
 				matched = true;
 				break;
@@ -203,7 +208,8 @@ exports.commands = {
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Red Ticket.");
 				writeMoney(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Red Ticket for " + prices[itemid] + " credits.");
-				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Red Ticket.");
+				Wisp.messageSeniorStaff(user.name + " has purchased a Red Ticket.");
+				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Red Ticket.**");
 				this.sendReply("You have purchased a Red Ticket.");
 				matched = true;
 				break;
@@ -211,7 +217,8 @@ exports.commands = {
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Cyan Ticket.");
 				writeMoney(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Cyan Ticket for " + prices[itemid] + " credits.");
-				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Cyan Ticket.");
+				Wisp.messageSeniorStaff(user.name + " has purchased a Cyan Ticket.");
+				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Cyan Ticket.**");
 				this.sendReply("You have purchased a Cyan Ticket.");
 				matched = true;
 				break;
@@ -219,15 +226,17 @@ exports.commands = {
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Blue Ticket.");
 				writeMoney(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Blue Ticket for " + prices[itemid] + " credits.");
-				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Blue Ticket.");
+				Wisp.messageSeniorStaff(user.name + " has purchased a Blue Ticket.");
+				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Blue Ticket.**");
 				this.sendReply("You have purchased a Blue Ticket.");
 				matched = true;
 				break;
 			case 'orangeticket':
-				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Orange Ticket.");
+				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase an Orange Ticket.");
 				writeMoney(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Orange Ticket for " + prices[itemid] + " credits.");
-				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Orange Ticket.");
+				Wisp.messageSeniorStaff(user.name + " has purchased an Orange Ticket.");
+				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Orange Ticket.**");
 				this.sendReply("You have purchased a Orange Ticket.");
 				matched = true;
 				break;
@@ -235,7 +244,8 @@ exports.commands = {
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Silver Ticket.");
 				writeMoney(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Silver Ticket for " + prices[itemid] + " credits.");
-				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Silver Ticket.");
+				Wisp.messageSeniorStaff(user.name + " has purchased a Silver Ticket.");
+				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Silver Ticket.**");
 				this.sendReply("You have purchased a Silver Ticket.");
 				matched = true;
 				break;
@@ -243,7 +253,8 @@ exports.commands = {
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Violet Ticket.");
 				writeMoney(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Violet Ticket for " + prices[itemid] + " credits.");
-				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Violet Ticket.");
+				Wisp.messageSeniorStaff(user.name + " has purchased a Violet Ticket.");
+				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Violet Ticket.**");
 				this.sendReply("You have purchased a Violet Ticket.");
 				matched = true;
 				break;
@@ -251,7 +262,8 @@ exports.commands = {
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Yellow Ticket.");
 				writeMoney(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Yellow Ticket for " + prices[itemid] + " credits.");
-				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Yellow Ticket.");
+				Wisp.messageSeniorStaff(user.name + " has purchased a Yellow Ticket.");
+				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Yellow Ticket.**");
 				this.sendReply("You have purchased a Yellow Ticket.");
 				matched = true;
 				break;
@@ -259,15 +271,17 @@ exports.commands = {
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a White Ticket.");
 				writeMoney(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a White Ticket for " + prices[itemid] + " credits.");
-				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a White Ticket.");
-				this.sendReply("You have purchased a White Ticket.");
+				Wisp.messageSeniorStaff(user.name + " has purchased a White Ticket.");
+ 				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a White Ticket.**");
+ 				this.sendReply("You have purchased a White Ticket.");
 				matched = true;
 				break;
 			case 'greenticket':
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Green Ticket.");
 				writeMoney(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Green Ticket for " + prices[itemid] + " credits.");
-				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Green Ticket.");
+				Wisp.messageSeniorStaff(user.name + " has purchased a Green Ticket.");
+				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Green Ticket.**");
 				this.sendReply("You have purchased a Green Ticket.");
 				matched = true;
 				break;
@@ -275,7 +289,8 @@ exports.commands = {
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Crystal Ticket.");
 				writeMoney(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Crystal Ticket for " + prices[itemid] + " credits.");
-				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Crystal Ticket.");
+				Wisp.messageSeniorStaff(user.name + " has purchased a Crystal Ticket.");
+				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Crystal Ticket.**");
 				this.sendReply("You have purchased a Crystal Ticket.");
 				matched = true;
 				break;
@@ -284,14 +299,15 @@ exports.commands = {
 				writeMoney(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Gold Ticket for " + prices[itemid] + " credits.");
 				Wisp.messageSeniorStaff(user.name + " has purchased a Gold Ticket.");
-				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Gold Ticket.");
+				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Gold Ticket.**");
 				matched = true;
 				break;
 			case 'blackticket':
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Black Ticket.");
 				writeMoney(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Black Ticket for " + prices[itemid] + " credits.");
-				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Black Ticket.");
+				Wisp.messageSeniorStaff(user.name + " has purchased a Black Ticket.");
+				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Black Ticket.**");
 				this.sendReply("You have purchased a Black Ticket.");
 				matched = true;
 				break;
@@ -299,7 +315,8 @@ exports.commands = {
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Ruby Ticket.");
 				writeMoney(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Ruby Ticket for " + prices[itemid] + " credits.");
-				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Ruby Ticket.");
+				Wisp.messageSeniorStaff(user.name + " has purchased a Ruby Ticket.");
+				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Ruby Ticket.**");
 				this.sendReply("You have purchased a Ruby Ticket.");
 				matched = true;
 				break;
@@ -307,15 +324,17 @@ exports.commands = {
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Sapphire Ticket.");
 				writeMoney(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Sapphire Ticket for " + prices[itemid] + " credits.");
-				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Sapphire Ticket.");
+				Wisp.messageSeniorStaff(user.name + " has purchased a Sapphire Ticket.");
+				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Sapphire Ticket.**");
 				this.sendReply("You have purchased a Sapphire Ticket.");
 				matched = true;
 				break;
-			case 'magentaticket':
+                        case 'magentaticket':
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Magenta Ticket.");
 				writeMoney(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Magenta Ticket for " + prices[itemid] + " credits.");
-				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Magenta Ticket.");
+				Wisp.messageSeniorStaff(user.name + " has purchased a Magenta Ticket.");
+				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Magenta Ticket.**");
 				this.sendReply("You have purchased a Magenta Ticket.");
 				matched = true;
 				break;
@@ -323,15 +342,17 @@ exports.commands = {
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Rainbow Ticket.");
 				writeMoney(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Rainbow Ticket for " + prices[itemid] + " credits.");
-				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Rainbow Ticket.");
+				Wisp.messageSeniorStaff(user.name + " has purchased a Rainbow Ticket.");
+				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Rainbow Ticket.**");
 				this.sendReply("You have purchased a Rainbow Ticket.");
 				matched = true;
 				break;
 			case 'emeraldticket':
-				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Emerald Ticket.");
+				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase an Emerald Ticket.");
 				writeMoney(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Emerald Ticket for " + prices[itemid] + " credits.");
-				Rooms.get('marketplacestaff').add('|raw|' + user.name + " has purchased a Emerald Ticket.");
+				Wisp.messageSeniorStaff(user.name + " has purchased an Emerald Ticket.");
+				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Rainbow Ticket.**");
 				this.sendReply("You have purchased a Emerald Ticket.");
 				matched = true;
 				break;
@@ -343,6 +364,7 @@ exports.commands = {
 	},
 
 	creditshop: function (target, room, user) {
+		if (room.id !== 'marketplace' && room.id !== 'marketplacestaff') return this.errorReply("The Credit Shop can only be displayed in Marketplace only.");
 		if (!this.runBroadcast()) return;
 		this.sendReplyBox('<center><h4><b><u>' + shopTitle + '</u></b></h4><table border="1" cellspacing ="0" cellpadding="3"><tr><th>Item</th><th>Description</th><th>Price</th></tr>' +
 			'<tr><td><button name="send" value="/claim roseticket">Rose Ticket</button></td><td>Can be exchanged for 5 bucks</td><td>' + prices['roseticket'] + '</td></tr>' +
@@ -360,7 +382,7 @@ exports.commands = {
 			'<tr><td><button name="send" value="/claim blackticket">Black Ticket</button></td><td>Can be exchanged for 100 bucks</td><td>' + prices['blackticket'] + '</td></tr>' +
 			'<tr><td><button name="send" value="/claim rubyticket">Ruby ticket</button></td><td>Can be exchanged for 5 PSGO packs, 50 bucks and an avatar recolor</td><td>' + prices['rubyticket'] + '</td></tr>' +
 			'<tr><td><button name="send" value="/claim sapphireticket">Sapphire Ticket</button></td><td>Can be exchanged for 7 PSGO packs and 100 bucks</td><td>' + prices['sapphireticket'] + '</td></tr>' +
-			'<tr><td><button name="send" value="/claim magentaticket">Magenta Ticket</button></td><td>Can be exchanged for a Custom Feature in the Room Intro for 5 days! Example: http://prntscr.com/bdq3uh</td><td>' + prices['magentaticket'] + '</td></tr>' +
+                        '<tr><td><button name="send" value="/claim magentaticket">Magenta Ticket</button></td><td>Can be exchanged for a Custom Feature in the Room Intro for 5 days! Example: http://prntscr.com/bdq3uh</td><td>' + prices['magentaticket'] + '</td></tr>' +
 			'<tr><td><button name="send" value="/claim rainbowticket">Rainbow Ticket</button></td><td>Can be exchanged for 10 PSGO packs and 200 bucks</td><td>' + prices['rainbowticket'] + '</td></tr>' +
 			'<tr><td><button name="send" value="/claim emeraldticket">Emerald Ticket</button></td><td>Can be exchanged for 5 PSGO packs, 100 bucks, Marketplace Partner, Custom Title and Partner Badge</td><td>' + prices['emeraldticket'] + '</td></tr>' +
 			'</table><br />To buy an item from the shop, use /claim [item].<br />All sales final, no refunds will be provided.</center>'
