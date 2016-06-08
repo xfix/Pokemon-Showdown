@@ -1,7 +1,7 @@
 'use strict';
 
 Wisp.database = new sqlite3.Database('config/users.db', function () {
-	Wisp.database.run("CREATE TABLE if not exists users (userid TEXT, name TEXT, bucks INTEGER, lastSeen INTEGER, onlineTime INTEGER, credits INTEGER)");
+	Wisp.database.run("CREATE TABLE if not exists users (userid TEXT, name TEXT, bucks INTEGER, lastSeen INTEGER, onlineTime INTEGER, credits INTEGER, title TEXT)");
 });
 
 const fs = require('fs');
@@ -15,6 +15,7 @@ let prices = {
 	"fix": 10,
 	"declare": 20,
 	"poof": 25,
+	"title": 30,
 	"avatar": 35,
 	"infobox": 40,
 	"emote": 50,
@@ -221,6 +222,19 @@ exports.commands = {
 				this.sendReply("You've purchased a poof message. It will be added shortly.");
 				matched = true;
 				break;
+			case 'title':
+				if (userMoney < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userMoney) + " more bucks to purchase a user title.");
+				if (!targetSplit[1]) return this.sendReply("Please specify the title you would like with /buy title, [title], [optional colour].");
+				let hex;
+				if (targetSplit[2]) hex = targetSplit[2];
+				if (targetSplit[1].length > 25) return this.sendReply("Titles may not be longer than 25 characters.");
+				if (hex && hex.length > 7) return this.sendReply("Hex may not be longer than 7 characters.");
+				Economy.writeMoney(user.userid, prices[itemid] * -1);
+				Economy.logTransaction(user.name + " has purchased a user title " + prices[itemid] + " bucks. Title: " + targetSplit[1] + (hex ? " Hex: " + hex : ""));
+				Wisp.messageSeniorStaff(user.name + " has purchased a title. Title: " + targetSplit[1] + (hex ? " Hex: " + hex : ""));
+				this.sendReply("You have purchased a title. It will be added shortly.");
+				matched = true;
+				break;
 			case 'infobox':
 				if (userMoney < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userMoney) + " more bucks to purchase an infobox.");
 				Economy.writeMoney(user.userid, prices[itemid] * -1);
@@ -304,6 +318,7 @@ exports.commands = {
 			'<tr><td>Fix</td><td>Buys the ability to alter your current custom avatar or infobox (don\'t buy if you have neither)!</td><td>' + prices['fix'] + '</td></tr>' +
 			'<tr><td>Declare</td><td>You get the ability to have a message declared in the lobby. This can be used for league advertisement (not server)</td><td>' + prices['declare'] + '</td></tr>' +
 			'<tr><td>Poof</td><td>Buy a poof message to be added into the pool of possible poofs</td><td>' + prices['poof'] + '</td></tr>' +
+			'<tr><td>Title</td><td>Buys a user title that displays beside your name in /profile</td><td>' + prices['title'] + '</td></tr>' +
 			'<tr><td>Avatar</td><td>Buys a custom avatar to be applied to your name (You supply, must be .png or .gif format. Images larger than 80x80 may not show correctly.)</td><td>' + prices['avatar'] + '</td></tr>' +
 			'<tr><td>Infobox</td><td>Buys an infobox that will be viewable with a command such as /tailz.</td><td>' + prices['infobox'] + '</td></tr>' +
 			'<tr><td>Emote</td><td>Buys an emoticon for you (and everyone else) to use in the chat.</td><td>' + prices['emote'] + '</td></tr>' +
@@ -577,16 +592,18 @@ exports.commands = {
 			Wisp.regdate(userid, date => {
 				if (date) regdate = regdate = moment(date).format("MMMM DD, YYYY");
 				Wisp.lastSeen(userid, online => {
-					showProfile(bucks, regdate, online);
+					Wisp.getTitle(userid, title => {
+						showProfile(bucks, regdate, online, title);
+					});
 				});
 			});
 			let self = this;
-			function showProfile(bucks, regdate, lastOnline) {
+			function showProfile(bucks, regdate, lastOnline, title) {
 				lastOnline = (lastOnline ? moment(lastOnline).format("MMMM Do YYYY, h:mm:ss A") + ' EST. (' + moment(lastOnline).fromNow() + ')' : "Never");
 				if (targetUser && targetUser.connected) lastOnline = '<font color=green>Currently Online</font>';
 				let profile = '';
 				profile += '<div style="float: left; width: 75%;"> <img src="' + avatar + '" height=80 width=80 align=left>';
-				profile += '&nbsp;<font color=#b30000><b>Name: </font><b><font color="' + Wisp.hashColor(toId(username)) + '">' + Tools.escapeHTML(username) + '</font></b><br />';
+				profile += '&nbsp;<font color=#b30000><b>Name: </font>' + Wisp.nameColor(userid, true) + (title === "" ? "" : " (" + title + ")") + '<br />';
 				profile += '&nbsp;<font color=#b30000><b>Registered: </font></b>' + regdate + '<br />';
 				profile += '&nbsp;<font color=#b30000><b>Rank: </font></b>' + userGroup + (Users.vips[userid] ? ' (<font color=#6390F0><b>VIP User</b></font>)' : '') + '<br />';
 				if (bucks) profile += '&nbsp;<font color=#b30000><b>Bucks: </font></b>' + bucks + '<br />';

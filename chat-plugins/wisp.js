@@ -598,6 +598,62 @@ exports.commands = {
 	endtour: function (target, room, user) {
 		this.parse("/tour end");
 	},
+
+	title: function (target, room, user) {
+		if (!target) return this.parse("/help title");
+		let targets = target.split(',');
+		for (let u in targets) targets[u] = targets[u].trim();
+		if (!targets[0]) return this.parse("/help title");
+		let cmd = targets[0];
+		let targetUser, title, hex;
+		if (targets[1]) targetUser = targets[1];
+		if (targets[2]) title = targets[2];
+		if (targets[3]) hex = targets[3];
+
+		switch (toId(cmd)) {
+		case "set":
+			if (!targets[2]) return this.parse("/help title");
+			if (!Users(targetUser)) return this.errorReply('"' + targetUser + '" is not online.');
+			if (title.length < 1) return this.errorReply("Title must be at least one character long.");
+			if (title.length > 25) return this.errorReply("Titles may not be longer than 25 characters.");
+			if (hex && hex.length > 7) return this.errorReply("The hex may not be longer than 7 characters (including #).");
+			title = '<font color="#' + ((hex && hex.length > 1) ? toId(hex) : 'b30000') + '"><b>' + Tools.escapeHTML(title) + '</b></font>';
+			Wisp.setTitle(targetUser, title);
+			if (Users(targetUser).connected) Users(targetUser).popup("|html|" + Wisp.nameColor(user.name) + " has set your user title to \"" + title + "\".");
+			this.sendReply("|raw|You've set " + Wisp.nameColor(targetUser) + "'s title to \"" + title + "\".");
+			Rooms('upperstaff').add("|raw|" + Wisp.nameColor(user.name, true) + " has set " + Wisp.nameColor(targetUser, true) + "'s user title to " + title + ".").update();
+			Wisp.messageSeniorStaff("/html " + Wisp.nameColor(user.name, true) + " has set " + Wisp.nameColor(targetUser, true) + "'s user title to " + title + ".");
+			break;
+		case "delete":
+			if (!targets[1]) return this.parse("/help title");
+			Wisp.getTitle(targetUser, title => {
+				if (title === "") return this.sendReply(targetUser + " does not have a title.");
+				Wisp.setTitle(targetUser, "", () => {
+					if (Users(targetUser) && Users(targetUser).connected) Users(targetUser).popup("|html|" + Wisp.nameColor(user.name) + " has removed your user title.");
+					this.sendReply("You have removed " + targetUser + "'s user title.");
+					Rooms('upperstaff').add("|raw|" + Wisp.nameColor(user.name, true) + " has removed " + Wisp.nameColor(targetUser, true) + "'s user title.").update();
+					Wisp.messageSeniorStaff("/html " + Wisp.nameColor(user.name, true) + " has removed " + Wisp.nameColor(targetUser, true) + "'s user title.");
+				});
+			});
+			break;
+		case "view":
+			if (!targets[1]) return this.parse("/help title");
+			if (!this.runBroadcast()) return;
+			Wisp.getTitle(targetUser, title => {
+				if (title === "") {
+					this.sendReplyBox(Wisp.nameColor(targetUser, true) + " does not have a title.");
+				} else {
+					this.sendReplyBox(Wisp.nameColor(targetUser, true) + "'s user title is \"" + title + "\".");
+				}
+				room.update();
+			});
+			break;
+		}
+	},
+	titlehelp: ["/title set, user, title - Sets a title.",
+				"/title delete, user - Deletes a users title.",
+				"/title view, user - Shows a users title [broadcastable]",
+			],
 };
 
 Object.assign(Wisp, {
@@ -803,6 +859,32 @@ Object.assign(Wisp, {
 		}
 		delete Wisp.tells[user.userid];
 		fs.writeFileSync('config/tells.json', JSON.stringify(Wisp.tells));
+	},
+
+	getTitle: function (userid, callback) {
+		if (!callback) return false;
+		userid = toId(userid);
+		Wisp.database.all("SELECT title FROM users WHERE userid=$userid", {$userid: userid}, function (err, rows) {
+			if (err) return console.log(err);
+			callback(((rows[0] && rows[0].title) ? rows[0].title : ""));
+		});
+	},
+
+	setTitle: function (userid, title, callback) {
+		userid = toId(userid);
+		Wisp.database.all("SELECT * FROM users WHERE userid=$userid", {$userid: userid}, function (err, rows) {
+			if (rows.length < 1) {
+				Wisp.database.run("INSERT INTO users(userid, title) VALUES ($userid, $title)", {$userid: userid, $title: title}, function (err) {
+					if (err) return console.log(err);
+					if (callback) return callback();
+				});
+			} else {
+				Wisp.database.run("UPDATE users SET title=$title WHERE userid=$userid", {$title: title, $userid: userid}, function (err) {
+					if (err) return console.log(err);
+					if (callback) return callback();
+				});
+			}
+		});
 	},
 });
 
