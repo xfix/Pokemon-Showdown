@@ -235,7 +235,7 @@ exports.commands = {
 		let noEmotes = target;
 
 		if (!message) {
-			let emoticons = Wisp.parseEmoticons(user.getIdentity(room.id), target);
+			let emoticons = Wisp.parseEmoticons(user.getIdentity(room.id), target, room);
 			if (emoticons) {
 				noEmotes = target;
 				target = "/html " + emoticons;
