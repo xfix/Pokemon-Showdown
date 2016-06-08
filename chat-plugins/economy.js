@@ -19,7 +19,7 @@ let prices = {
 	"avatar": 35,
 	"infobox": 40,
 	"emote": 50,
-	"leagueshop": 55,
+	"roomshop": 55,
 	"room": 75,
 	"icon": 100,
 	"color": 150,
@@ -195,12 +195,15 @@ exports.commands = {
 				matched = true;
 				break;
 			case 'avatar':
-				if (userMoney < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userMoney) + " more bucks to purchase a custom avatar.");
-				if (!targetSplit[1]) return this.sendReply("Please specify the image you would like as your avatar with /buy customavatar, image url.");
+				if (userMoney < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userMoney) + " more bucks to purchase an avatar.");
+				if (!targetSplit[1]) return this.sendReply("Please specify the image you would like as your avatar with /buy avatar, image url.");
 				Economy.writeMoney(user.userid, prices[itemid] * -1);
 				Economy.logTransaction(user.name + " has purchased an avatar for " + prices[itemid] + " bucks. Image: " + targetSplit[1]);
-				Wisp.messageSeniorStaff(user.name + " has purchased an avatar. Image: " + targetSplit[1]);
-				this.sendReply("You have purchased a custom avatar. It will be added shortly.");
+				Wisp.messageSeniorStaff("/html " + Wisp.nameColor(user.name, true) + " has purchased an avatar.<center><img src=\"" + targetSplit[1] +
+					"\" width=\"80\" height=\"80\"></center><br /><button name=\"send\" value=\"/customavatar set, " + user.userid + ", " + targetSplit[1] + "\">Click to add</button> | " +
+					"<button name=\"send\" value=\"/customavatar delete, " + user.userid + "\">Click to remove</button>");
+				Rooms('upperstaff').add("|raw|" + Wisp.nameColor(user.name, true) + " has purchased an avatar.").update();
+				this.sendReply("You have purchased an avatar. It will be added shortly.");
 				matched = true;
 				break;
 			case 'room':
@@ -209,7 +212,8 @@ exports.commands = {
 				if (Rooms.rooms[toId(targetSplit[1])]) return this.sendReply("You can't purchase a room that already exists.");
 				Economy.writeMoney(user.userid, prices[itemid] * -1);
 				Economy.logTransaction(user.name + " has purchased a chat room for " + prices[itemid] + " bucks.");
-				Wisp.messageSeniorStaff(user.name + " has purchased a chat room. Name: " + targetSplit[1]);
+				Wisp.messageSeniorStaff("/html " + Wisp.nameColor(user.name, true) + " has purchased a chat room. Name: " + Tools.escapeHTML(targetSplit[1]));
+				Rooms('upperstaff').add("|raw|" + Wisp.nameColor(user.name, true) + " has purchased a chat room named \"" + Tools.escapeHTML(targetSplit[1]) + "\".").update();
 				this.sendReply("You've purchased a chat room. You will be notified when it has been created.");
 				matched = true;
 				break;
@@ -218,7 +222,8 @@ exports.commands = {
 				if (!targetSplit[1]) return this.sendReply("Please specify the poof message you would like to buy with /buy poof, poof message.");
 				Economy.writeMoney(user.userid, prices[itemid] * -1);
 				Economy.logTransaction(user.name + " has purchased a poof message for " + prices[itemid] + " bucks.");
-				Wisp.messageSeniorStaff(user.name + " has purchased a poof message. Message: " + targetSplit[1]);
+				Wisp.messageSeniorStaff("/html " + Wisp.nameColor(user.name, true) + " has purchased a poof message. Message: " + Tools.escapeHTML(targetSplit[1]));
+				Rooms('upperstaff').add("|raw|" + Wisp.nameColor(user.name, true) + " has purchased a poof message. Message: " + Tools.escapeHTML(targetSplit[1])).update();
 				this.sendReply("You've purchased a poof message. It will be added shortly.");
 				matched = true;
 				break;
@@ -231,7 +236,11 @@ exports.commands = {
 				if (hex && hex.length > 7) return this.sendReply("Hex may not be longer than 7 characters.");
 				Economy.writeMoney(user.userid, prices[itemid] * -1);
 				Economy.logTransaction(user.name + " has purchased a user title " + prices[itemid] + " bucks. Title: " + targetSplit[1] + (hex ? " Hex: " + hex : ""));
-				Wisp.messageSeniorStaff(user.name + " has purchased a title. Title: " + targetSplit[1] + (hex ? " Hex: " + hex : ""));
+				Wisp.messageSeniorStaff("/html " + Wisp.nameColor(user.name, true) + " has purchased a title: <b><font color=\"" + (hex ? hex : "#b30000") + "\">" +
+					Tools.escapeHTML(targetSplit[1]) + "</b></font><br />" +
+					"<button name=\"send\" value=\"/title set, " + user.userid + ", " + targetSplit[1] + (hex ? ", " + hex : "") + "\">Click to add</button>");
+				Rooms('upperstaff').add("|raw|" + Wisp.nameColor(user.name, true) + " has purchased a title: <b><font color=\"" + (hex ? hex : "#b30000") + "\">" +
+					Tools.escapeHTML(targetSplit[1]) + "</b></font>").update();
 				this.sendReply("You have purchased a title. It will be added shortly.");
 				matched = true;
 				break;
@@ -239,15 +248,18 @@ exports.commands = {
 				if (userMoney < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userMoney) + " more bucks to purchase an infobox.");
 				Economy.writeMoney(user.userid, prices[itemid] * -1);
 				Economy.logTransaction(user.name + " has purchased an infobox for " + prices[itemid] + " bucks.");
-				Wisp.messageSeniorStaff(user.name + " has purchased an infobox.");
-				this.sendReply("You have purchased an infobox. Please put everything you want on it in a pastebin including the command then send it to an Administrator, if you have any questions about what you can add pm an Admin. Please note that it will not be made instantly.");
+				Wisp.messageSeniorStaff("/html " + Wisp.nameColor(user.name, true) + " has purchased an infobox.");
+				Rooms('upperstaff').add("|raw|" + Wisp.nameColor(user.name, true) + " has purchased an infobox.").update();
+				this.sendReply("You have purchased an infobox. Please put everything you want on it in a pastebin including the command then send it to an Administrator, if you have any questions about what you can add pm an Admin.");
 				matched = true;
 				break;
 			case 'declare':
 				if (userMoney < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userMoney) + " more bucks to purchase a declare.");
+				if (!targetSplit[1]) return this.sendReply("Please specify the declare you'd like with /buy declare, message.");
 				Economy.writeMoney(user.userid, prices[itemid] * -1);
 				Economy.logTransaction(user.name + " has purchased a declare for " + prices[itemid] + " bucks.");
-				Wisp.messageSeniorStaff(user.name + " has purchased a declare.");
+				Wisp.messageSeniorStaff("/html " + Wisp.nameColor(user.name, true) + " has purchased a declare. Message: " + Tools.escapeHTML(targetSplit[1]));
+				Rooms('upperstaff').add("|raw|" + Wisp.nameColor(user.name, true) + " has purchased a declare. Message: " + Tools.escapeHTML(targetSplit[1])).update();
 				this.sendReply("You have purchased a declare. Please message an Administrator with the message you would like to declare.");
 				matched = true;
 				break;
@@ -255,22 +267,23 @@ exports.commands = {
 				if (userMoney < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userMoney) + " more bucks to purchase a fix.");
 				Economy.writeMoney(user.userid, prices[itemid] * -1);
 				Economy.logTransaction(user.name + " has purchased a fix for " + prices[itemid] + " bucks.");
-				Wisp.messageSeniorStaff(user.name + " has purchased a fix.");
+				Wisp.messageSeniorStaff("/html " + Wisp.nameColor(user.name, true) + " has purchased a fix.");
+				Rooms('upperstaff').add("|raw|" + Wisp.nameColor(user.name, true) + " has purchased a fix.").update();
 				this.sendReply("You have purchased a fix. Please message an Administrator with what needs fixed.");
 				matched = true;
 				break;
-			case 'leagueshop':
+			case 'roomshop':
 				if (userMoney < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userMoney) + " more bucks to purchase a fix.");
-				if (!targetSplit[1]) return this.sendReply("Please specify the room you would like to buy a league shop for with /buy leagueshop, room.");
+				if (!targetSplit[1]) return this.sendReply("Please specify the room you would like to buy a room shop for with /buy roomshop, room.");
 				if (!Rooms(toId(targetSplit[1]))) return this.sendReply("That room doesn't exist.");
 				let targetRoom = Rooms(targetSplit[1]);
-				if (!targetRoom.isLeague) return this.sendReply(targetRoom.title + " isn't a league!");
-				if (targetRoom.shop) return this.sendReply(targetRoom.title + " already has a league shop!");
+				if (!targetRoom.chatRoomData) return this.sendReply("That room can't have a room shop.");
+				if (!targetRoom.founder) return this.sendReply("Rooms require a room founder to have a shop.");
 				Economy.writeMoney(user.userid, prices[itemid] * -1);
-				Economy.logTransaction(user.name + " has purchased a league shop for " + prices[itemid] + " bucks. Room: " + targetRoom.title);
+				Economy.logTransaction(user.name + " has purchased a room shop for " + prices[itemid] + " bucks. Room: " + targetRoom.title);
 				matched = true;
-				this.sendReply(targetRoom.title + " has received a league shop. The room owners of that room should view /leagueshop help to view the league shop commands.");
-				targetRoom.add('|raw|<div class="broadcast-green"><b>' + user.name + ' has just purchased a league shop for this room.</b></div>');
+				this.sendReply(targetRoom.title + " has received a shop. The room owners of that room should view /roomshop help to view the room shop commands.");
+				targetRoom.add('|raw|<div class="broadcast-green"><b>' + Tools.escapeHTML(user.name) + ' has just purchased a room shop for this room.</b></div>');
 				targetRoom.update();
 				targetRoom.shop = {};
 				targetRoom.shopList = [];
@@ -280,10 +293,15 @@ exports.commands = {
 				break;
 			case 'emote':
 				if (userMoney < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userMoney) + " more bucks to purchase an emote.");
-				if (!targetSplit[1]) return this.sendReply("Please specify the image you would like as your emote with /buy emote, image url.");
+				if (!targetSplit[2]) return this.sendReply("Please specify the image you would like as your emote with /buy emote, name, image url.");
 				Economy.writeMoney(user.userid, prices[itemid] * -1);
-				Economy.logTransaction(user.name + " has purchased an emote for " + prices[itemid] + " bucks. Image: " + targetSplit[1]);
-				Wisp.messageSeniorStaff(user.name + " has purchased an emote. Image: " + targetSplit[1]);
+				Economy.logTransaction(user.name + " has purchased an emote for " + prices[itemid] + " bucks. Name: " + Tools.escapeHTML(targetSplit[1]) +
+					" Image: " + targetSplit[2]);
+				Wisp.messageSeniorStaff("/html " + Wisp.nameColor(user.name, true) + " has purchased an emote. Name: " + Tools.escapeHTML(targetSplit[1]) +
+					"<img src=\"" + targetSplit[2] + "\" width=\"40\" height=\"40\">" +
+					"<br /><button name=\"send\" value=\"/emote add, " + targetSplit[1] + ", " + targetSplit[2] + "\">Click to add</button>");
+				Rooms('upperstaff').add("|raw|" + Wisp.nameColor(user.name, true) + " has purchased an emote. Name: " + Tools.escapeHTML(targetSplit[1]) +
+					" <img src=\"" + targetSplit[2] + "\" width=\"40\" height=\"40\">").update();
 				this.sendReply("You have purchased an emote. It will be added shortly.");
 				matched = true;
 				break;
@@ -292,7 +310,9 @@ exports.commands = {
 				if (!targetSplit[1]) return this.sendReply("Please specify the image you would like as your icon with /buy icon, image url.");
 				Economy.writeMoney(user.userid, prices[itemid] * -1);
 				Economy.logTransaction(user.name + " has purchased an icon for " + prices[itemid] + " bucks. Image: " + targetSplit[1]);
-				Wisp.messageSeniorStaff(user.name + " has purchased an icon. Image: " + targetSplit[1]);
+				Rooms('upperstaff').add("|raw|" + Wisp.nameColor(user.name, true) + " has purchased an icon. <img src=\"" + targetSplit[1] + "\" width=\"32\" height=\"32\">").update();
+				Wisp.messageSeniorStaff("/html " + Wisp.nameColor(user.name, true) + " has purchased an icon. <img src=\"" + targetSplit[1] + "\" width=\"32\" height=\"32\">" +
+					"<br /><button name=\"send\" value=\"/icon " + user.name + ", " + targetSplit[1] + "\">Click to add</button>");
 				this.sendReply("You have purchased an icon. It will be added shortly.");
 				matched = true;
 				break;
@@ -301,7 +321,11 @@ exports.commands = {
 				if (!targetSplit[1]) return this.sendReply("|raw|Please specify the color you would like with /buy color, hexcode. (see: <a href=http://www.colorpicker.com/>http://www.colorpicker.com/</a>)");
 				Economy.writeMoney(user.userid, prices[itemid] * -1);
 				Economy.logTransaction(user.name + " has purchased a custom color for " + prices[itemid] + " bucks. Image: " + targetSplit[1]);
-				Wisp.messageSeniorStaff(user.name + " has purchased a custom color. Color: " + targetSplit[1]);
+				Wisp.messageSeniorStaff("/html " + Wisp.nameColor(user.name, true) + " has purchased a custom color. Color: <font color=\"" + targetSplit[1] +
+					"\">" + Tools.escapeHTML(user.name) + "</font>" +
+					"<br /><button name=\"send\" value=\"/customcolor " + user.name + ", " + targetSplit[1] + "\">Click to add</button>");
+				Rooms('upperstaff').add("|raw|" + Wisp.nameColor(user.name, true) + " has purchased a custom color. Color: <font color=\"" + targetSplit[1] +
+					"\">" + Tools.escapeHTML(user.name) + "</font>").update();
 				this.sendReply("You have purchased a custom color. It will be added shortly.");
 				matched = true;
 				break;
@@ -322,8 +346,8 @@ exports.commands = {
 			'<tr><td>Avatar</td><td>Buys a custom avatar to be applied to your name (You supply, must be .png or .gif format. Images larger than 80x80 may not show correctly.)</td><td>' + prices['avatar'] + '</td></tr>' +
 			'<tr><td>Infobox</td><td>Buys an infobox that will be viewable with a command such as /tailz.</td><td>' + prices['infobox'] + '</td></tr>' +
 			'<tr><td>Emote</td><td>Buys an emoticon for you (and everyone else) to use in the chat.</td><td>' + prices['emote'] + '</td></tr>' +
-			'<tr><td>League Shop</td><td>Buys a fully customizable shop for your league room. The bucks earned from purchases go to the room founder or room bank.</td><td>' + prices['leagueshop'] + '</td></tr>' +
-			'<tr><td>Chat Room</td><td>Buys a chatroom for you to own.</td><td>' + prices['room'] + '</td></tr>' +
+			'<tr><td>Room Shop</td><td>Buys a fully customizable shop for your room. The bucks earned from purchases go to the room founder or room bank.</td><td>' + prices['roomshop'] + '</td></tr>' +
+			'<tr><td>Room</td><td>Buys a chatroom for you to own.</td><td>' + prices['room'] + '</td></tr>' +
 			'<tr><td>Icon</td><td>Buys an icon that displays beside your name on the userlist. Size must be 32x32.</td><td>' + prices['icon'] + '</td></tr>' +
 			'<tr><td>Color</td><td>Buys a custom color change for your name. Changes the color of your name on the userlist and in the chat.</td><td>' + prices['color'] + '</td></tr>' +
 			'</table><br />To buy an item from the shop, use /buy [item].<br />All sales final, no refunds will be provided.</center>'
@@ -332,9 +356,8 @@ exports.commands = {
 
 	roomshop: 'leagueshop',
 	leagueshop: function (target, room, user) {
-		if (!room.isLeague) return this.sendReply('/leagueshop - This room is not a league.');
-		if (!room.shop) return this.sendReply('/leagueshop - This room does not have a shop, purchase one with /buy leagueshop, ' + room.title);
-		if (!room.founder) return this.sendReply('/leagueshop - league shops require a room founder.');
+		if (!room.shop) return this.sendReply('/roomshop - This room does not have a shop, purchase one with /buy roomshop, ' + room.title);
+		if (!room.founder) return this.sendReply('/roomshop - room shops require a room founder.');
 		if (!room.shopList) room.shopList = [];
 		if (!target) target = '';
 
@@ -351,20 +374,20 @@ exports.commands = {
 			let output = '<center><h4><b><u><font color="#24678d">' + Tools.escapeHTML(room.title) + '\'s Shop</font></u></b></h4><table border="1" cellspacing ="0" cellpadding="3"><tr><th>Item</th><th>Description</th><th>Price</th></tr>';
 			for (let u in room.shopList) {
 				if (!room.shop[room.shopList[u]] || !room.shop[room.shopList[u]].name || !room.shop[room.shopList[u]].description || !room.shop[room.shopList[u]].price) continue;
-				output += '<tr><td><button name="send" value="/leagueshop buy ' + Tools.escapeHTML(room.shopList[u]) + '" >' + Tools.escapeHTML(room.shop[room.shopList[u]].name) +
+				output += '<tr><td><button name="send" value="/roomshop buy ' + Tools.escapeHTML(room.shopList[u]) + '" >' + Tools.escapeHTML(room.shop[room.shopList[u]].name) +
 				'</button></td><td>' + Tools.escapeHTML(room.shop[room.shopList[u]].description.toString()) + '</td><td>' + room.shop[room.shopList[u]].price + '</td></tr>';
 			}
 			output += '</center><br />';
 			this.sendReplyBox(output);
 			break;
 		case 'add':
-			if (!user.can('roommod', null, room)) return this.sendReply('/leagueshop - Access denied.');
-			if (params.length < 3) return this.sendReply('Usage: /leagueshop add [item name], [description], [price]');
+			if (!user.can('roommod', null, room)) return this.sendReply('/roomshop - Access denied.');
+			if (params.length < 3) return this.sendReply('Usage: /roomshop add [item name], [description], [price]');
 			if (!room.shopList) room.shopList = [];
 			let name = params.shift();
 			let description = params.shift();
 			let price = Number(params.shift());
-			if (isNaN(price)) return this.sendReply('Usage: /leagueshop add [item name], [description], [price]');
+			if (isNaN(price)) return this.sendReply('Usage: /roomshop add [item name], [description], [price]');
 			room.shop[toId(name)] = {};
 			room.shop[toId(name)].name = name;
 			room.shop[toId(name)].description = description;
@@ -373,32 +396,32 @@ exports.commands = {
 			room.chatRoomData.shop = room.shop;
 			room.chatRoomData.shopList = room.shopList;
 			Rooms.global.writeChatRoomData();
-			this.sendReply('Added "' + name + '" to the league shop for ' + price + ' ' + ((price === 1) ? " buck." : " bucks.") + '.');
+			this.sendReply('Added "' + name + '" to the room shop for ' + price + ' ' + ((price === 1) ? " buck." : " bucks.") + '.');
 			break;
 		case 'remove':
 		case 'rem':
 		case 'del':
 		case 'delete':
-			if (!user.can('roommod', null, room)) return this.sendReply('/leagueshop - Access denied.');
-			if (params.length < 1) return this.sendReply('Usage: /leagueshop delete [item name]');
+			if (!user.can('roommod', null, room)) return this.sendReply('/roomshop - Access denied.');
+			if (params.length < 1) return this.sendReply('Usage: /roomshop delete [item name]');
 			let item = params.shift();
-			if (!room.shop[toId(item)]) return this.sendReply('/leagueshop - Item "' + item + '" not found.');
+			if (!room.shop[toId(item)]) return this.sendReply('/roomshop - Item "' + item + '" not found.');
 			delete room.shop[toId(item)];
 			let index = room.shopList.indexOf(toId(item));
 			if (index > -1) {
 				room.shopList.splice(index, 1);
 			}
-			this.sendReply('Removed "' + item + '" from the league shop.');
+			this.sendReply('Removed "' + item + '" from the room shop.');
 			break;
 		case 'buy':
-			if (params.length < 1) return this.sendReply('Usage: /leagueshop buy [item name]');
+			if (params.length < 1) return this.sendReply('Usage: /roomshop buy [item name]');
 			item = params.shift();
-			if (!room.shop[toId(item)]) return this.sendReply('/leagueshop - Item "' + item + '" not found.');
+			if (!room.shop[toId(item)]) return this.sendReply('/roomshop - Item "' + item + '" not found.');
 			Economy.readMoney(user.userid, money => {
 				if (money < room.shop[toId(item)].price) return this.sendReply('You don\'t have enough bucks to purchase a ' + item + '. You need ' + ((money - room.shop[toId(item)].price) * -1) + ' more bucks.');
 				if (!room.shopBank) room.shopBank = room.founder;
 				this.parse('/transferbucks ' + room.shopBank + ',' + room.shop[toId(item)].price);
-				fs.appendFile('logs/leagueshop_' + room.id + '.txt', '[' + new Date().toJSON() + '] ' + user.name + ' has purchased a ' +
+				fs.appendFile('logs/roomshop_' + room.id + '.txt', '[' + new Date().toJSON() + '] ' + user.name + ' has purchased a ' +
 					room.shop[toId(item)].price + ' for ' + room.shop[toId(item)].price + ' ' + ((price === 1) ? " buck." : " bucks.") + '.\n'
 				);
 				room.add(user.name + ' has purchased a ' + room.shop[toId(item)].name + ' for ' + room.shop[toId(item)].price + ' ' + ((price === 1) ? " buck." : " bucks.") + '.');
@@ -406,19 +429,19 @@ exports.commands = {
 			break;
 		case 'help':
 			if (!this.runBroadcast()) return;
-			this.sendReplyBox('The following is a list of league shop commands: <br />' +
-				'/leagueshop view/list - Shows a complete list of shop items.`<br />' +
-				'/leagueshop add [item name], [description], [price] - Adds an item to the shop.<br />' +
-				'/leagueshop delete/remove [item name] - Removes an item from the shop.<br />' +
-				'/leagueshop buy [item name] - Purchases an item from the shop.<br />' +
-				'/leagueshop viewlog [number of lines OR word to search for] - Views the last 15 lines in the shop log.<br />' +
-				'/leagueshop bank [username] - Sets the room bank to [username]. The room bank receives all funds from purchases in the shop.'
+			this.sendReplyBox('The following is a list of room shop commands: <br />' +
+				'/roomshop view/list - Shows a complete list of shop items.`<br />' +
+				'/roomshop add [item name], [description], [price] - Adds an item to the shop.<br />' +
+				'/roomshop delete/remove [item name] - Removes an item from the shop.<br />' +
+				'/roomshop buy [item name] - Purchases an item from the shop.<br />' +
+				'/roomshop viewlog [number of lines OR word to search for] - Views the last 15 lines in the shop log.<br />' +
+				'/roomshop bank [username] - Sets the room bank to [username]. The room bank receives all funds from purchases in the shop.'
 			);
 			break;
 		case 'setbank':
 		case 'bank':
-			if (user.userid !== room.founder && !user.can('seniorstaff')) return this.sendReply('/leagueshop - Access denied.');
-			if (params.length < 1) return this.sendReply('Usage: /leagueshop bank [username]');
+			if (user.userid !== room.founder && !user.can('seniorstaff')) return this.sendReply('/roomshop - Access denied.');
+			if (params.length < 1) return this.sendReply('Usage: /roomshop bank [username]');
 			let bank = params.shift();
 			room.shopBank = toId(bank);
 			room.chatRoomData.shopBank = room.shopBank;
@@ -427,14 +450,14 @@ exports.commands = {
 			break;
 		case 'log':
 		case 'viewlog':
-			if (!user.can('roommod', null, room)) return this.sendReply('/leagueshop - Access denied.');
+			if (!user.can('roommod', null, room)) return this.sendReply('/roomshop - Access denied.');
 			target = params.shift();
 			let lines = 0;
 			if (!target.match('[^0-9]')) {
 				lines = parseInt(target || 15);
 				if (lines > 100) lines = 100;
 			}
-			let filename = 'logs/leagueshop_' + room.id + '.txt';
+			let filename = 'logs/roomshop_' + room.id + '.txt';
 			let command = 'tail -' + lines + ' ' + filename;
 			let grepLimit = 100;
 			if (!lines || lines < 0) { // searching for a word instead
@@ -445,8 +468,8 @@ exports.commands = {
 
 			require('child_process').exec(command, function (error, stdout, stderr) {
 				if (error && stderr) {
-					user.popup('/leagueshop viewlog erred - the shop log does not support Windows');
-					console.log('/leagueshop viewlog error: ' + error);
+					user.popup('/roomshop viewlog erred - the shop log does not support Windows');
+					console.log('/roomshop viewlog error: ' + error);
 					return false;
 				}
 				if (lines) {
