@@ -231,7 +231,7 @@ exports.commands = {
 				this.sendReply("You have purchased a Orange Ticket.");
 				matched = true;
 				break;
-				case 'silverticket':
+			case 'silverticket':
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Silver Ticket.");
 				writeMoney(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Silver Ticket for " + prices[itemid] + " credits.");
@@ -311,7 +311,7 @@ exports.commands = {
 				this.sendReply("You have purchased a Sapphire Ticket.");
 				matched = true;
 				break;
-                        case 'magentaticket':
+			case 'magentaticket':
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Magenta Ticket.");
 				writeMoney(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Magenta Ticket for " + prices[itemid] + " credits.");
@@ -360,7 +360,7 @@ exports.commands = {
 			'<tr><td><button name="send" value="/claim blackticket">Black Ticket</button></td><td>Can be exchanged for 100 bucks</td><td>' + prices['blackticket'] + '</td></tr>' +
 			'<tr><td><button name="send" value="/claim rubyticket">Ruby ticket</button></td><td>Can be exchanged for 5 PSGO packs, 50 bucks and an avatar recolor</td><td>' + prices['rubyticket'] + '</td></tr>' +
 			'<tr><td><button name="send" value="/claim sapphireticket">Sapphire Ticket</button></td><td>Can be exchanged for 7 PSGO packs and 100 bucks</td><td>' + prices['sapphireticket'] + '</td></tr>' +
-                        '<tr><td><button name="send" value="/claim magentaticket">Magenta Ticket</button></td><td>Can be exchanged for a Custom Feature in the Room Intro for 5 days! Example: http://prntscr.com/bdq3uh</td><td>' + prices['magentaticket'] + '</td></tr>' +
+			'<tr><td><button name="send" value="/claim magentaticket">Magenta Ticket</button></td><td>Can be exchanged for a Custom Feature in the Room Intro for 5 days! Example: http://prntscr.com/bdq3uh</td><td>' + prices['magentaticket'] + '</td></tr>' +
 			'<tr><td><button name="send" value="/claim rainbowticket">Rainbow Ticket</button></td><td>Can be exchanged for 10 PSGO packs and 200 bucks</td><td>' + prices['rainbowticket'] + '</td></tr>' +
 			'<tr><td><button name="send" value="/claim emeraldticket">Emerald Ticket</button></td><td>Can be exchanged for 5 PSGO packs, 100 bucks, Marketplace Partner, Custom Title and Partner Badge</td><td>' + prices['emeraldticket'] + '</td></tr>' +
 			'</table><br />To buy an item from the shop, use /claim [item].<br />All sales final, no refunds will be provided.</center>'
