@@ -6,6 +6,8 @@ Wisp.database = new sqlite3.Database('config/users.db', function () {
 
 const fs = require('fs');
 const moment = require('moment');
+const geoip = require('geoip-ultralight');
+geoip.startWatchingDataUpdate();
 
 let shopTitle = 'Wisp Shop';
 let serverIp = '158.69.196.64';
@@ -610,6 +612,11 @@ exports.commands = {
 		let userGroup = (Config.groups[userSymbol] ? Config.groups[userSymbol].name : "Regular User");
 		let regdate = "(Unregistered)";
 		let friendCode = Db('friendcodes').has(userid) ? Db('friendcodes').get(userid) : false;
+		let flag = ' ';
+		if (targetUser) {
+			let country = geoip.lookupCountry(targetUser.latestIp);
+			if (country) flag = ' <img title = "' + country + '" src = "http://' + serverIp + ':' + Config.port + '/flags/' + country.toLowerCase() + '.gif">';
+		}
 
 		Economy.readMoney(userid, bucks => {
 			Wisp.regdate(userid, date => {
@@ -626,7 +633,7 @@ exports.commands = {
 				if (targetUser && targetUser.connected) lastOnline = '<font color=green>Currently Online</font>';
 				let profile = '';
 				profile += '<div style="float: left; width: 75%;"> <img src="' + avatar + '" height=80 width=80 align=left>';
-				profile += '&nbsp;<font color=#b30000><b>Name: </font>' + Wisp.nameColor(userid, true) + (title === "" ? "" : " (" + title + ")") + '<br />';
+				profile += '&nbsp;<font color=#b30000><b>Name: </font>' + Wisp.nameColor(userid, true) + (title === "" ? "" : " (" + title + ")") + flag + '<br />';
 				profile += '&nbsp;<font color=#b30000><b>Registered: </font></b>' + regdate + '<br />';
 				profile += '&nbsp;<font color=#b30000><b>Rank: </font></b>' + userGroup + (Users.vips[userid] ? ' (<font color=#6390F0><b>VIP User</b></font>)' : '') + '<br />';
 				if (bucks) profile += '&nbsp;<font color=#b30000><b>Bucks: </font></b>' + bucks + '<br />';
