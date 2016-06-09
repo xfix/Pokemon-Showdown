@@ -1307,6 +1307,7 @@ exports.commands = {
 			if (cmd === 'forcelock') {
 				let from = targetUser.deconfirm();
 				Monitor.log("[CrisisMonitor] " + name + " was locked by " + user.name + " and demoted from " + from.join(", ") + ".");
+				this.globalModlog("CRISISDEMOTE", targetUser, " from " + from.join(", "));
 			} else {
 				return this.sendReply("" + name + " is a confirmed user. If you are sure you would like to lock them use /forcelock.");
 			}
@@ -1369,6 +1370,7 @@ exports.commands = {
 			if (cmd === 'forcelock') {
 				let from = targetUser.deconfirm();
 				Monitor.log("[CrisisMonitor] " + name + " was locked by " + user.name + " and demoted from " + from.join(", ") + ".");
+				this.globalModlog("CRISISDEMOTE", targetUser, " from " + from.join(", "));
 			} else {
 				return this.sendReply("" + name + " is a confirmed user. If you are sure you would like to lock them use /forcelock.");
 			}
@@ -1455,6 +1457,7 @@ exports.commands = {
 			if (cmd === 'forceban') {
 				let from = targetUser.deconfirm();
 				Monitor.log("[CrisisMonitor] " + name + " was banned by " + user.name + " and demoted from " + from.join(", ") + ".");
+				this.globalModlog("CRISISDEMOTE", targetUser, " from " + from.join(", "));
 			} else {
 				return this.sendReply("" + name + " is a confirmed user. If you are sure you would like to ban them use /forceban.");
 			}
