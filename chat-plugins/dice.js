@@ -115,15 +115,18 @@ exports.commands = {
 	startdice: 'dicegame',
 	dicegame: function (target, room, user) {
 		if (room.id === 'lobby') return this.errorReply("This command cannot be used in the Lobby.");
-		if (!user.can('broadcast', null, room) && room.id !== 'gamechamber') return this.errorReply("You must be ranked + or higher in this room to start a game of dice outside the Game Chamber.");
+		if (!user.can('broadcast', null, room) && room.id !== 'casino') return this.errorReply("You must be ranked + or higher in this room to start a game of dice outside the Casino.");
 		if ((user.locked || room.isMuted(user)) && !user.can('bypassall')) return this.errorReply("You cannot use this command while unable to talk.");
 		if (room.dice) return this.errorReply("There is already a game of dice going on in this room.");
 
 		let amount = Number(target) || 1;
 		if (isNaN(target)) return this.errorReply('"' + target + '" isn\'t a valid number.');
 		if (target.includes('.') || amount < 1 || amount > 5000) return this.sendReply('The number of bucks must be between 1 and 5,000 and cannot contain a decimal.');
-
-		room.dice = new Dice(room, amount, user.name);
+		Economy.readMoney(user.userid, bucks => {
+			if (bucks < amount) return this.sendReply("You don't have " + amount + " " + (amount === 1 ? "buck" : "bucks") + ".");
+			room.dice = new Dice(room, amount, user.name);
+			this.parse("/joindice");
+		});
 	},
 
 	dicejoin: 'joindice',
