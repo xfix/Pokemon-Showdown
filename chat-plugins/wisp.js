@@ -594,7 +594,7 @@ exports.commands = {
 			this.errorReply("/hidetext - Access denied.");
 			return false;
 		}
-		if (targetUser.locked || Users.checkBanned(targetUser.latestIp)) {
+		if (targetUser.locked || Punishments.useridSearch(userid)) {
 			hidetype = 'hide|';
 		} else if ((room.bannedUsers[toId(name)] && room.bannedIps[targetUser.latestIp]) || user.can('rangeban')) {
 			hidetype = 'roomhide|';

@@ -1096,7 +1096,11 @@ exports.commands = {
 		}
 		let lastid = targetUser.getLastId();
 		this.add('|unlink|roomhide|' + lastid);
-		if (lastid !== toId(this.inputUsername)) this.add('|unlink|roomhide|' + toId(this.inputUsername));
+		this.add('|uhtmlchange|' + lastid + '|');
+		if (userid !== toId(this.inputUsername)) {
+			this.add('|unlink|roomhide|' + toId(this.inputUsername));
+			this.add('|uhtmlchange|' + toId(this.inputUsername) + '|');
+		}
 	},
 	roombanhelp: ["/roomban [username] - Bans the user from the room you are in. Requires: @ # & ~"],
 
