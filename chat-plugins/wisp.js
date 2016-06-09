@@ -5,11 +5,14 @@ const http = require('http');
 const fs = require('fs');
 const moment = require('moment');
 const nani = require('nani').init("niisama1-uvake", "llbgsBx3inTdyGizCPMgExBVmQ5fU");
+const Autolinker = require('autolinker');
+
 let amCache = {anime:{}, manga:{}};
 let colorCache = {};
 Wisp.customColors = {};
 let regdateCache = {};
 Users.vips = [];
+let Advertisements = {};
 
 Wisp.autoJoinRooms = {};
 try {
@@ -791,6 +794,49 @@ exports.commands = {
 				"/title delete, user - Deletes a users title.",
 				"/title view, user - Shows a users title [broadcastable]",
 			],
+
+	advertise: function (target, room, user, connection) {
+		if (room.id !== 'lobby') return this.sendReply("This command only works in the lobby.");
+		if (!target) return this.sendReply("Usage: /advertise [message] - Adds an advertisement to the advertisement queue.");
+		if (target.length > 250) return this.sendReply("Advertisements may not be longer than 250 characters.");
+		if (Users.ShadowBan.checkBanned(user)) return this.sendReply("Your message has been added to the advertisement queue. It will be broadcast in the lobby shortly.");
+		if (!this.canTalk()) return this.sendReply("You're unable to chat in this room.");
+		for (let u in user.ips) {
+			if (Advertisements[u]) {
+				return this.sendReply("You already have an advertisement in the queue. Please wait for it to be broadcast before adding another one.");
+			}
+		}
+
+		if (user.advertisementCooldown) {
+			let milliseconds = (Date.now() - user.advertisementCooldown);
+			let seconds = ((milliseconds / 1000) % 60);
+			let remainingTime = Math.round(seconds - (15 * 60));
+			if (((Date.now() - user.advertisementCooldown) <= 15 * 60 * 1000)) return this.sendReply("You must wait " + (remainingTime - remainingTime * 2) + " seconds before placing another advertisement.");
+		}
+		user.advertisementCooldown = Date.now();
+
+		let message = target;
+		if (Config.chatfilter) message = Config.chatfilter(message, user, room, connection);
+		if (!message) return;
+
+		if (!room.lastAdvertisement) {
+			room.add('|raw|<div class="infobox"><strong><font color=#2DA900>Advertisement: </font></strong> ' + Wisp.parseMessage(message) + ' - ' + Wisp.nameColor(user.name) + '</div>');
+			room.update();
+			room.lastAdvertisement = Date.now();
+			return;
+		}
+
+		if ((Date.now() - room.lastAdvertisement) >= 5 * 60 * 1000) {
+			room.add('|raw|<div class="infobox"><strong><font color=#2DA900>Advertisement: </font></strong> ' + Wisp.parseMessage(message) + ' - ' + Wisp.nameColor(user.name) + '</div>');
+			room.update();
+			room.lastAdvertisement = Date.now();
+			return;
+		}
+
+		queueAdvertisement(message, user.name, user.latestIp);
+		room.lastAdvertisement = Date.now();
+		return this.sendReply("Your message has been added to the advertisement queue. It will be broadcast in the lobby shortly.");
+	},
 };
 
 Object.assign(Wisp, {
@@ -1023,7 +1069,34 @@ Object.assign(Wisp, {
 			}
 		});
 	},
+
+	parseMessage: function (message) {
+		message = Tools.escapeHTML(message).replace(/&#x2f;/g, '/');
+		message = message.replace(/\_\_([^< ](?:[^<]*?[^< ])?)\_\_(?![^<]*?<\/a)/g, '<i>$1</i>'); // italics
+		message = message.replace(/\*\*([^< ](?:[^<]*?[^< ])?)\*\*/g, '<b>$1</b>'); // bold
+		message = message.replace(/\~\~([^< ](?:[^<]*?[^< ])?)\~\~/g, '<strike>$1</strike>'); // strikethrough
+		message = message.replace(/&lt;&lt;([a-z0-9-]+)&gt;&gt;/g, '&laquo;<a href="/$1" target="_blank">$1</a>&raquo;'); // <<roomid>>
+		message = Autolinker.link(message, {stripPrefix: false, phone: false, twitter: false});
+		return message;
+	},
 });
+
+function queueAdvertisement(message, user, ip) {
+	Advertisements[ip] = {message: message, user: user};
+}
+if (!Config.advertisementTimer) {
+	Config.advertisementTimer = setInterval(function () {
+		if (!Object.keys(Advertisements)[0]) return;
+		let ip = Object.keys(Advertisements)[0];
+		let message = Advertisements[ip].message;
+		let user = Advertisements[ip].user;
+		Rooms('lobby').add('|raw|<div class="infobox"><strong><font color="#2DA900">Advertisement: </font></strong> ' + Wisp.parseMessage(message) + ' - ' + Wisp.nameColor(user) + '</div>');
+		Rooms('lobby').update();
+		delete Advertisements[ip];
+	}, 5 * 60 * 1000);
+	Config.advertisementsLoaded = true;
+}
+
 
 function loadRegdateCache() {
 	try {

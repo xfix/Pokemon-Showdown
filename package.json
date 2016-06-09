@@ -5,6 +5,7 @@
   "version": "0.10.2",
   "dependencies": {
     "MD5": "^1.3.0",
+    "autolinker": "^0.26.0",
     "githubhook": "^1.6.1",
     "moment": "^2.13.0",
     "nani": "^1.2.0",
