@@ -107,6 +107,7 @@ exports.commands = {
 	},
 
 	gb: 'givebucks',
+	givemoney:'givebucks',
 	givebucks: function (target, room, user) {
 		if (!this.can('bucks')) return false;
 		if (!target) return this.sendReply("Usage: /givebucks [user], [amount]");
@@ -124,10 +125,17 @@ exports.commands = {
 		if (amount < 1) return this.sendReply("/givebucks - You can't give less than one buck.");
 
 		Economy.writeMoney(targetUser, amount);
-		this.sendReply(Tools.escapeHTML(targetUser) + " has received " + amount + ((amount === 1) ? " buck." : " bucks."));
+		if (Users(targetUser) && Users(targetUser).connected) {
+			Economy.readMoney(targetUser, money => {
+				Users.get(targetUser).popup('|html|You have received ' + amount + ' ' + (amount === 1 ? 'buck' : 'bucks') +
+				' from ' + Wisp.nameColor(user.userid, true) + '.<br />You now have a total of ' + money + (money === 1 ? ' buck.' : ' bucks.'));
+			});
+		}
+		this.sendReply(targetUser + " has received " + amount + ((amount === 1) ? " buck." : " bucks."));
 		Economy.logTransaction(user.name + " has given " + amount + ((amount === 1) ? " buck " : " bucks ") + " to " + targetUser);
 	},
 
+	takemoney:'takebucks',
 	takebucks: function (target, room, user) {
 		if (!this.can('bucks')) return false;
 		if (!target) return this.sendReply("Usage: /takebucks [user], [amount]");
@@ -145,6 +153,12 @@ exports.commands = {
 		if (amount < 1) return this.sendReply("/takebucks - You can't take less than one buck.");
 
 		Economy.writeMoney(targetUser, -amount);
+		if (Users(targetUser) && Users(targetUser).connected) {
+			Economy.readMoney(targetUser, money => {
+				Users.get(targetUser).popup('|html|' + Wisp.nameColor(user.userid, true) + ' has removed ' + amount + ' ' + (amount === 1 ? 'buck' : 'bucks') +
+				' from you.<br />You now have a total of ' + money + (money === 1 ? ' buck.' : ' bucks.'));
+			});
+		}
 		this.sendReply("You removed " + amount + ((amount === 1) ? " buck " : " bucks ") + " from " + Tools.escapeHTML(targetUser));
 		Economy.logTransaction(user.name + " has taken " + amount + ((amount === 1) ? " buck " : " bucks ") + " from " + targetUser);
 	},
@@ -168,9 +182,9 @@ exports.commands = {
 			if (money < amount) return this.sendReply("/transferbucks - You can't transfer more bucks than you have.");
 			Economy.writeMoney(user.userid, -amount, () => {
 				Economy.writeMoney(targetUser, amount, () => {
-					this.sendReply("You've sent " + amount + ((amount === 1) ? " buck " : " bucks ") + " to " + targetUser);
+					this.sendReply("You sent " + amount + ((amount === 1) ? " buck " : " bucks ") + " to " + targetUser);
 					Economy.logTransaction(user.name + " has transfered " + amount + ((amount === 1) ? " buck " : " bucks ") + " to " + targetUser);
-					if (Users.getExact(targetUser) && Users.getExact(targetUser)) Users.getExact(targetUser).popup(user.name + " has sent you " + amount + ((amount === 1) ? " buck." : " bucks."));
+					if (Users.getExact(targetUser) && Users.getExact(targetUser)) Users.getExact(targetUser).popup('|modal|' + Wisp.nameColor(user.name, true) + " has sent you " + amount + ((amount === 1) ? " buck." : " bucks."));
 				});
 			});
 		});
