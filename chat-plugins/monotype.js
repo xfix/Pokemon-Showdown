@@ -40,11 +40,11 @@ Wisp.givePoints = function (userid, size, room) {
 	userid = toId(userid);
 	let points = 0;
 	if (size > 3 && size < 8) points = 1;
-	if (size > 7 && size < 16) points = 2;
-	if (size > 15 && size < 24) points = 4;
-	if (size > 23 && size < 32) points = 8;
-	if (size > 31 && size < 40) points = 12;
-	if (size > 39) points = 20;
+	if (size > 7 && size < 17) points = 3;
+	if (size > 16 && size < 25) points = 5;
+	if (size > 24 && size < 33) points = 9;
+	if (size > 32 && size < 41) points = 15;
+	if (size > 40) points = 25;
 	writePoints(userid, points);
 	room.add("|raw|<b>" + Wisp.nameColor(userid) + " has won <font color=#b30000>" + points + "</font>" + (points === 1 ? " point " : " points ") + "for the monoladder.</b>").update();
 };
