@@ -18,7 +18,7 @@ class Wheel {
 	}
 	endDisplay(winner, winnings) {
 		return '|raw|<div style="padding: 5px; background-color: #FFFFCC; color: #DEA431; border: solid, 1px, #DEA431; font-size: 15px;">The wheel ' +
-		'has landed on: <em><strong>' + this.wheelValue + '</strong></em><br />' +
+		'has landed on: <em><strong>' + this.wheelValue + '</strong></em><br />Negative Numbers = Spinner Wins<br />Positive Numbers = Host Wins<br /></font>' +
 		Wisp.nameColor(winner, true) + ' has won ' + winnings + '</div>';
 	}
 }
@@ -66,7 +66,7 @@ exports.commands = {
 				if (!checkMoney(targets[1])) return this.errorReply('Multipliers ' + isMoney(targets[1]) + '.');
 				room.wheel = new Wheel(parseInt(targets[1]), user.userid, wheels[targets[0]], spinWheel(wheels[targets[0]]));
 				room.add(room.wheel.initDisplay(target)); //make look fancy later
-				room.add('|raw|<b><font color="blue">' + user.name + ' is hosting the wheel.</font></b>');
+				room.add('|raw|<b><font color="orange">' + Wisp.nameColor(user, true) + ' is hosting the wheel.</font></b>');
 				room.update();
 				Economy.writeMoney(user.userid, (room.wheel.wheel[room.wheel.wheel.length - 1] * room.wheel.wheelMulti) * -1);
 			});
@@ -77,11 +77,12 @@ exports.commands = {
 			if (!room.wheel) return this.errorReply('There is no wheel to spin.');
 			if (room.wheel.joined) return this.errorReply("Someone else joined this wheel.");
 			if (user.userid === room.wheel.wheelHost) return this.errorReply('You cannot join a game you are hosting.');
-			room.wheel.joined = true;
 			Economy.readMoney(user.userid, money => {
+				
 				if (room.wheel.wheel[room.wheel.wheel.length - 1] * room.wheel.wheelMulti > money) return this.errorReply('You do not have enough bucks to spin this wheel');
+				room.wheel.joined = true;
 				Economy.writeMoney(user.userid, (room.wheel.wheel[room.wheel.wheel.length - 1] * room.wheel.wheelMulti) * -1, function () {
-					room.add('|raw|<b><font color="blue">' + user.name + ' has spun the wheel.</font></b>');
+					room.add('|raw|<b><font color="oramge">' + Wisp.nameColor(user, true) + ' has spun the wheel.</font></b>');
 					let winnings = room.wheel.wheelValue;
 					if (winnings > 0) winnings = room.wheel.wheelValue * room.wheel.wheelMulti;
 					if (winnings < 0) winnings = (room.wheel.wheelValue * -1) * room.wheel.wheelMulti;
@@ -112,14 +113,14 @@ exports.commands = {
 		end: function (target, room, user) {
 			if (!room.wheel) return this.errorReply('There is no wheel to end.');
 			if (!this.canTalk()) return this.errorReply("You may not end the wheel while unable to speak.");
-			if (user.userid !== room.wheel.wheelHost && !this.can('ban', null, room)) return this.errorReply('Access Denied');
+			if (user.userid !== room.wheel.wheelHost && !this.can('broadcast', null, room)) return this.errorReply('Access Denied');
 			Economy.writeMoney(room.wheel.wheelHost, Math.abs(room.wheel.wheel[room.wheel.wheel.length - 1]) * room.wheel.wheelMulti);
 			delete room.wheel;
 			room.add('|raw|<font color="orange">The WOM was ended by <b>' + Wisp.nameColor(user, true) + '</b>.</font>'); //html needed
 		},
 		help: function (target, room, user) {
 			if (!this.runBroadcast()) return;
-			this.sendReplyBox('<center>Wheels of Misfortune Commands:</center><hr />' +
+			this.sendReplyBox('<center>Wheels of Misfortune Commands- Created by Bandi and jd </center><hr />' +
 			'More detailed WOM documentation <a href="http://pastebin.com/fKExymMZ">here</a><br />' +
 			'/wheel list - Shows the list of wheels with their names and numbers<br />' +
 			'/wheel create [wheelname], [multiplier] - Starts a wheel game<br />' +
