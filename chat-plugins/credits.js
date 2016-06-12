@@ -25,15 +25,15 @@ let prices = {
 	"emeraldticket": 600,
 };
 
-function readMoney(userid, callback) {
+Wisp.readCredits = function (userid, callback) {
 	if (!callback) return false;
 	userid = toId(userid);
 	Wisp.database.all("SELECT * FROM users WHERE userid=$userid", {$userid: userid}, function (err, rows) {
 		if (err) return console.log(err);
 		callback(((rows[0] && rows[0].credits) ? rows[0].credits : 0));
 	});
-}
-function writeMoney(userid, amount, callback) {
+};
+Wisp.writeCredits = function (userid, amount, callback) {
 	userid = toId(userid);
 	Wisp.database.all("SELECT * FROM users WHERE userid=$userid", {$userid: userid}, function (err, rows) {
 		if (rows.length < 1) {
@@ -49,7 +49,7 @@ function writeMoney(userid, amount, callback) {
 			});
 		}
 	});
-}
+};
 function logTransaction(message) {
 	if (!message) return false;
 	fs.appendFile('logs/credit.log', '[' + new Date().toUTCString() + '] ' + message + '\n');
@@ -96,7 +96,7 @@ exports.commands = {
 		if (userid.length < 1) return this.sendReply("/creditatm - Please specify a user.");
 		if (userid.length > 19) return this.sendReply("/creditatm - [user] can't be longer than 19 characters.");
 
-		readMoney(userid, cred => {
+		Wisp.readCredits(userid, cred => {
 			this.sendReplyBox(Tools.escapeHTML(target) + " has " + cred + ((cred === 1) ? " credits." : " credits."));
 			if (this.broadcasting) room.update();
 		});
@@ -120,7 +120,7 @@ exports.commands = {
 		if (amount > 1000) return this.sendReply("/givecredits - You can't give more than 1000 credits at a time.");
 		if (amount < 1) return this.sendReply("/givecredits - You can't give less than one credits.");
 
-		writeMoney(targetUser, amount);
+		Wisp.writeCredits(targetUser, amount);
 		this.sendReply(Tools.escapeHTML(targetUser) + " has received " + amount + ((amount === 1) ? " credits." : " credits."));
 		logTransaction(user.name + " has given " + amount + ((amount === 1) ? " credit " : " credits ") + " to " + targetUser);
 		Rooms.get('marketplace').add('|raw|' + (user.name + " has given " + amount + ((amount === 1) ? " credit " : " credits ") + " to " + targetUser + "."));
@@ -146,7 +146,7 @@ exports.commands = {
 		if (amount > 1000) return this.sendReply("/takecredits - You can't take more than 1000 credits at a time.");
 		if (amount < 1) return this.sendReply("/takecredits - You can't take less than one credit.");
 
-		writeMoney(targetUser, -amount);
+		Wisp.writeCredits(targetUser, -amount);
 		this.sendReply("You removed " + amount + ((amount === 1) ? " credit " : " credits ") + " from " + Tools.escapeHTML(targetUser));
 		logTransaction(user.name + " has taken " + amount + ((amount === 1) ? " credit " : " credits ") + " from " + targetUser);
 		Rooms.get('marketplace').add('|raw|' + user.name + " has taken " + amount + ((amount === 1) ? " credit " : " credits ") + " from " + targetUser + ".");
@@ -170,10 +170,10 @@ exports.commands = {
 		if (amount > 1000) return this.sendReply("/transfercredits - You can't transfer more than 1000 credits at a time.");
 		if (amount < 1) return this.sendReply("/transfercredits - You can't transfer less than one credit.");
 
-		readMoney(user.userid, cred => {
+		Wisp.readCredits(user.userid, cred => {
 			if (cred < amount) return this.sendReply("/transfercredits - You can't transfer more credits than you have.");
-			writeMoney(user.userid, -amount, () => {
-				writeMoney(targetUser, amount, () => {
+			Wisp.writeCredits(user.userid, -amount, () => {
+				Wisp.writeCredits(targetUser, amount, () => {
 					this.sendReply("You've sent " + amount + ((amount === 1) ? " credit " : " credits ") + " to " + targetUser);
 					logTransaction(user.name + " has transfered " + amount + ((amount === 1) ? " credit " : " credits ") + " to " + targetUser);
 					if (Users.getExact(targetUser) && Users.getExact(targetUser)) Users.getExact(targetUser).popup(user.name + " has sent you " + amount + ((amount === 1) ? " credit." : " credits."));
@@ -192,11 +192,11 @@ exports.commands = {
 
 		if (!prices[itemid]) return this.sendReply("/claim " + item + " - Item not found.");
 
-		readMoney(user.userid, userCred => {
+		Wisp.readCredits(user.userid, userCred => {
 			switch (itemid) {
 			case 'roseticket':
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Rose Ticket.");
-				writeMoney(user.userid, prices[itemid] * -1);
+				Wisp.writeCredits(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Rose Ticket for " + prices[itemid] + " credits.");
 				Wisp.messageSeniorStaff(user.name + " has purchased a Rose Ticket.");
 				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Rose Ticket.**");
@@ -205,7 +205,7 @@ exports.commands = {
 				break;
 			case 'redticket':
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Red Ticket.");
-				writeMoney(user.userid, prices[itemid] * -1);
+				Wisp.writeCredits(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Red Ticket for " + prices[itemid] + " credits.");
 				Wisp.messageSeniorStaff(user.name + " has purchased a Red Ticket.");
 				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Red Ticket.**");
@@ -214,7 +214,7 @@ exports.commands = {
 				break;
 			case 'cyanticket':
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Cyan Ticket.");
-				writeMoney(user.userid, prices[itemid] * -1);
+				Wisp.writeCredits(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Cyan Ticket for " + prices[itemid] + " credits.");
 				Wisp.messageSeniorStaff(user.name + " has purchased a Cyan Ticket.");
 				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Cyan Ticket.**");
@@ -223,7 +223,7 @@ exports.commands = {
 				break;
 			case 'blueticket':
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Blue Ticket.");
-				writeMoney(user.userid, prices[itemid] * -1);
+				Wisp.writeCredits(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Blue Ticket for " + prices[itemid] + " credits.");
 				Wisp.messageSeniorStaff(user.name + " has purchased a Blue Ticket.");
 				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Blue Ticket.**");
@@ -232,7 +232,7 @@ exports.commands = {
 				break;
 			case 'orangeticket':
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase an Orange Ticket.");
-				writeMoney(user.userid, prices[itemid] * -1);
+				Wisp.writeCredits(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Orange Ticket for " + prices[itemid] + " credits.");
 				Wisp.messageSeniorStaff(user.name + " has purchased an Orange Ticket.");
 				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Orange Ticket.**");
@@ -241,7 +241,7 @@ exports.commands = {
 				break;
 			case 'silverticket':
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Silver Ticket.");
-				writeMoney(user.userid, prices[itemid] * -1);
+				Wisp.writeCredits(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Silver Ticket for " + prices[itemid] + " credits.");
 				Wisp.messageSeniorStaff(user.name + " has purchased a Silver Ticket.");
 				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Silver Ticket.**");
@@ -250,7 +250,7 @@ exports.commands = {
 				break;
 			case 'violetticket':
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Violet Ticket.");
-				writeMoney(user.userid, prices[itemid] * -1);
+				Wisp.writeCredits(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Violet Ticket for " + prices[itemid] + " credits.");
 				Wisp.messageSeniorStaff(user.name + " has purchased a Violet Ticket.");
 				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Violet Ticket.**");
@@ -259,7 +259,7 @@ exports.commands = {
 				break;
 			case 'yellowticket':
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Yellow Ticket.");
-				writeMoney(user.userid, prices[itemid] * -1);
+				Wisp.writeCredits(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Yellow Ticket for " + prices[itemid] + " credits.");
 				Wisp.messageSeniorStaff(user.name + " has purchased a Yellow Ticket.");
 				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Yellow Ticket.**");
@@ -268,7 +268,7 @@ exports.commands = {
 				break;
 			case 'whiteticket':
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a White Ticket.");
-				writeMoney(user.userid, prices[itemid] * -1);
+				Wisp.writeCredits(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a White Ticket for " + prices[itemid] + " credits.");
 				Wisp.messageSeniorStaff(user.name + " has purchased a White Ticket.");
 				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a White Ticket.**");
@@ -277,7 +277,7 @@ exports.commands = {
 				break;
 			case 'greenticket':
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Green Ticket.");
-				writeMoney(user.userid, prices[itemid] * -1);
+				Wisp.writeCredits(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Green Ticket for " + prices[itemid] + " credits.");
 				Wisp.messageSeniorStaff(user.name + " has purchased a Green Ticket.");
 				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Green Ticket.**");
@@ -286,7 +286,7 @@ exports.commands = {
 				break;
 			case 'crystalticket':
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Crystal Ticket.");
-				writeMoney(user.userid, prices[itemid] * -1);
+				Wisp.writeCredits(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Crystal Ticket for " + prices[itemid] + " credits.");
 				Wisp.messageSeniorStaff(user.name + " has purchased a Crystal Ticket.");
 				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Crystal Ticket.**");
@@ -295,7 +295,7 @@ exports.commands = {
 				break;
 			case 'goldticket':
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Gold Ticket.");
-				writeMoney(user.userid, prices[itemid] * -1);
+				Wisp.writeCredits(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Gold Ticket for " + prices[itemid] + " credits.");
 				Wisp.messageSeniorStaff(user.name + " has purchased a Gold Ticket.");
 				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Gold Ticket.**");
@@ -303,7 +303,7 @@ exports.commands = {
 				break;
 			case 'blackticket':
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Black Ticket.");
-				writeMoney(user.userid, prices[itemid] * -1);
+				Wisp.writeCredits(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Black Ticket for " + prices[itemid] + " credits.");
 				Wisp.messageSeniorStaff(user.name + " has purchased a Black Ticket.");
 				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Black Ticket.**");
@@ -312,7 +312,7 @@ exports.commands = {
 				break;
 			case 'rubyticket':
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Ruby Ticket.");
-				writeMoney(user.userid, prices[itemid] * -1);
+				Wisp.writeCredits(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Ruby Ticket for " + prices[itemid] + " credits.");
 				Wisp.messageSeniorStaff(user.name + " has purchased a Ruby Ticket.");
 				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Ruby Ticket.**");
@@ -321,7 +321,7 @@ exports.commands = {
 				break;
 			case 'sapphireticket':
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Sapphire Ticket.");
-				writeMoney(user.userid, prices[itemid] * -1);
+				Wisp.writeCredits(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Sapphire Ticket for " + prices[itemid] + " credits.");
 				Wisp.messageSeniorStaff(user.name + " has purchased a Sapphire Ticket.");
 				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Sapphire Ticket.**");
@@ -330,7 +330,7 @@ exports.commands = {
 				break;
 			case 'magentaticket':
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Magenta Ticket.");
-				writeMoney(user.userid, prices[itemid] * -1);
+				Wisp.writeCredits(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Magenta Ticket for " + prices[itemid] + " credits.");
 				Wisp.messageSeniorStaff(user.name + " has purchased a Magenta Ticket.");
 				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Magenta Ticket.**");
@@ -339,7 +339,7 @@ exports.commands = {
 				break;
 			case 'rainbowticket':
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase a Rainbow Ticket.");
-				writeMoney(user.userid, prices[itemid] * -1);
+				Wisp.writeCredits(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Rainbow Ticket for " + prices[itemid] + " credits.");
 				Wisp.messageSeniorStaff(user.name + " has purchased a Rainbow Ticket.");
 				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Rainbow Ticket.**");
@@ -348,7 +348,7 @@ exports.commands = {
 				break;
 			case 'emeraldticket':
 				if (userCred < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userCred) + " more credits to purchase an Emerald Ticket.");
-				writeMoney(user.userid, prices[itemid] * -1);
+				Wisp.writeCredits(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a Emerald Ticket for " + prices[itemid] + " credits.");
 				Wisp.messageSeniorStaff(user.name + " has purchased an Emerald Ticket.");
 				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a Rainbow Ticket.**");
