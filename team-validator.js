@@ -130,10 +130,11 @@ class Validator {
 			set.level = maxLevel;
 		}
 
-		let nameTemplate = tools.getTemplate(set.name);
+		/* let nameTemplate = tools.getTemplate(set.name);
 		if (nameTemplate.exists && nameTemplate.name.toLowerCase() === set.name.toLowerCase()) {
 			set.name = null;
-		}
+		} */ 
+		// above needs to be removed for Cross Evolution.
 		set.name = set.name || set.baseSpecies;
 		let name = set.species;
 		if (set.species !== set.name && set.baseSpecies !== set.name) name = set.name + " (" + set.species + ")";
