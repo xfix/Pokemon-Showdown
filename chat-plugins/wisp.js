@@ -752,6 +752,7 @@ exports.commands = {
 
 		switch (toId(cmd)) {
 		case "set":
+			if (!this.can('title')) return false;
 			if (!targets[2]) return this.parse("/help title");
 			if (!Users(targetUser)) return this.errorReply('"' + targetUser + '" is not online.');
 			if (title.length < 1) return this.errorReply("Title must be at least one character long.");
@@ -765,6 +766,7 @@ exports.commands = {
 			Wisp.messageSeniorStaff("/html " + Wisp.nameColor(user.name, true) + " has set " + Wisp.nameColor(targetUser, true) + "'s user title to " + title + ".");
 			break;
 		case "delete":
+			if (!this.can('title')) return false;
 			if (!targets[1]) return this.parse("/help title");
 			Wisp.getTitle(targetUser, title => {
 				if (title === "") return this.sendReply(targetUser + " does not have a title.");
