@@ -15,8 +15,11 @@ Wisp.updateTourLadder = function (p1, p2, result, room) {
 		//Messy Elo calcs, pretty much just ripped out of ladders.js
 		let K1 = 50, K2 = 50;
 		if (p1elo < 1200) {
-			if (result === 'loss') K1 = 10 + (p1elo - 1000) * 40 / 200;
-			else if (result === 'win') K1 = 90 - (p1elo - 1000) * 40 / 200;
+			if (result === 'loss') {
+				K1 = 10 + (p1elo - 1000) * 40 / 200;
+			} else if (result === 'win') {
+				K1 = 90 - (p1elo - 1000) * 40 / 200;
+			}
 		} else if (p1elo > 1350) {
 			K1 = 40;
 		} else if (p1elo > 1600) {
@@ -24,8 +27,11 @@ Wisp.updateTourLadder = function (p1, p2, result, room) {
 		}
 
 		if (p2elo < 1200) {
-			if (result === 'win') K2 = 10 + (p2elo - 1000) * 40 / 200;
-			else if (result === 'loss') K2 = 90 - (p2elo - 1000) * 40 / 200;
+			if (result === 'win') {
+				K2 = 10 + (p2elo - 1000) * 40 / 200;
+			} else if (result === 'loss') {
+				K2 = 90 - (p2elo - 1000) * 40 / 200;
+			}
 		} else if (p2elo > 1350) {
 			K2 = 40;
 		} else if (p2elo > 1600) {
@@ -74,10 +80,10 @@ Wisp.updateTourLadder = function (p1, p2, result, room) {
 			});
 		});
 	});
-}
+};
 Wisp.addTourWin = function (user) {
 	Wisp.tourLadder.run("UPDATE tourladder SET tourwins = tourwins + 1 WHERE userid = '" + toId(user) + "';");
-}
+};
 
 exports.commands = {
 	tourelo: 'tourladder',
@@ -103,8 +109,11 @@ exports.commands = {
 				table += '</table></center>';
 				if (this.broadcasting && users.filter(player => player.elo > 1000).length > 10) table += '<center><button name = "send" value = "/tourladder" style = "margin-top: 2px"><small>Click to see the full ladder</small></button></center>';
 
-				if (this.broadcasting) this.sendReplyBox(table);
-				else this.popupReply('|html|' + table);
+				if (this.broadcasting) {
+					this.sendReplyBox(table);
+				} else {
+					this.popupReply('|html|' + table);
+				}
 				room.update();
 			});
 			return;
@@ -112,8 +121,11 @@ exports.commands = {
 		target = (Users.getExact(target) ? Users.getExact(target).name : target);
 		Wisp.tourLadder.all("SELECT elo FROM tourladder WHERE userid = '" + toId(target) + "';", (err, users) => {
 			if (err) return console.log(err);
-			if (!users.length) this.sendReplyBox(target + ' has not played any rated tournaments yet.');
-			else this.sendReplyBox(target + '\'s Tournament Elo is <b>' + Math.round(users[0].elo) + '</b>.');
+			if (!users.length) {
+				this.sendReplyBox(target + ' has not played any rated tournaments yet.');
+			} else {
+				this.sendReplyBox(target + '\'s Tournament Elo is <b>' + Math.round(users[0].elo) + '</b>.');
+			}
 			room.update();
 		});
 	},
@@ -125,8 +137,11 @@ exports.commands = {
 		Wisp.tourLadder.all("SELECT COUNT(*) FROM tourladder;", (err, count) => {
 			if (err) return console.log(err);
 			count = count[0]['COUNT(*)'];
-			if (!count) this.sendReplyBox('No rated tournaments have been played yet.');
-			else this.sendReplyBox('<b>' + count + '</b> ' + (count === 1 ? 'user has' : 'users have') + ' participated in rated tournaments.');
+			if (!count) {
+				this.sendReplyBox('No rated tournaments have been played yet.');
+			} else {
+				this.sendReplyBox('<b>' + count + '</b> ' + (count === 1 ? 'user has' : 'users have') + ' participated in rated tournaments.');
+			}
 			room.update();
 		});
 	},
@@ -151,4 +166,4 @@ exports.commands = {
 			});
 		});
 	},
-}
+};

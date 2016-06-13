@@ -28,7 +28,7 @@ exports.BattleScripts = {
 		let template = this.getMixedTemplate(pokemon.originalSpecies, pokemon.canMegaEvo);
 		let side = pokemon.side;
 
-		// Pokémon affected by Sky Drop cannot mega evolve. Enforce it here for now.
+		// Pokï¿½mon affected by Sky Drop cannot mega evolve. Enforce it here for now.
 		let foeActive = side.foe.active;
 		for (let i = 0; i < foeActive.length; i++) {
 			if (foeActive[i].volatiles['skydrop'] && foeActive[i].volatiles['skydrop'].source === pokemon) {
@@ -108,5 +108,5 @@ exports.BattleScripts = {
 		if (megaTemplate.isMega) deltas.isMega = true;
 		if (megaTemplate.isPrimal) deltas.isPrimal = true;
 		return deltas;
-	}
+	},
 };

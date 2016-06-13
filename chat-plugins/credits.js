@@ -152,8 +152,7 @@ exports.commands = {
 		Rooms.get('marketplace').add('|raw|' + user.name + " has taken " + amount + ((amount === 1) ? " credit " : " credits ") + " from " + targetUser + ".");
 		if (Users.get(targetUser) && Users.get(targetUser).connected) {
 			Users.get(targetUser).popup(user.name + " has taken " + amount + ((amount === 1) ? " credit " : " credits from you."));
-		}	
-	
+		}
 	},
 
 	transfercredits: function (target, room, user) {
@@ -272,8 +271,8 @@ exports.commands = {
 				writeMoney(user.userid, prices[itemid] * -1);
 				logTransaction(user.name + " has purchased a White Ticket for " + prices[itemid] + " credits.");
 				Wisp.messageSeniorStaff(user.name + " has purchased a White Ticket.");
- 				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a White Ticket.**");
- 				this.sendReply("You have purchased a White Ticket.");
+				Rooms.get('marketplacestaff').add('|c|~Credit Shop Alert|**' + user.name + " has purchased a White Ticket.**");
+				this.sendReply("You have purchased a White Ticket.");
 				matched = true;
 				break;
 			case 'greenticket':
@@ -387,7 +386,6 @@ exports.commands = {
 			'<tr><td><button name="send" value="/claim emeraldticket">Emerald Ticket</button></td><td>Can be exchanged for 5 PSGO packs, 100 bucks, Marketplace Partner, Custom Title and Partner Badge</td><td>' + prices['emeraldticket'] + '</td></tr>' +
 			'</table><br />To buy an item from the shop, use /claim [item].<br />All sales final, no refunds will be provided.</center>'
 		);
-
 	},
 
 	credits: function (target, room, user) {

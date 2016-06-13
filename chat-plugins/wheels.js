@@ -78,7 +78,6 @@ exports.commands = {
 			if (room.wheel.joined) return this.errorReply("Someone else joined this wheel.");
 			if (user.userid === room.wheel.wheelHost) return this.errorReply('You cannot join a game you are hosting.');
 			Economy.readMoney(user.userid, money => {
-				
 				if (room.wheel.wheel[room.wheel.wheel.length - 1] * room.wheel.wheelMulti > money) return this.errorReply('You do not have enough bucks to spin this wheel');
 				room.wheel.joined = true;
 				Economy.writeMoney(user.userid, (room.wheel.wheel[room.wheel.wheel.length - 1] * room.wheel.wheelMulti) * -1, function () {

@@ -159,7 +159,7 @@ const mainColors = {
 	'vexeniv': 'vexenx',
 	'ayanosredscarf': 'ezichqog',
 	'penquin': 'privatepenquin',
-	'cathy': '' //{color: '#ff5cb6'}
+	'cathy': '', //{color: '#ff5cb6'}
 };
 
 const polltiers = ['Random Battle', 'Anything Goes', 'Ubers', 'OverUsed', 'Underused',
