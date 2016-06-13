@@ -544,6 +544,8 @@ exports.commands = {
 		this.parse('/poll create Tier for the next tournament?, ' + polltiers.join(', '));
 	},
 
+	clearall: 'clearroom',
+	cleer: 'clearroom',
 	clearroom:  function (target, room, user) {
 		if (!this.can('clearroom', null, room)) return false;
 		if (room.battle) return this.sendReply("You cannot clearall in battle rooms.");
