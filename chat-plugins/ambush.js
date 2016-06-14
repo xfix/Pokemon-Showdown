@@ -227,13 +227,14 @@ let commands = {
 
 exports.commands = {
 	ambush: commands,
+	fire: 'shoot',
 	shoot: commands.fire,
 	ambushhelp: [
 		'/ambush start [seconds] - Starts a game of ambush in the room. The first round will begin after the mentioned number of seconds (1 minute by default). Requires + or higher to use.',
 		'/ambush join/leave - Joins/Leaves a game of ambush.',
 		'/ambush proceed - Forcibly starts the first round of the game. Requires + or higher to use',
 		'/ambush dq [user] - Disqualifies a player from a game of ambush. Requires % or higher to use',
-		'/ambush shoot [user] - Shoots another player (you can shoot yourself too)',
+		'/ambush shoot/fire [user] - Shoots another player (you can shoot yourself too)',
 		'/ambush end - Forcibly ends a game of ambush. Requires % or higher to use.',
 		'/ambush rules - Displays the rules of the game.',
 	],
