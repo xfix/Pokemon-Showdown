@@ -2209,6 +2209,7 @@ exports.Formats = [
  
             // That was the easy checks done
             let template = this.getTemplate(set.species);
+			template = this.getTemplate(template.baseSpecies);
             if (!template.evos.length) return ["" + set.species + " cannot cross evolve because it doesn't evolve."];
             let crossTemplate = this.getTemplate(set.name);
             if (!crossTemplate.exists) return;
@@ -2317,8 +2318,8 @@ exports.Formats = [
 
 		searchShow: false,
 		ruleset: ['Pokemon', 'Team Preview', 'Standard'],
-		banlist: ['Swoobat'],
-		validateTeam: function(team, format) {
+		banlist: ['Swoobat', 'Ignore Alphabet Moves'],
+		onValidateTeam: function(team, format) {
 			let letters = {};
 			let letter = '';
 			for (let i = 0; i < team.length; i++) {

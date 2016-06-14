@@ -545,6 +545,10 @@ class Validator {
 		let format = (lsetData.format || (lsetData.format = {}));
 		let alreadyChecked = {};
 		let level = set.level || 100;
+		let alphabetCupLetter = null;
+		if (format.banlistTable && format.banlistTable['ignorealphabetmoves']) {
+			alphabetCupLetter = template.speciesid.charAt(0);
+		}
 
 		let incompatibleAbility = false;
 		let isHidden = false;
@@ -593,6 +597,8 @@ class Validator {
 				if (template.baseSpecies === 'Hoopa') types = ['Psychic', 'Ghost', 'Dark'];
 				if (types.includes(move.type)) return false;
 			}
+			// alphabet cup hack to do the same
+			if (alphabetCupLetter && alphabetCupLetter === Tools.getMove(move).id.slice(0,1) && Tools.getMove(move).id !== 'sketch') return false;
 			if (!template.learnset) {
 				if (template.baseSpecies !== template.species) {
 					// forme without its own learnset
