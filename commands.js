@@ -984,16 +984,19 @@ exports.commands = {
 			(Config.groups[b] || {rank:0}).rank - (Config.groups[a] || {rank:0}).rank
 		).map(r => {
 			let roomRankList = rankLists[r].sort();
-			roomRankList = roomRankList.map(s => s in targetRoom.users ? "**" + s + "**" : s);
-			return (Config.groups[r] ? Config.groups[r].name + "s (" + r + ")" : r) + ":\n" + roomRankList.join(", ");
+			roomRankList = roomRankList.map(s => ((Users(s) && Users(s).connected) ? Wisp.nameColor(s, true) : Wisp.nameColor(s)));
+			return (Config.groups[r] ? Tools.escapeHTML(Config.groups[r].name) + "s (" + Tools.escapeHTML(r) + ")" : r) + ":\n" + roomRankList.join(", ");
 		});
 
 		if (!buffer.length) {
 			connection.popup("The room '" + targetRoom.title + "' has no auth." + userLookup);
 			return;
 		}
+		if (targetRoom.founder) {
+			buffer.unshift((targetRoom.founder ? "Room Founder:\n" + ((Users(targetRoom.founder) && Users(targetRoom.founder).connected) ? Wisp.nameColor(targetRoom.founder, true) : Wisp.nameColor(targetRoom.founder)) : ''));
+		}
 		if (targetRoom !== room) buffer.unshift("" + targetRoom.title + " room auth:");
-		connection.popup((targetRoom.founder ? "Room Founder:\n" + (targetRoom.users[targetRoom.founder] ? "**" + targetRoom.founder + "**" : targetRoom.founder) + "\n\n" : '') + buffer.join("\n\n") + userLookup);
+		connection.send("|popup||html|" + buffer.join("\n\n") + userLookup);
 	},
 
 	userauth: function (target, room, user, connection) {
