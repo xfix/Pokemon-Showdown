@@ -51,7 +51,7 @@ exports.commands = {
 			if (ranks.includes(rank)) {
 				let name = Users.usergroups[u].substr(1);
 				if (!rankLists[rank]) rankLists[rank] = [];
-				if (name) rankLists[rank].push(name);
+				if (name) rankLists[rank].push(Wisp.nameColor(name, (Users(name) && Users(name).connected)));
 			}
 		}
 
@@ -62,7 +62,7 @@ exports.commands = {
 		);
 
 		if (!buffer.length) return connection.popup("This server has no global authority.");
-		connection.popup(buffer.join("\n\n"));
+		connection.send("|popup||html|" + buffer.join("\n\n"));
 	},
 	authhelp: ["/auth - Show global staff for the server.",
 		"/auth [room] - Show what roomauth a room has.",
