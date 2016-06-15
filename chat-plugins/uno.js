@@ -402,7 +402,7 @@ exports.commands = {
 		let self = this;
 		switch (action) {
 		case 'new':
-			if (!this.can('mute', null, room)) return false;
+			if (!this.can('minigame', null, room)) return false;
 			if (room.uno) return this.errorReply("There is already a game of UNO being played in this room.");
 			let pot = null;
 			//if (parseInt(parts[0])) pot = parseInt(parts[0]);
@@ -481,7 +481,7 @@ exports.commands = {
 			break;
 		case 'start':
 			if (!room.uno || room.uno.start) return this.errorReply("No game of UNO in this room to start.");
-			if (!this.can('mute', null, room)) return this.errorReply("You must be % or higher to start a game of UNO.");
+			if (!this.can('minigame', null, room)) return this.errorReply("You must be % or higher to start a game of UNO.");
 			if (room.uno.list.length < 2) return this.errorReply("There aren't enough players to start!");
 			this.privateModCommand(user.name + " has started the game");
 			//start the game!
