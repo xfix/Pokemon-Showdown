@@ -55,7 +55,7 @@ function checkMoney(money) {
 exports.commands = {
 	wheel: {
 		create: function (target, room, user) {
-			if (room.id !== 'casino') return this.errorReply("This game may not be played outside of the casino.");
+			if (room.id !== 'casino' && room.id !== 'coldfrontcasino') return this.errorReply("This game may not be played outside of a casino.");
 			if (!target || target.indexOf(',') < 0) return this.parse('/wheel help');
 			let targets = target.split(",");
 			if (room.wheel) return this.errorReply('There is already a wheel active in this room.');
