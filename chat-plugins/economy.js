@@ -126,10 +126,8 @@ exports.commands = {
 
 		Economy.writeMoney(targetUser, amount);
 		if (Users(targetUser) && Users(targetUser).connected) {
-			Economy.readMoney(targetUser, money => {
-				Users.get(targetUser).popup('|html|You have received ' + amount + ' ' + (amount === 1 ? 'buck' : 'bucks') +
-				' from ' + Wisp.nameColor(user.userid, true) + '.<br />You now have a total of ' + money + (money === 1 ? ' buck.' : ' bucks.'));
-			});
+			Users.get(targetUser).popup('|html|You have received ' + amount + ' ' + (amount === 1 ? 'buck' : 'bucks') +
+			' from ' + Wisp.nameColor(user.userid, true) + '.');
 		}
 		this.sendReply(targetUser + " has received " + amount + ((amount === 1) ? " buck." : " bucks."));
 		Economy.logTransaction(user.name + " has given " + amount + ((amount === 1) ? " buck " : " bucks ") + " to " + targetUser);
@@ -154,10 +152,8 @@ exports.commands = {
 
 		Economy.writeMoney(targetUser, -amount);
 		if (Users(targetUser) && Users(targetUser).connected) {
-			Economy.readMoney(targetUser, money => {
-				Users.get(targetUser).popup('|html|' + Wisp.nameColor(user.userid, true) + ' has removed ' + amount + ' ' + (amount === 1 ? 'buck' : 'bucks') +
-				' from you.<br />You now have a total of ' + money + (money === 1 ? ' buck.' : ' bucks.'));
-			});
+			Users.get(targetUser).popup('|html|' + Wisp.nameColor(user.userid, true) + ' has removed ' + amount + ' ' + (amount === 1 ? 'buck' : 'bucks') +
+			' from you.<br />');
 		}
 		this.sendReply("You removed " + amount + ((amount === 1) ? " buck " : " bucks ") + " from " + Tools.escapeHTML(targetUser));
 		Economy.logTransaction(user.name + " has taken " + amount + ((amount === 1) ? " buck " : " bucks ") + " from " + targetUser);
