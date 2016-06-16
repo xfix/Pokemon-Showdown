@@ -380,6 +380,7 @@ exports.commands = {
 		let cmdParts = target.split(' ');
 		let cmd = cmdParts.shift().trim().toLowerCase();
 		let params = cmdParts.join(' ').split(',').map(function (param) { return param.trim(); });
+		let name, description, price, item;
 
 		switch (cmd) {
 		case 'list':
@@ -400,9 +401,9 @@ exports.commands = {
 			if (!user.can('roommod', null, room)) return this.sendReply('/roomshop - Access denied.');
 			if (params.length < 3) return this.sendReply('Usage: /roomshop add [item name], [description], [price]');
 			if (!room.shopList) room.shopList = [];
-			let name = params.shift();
-			let description = params.shift();
-			let price = Number(params.shift());
+			name = params.shift();
+			description = params.shift();
+			price = Number(params.shift());
 			if (isNaN(price)) return this.sendReply('Usage: /roomshop add [item name], [description], [price]');
 			room.shop[toId(name)] = {};
 			room.shop[toId(name)].name = name;
@@ -420,7 +421,7 @@ exports.commands = {
 		case 'delete':
 			if (!user.can('roommod', null, room)) return this.sendReply('/roomshop - Access denied.');
 			if (params.length < 1) return this.sendReply('Usage: /roomshop delete [item name]');
-			let item = params.shift();
+			item = params.shift();
 			if (!room.shop[toId(item)]) return this.sendReply('/roomshop - Item "' + item + '" not found.');
 			delete room.shop[toId(item)];
 			let index = room.shopList.indexOf(toId(item));
