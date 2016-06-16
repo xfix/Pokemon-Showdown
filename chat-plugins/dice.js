@@ -31,7 +31,17 @@ class Dice {
 		this.players = [];
 		this.timer = setTimeout(() => {
 			this.room.add('|uhtmlchange|' + this.room.diceCount + '|<div class = "infobox">(This game of dice has been ended due to inactivity.)</div>').update();
-			delete this.room.dice;
+			if (this.players[0]) {
+				Economy.writeMoney(this.players[0].userid, this.bet, () => {
+					if (this.players[1]) {
+						Economy.writeMoney(this.players[1].userid, this.bet, () => {
+							delete this.room.dice;
+						});
+					}
+				});
+			} else {
+				delete this.room.dice;
+			}
 		}, INACTIVE_END_TIME);
 
 		let buck = (this.bet === 1 ? 'buck' : 'bucks');
@@ -48,9 +58,11 @@ class Dice {
 			if (money < this.bet) return self.sendReply('You don\'t have enough money for this game of dice.');
 			if (this.players.includes(user)) return self.sendReply('You have already joined this game of dice.');
 			if (this.players.length && this.players[0].latestIp === user.latestIp) return self.errorReply("You have already joined this game of dice under the alt '" + this.players[0].name + "'.");
-			this.players.push(user);
-			this.room.add('|uhtmlchange|' + this.room.diceCount + '|' + this.startMessage + '<center>' + Wisp.nameColor(user.name) + ' has joined the game!</center></div>').update();
-			if (this.players.length === 2) this.play();
+			Economy.writeMoney(user.userid, this.bet * -1, () => {
+				this.players.push(user);
+				this.room.add('|uhtmlchange|' + this.room.diceCount + '|' + this.startMessage + '<center>' + Wisp.nameColor(user.name) + ' has joined the game!</center></div>').update();
+				if (this.players.length === 2) this.play();
+			});
 		});
 	}
 
@@ -58,21 +70,13 @@ class Dice {
 		if (!this.players.includes(user)) return self.sendReply('You haven\'t joined the game of dice yet.');
 		this.players.remove(user);
 		this.room.add('|uhtmlchange|' + this.room.diceCount + '|' + this.startMessage + '</div>');
+		Economy.writeMoney(user.userid, this.bet);
 	}
 
 	play() {
 		let p1 = this.players[0], p2 = this.players[1];
 		Economy.readMoney(p1.userid, money1 => {
 			Economy.readMoney(p2.userid, money2 => {
-				if (money1 < this.bet || money2 < this.bet) {
-					let user = (money1 < this.bet ? p1 : p2);
-					let other = (user === p1 ? p2 : p1);
-					user.sendTo(this.room, 'You have been removed from this game of dice, as you do not have enough money.');
-					other.sendTo(this.room, user.name + ' has been removed from this game of dice, as they do not have enough money. Wait for another user to join.');
-					this.players.remove(user);
-					this.room.add('|uhtmlchange|' + this.room.diceCount + '|' + this.startMessage + '<center>' + this.players.map(user => Wisp.nameColor(user.name)) + ' has joined the game!</center>').update();
-					return;
-				}
 				let players = this.players.map(user => Wisp.nameColor(user.name)).join(' and ');
 				this.room.add('|uhtmlchange|' + this.room.diceCount + '|' + this.startMessage + '<center>' + players + ' have joined the game!</center></div>').update();
 				let roll1, roll2;
@@ -84,22 +88,18 @@ class Dice {
 				let winner = this.players[0], loser = this.players[1];
 
 				let taxedAmt = Math.round(this.bet * TAX);
-				setTimeout(() => {
-					let buck = (this.bet === 1 ? 'buck' : 'bucks');
-					this.room.add('|uhtmlchange|' + this.room.diceCount + '|<div class="infobox"><center>' + players + ' have joined the game!<br /><br />' +
-						'The game has been started! Rolling the dice...<br />' +
-						'<img src = "' + diceImg(roll1) + '" align = "left" title = "' + Tools.escapeHTML(p1.name) + '\'s roll"><img src = "' + diceImg(roll2) + '" align = "right" title = "' + p2.name + '\'s roll"><br />' +
-						Wisp.nameColor(p1.name, true) + ' rolled ' + (roll1 + 1) + '!<br />' +
-						Wisp.nameColor(p2.name, true) + ' rolled ' + (roll2 + 1) + '!<br />' +
-						Wisp.nameColor(winner.name, true) + ' has won <b style="color:green">' + (this.bet - taxedAmt) + '</b> ' + buck + '!<br />' +
-						'Better luck next time, ' + Tools.escapeHTML(loser.name) + '!'
-					).update();
-					Economy.writeMoney(winner.userid, (this.bet - taxedAmt), () => {
-						Economy.writeMoney(loser.userid, -this.bet, () => {
-							this.end();
-						});
-					});
-				}, 800);
+				let buck = (this.bet === 1 ? 'buck' : 'bucks');
+				this.room.add('|uhtmlchange|' + this.room.diceCount + '|<div class="infobox"><center>' + players + ' have joined the game!<br /><br />' +
+					'The game has been started! Rolling the dice...<br />' +
+					'<img src = "' + diceImg(roll1) + '" align = "left" title = "' + Tools.escapeHTML(p1.name) + '\'s roll"><img src = "' + diceImg(roll2) + '" align = "right" title = "' + p2.name + '\'s roll"><br />' +
+					Wisp.nameColor(p1.name, true) + ' rolled ' + (roll1 + 1) + '!<br />' +
+					Wisp.nameColor(p2.name, true) + ' rolled ' + (roll2 + 1) + '!<br />' +
+					Wisp.nameColor(winner.name, true) + ' has won <b style="color:green">' + (this.bet - taxedAmt) + '</b> ' + buck + '!<br />' +
+					'Better luck next time, ' + Tools.escapeHTML(loser.name) + '!'
+				).update();
+				Economy.writeMoney(winner.userid, (this.bet - taxedAmt + this.bet), () => {
+					this.end();
+				});
 			});
 		});
 	}
@@ -107,7 +107,17 @@ class Dice {
 	end(user) {
 		if (user) this.room.add('|uhtmlchange|' + this.room.diceCount + '|<div class = "infobox">(This game of dice has been forcibly ended by ' + Tools.escapeHTML(user.name) + '.)</div>').update();
 		clearTimeout(this.timer);
-		delete this.room.dice;
+		if (this.players[0]) {
+			Economy.writeMoney(this.players[0].userid, this.bet, () => {
+				if (this.players[1]) {
+					Economy.writeMoney(this.players[1].userid, this.bet, () => {
+						delete this.room.dice;
+					});
+				}
+			});
+		} else {
+			delete this.room.dice;
+		}
 	}
 }
 
