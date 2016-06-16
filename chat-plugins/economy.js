@@ -184,7 +184,7 @@ exports.commands = {
 				Economy.writeMoney(targetUser, amount, () => {
 					this.sendReply("You sent " + amount + ((amount === 1) ? " buck " : " bucks ") + " to " + targetUser);
 					Economy.logTransaction(user.name + " has transfered " + amount + ((amount === 1) ? " buck " : " bucks ") + " to " + targetUser);
-					if (Users.getExact(targetUser) && Users.getExact(targetUser)) Users.getExact(targetUser).popup('|modal|' + Wisp.nameColor(user.name, true) + " has sent you " + amount + ((amount === 1) ? " buck." : " bucks."));
+					if (Users.getExact(targetUser) && Users.getExact(targetUser)) Users.getExact(targetUser).send('|popup||html|' + Wisp.nameColor(user.name, true) + " has sent you " + amount + ((amount === 1) ? " buck." : " bucks."));
 				});
 			});
 		});
