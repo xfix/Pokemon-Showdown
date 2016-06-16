@@ -97,7 +97,7 @@ exports.commands = {
 		if (userid.length > 19) return this.sendReply("/creditatm - [user] can't be longer than 19 characters.");
 
 		Wisp.readCredits(userid, cred => {
-			this.sendReplyBox(Tools.escapeHTML(target) + " has " + cred + ((cred === 1) ? " credits." : " credits."));
+			this.sendReplyBox(Wisp.nameColor(target, true) + " has " + cred + ((cred === 1) ? " credits." : " credits."));
 			if (this.broadcasting) room.update();
 		});
 	},
@@ -125,7 +125,7 @@ exports.commands = {
 		logTransaction(user.name + " has given " + amount + ((amount === 1) ? " credit " : " credits ") + " to " + targetUser);
 		Rooms.get('marketplace').add('|raw|' + (user.name + " has given " + amount + ((amount === 1) ? " credit " : " credits ") + " to " + targetUser + "."));
 		if (Users.get(targetUser) && Users.get(targetUser).connected) {
-			Users.get(targetUser).popup(user.name + " has given you " + amount + ((amount === 1) ? " credit " : " credits "));
+			Users.get(targetUser).popup("|modal||html|" + Wisp.nameColor(user.name, true) + " has given you " + amount + ((amount === 1) ? " credit " : " credits "));
 		}
 	},
 
@@ -151,7 +151,7 @@ exports.commands = {
 		logTransaction(user.name + " has taken " + amount + ((amount === 1) ? " credit " : " credits ") + " from " + targetUser);
 		Rooms.get('marketplace').add('|raw|' + user.name + " has taken " + amount + ((amount === 1) ? " credit " : " credits ") + " from " + targetUser + ".");
 		if (Users.get(targetUser) && Users.get(targetUser).connected) {
-			Users.get(targetUser).popup(user.name + " has taken " + amount + ((amount === 1) ? " credit " : " credits from you."));
+			Users.get(targetUser).popup("|modal||html|" + Wisp.nameColor(user.name , true) + " has taken " + amount + ((amount === 1) ? " credit " : " credits from you."));
 		}
 	},
 
@@ -176,7 +176,7 @@ exports.commands = {
 				Wisp.writeCredits(targetUser, amount, () => {
 					this.sendReply("You've sent " + amount + ((amount === 1) ? " credit " : " credits ") + " to " + targetUser);
 					logTransaction(user.name + " has transfered " + amount + ((amount === 1) ? " credit " : " credits ") + " to " + targetUser);
-					if (Users.getExact(targetUser) && Users.getExact(targetUser)) Users.getExact(targetUser).popup(user.name + " has sent you " + amount + ((amount === 1) ? " credit." : " credits."));
+					if (Users.getExact(targetUser) && Users.getExact(targetUser)) Users.getExact(targetUser).popup("|modal||html|" + Wisp.nameColor(user.name, true) + " has sent you " + amount + ((amount === 1) ? " credit." : " credits."));
 				});
 			});
 		});
