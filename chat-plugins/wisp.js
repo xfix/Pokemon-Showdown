@@ -842,6 +842,17 @@ exports.commands = {
 		room.lastAdvertisement = Date.now();
 		return this.sendReply("Your message has been added to the advertisement queue. It will be broadcast in the lobby shortly.");
 	},
+
+	crashlogs: function (target, room, user) {
+		if (!this.can('hotpatch')) return false;
+		if (target) {
+			target = Number(target);
+			if (isNaN(target)) return this.parse('/help crashlogs');
+			if (target < 1) target = 100; // default to 100 lines
+		}
+		let crashes = fs.readFileSync('logs/errors.txt', 'utf8').split('\n').splice((target ? target * -1 : -100)).join('\n');
+		user.send('|popup|' + crashes);
+	},
 };
 
 Object.assign(Wisp, {
