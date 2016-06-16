@@ -578,6 +578,7 @@ exports.commands = {
 		}
 		if (!this.can('mute', targetUser, room)) return false;
 		if (!(targetUser in room.users)) return this.errorReply("User '" + targetUser + "' is not in this room.");
+		if (targetUser.can('seniorstaff') && !this.can('seniorstaff')) return this.errorReply("Upper staff may not be kicked.");
 		this.addModCommand(targetUser.name + ' was kicked from the room by ' + user.name + '.');
 		targetUser.popup('You were kicked from ' + room.id + ' by ' + user.name + '.');
 		targetUser.leaveRoom(room.id);
