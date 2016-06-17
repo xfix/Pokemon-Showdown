@@ -384,7 +384,7 @@ exports.commands = {
 			'<tr><td><button name="send" value="/claim magentaticket">Magenta Ticket</button></td><td>Can be exchanged for a Custom Feature in the Room Intro for 5 days! Example: http://prntscr.com/bdq3uh</td><td>' + prices['magentaticket'] + '</td></tr>' +
 			'<tr><td><button name="send" value="/claim rainbowticket">Rainbow Ticket</button></td><td>Can be exchanged for 10 PSGO packs and 200 bucks</td><td>' + prices['rainbowticket'] + '</td></tr>' +
 			'<tr><td><button name="send" value="/claim emeraldticket">Emerald Ticket</button></td><td>Can be exchanged for 5 PSGO packs, 100 bucks, Marketplace Partner, Custom Title and Partner Badge</td><td>' + prices['emeraldticket'] + '</td></tr>' +
-			'</table><br />To buy an item from the shop, use /claim [item].<br />All sales final, no refunds will be provided.</center>'
+			'</table><br />To buy an item from the shop, use /claim [item].<br />All sales final, no refunds will be provided. Any ticket including packs can not be redeemed for XY-Promo Packs.</center>'
 		);
 	},
 
