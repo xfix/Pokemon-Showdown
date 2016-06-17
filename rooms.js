@@ -107,7 +107,7 @@ let Room = (() => {
 			if (emoticons && !this.disableEmoticons) {
 				if (Users.ShadowBan.checkBanned(user)) {
 					Users.ShadowBan.addMessage(user, "To " + this.id, message);
-					if (!Wisp.ignoreEmotes[user.userid]) user.sendTo(this, (this.battle ? "|raw|" : "|uhtml|" + user.userid + "|") + emoticons);
+					if (!Wisp.ignoreEmotes[user.userid]) user.sendTo(this, '|c|' + user.getIdentity(this.id) + '|/html ' + emoticons);
 					if (Wisp.ignoreEmotes[user.userid]) user.sendTo(this, '|c|' + user.getIdentity(this.id) + '|' + message);
 					return this.update();
 				}
@@ -118,9 +118,10 @@ let Room = (() => {
 						curUser.sendTo(this, '|c|' + user.getIdentity(this.id) + '|' + message);
 						continue;
 					}
-					curUser.sendTo(this, (this.battle ? "|raw|" : "|uhtml|" + user.userid + "|") + emoticons);
+					curUser.sendTo(this, '|c|' + user.getIdentity(this.id) + '|/html ' + emoticons);
 				}
-				this.log.push((this.battle ? "|raw|" : "|uhtml|" + user.userid + "|") + emoticons);
+				this.logEntry('|c|' + user.getIdentity(this.id) + '|/html ' + emoticons);
+				this.log.push('|c|' + user.getIdentity(this.id) + '|/html ' + emoticons);
 				this.lastUpdate = this.log.length;
 			} else {
 				if (Users.ShadowBan.checkBanned(user)) {

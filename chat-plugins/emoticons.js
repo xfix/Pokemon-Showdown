@@ -34,13 +34,11 @@ function saveEmoticons() {
 }
 
 function parseEmoticons(user, message, room) {
-	let fontSize = (room.battle ? '8' : '9');
-	let html = '<small>' + user.charAt(0) + '</small><button style="outline:none;border:none;background:none;padding:0;font-family:Verdana,sans-serif;font-size:' + fontSize + 'pt;" name="parseCommand" value="/user ' + user + '">' + '<b><font color="' + Wisp.hashColor(user) + '">' + Tools.escapeHTML(user.substr(1)) + ':</font></b></button> ';
 	if (emoteRegex.test(message)) {
-		message = Tools.escapeHTML(message).replace(emoteRegex, function (match) {
+		message = Wisp.parseMessage(message).replace(emoteRegex, function (match) {
 			return '<img src="' + emoticons[match] + '" title="' + match + '" height="40" width="40">';
 		});
-		return html + message;
+		return message;
 	}
 	return false;
 }
