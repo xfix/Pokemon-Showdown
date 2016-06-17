@@ -350,18 +350,18 @@ exports.commands = {
 	shop: function (target, room, user) {
 		if (!this.runBroadcast()) return;
 		this.sendReplyBox('<center><h4><b><u>' + shopTitle + '</u></b></h4><table border="1" cellspacing ="0" cellpadding="3"><tr><th>Item</th><th>Description</th><th>Price</th></tr>' +
-			'<tr><td>Custom Symbol</td><td>Buys a custom symbol to go in front of your name. (Temporary until restart)</td><td>' + prices['symbol'] + '</td></tr>' +
-			'<tr><td>Fix</td><td>Buys the ability to alter your current custom avatar or infobox (don\'t buy if you have neither)!</td><td>' + prices['fix'] + '</td></tr>' +
-			'<tr><td>Declare</td><td>You get the ability to have a message declared in the lobby. This can be used for league advertisement (not server)</td><td>' + prices['declare'] + '</td></tr>' +
-			'<tr><td>Poof</td><td>Buy a poof message to be added into the pool of possible poofs</td><td>' + prices['poof'] + '</td></tr>' +
-			'<tr><td>Title</td><td>Buys a user title that displays beside your name in /profile</td><td>' + prices['title'] + '</td></tr>' +
-			'<tr><td>Avatar</td><td>Buys a custom avatar to be applied to your name (You supply, must be .png or .gif format. Images larger than 80x80 may not show correctly.)</td><td>' + prices['avatar'] + '</td></tr>' +
-			'<tr><td>Infobox</td><td>Buys an infobox that will be viewable with a command such as /tailz.</td><td>' + prices['infobox'] + '</td></tr>' +
-			'<tr><td>Emote</td><td>Buys an emoticon for you (and everyone else) to use in the chat.</td><td>' + prices['emote'] + '</td></tr>' +
-			'<tr><td>Room Shop</td><td>Buys a fully customizable shop for your room. The bucks earned from purchases go to the room founder or room bank.</td><td>' + prices['roomshop'] + '</td></tr>' +
-			'<tr><td>Room</td><td>Buys a chatroom for you to own.</td><td>' + prices['room'] + '</td></tr>' +
-			'<tr><td>Icon</td><td>Buys an icon that displays beside your name on the userlist. Size must be 32x32.</td><td>' + prices['icon'] + '</td></tr>' +
-			'<tr><td>Color</td><td>Buys a custom color change for your name. Changes the color of your name on the userlist and in the chat.</td><td>' + prices['color'] + '</td></tr>' +
+			'<tr><td><button name="send" value="/buy symbol">Custom Symbol</button></td><td>Buys a custom symbol to go in front of your name. (Temporary until restart)</td><td>' + prices['symbol'] + '</td></tr>' +
+			'<tr><td><button name="send" value="/buy fix">Fix</button></td><td>Buys the ability to alter your current custom avatar or infobox (don\'t buy if you have neither)!</td><td>' + prices['fix'] + '</td></tr>' +
+			'<tr><td><button name="send" value="/buy declare">Declare</button></td><td>You get the ability to have a message declared in the lobby. This can be used for league advertisement (not server)</td><td>' + prices['declare'] + '</td></tr>' +
+			'<tr><td><button name="send" value="/buy poof">Poof</button></td><td>Buy a poof message to be added into the pool of possible poofs</td><td>' + prices['poof'] + '</td></tr>' +
+			'<tr><td><button name="send" value="/buy title">Title</button></td><td>Buys a user title that displays beside your name in /profile</td><td>' + prices['title'] + '</td></tr>' +
+			'<tr><td><button name="send" value="/buy avatar">Avatar</button></td><td>Buys a custom avatar to be applied to your name (You supply, must be .png or .gif format. Images larger than 80x80 may not show correctly.)</td><td>' + prices['avatar'] + '</td></tr>' +
+			'<tr><td><button name="send" value="/buy infobox">Infobox</button></td><td>Buys an infobox that will be viewable with a command such as /tailz.</td><td>' + prices['infobox'] + '</td></tr>' +
+			'<tr><td><button name="send" value="/buy emote">Emote</button></td><td>Buys an emoticon for you (and everyone else) to use in the chat.</td><td>' + prices['emote'] + '</td></tr>' +
+			'<tr><td><button name="send" value="/buy roomshop">Room Shop</button></td><td>Buys a fully customizable shop for your room. The bucks earned from purchases go to the room founder or room bank.</td><td>' + prices['roomshop'] + '</td></tr>' +
+			'<tr><td><button name="send" value="/buy room">Room</button></td><td>Buys a chatroom for you to own.</td><td>' + prices['room'] + '</td></tr>' +
+			'<tr><td><button name="send" value="/buy icon">Icon</button></td><td>Buys an icon that displays beside your name on the userlist. Size must be 32x32.</td><td>' + prices['icon'] + '</td></tr>' +
+			'<tr><td><button name="send" value="/buy color">Color</button></td><td>Buys a custom color change for your name. Changes the color of your name on the userlist and in the chat.</td><td>' + prices['color'] + '</td></tr>' +
 			'</table><br />To buy an item from the shop, use /buy [item].<br />All sales final, no refunds will be provided.</center>'
 		);
 	},
