@@ -102,6 +102,7 @@ exports.commands = {
 				(toId(targets[0]) === 'all' ? '' : ' in "' + Tools.escapeHTML(targets[0]) + '"') + ':<br /><br />' + output);
 		});
 	},
+	searchlogshelp: ["/searchlogs [room / all], [phrase] - Phrase may contain * wildcards."],
 };
 
 function escapeRegExp(s) {
