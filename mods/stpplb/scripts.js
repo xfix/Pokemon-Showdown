@@ -52,24 +52,24 @@ let megaStoneList = [
 	'Red Orb',
 	'Blue Orb',
 ];
+let sample = function (array, num) {
+	let indices = [];
+	let result = [];
+	for (let i = 0; i < num; i++) {
+		if (i < array.length) {
+			let n = Math.floor(Math.random() * (array.length - i));
+			for (let j = 0; j < indices.length; j++) {
+				if (n >= indices[j]) n += 1;
+			}
+			result.push(array[n]);
+			indices.push(n);
+		}
+	}
+	return result;
+};
 exports.BattleScripts = {
 	randomtpplbTeam: function (side) {
 		let team = [];
-		let sample = function (array, num) {
-			let indices = [];
-			let result = [];
-			for (let i = 0; i < num; i++) {
-				if (i < array.length) {
-					let n = Math.floor(Math.random() * (array.length - i));
-					for (let j = 0; j < indices.length; j++) {
-						if (n >= indices[j]) n += 1;
-					}
-					result.push(array[n]);
-					indices.push(n);
-				}
-			}
-			return result;
-		};
 		let sets = { // this is where all the movesets are defined. Add new mons here.
 			'darkfiregamer': {
 				species: "Houndoom", ability: "Dark Aura", item: "Dark Gem", gender: "M",
