@@ -556,7 +556,7 @@ exports.commands = {
 				} else {
 					username = rows[u].userid;
 				}
-				output += '<tr><td>' + count + '</td><td>' + Tools.escapeHTML(username) + '</td><td>' + rows[u].bucks + '</td></tr>';
+				output += '<tr><td>' + count + '</td><td>' + Wisp.nameColor(username, true) + '</td><td>' + rows[u].bucks + '</td></tr>';
 				count++;
 			}
 			self.sendReplyBox(output);
