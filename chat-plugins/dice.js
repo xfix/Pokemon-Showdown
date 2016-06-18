@@ -56,7 +56,7 @@ class Dice {
 
 	leave(user, self) {
 		if (!this.players.includes(user)) return self.sendReply('You haven\'t joined the game of dice yet.');
-		this.players.remove(user);
+		this.players.splice(this.players.indexOf(user), 1);
 		this.room.add('|uhtmlchange|' + this.room.diceCount + '|' + this.startMessage + '</div>');
 	}
 
@@ -69,7 +69,7 @@ class Dice {
 					let other = (user === p1 ? p2 : p1);
 					user.sendTo(this.room, 'You have been removed from this game of dice, as you do not have enough money.');
 					other.sendTo(this.room, user.name + ' has been removed from this game of dice, as they do not have enough money. Wait for another user to join.');
-					this.players.remove(user);
+					this.players.splice(this.players.indexOf(user), 1);
 					this.room.add('|uhtmlchange|' + this.room.diceCount + '|' + this.startMessage + '<center>' + this.players.map(user => Wisp.nameColor(user.name)) + ' has joined the game!</center>').update();
 					return;
 				}
