@@ -87,10 +87,15 @@ exports.commands = {
 			}
 
 			if (cmd === 'viewlogspopup') {
-				let output = ['Displaying room logs of room "' + Tools.escapeHTML(targetRoom) + '" on ' + Tools.escapeHTML(date)];
+				let output = 'Displaying room logs of room "' + Tools.escapeHTML(targetRoom) + '" on ' + Tools.escapeHTML(date) + '<br />';
 				data = data.split('\n');
-				for (let u in data) output.push(parseMessage(data[u]));
-				return user.send("|popup||wide||html|" + output.join('<br />'));
+				for (let u in data) {
+					if (data[u].length < 1) continue;
+					let message = parseMessage(data[u], user.userid);
+					if (message.length < 1) continue;
+					output += message + '<br />';
+				}
+				return user.send("|popup||wide||html|" + output);
 			}
 
 			data = targetRoom + "|" + date + "|" + JSON.stringify(Wisp.customColors) + "\n" + data;
