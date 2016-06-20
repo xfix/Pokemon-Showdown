@@ -151,7 +151,7 @@ exports.commands = {
 		logTransaction(user.name + " has taken " + amount + ((amount === 1) ? " credit " : " credits ") + " from " + targetUser);
 		Rooms.get('marketplace').add('|raw|' + user.name + " has taken " + amount + ((amount === 1) ? " credit " : " credits ") + " from " + targetUser + ".");
 		if (Users.get(targetUser) && Users.get(targetUser).connected) {
-			Users.get(targetUser).popup("|modal||html|" + Wisp.nameColor(user.name , true) + " has taken " + amount + ((amount === 1) ? " credit " : " credits from you."));
+			Users.get(targetUser).popup("|modal||html|" + Wisp.nameColor(user.name, true) + " has taken " + amount + ((amount === 1) ? " credit " : " credits from you."));
 		}
 	},
 
