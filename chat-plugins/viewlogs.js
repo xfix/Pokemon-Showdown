@@ -32,18 +32,19 @@ exports.commands = {
 		}
 
 		let rooms = fs.readdirSync('logs/chat');
-		let roomList = [];
+		let roomList = [], groupChats = [];
 
 		for (let u in rooms) {
 			if (!rooms[u]) continue;
 			if (rooms[u] === 'README.md') continue;
 			if (!permissionCheck(user, rooms[u])) continue;
-			roomList.push(rooms[u]);
+			(rooms[u].includes('groupchat-') ? groupChats : roomList).push(rooms[u]);
 		}
 		if (roomList.length < 1) return this.errorReply("You don't have access to view the logs of any rooms.");
 
 		let output = "Choose a room to view the logs:";
 		output += generateTable(roomList, "/viewlogs month,");
+		output += "<br />Group Chats:" + generateTable(groupChats, "/viewlogs month,");
 		user.send("|popup||wide||html|" + output);
 	},
 
@@ -176,7 +177,8 @@ function generateTable(array, command) {
 	for (let u in array) {
 		if (array[u] === 'today.txt') continue;
 		if (count === 0) output += "<tr>";
-		output += '<td><button style="width: 100%" name="send" value="' + command + Tools.escapeHTML(array[u]) + '">' + Tools.escapeHTML(array[u]) + '</button></td>';
+		output += '<td><button style="width: 100%" name="send" value="' + command + Tools.escapeHTML(array[u]) + '">' +
+		(Rooms(array[u]) ? '' : '<font color="red">') + Tools.escapeHTML(array[u]) + (Rooms(array[u]) ? '' : '</font>') + '</button></td>';
 		count++;
 		if (count > 3) {
 			output += '<tr />';
