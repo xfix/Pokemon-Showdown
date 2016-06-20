@@ -277,10 +277,10 @@ exports.commands = {
 		if (!parts[1]) return this.sendReply("/takepack [user], [pack] - Take a pack from a user.");
 		let pack = toId(parts[1]);
 		let userid = toId(this.targetUsername);
-		let packIndex = userPacks[userid].indexOf(pack);
-		if (packShop.indexOf(pack) < 0) return this.sendReply("This pack does not exist.");
-		if (!this.targetUser) return this.sendReply("User '" + this.targetUsername + "' not found.");
 		if (!userPacks[userid]) userPacks[userid] = [];
+		let packIndex = userPacks[userid].indexOf(pack);
+		if (cleanShop.indexOf(pack) < 0) return this.sendReply("This pack does not exist.");
+		if (!this.targetUser) return this.sendReply("User '" + this.targetUsername + "' not found.");
 		if (packIndex < 0) return this.sendReply("This user does not have this pack.");
 		userPacks[userid].splice(packIndex, 1);
 		this.sendReply(this.targetUsername + " lost " + pack + " pack. This user now has " + userPacks[userid].length + " pack(s).");
