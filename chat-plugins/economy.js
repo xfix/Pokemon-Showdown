@@ -287,8 +287,8 @@ exports.commands = {
 			case 'roomshop':
 				if (userMoney < prices[itemid]) return this.sendReply("You need " + (prices[itemid] - userMoney) + " more bucks to purchase a room shop.");
 				if (!targetSplit[1]) return this.sendReply("Please specify the room you would like to buy a room shop for with /buy roomshop, room.");
-				if (!Rooms(toId(targetSplit[1]))) return this.sendReply("That room doesn't exist.");
 				let targetRoom = Rooms(targetSplit[1]);
+				if (!targetRoom) return this.sendReply("That room doesn't exist.");
 				if (!targetRoom.chatRoomData) return this.sendReply("That room can't have a room shop.");
 				if (!targetRoom.founder) return this.sendReply("Rooms require a room founder to have a shop.");
 				Economy.writeMoney(user.userid, prices[itemid] * -1);
