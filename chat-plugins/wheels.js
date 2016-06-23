@@ -10,7 +10,7 @@ class Wheel {
 	initDisplay(target) {
 		return '|raw|<div style=" padding: 5px, 0px; background-color: #FFFFCC; border: #DEA431, solid 1px; background-size: 100%; color: #DEA431;' +
 			'font-size: 12px; text-align: center;">The Wheel Of<br><font style="color: #DEA431;"><em><strong>' + target.split(',')[0].toUpperCase() +
-			'</strong></em></font><br>Has been started and is waiting to be spun for ' + this.wheel[this.wheel.length - 1] * this.wheelMulti +
+			'</strong></em></font><br>Has been started and is waiting to be spun for the maximum amount of ' + this.wheel[this.wheel.length - 1] * this.wheelMulti +
 			(this.wheel[this.wheel.length - 1] * this.wheelMulti === 1 ? ' buck' : ' bucks') + '!<hr style="border: solid, 0.5px, #DEA431">The Mulitiplier is:' +
 			'<em><strong><font style="color: #DEA431;">' + this.wheelMulti + '</font></em></strong><hr style="border: solid, 0.5px, #DEA431"><b>' +
 			'<font style="color: #FFC400;">' + this.wheel + '</b></font><hr style="border: solid, 0.5px, #DEA431;"><button style="border: double,' +
@@ -25,10 +25,9 @@ class Wheel {
 
 const wheels = {
 	scrubs: [-5, -4, -3, -2, -2, -1, -1, -1, -1, -1, -1, +1, +1, +3, +3, +3, +3, +3, +3, +5],
-	wealth: [-200, -100, -100, -50, -50, -25, -25, -25, +50, +200, +200, +300, +300, +400],
-	diversity: [-40, -30, -20, -10, -15, -4, -2, -1, +2, +10, +30, +50, +50, +50],
-	balance: [-30, -20, -10, -5, -5, -5, -5, -2, -1, +3, +3, +15, +15, +30, +30, +30],
-	death: [-50, -5, -5, -1, -1, -1, -1, -1, -1, -1, -1, +1, +1, +1, +1, +10, +10, +50],
+	wealth: [-100, -50, -50, -50, -50, -25, -25, -25, +50, +50, +75, +100, +150],
+	demise: [-10, -8, -4, -2, -2, -2, +1, +2, +5, +6, +9, +10],
+	arrogance: [-20, -10, -10, -5, -5, -1, -1, +2, +15, +20, +25],
 };
 
 function spinWheel(wheel) {
@@ -81,7 +80,7 @@ exports.commands = {
 				if (room.wheel.wheel[room.wheel.wheel.length - 1] * room.wheel.wheelMulti > money) return this.errorReply('You do not have enough bucks to spin this wheel');
 				room.wheel.joined = true;
 				Economy.writeMoney(user.userid, (room.wheel.wheel[room.wheel.wheel.length - 1] * room.wheel.wheelMulti) * -1, function () {
-					room.add('|raw|<b><font color="oramge">' + Wisp.nameColor(user, true) + ' has spun the wheel.</font></b>');
+					room.add('|raw|<b><font color="orange">' + Wisp.nameColor(user, true) + ' has spun the wheel.</font></b>');
 					let winnings = room.wheel.wheelValue;
 					if (winnings > 0) winnings = room.wheel.wheelValue * room.wheel.wheelMulti;
 					if (winnings < 0) winnings = (room.wheel.wheelValue * -1) * room.wheel.wheelMulti;
@@ -122,18 +121,18 @@ exports.commands = {
 			this.sendReplyBox('<center>Wheels of Misfortune Commands- Created by Bandi and jd </center><hr />' +
 			'More detailed WOM documentation <a href="http://pastebin.com/fKExymMZ">here</a><br />' +
 			'/wheel list - Shows the list of wheels with their names and numbers<br />' +
-			'/wheel create [wheelname], [multiplier] - Starts a wheel game<br />' +
+			'/wheel create [wheelname], [multiplier] - Starts a wheel game Hint: don\'t put "Wheel of" in the wheelname<br />' +
 			'/wheel join/spin/start - Joins the wheel game. <br />' +
 			'/wheel end - Ends the current wheel game <br />');
 		},
 		list: function (target, room, user) {
 			if (!this.runBroadcast()) return;
 			this.sendReplyBox('<center>Wheels of Misfortune :]</center><hr />' +
-			'Wheel of Scrubs: -5, -4, -3, -2, -2, -1, -1, -1, -1, -1, -1, +1, +1, +3, +3, +3, +3, +3, +3, +5<br />' +
-			'Wheel of Balance: -30, -20, -10, -5, -5, -5, -5, -2, -1, +3, +3, +15, +15, +30, +30, +30<br />' +
-			'Wheel of Diversity: -40, -30, -20, -10, -15, -4, -2, -1, +2, +10, +30, +50, +50, +50<br />' +
-			'Wheel of Wealth: -200, -100, -100, -50, -50, -25, -25, -25, +50, +200, +200, +300, +300, +400<br />' +
-			'Wheel of Death: -50, -5, -5, -1, -1, -1, -1, -1, -1, -1, -1, +1, +1, +1, +5, +10, +10, +50 -Created by Quizzy');
+			'Wheel of Scrubs: -5, -4, -3, -2, -2, -1, -1, -1, -1, -1, -1, +1, +1, +3, +3, +3, +3, +3, +3, +5 Made by Bandi for the scrub jd<br />' +
+			'Wheel of Wealth: -200, -100, -100, -50, -50, -25, -25, -25, +50, +200, +200, +300, +300, +400 Made by Emelio<br />' +
+			'Wheel of Arrogance -20, -10, -10, -5, -5, -1, -1, +2, +15, +20, +25 Made by Bandi<br />' +
+			'Wheel of Demise -10, -8, -4, -2, -2, -2, +1, +2, +5, +6, +9, +10 Made by IcyDemise<br />' +
+			'To make a wheel PM Bandi, :].');
 		},
 	},
 };
