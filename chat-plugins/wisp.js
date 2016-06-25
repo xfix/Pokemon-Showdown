@@ -166,7 +166,7 @@ const polltiers = ['Random Battle', 'Anything Goes', 'Ubers', 'OverUsed', 'Under
 	'RarelyUsed', 'NeverUsed', 'PU', 'LC', 'Random Doubles Battle', 'VGC 2016',
 	'Battle Spot Doubles', 'Random Triples Battle', 'Challenge Cup 1v1', 'Balanced Hackmons',
 	'1v1, Monotype', 'Inverse Battle', 'Almost Any Ability', 'STABmons', 'Hackmons Cup',
-	'[Seasonal]', 'Battle Factory', 'Doubles OU', 'CAP', 'Gen 5 OU', 'Doubles 1v1'];
+	'[Seasonal]', 'Battle Factory', 'Doubles OU', 'CAP', 'Gen 5 OU', 'Doubles 1v1', 'Random Monotype'];
 
 const bubbleLetterMap = new Map([
 	['a', '\u24D0'], ['b', '\u24D1'], ['c', '\u24D2'], ['d', '\u24D3'], ['e', '\u24D4'], ['f', '\u24D5'], ['g', '\u24D6'], ['h', '\u24D7'], ['i', '\u24D8'], ['j', '\u24D9'], ['k', '\u24DA'], ['l', '\u24DB'], ['m', '\u24DC'],
