@@ -76,7 +76,7 @@ exports.commands = {
 			}
 		}
 		buf += '<br />Rooms: ' + (publicrooms || '<em>(no public rooms)</em>');
-		if (targetUser.connected) buf += '<br />Last Active: ' + moment(targetUser.lastActive).fromNow();
+		if (targetUser.connected && targetUser.lastActive) buf += '<br />Last Active: ' + moment(targetUser.lastActive).fromNow();
 
 		if (!showAll) {
 			return this.sendReplyBox(buf);

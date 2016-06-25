@@ -641,7 +641,7 @@ exports.commands = {
 			let self = this;
 			function showProfile(bucks, regdate, lastOnline, title) {
 				lastOnline = (lastOnline ? moment(lastOnline).format("MMMM Do YYYY, h:mm:ss A") + ' EST. (' + moment(lastOnline).fromNow() + ')' : "Never");
-				if (targetUser && targetUser.connected) lastOnline = moment(targetUser.lastActive).fromNow();
+				if (targetUser && targetUser.connected && targetUser.lastActive) lastOnline = moment(targetUser.lastActive).fromNow();
 				let profile = '';
 				profile += '<div style="float: left; width: 75%;"> <img src="' + avatar + '" height=80 width=80 align=left>';
 				profile += '&nbsp;<font color=#b30000><b>Name: </font>' + Wisp.nameColor(userid, true) + (title === "" ? "" : " (" + title + ")") + flag + '<br />';
