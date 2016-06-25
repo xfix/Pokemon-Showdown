@@ -426,6 +426,7 @@ exports.commands = {
 	},
 	psgohelp: [
 		"/psgo add [title], [name], [card image], [rarity], [points], [collection(s)] (ex: XY-Promo, XY-Roaring Skies)",
+		"/psgo edit [title], [name], [card image], [rarity], [points], [collection(s)] (ex: XY-Promo, XY-Roaring Skies)",
 		"/psgo delete [title]",
 		"/psgo manager add [user]",
 		"/psgo manager delete [user]",
