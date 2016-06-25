@@ -61,6 +61,7 @@ function log(message) {
 }
 
 function cachePacks() {
+	cleanPacks = [];
 	for (let i = 0; i < packs.length; i++) {
 		cardCache.push([]);
 		for (let key in cards) {
@@ -372,7 +373,7 @@ exports.commands = {
 				if (target.length < 1) return this.errorReply("Pack names may not be less than one character long.");
 				if (target.length > 20) return this.errorReply("Pack names may not be longer than 20 characters.");
 				if (cleanPacks.includes(toId(target))) return this.errorReply("That pack already exists.");
-				packs.push(toId(target));
+				packs.push(target);
 				fs.writeFileSync('config/psgo/packs.csv', packs.join(','));
 				cachePacks();
 				this.sendReply("The pack has been added.");
@@ -1172,7 +1173,7 @@ exports.commands = {
 
 	takecard: function (target, room, user, connection, cmd) {
 		if (!this.can('declare')) return false;
-		if (!target) return this.errorReply("/takecard [user], [card ID]");
+		if (!target || !target.includes(',')) return this.errorReply("/takecard [user], [card ID]");
 		let parts = target.split(",").map(p => toId(p));
 		// find targetUser and the card being taken.
 		let targetUser = parts.shift();
