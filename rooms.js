@@ -38,6 +38,7 @@ let Room = (() => {
 		this.bannedIps = Object.create(null);
 		this.muteQueue = [];
 		this.muteTimer = null;
+		this.messageCount = 0;
 	}
 	Room.prototype.title = "";
 	Room.prototype.type = 'chat';
@@ -123,12 +124,14 @@ let Room = (() => {
 				this.logEntry('|c|' + user.getIdentity(this.id) + '|/html ' + emoticons);
 				this.log.push('|c|' + user.getIdentity(this.id) + '|/html ' + emoticons);
 				this.lastUpdate = this.log.length;
+				this.messageCount++;
 			} else {
 				if (Users.ShadowBan.checkBanned(user)) {
 					Users.ShadowBan.addMessage(user, "To " + this.id, message);
 					connection.sendTo(this, '|c|' + user.getIdentity(this.id) + '|' + message);
 				} else {
 					this.add('|c|' + user.getIdentity(this.id) + '|' + message);
+					this.messageCount++;
 				}
 			}
 		}
@@ -1694,3 +1697,17 @@ Rooms.aliases = aliases;
 
 Rooms.RoomGame = require('./room-game.js').RoomGame;
 Rooms.RoomGamePlayer = require('./room-game.js').RoomGamePlayer;
+
+setTimeout(function () {
+	for (let room in Rooms.rooms) {
+		let curRoom = Rooms.rooms[room];
+		if (!curRoom.protect && !curRoom.isOfficial && !curRoom.isPrivate && !curRoom.isPersonal && !curRoom.isStaff && curRoom.messageCount < 100) {
+			Rooms.global.deregisterChatRoom(curRoom.id);
+			curRoom.addRaw('<font color=red><b>This room has been automatically deleted due to inactivity.  It will be removed upon the next server restart.</b></font>');
+			if (curRoom.id !== 'global') curRoom.update();
+			curRoom.modchat = '~';
+			curRoom.isPrivate = 'hidden';
+			Rooms('staff').add("|raw|<font color=red><b>" + Tools.escapeHTML(curRoom.title) + " has been automatically deleted from the server due to inactivity.</b></font>").update();
+		}
+	}
+}, 5 * 24 * 60 * 60 * 1000);
