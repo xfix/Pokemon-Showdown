@@ -649,7 +649,7 @@ exports.commands = {
 				profile += '&nbsp;<font color=#b30000><b>Rank: </font></b>' + userGroup + (Users.vips[userid] ? ' (<font color=#6390F0><b>VIP User</b></font>)' : '') + '<br />';
 				if (bucks) profile += '&nbsp;<font color=#b30000><b>Bucks: </font></b>' + bucks + '<br />';
 				if (friendCode) profile += '&nbsp;<font color=#b30000><b>Friendcode: </font></b>' + friendCode + '<br />';
-				profile += '&nbsp;<font color=#b30000><b>Last ' + (targetUser && targetUser.connected ? 'Online' : 'Active') + ': </font></b> ' + lastOnline;
+				profile += '&nbsp;<font color=#b30000><b>Last ' + (targetUser && targetUser.connected ? 'Active' : 'Online') + ': </font></b> ' + lastOnline;
 				profile += '</div><div style="float: left; text-align: center; border-radius: 12px; box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2) inset; margin: 2px 2px 2px 0px" class="card-button">' + badges() + '</div>';
 				profile += '<br clear="all">';
 				self.sendReplyBox(profile);
