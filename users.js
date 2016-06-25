@@ -364,6 +364,8 @@ class User {
 			if (room && room.auth) {
 				if (room.auth[this.userid]) {
 					return room.auth[this.userid] + this.name;
+				} else {
+					if (room.autorank && room.isPrivate !== true) return room.autorank + this.name;
 				}
 				if (room.isPrivate === true) return ' ' + this.name;
 			}
@@ -390,6 +392,7 @@ class User {
 			} else if (room.isPrivate === true) {
 				group = ' ';
 			}
+			if (room.autorank && !room.auth[this.userid]) group = room.autorank;
 			groupData = Config.groups[group];
 			if (target) {
 				if (room.auth[target.userid]) {

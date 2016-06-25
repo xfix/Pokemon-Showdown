@@ -992,6 +992,7 @@ exports.commands = {
 		if (targetRoom.founder) {
 			buffer.unshift((targetRoom.founder ? "Room Founder:\n" + ((Users(targetRoom.founder) && Users(targetRoom.founder).connected) ? Wisp.nameColor(targetRoom.founder, true) : Wisp.nameColor(targetRoom.founder)) : ''));
 		}
+		if (room.autorank) buffer.unshift("Autorank is currently set to " + Config.groups[room.autorank].name + " (" + room.autorank + ")");
 		if (targetRoom !== room) buffer.unshift("" + targetRoom.title + " room auth:");
 		connection.send("|popup||html|" + buffer.join("\n\n") + userLookup);
 	},
