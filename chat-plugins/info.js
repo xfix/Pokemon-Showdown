@@ -14,6 +14,7 @@
 
 const path = require('path');
 const geoip = require('geoip-ultralight');
+const moment = require('moment');
 geoip.startWatchingDataUpdate();
 let serverIp = '158.69.196.64';
 
@@ -75,6 +76,7 @@ exports.commands = {
 			}
 		}
 		buf += '<br />Rooms: ' + (publicrooms || '<em>(no public rooms)</em>');
+		if (targetUser.connected) buf += '<br />Last Active: ' + moment(targetUser.lastActive).fromNow();
 
 		if (!showAll) {
 			return this.sendReplyBox(buf);
