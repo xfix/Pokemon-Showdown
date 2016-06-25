@@ -934,6 +934,49 @@ exports.commands = {
 		'/clearroomauth - Clears the room auth list in the current room.',
 		'/clearroomauth [rank] - Clears the room auth list of users with the rank specified.',
 	],
+
+	roomlist: function (target, room, user) {
+		if (!this.can('seniorstaff')) return;
+		let totalUsers = 0;
+		for (let u of Users.users) {
+			u = u[1];
+			if (Users(u).connected) {
+				totalUsers++;
+			}
+		}
+		let rooms = Object.keys(Rooms.rooms),
+			len = rooms.length,
+			header = ['<b><font color="#b30000" size="2">Total users connected: ' + totalUsers + '</font></b><br />'],
+			official = ['<b><font color="#1a5e00" size="2">Official chat rooms:</font></b><br />'],
+			nonOfficial = ['<hr><b><font color="#000b5e" size="2">Public chat rooms:</font></b><br />'],
+			privateRoom = ['<hr><b><font color="#ff5cb6" size="2">Private chat rooms:</font></b><br />'],
+			groupChats = ['<hr><b><font color="#740B53" size="2">Group Chats:</font></b><br />'],
+			battleRooms = ['<hr><b><font color="#0191C6" size="2">Battle Rooms:</font></b><br />'];
+
+		while (len--) {
+			let _room = Rooms.rooms[rooms[(rooms.length - len) - 1]];
+			if (_room.type === 'battle') {
+				battleRooms.push('<a href="/' + _room.id + '" class="ilink">' + _room.title + '</a> (' + _room.userCount + ')');
+			}
+			if (_room.type === 'chat') {
+				if (_room.isPersonal) {
+					groupChats.push('<a href="/' + _room.id + '" class="ilink">' + _room.id + '</a> (' + _room.userCount + ')');
+					continue;
+				}
+				if (_room.isOfficial) {
+					official.push('<a href="/' + toId(_room.title) + '" class="ilink">' + _room.title + '</a> (' + _room.userCount + ')');
+					continue;
+				}
+				if (_room.isPrivate) {
+					privateRoom.push('<a href="/' + toId(_room.title) + '" class="ilink">' + _room.title + '</a> (' + _room.userCount + ')');
+					continue;
+				}
+			}
+			if (_room.type !== 'battle' && _room.id !== 'global') nonOfficial.push('<a href="/' + toId(_room.title) + '" class="ilink">' + _room.title + '</a> (' + _room.userCount + ')');
+		}
+		this.sendReplyBox(header + official.join(' ') + nonOfficial.join(' ') + privateRoom.join(' ') + (groupChats.length > 1 ? groupChats.join(' ') : '') + (battleRooms.length > 1 ? battleRooms.join(' ') : ''));
+	},
+
 };
 
 Object.assign(Wisp, {
