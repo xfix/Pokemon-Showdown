@@ -900,6 +900,40 @@ exports.commands = {
 		}
 		return this.sendReply("Group \"" + target + "\" not found.");
 	},
+
+	clearroomstaff: 'clearroomauth',
+	clearroomauth: function (target, room, user) {
+		if (!room.founder && user.group !== '~') return this.sendReply('/clearroomauth - Access denied.');
+		if (room.founder !== user.userid && !user.can('seniorstaff')) return this.sendReply('/clearroomauth - Access denied.');
+		if (!room.chatRoomData) return this.sendReply('This room isn\'t registered.');
+		if (!room.auth) return this.sendReply('This room has no auth.');
+		if (room.isOfficial && !user.can('seniorstaff')) return this.sendReply('Only senior staff can clear the room auth in official rooms.');
+		if (target && !Config.groups[target]) return this.errorReply("Please specify a valid rank.");
+
+		if (target && Config.groups[target]) {
+			for (let u in room.auth) {
+				if (room.founder && u === room.founder) continue;
+				if (room.auth[u] === target) delete room.auth[u];
+			}
+			room.chatRoomData.auth = room.auth;
+			Rooms.global.writeChatRoomData();
+			for (let i in room.users) Users(i).updateIdentity();
+			return this.privateModCommand("(" + user.name + " has cleared the room auth list of " + Config.groups[target].name + "s.)");
+		}
+
+		room.auth = {};
+		room.auth[user.userid] = '#';
+		room.founder = user.userid;
+		room.chatRoomData.auth = room.auth;
+		room.chatRoomData.founder = room.founder;
+		Rooms.global.writeChatRoomData();
+		for (let u in room.users) Users(u).updateIdentity();
+		return this.privateModCommand('(' + user.name + ' has cleared the room auth list.)');
+	},
+	clearroomauthhelp: [
+		'/clearroomauth - Clears the room auth list in the current room.',
+		'/clearroomauth [rank] - Clears the room auth list of users with the rank specified.',
+	],
 };
 
 Object.assign(Wisp, {
