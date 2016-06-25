@@ -634,7 +634,7 @@ exports.commands = {
 					let css = 'text-shadow: 1px 1px 1px #CCC; padding: 3px 8px;';
 					let output = '<div class="infobox"><table width="100%"><tr>';
 					if (data.genres.indexOf('Hentai') >= 0) return this.errorReply('Nsfw content is not allowed.');
-					let description = Tools.escapeHTML(data.description.replace(/(\r\n|\n|\r)/gm, " "));
+					let description = data.description.replace(/(\r\n|\n|\r)/gm, "").split('<br><br>').join('<br>');
 					if (description.indexOf('&lt;br&gt;&lt;br&gt;') >= 0) description = description.substr(0, description.indexOf('&lt;br&gt;&lt;br&gt;'));
 					if (description.indexOf('<br>') >= 0) description = description.substr(0, description.indexOf('<br>'));
 					output += '<td style="' + css + ' background: rgba(170, 165, 215, 0.5); box-shadow: 2px 2px 5px rgba(170, 165, 215, 0.8); border: 1px solid rgba(170, 165, 215, 1); border-radius: 5px; color: #2D2B40; text-align: center; font-size: 15pt;"><b>' + data.title_romaji + '</b></td>';
@@ -672,7 +672,7 @@ exports.commands = {
 					for (let i = 0; i < data.genres.length; i++) {
 						if (/(Hentai|Yaoi|Ecchi)/.test(data.genres[i])) return this.errorReply('Nsfw content is not allowed.');
 					}
-					let description = Tools.escapeHTML(data.description.replace(/(\r\n|\n|\r)/gm, " "));
+					let description = data.description.replace(/(\r\n|\n|\r)/gm, " ").split('<br><br>').join('<br>');
 					if (description.indexOf('&lt;br&gt;&lt;br&gt;') >= 0) description = description.substr(0, description.indexOf('&lt;br&gt;&lt;br&gt;'));
 					if (description.indexOf('<br>') >= 0) description = description.substr(0, description.indexOf('<br>'));
 					output += '<td style="' + css + ' background: rgba(170, 165, 215, 0.5); box-shadow: 2px 2px 5px rgba(170, 165, 215, 0.8); border: 1px solid rgba(170, 165, 215, 1); border-radius: 5px; color: #2D2B40; text-align: center; font-size: 15pt;"><b>' + data.title_romaji + '</b></td>';
