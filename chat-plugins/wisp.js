@@ -1178,7 +1178,7 @@ Object.assign(Wisp, {
 		let tell = Wisp.tells[user.userid];
 		if (!tell) return;
 		for (let i in tell) {
-			tell[i].forEach(msg => user.send('|pm| Tells|' + user.getIdentity() + '|/html ' + msg));
+			tell[i].forEach(msg => user.send('|pm| Tells|' + user.getIdentity() + '|/raw ' + msg));
 		}
 		delete Wisp.tells[user.userid];
 		fs.writeFileSync('config/tells.json', JSON.stringify(Wisp.tells));
