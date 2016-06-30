@@ -106,6 +106,8 @@ exports.BattleScripts = {
 				let boost = (tier in boosts) ? boosts[tier] : 0;
 				if (this.set.ability in {'Drizzle': 1, 'Drought': 1}) {
 					boost = 0;
+				} else if (this.set.ability === 'Shadow Tag') {
+					boost = -5;
 				} else if (this.set.moves.indexOf('chatter') >= 0) {
 					boost = 15;
 				}
