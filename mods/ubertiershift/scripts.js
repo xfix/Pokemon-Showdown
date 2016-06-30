@@ -1,5 +1,72 @@
 'use strict';
 
+let PUmons = [
+	'Altaria',
+	'Ampharos',
+	'Arbok',
+	'Armaldo',
+	'Articuno',
+	'Audino',
+	'Avalugg',
+	'Basculin',
+	'Basculin-Blue-Striped',
+	'Beheeyem',
+	'Bouffalant',
+	'Camerupt',
+	'Chatot',
+	'Clefairy',
+	'Crustle',
+	'Cryogonal',
+	'Dodrio',
+	'Drifblim',
+	'Dusknoir',
+	'Electrode',
+	'Flareon',
+	'Floatzel',
+	'Gabite',
+	'Golem',
+	'Gorebyss',
+	'Gourgeist-Super',
+	'Grumpig',
+	'Jumpluff',
+	'Kadabra',
+	'Kingler',
+	'Lapras',
+	'Leafeon',
+	'Leavanny',
+	'Lickilicky',
+	'Lumineon',
+	'Machoke',
+	'Marowak',
+	'Mawile',
+	'Metang',
+	'Misdreavus',
+	'Monferno',
+	'Mr. Mime',
+	'Ninetales',
+	'Ninjask',
+	'Pawniard',
+	'Politoed',
+	'Prinplup',
+	'Probopass',
+	'Purugly',
+	'Raichu',
+	'Rampardos',
+	'Rapidash',
+	'Regice',
+	'Relicanth',
+	'Roselia',
+	'Rotom-Frost',
+	'Stoutland',
+	'Stunfisk',
+	'Swanna',
+	'Tangela',
+	'Torkoal',
+	'Ursaring',
+	'Vullaby',
+	'Zebstrika',
+];
+
 exports.BattleScripts = {
 	pokemon: {
 		formeChange: function (template, dontRecalculateStats) {
@@ -22,11 +89,15 @@ exports.BattleScripts = {
 					'NU': 15,
 					'BL4': 15,
 					'PU': 20,
+					'FU': 25,
 					'NFE': 25,
 					'LC Uber': 25,
 					'LC': 25,
 				};
 				let tier = template.tier;
+				if (tier === 'PU' && !PUmons.includes(template.species)) {
+					tier = 'FU';
+				}
 				if (this.set.item) {
 					let item = this.battle.getItem(this.set.item);
 					if (item.megaEvolves === template.species) tier = this.battle.getTemplate(item.megaStone).tier;
@@ -35,6 +106,8 @@ exports.BattleScripts = {
 				let boost = (tier in boosts) ? boosts[tier] : 0;
 				if (this.set.ability in {'Drizzle': 1, 'Drought': 1}) {
 					boost = 0;
+				} else if (this.set.ability === 'Shadow Tag') {
+					boost = -5;
 				} else if (this.set.moves.indexOf('chatter') >= 0) {
 					boost = 15;
 				}

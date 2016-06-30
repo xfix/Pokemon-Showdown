@@ -617,7 +617,7 @@ exports.BattleAbilities = { // define custom abilities here.
 		shortDesc: 'Transforms into a fossil.',
 		onStart: function (pokemon) {
 			let fossils = ['Omastar', 'Kabutops', 'Aerodactyl', 'Cradily', 'Armaldo', 'Bastiodon', 'Rampardos', 'Carracosta', 'Archeops', 'Aurorus', 'Tyrantrum'];
-			let fossil = fossils.sample(1)[0];
+			let fossil = fossils[this.random(fossils.length)];
 			pokemon.formeChange(fossil);
 			this.add('-formechange', pokemon, fossil, '[msg]');
 			let move = 'ancientpower';
