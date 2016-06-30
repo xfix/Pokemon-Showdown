@@ -95,7 +95,7 @@ exports.BattleScripts = {
 					'LC': 25,
 				};
 				let tier = template.tier;
-				if (tier == 'PU' && !PUmons.includes(template.species)) {
+				if (tier === 'PU' && !PUmons.includes(template.species)) {
 					tier = 'FU';
 				}
 				if (this.set.item) {
