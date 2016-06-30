@@ -51,7 +51,7 @@ exports.BattleMovedex = {
 					this.add('-heal', target, target.getHealth, '[from] move: Disappointment');
 					this.effectData.positions[target.position] = false;
 				}
-				if (!this.effectData.positions.any(true)) {
+				if (!this.effectData.positions.some(affected => affected === true)) {
 					target.side.removeSideCondition('disappointment');
 				}
 			},
@@ -683,7 +683,7 @@ exports.BattleMovedex = {
 					'Red Orb',
 					'Blue Orb',
 				];
-				target.item = megaStoneList.sample(1)[0];
+				target.item = megaStoneList[this.random(megaStoneList.length)];
 				this.add('-item', target, target.getItem(), '[from] move: Re-Roll');
 				target.canMegaEvo = this.canMegaEvo(target);
 				let pokemon = target;
