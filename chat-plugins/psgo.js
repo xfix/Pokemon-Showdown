@@ -67,7 +67,7 @@ function cachePacks() {
 		for (let key in cards) {
 			if (cards.hasOwnProperty(key)) {
 				let obj = cards[key];
-				if (obj.hasOwnProperty('collection') && obj.collection.indexOf(packs[i]) > -1) cardCache[i].push(key);
+				if (obj.hasOwnProperty('collection') && obj.collection.indexOf(toId(packs[i])) > -1) cardCache[i].push(key);
 			}
 		}
 		cleanPacks.push(toId(packs[i]));
@@ -231,6 +231,7 @@ exports.commands = {
 				if (toId(collections[c]).length < 1) return this.errorReply("Collection names must be longer than 1 character.");
 				if (toId(collections[c]).length > 30) return this.errorReply("Collection names may not be longer than 30 characters.");
 				if (!cleanPacks.includes(toId(collections[c]))) return this.errorReply("The pack \"" + collections[c] + "\" does not exist. Add it with /psgo pack add [pack].");
+				collections[c] = toId(collections[c]);
 			}
 
 			cards[title] = {
@@ -588,9 +589,11 @@ exports.commands = {
 	cardsearch: 'searchcard',
 	searchcard: function (target, room, user) {
 		const letters = "abcdefghijklmnopqrstuvwxyz".split("");
+		let cspacks = [];
+		for (let i in shop) cspacks.push(i);
 		const categories = {
 			Rarity: ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Mythic'], // rarities
-			Packs: ['XY-Promo', 'XY-Base', 'XY-Flashfire', 'XY-Furious Fists', 'XY-Phantom Forces', 'XY-Primal Clash', 'XY-Roaring Skies', 'XY-Ancient Origins', 'Double Crisis', 'XY-Generations', 'XY-RadiantCollection', 'BW-Legendary Treasures', 'XY-Fates Collide'],
+			Packs: cspacks,
 			Types: ['Water', 'Fire', 'Fighting', 'Fairy', 'Dragon', 'Colorless', 'Psychic', 'Lightning', 'Darkness', 'Grass', 'Metal'],
 			Tiers: ['OU-Pack', 'UU-Pack', 'Uber-Pack', 'PU-Pack', 'NU-Pack', 'RU-Pack', 'LC-Pack', 'BL-Pack', 'BL2-Pack', 'BL3-Pack'],
 			Generation: ['Gen1', 'Gen2', 'Gen3', 'Gen4', 'Gen5', 'Gen6'],
@@ -736,7 +739,13 @@ exports.commands = {
 			// rarity display
 			let cardRarityPoints = '<b>Rarity: </b><font color="' + colors[card.rarity] + '">' + card.rarity + '</font> (' + card.points + ')<br />';
 			// collections
-			let cardCollection = '<b>Packs: </b>' + card.collection.join(", ") + "<br />";
+			let collections = [];
+			for (let u in card.collection) {
+				for (let i in packs) {
+					if (toId(packs[i]) === toId(card.collection[u])) collections.push(packs[i]);
+				}
+			}
+			let cardCollection = '<b>Packs: </b>' + collections.join(", ") + "<br />";
 			// get users that have the card
 			let allCardUsers = Db('cards').object();
 			let cardHolders = [];
