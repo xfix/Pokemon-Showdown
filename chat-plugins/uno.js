@@ -458,6 +458,7 @@ exports.commands = {
 			if (room.uno.pot) return this.errorReply("You cannot leave a game with bucks involved.");
 			room.uno.list.splice(room.uno.list.indexOf(userid), 1);
 			delete room.uno.data[userid];
+			this.sendReply("You have left the game of uno.");
 			break;
 		case 'dq':
 			if (!room.uno || !room.uno.start) return false;
