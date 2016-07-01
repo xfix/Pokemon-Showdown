@@ -127,7 +127,7 @@ exports.BattleScripts = {
 			/*"Lass zeowx": { // STPPLB+ only
 				species: 'Liepard', ability: 'Protean', item: 'Focus Sash', gender: 'F',
 				moves: ['suckerpunch', 'shadowsneak', 'bulletpunch', 'playrough', 'spikes', 'acrobatics'],
-				signatureMove: ['fakeout', 'partingvoltturn'],
+				signatureMoves: ['fakeout', 'partingvoltturn'],
 				evs: {atk:252, spa:12, spe:244}, nature: 'Hasty',
 			},*/
 			"Eeveelutionlvr": {
@@ -365,7 +365,7 @@ exports.BattleScripts = {
 			"Lass zeowx": { // STPPLB+ only
 				species: 'Liepard', ability: 'Protean', item: 'Focus Sash', gender: 'F',
 				moves: ['suckerpunch', 'shadowsneak', 'bulletpunch', 'playrough', 'spikes', 'acrobatics'],
-				signatureMove: ['fakeout', 'partingvoltturn'],
+				signatureMoves: ['fakeout', 'partingvoltturn'],
 				evs: {atk:252, spa:12, spe:244}, nature: 'Hasty',
 			},
 			"Eeveelutionlvr": {
@@ -609,7 +609,7 @@ exports.BattleScripts = {
 			"Lass zeowx": { // STPPLB+ only
 				species: 'Liepard', ability: 'Protean', item: 'Focus Sash', gender: 'F',
 				moves: ['suckerpunch', 'shadowsneak', 'bulletpunch', 'playrough', 'spikes', 'acrobatics'],
-				signatureMove: ['fakeout', 'partingvoltturn'],
+				signatureMoves: ['fakeout', 'partingvoltturn'],
 				evs: {atk:252, spa:12, spe:244}, nature: 'Hasty',
 			},
 			"Eeveelutionlvr": {
