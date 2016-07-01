@@ -52,22 +52,27 @@ let megaStoneList = [
 	'Red Orb',
 	'Blue Orb',
 ];
-let sample = function (array, num) {
-	let indices = [];
-	let result = [];
-	for (let i = 0; i < num; i++) {
-		if (i < array.length) {
-			let n = Math.floor(Math.random() * (array.length - i));
-			for (let j = 0; j < indices.length; j++) {
-				if (n >= indices[j]) n += 1;
-			}
-			result.push(array[n]);
-			indices.push(n);
-		}
-	}
-	return result;
-};
 exports.BattleScripts = {
+	fastPop: function (list, index) {
+		// If an array doesn't need to be in order, replacing the
+		// element at the given index with the removed element
+		// is much, much faster than using list.splice(index, 1).
+		let length = list.length;
+		let element = list[index];
+		list[index] = list[length - 1];
+		list.pop();
+		return element;
+	},
+	sampleNoReplace: function (list) {
+		// The cute code to sample no replace is:
+		//   return list.splice(this.random(length), 1)[0];
+		// However manually removing the element is twice as fast.
+		// In fact, we don't even need to keep the array in order, so
+		// we just replace the removed element with the last element.
+		let length = list.length;
+		let index = this.random(length);
+		return this.fastPop(list, index);
+	},
 	randomtpplbTeam: function (side) {
 		let team = [];
 		let sets = { // this is where all the movesets are defined. Add new mons here.
@@ -121,8 +126,8 @@ exports.BattleScripts = {
 			},
 			/*"Lass zeowx": { // STPPLB+ only
 				species: 'Liepard', ability: 'Protean', item: 'Focus Sash', gender: 'F',
-				moves: ['suckerpunch', 'shadowsneak', 'bulletpunch', 'playrough', 'spikes', 'acrobatics'].sample(2).concat('fakeout'), // always have Fake Out.
-				signatureMove: 'partingvoltturn',
+				moves: ['suckerpunch', 'shadowsneak', 'bulletpunch', 'playrough', 'spikes', 'acrobatics'],
+				signatureMove: ['fakeout', 'partingvoltturn'],
 				evs: {atk:252, spa:12, spe:244}, nature: 'Hasty',
 			},*/
 			"Eeveelutionlvr": {
@@ -188,7 +193,7 @@ exports.BattleScripts = {
 				evs: {hp: 4, spa: 252, spe: 252}, nature: 'Timid',
 			},
 			'Natsugan': {
-				species: 'Flygon', ability: 'Mega Plunder', item: sample(megaStoneList, 1)[0], gender: 'M',
+				species: 'Flygon', ability: 'Mega Plunder', item: megaStoneList[this.random(megaStoneList.length)], gender: 'M',
 				moves: ['earthquake', 'earthpower', 'uturn', 'dragonclaw', 'fireblast', 'boomburst', 'dragonpulse', 'return', 'stoneedge', 'crunch', 'ironhead', 'dragondance', 'quiverdance'],
 				signatureMove: 'reroll',
 				evs: {hp:88, atk: 84, def: 84, spa: 84, spd: 84, spe: 84}, nature: 'Serious',
@@ -280,23 +285,28 @@ exports.BattleScripts = {
 				evs: {hp: 252, def: 128, spd: 128}, nature: 'Modest',
 			},
 		};
-		let pool = sample(Object.keys(sets), 6);
-		for (let i = 0; i < Math.min(6, pool.length); i++) {
-			let set = sets[pool[i]];
+		let pool = Object.keys(sets);
+		for (let i = 0; i < 6; i++) {
+			let name = this.sampleNoReplace(pool);
+			let set = sets[name];
 			set.level = 100;
-			set.name = pool[i];
-			if (!set.ivs) { // set 31 for unspecified IVs.
+			set.name = name;
+			if (!set.ivs) {
 				set.ivs = {hp:31, atk:31, def:31, spa:31, spd:31, spe:31};
 			} else {
 				for (let iv in {hp:31, atk:31, def:31, spa:31, spd:31, spe:31}) {
-					set.ivs[iv] = set.ivs[iv] ? set.ivs[iv] : 31;
+					set.ivs[iv] = iv in set.ivs ? set.ivs[iv] : 31;
 				}
 			}
 			// Assuming the hardcoded set evs are all legal.
-			if (!set.evs) set.evs = {hp:88, atk:84, def:84, spa:84, spd:84, spe:84};
+			if (!set.evs) set.evs = {hp:84, atk:84, def:84, spa:84, spd:84, spe:84};
 			if (set.signatureMove) set.signatureMoves = [set.signatureMove];
 			let len = set.signatureMoves.length;
-			set.moves = sample(set.moves, 4 - len).concat(set.signatureMoves); // always have sig move.
+			let moves = set.signatureMoves;
+			for (let j = 0; j < 4 - len; j++) {
+				moves = [this.sampleNoReplace(set.moves)].concat(moves);
+			}
+			set.moves = moves;
 			team.push(set);
 		}
 		return team;
@@ -354,8 +364,8 @@ exports.BattleScripts = {
 			},
 			"Lass zeowx": { // STPPLB+ only
 				species: 'Liepard', ability: 'Protean', item: 'Focus Sash', gender: 'F',
-				moves: sample(['suckerpunch', 'shadowsneak', 'bulletpunch', 'playrough', 'spikes', 'acrobatics'], 2).concat('fakeout'), // always have Fake Out.
-				signatureMove: 'partingvoltturn',
+				moves: ['suckerpunch', 'shadowsneak', 'bulletpunch', 'playrough', 'spikes', 'acrobatics'],
+				signatureMove: ['fakeout', 'partingvoltturn'],
 				evs: {atk:252, spa:12, spe:244}, nature: 'Hasty',
 			},
 			"Eeveelutionlvr": {
@@ -421,7 +431,7 @@ exports.BattleScripts = {
 				evs: {hp: 4, spa: 252, spe: 252}, nature: 'Timid',
 			},
 			'Natsugan': {
-				species: 'Flygon', ability: 'Mega Plunder', item: sample(megaStoneList, 1)[0], gender: 'M',
+				species: 'Flygon', ability: 'Mega Plunder', item: megaStoneList[this.random(megaStoneList.length)], gender: 'M',
 				moves: ['earthquake', 'earthpower', 'uturn', 'dragonclaw', 'fireblast', 'boomburst', 'dragonpulse', 'return', 'stoneedge', 'crunch', 'ironhead', 'dragondance', 'quiverdance'],
 				signatureMove: 'reroll',
 				nature: 'Serious',
@@ -519,23 +529,28 @@ exports.BattleScripts = {
 				evs: {hp: 252, def: 128, spd: 128}, nature: 'Modest',
 			},
 		};
-		let pool = sample(Object.keys(sets), 6);
-		for (let i = 0; i < Math.min(6, pool.length); i++) {
-			let set = sets[pool[i]];
+		let pool = Object.keys(sets);
+		for (let i = 0; i < 6; i++) {
+			let name = this.sampleNoReplace(pool);
+			let set = sets[name];
 			set.level = 100;
-			set.name = pool[i];
-			if (!set.ivs) { // set 31 for unspecified IVs.
+			set.name = name;
+			if (!set.ivs) {
 				set.ivs = {hp:31, atk:31, def:31, spa:31, spd:31, spe:31};
 			} else {
 				for (let iv in {hp:31, atk:31, def:31, spa:31, spd:31, spe:31}) {
-					set.ivs[iv] = set.ivs[iv] ? set.ivs[iv] : 31;
+					set.ivs[iv] = iv in set.ivs ? set.ivs[iv] : 31;
 				}
 			}
 			// Assuming the hardcoded set evs are all legal.
-			if (!set.evs) set.evs = {hp:88, atk:84, def:84, spa:84, spd:84, spe:84};
+			if (!set.evs) set.evs = {hp:84, atk:84, def:84, spa:84, spd:84, spe:84};
 			if (set.signatureMove) set.signatureMoves = [set.signatureMove];
 			let len = set.signatureMoves.length;
-			set.moves = sample(set.moves, 4 - len).concat(set.signatureMoves); // always have sig move.
+			let moves = set.signatureMoves;
+			for (let j = 0; j < 4 - len; j++) {
+				moves = [this.sampleNoReplace(set.moves)].concat(moves);
+			}
+			set.moves = moves;
 			team.push(set);
 		}
 		return team;
@@ -593,8 +608,8 @@ exports.BattleScripts = {
 			},
 			"Lass zeowx": { // STPPLB+ only
 				species: 'Liepard', ability: 'Protean', item: 'Focus Sash', gender: 'F',
-				moves: sample(['suckerpunch', 'shadowsneak', 'bulletpunch', 'playrough', 'spikes', 'acrobatics'], 2).concat('fakeout'), // always have Fake Out.
-				signatureMove: 'partingvoltturn',
+				moves: ['suckerpunch', 'shadowsneak', 'bulletpunch', 'playrough', 'spikes', 'acrobatics'],
+				signatureMove: ['fakeout', 'partingvoltturn'],
 				evs: {atk:252, spa:12, spe:244}, nature: 'Hasty',
 			},
 			"Eeveelutionlvr": {
@@ -660,7 +675,7 @@ exports.BattleScripts = {
 				evs: {hp: 4, spa: 252, spe: 252}, nature: 'Timid',
 			},
 			'Natsugan': {
-				species: 'Flygon', ability: 'Mega Plunder', item: sample(megaStoneList, 1)[0], gender: 'M',
+				species: 'Flygon', ability: 'Mega Plunder', item: megaStoneList[this.random(megaStoneList.length)], gender: 'M',
 				moves: ['earthquake', 'earthpower', 'uturn', 'dragonclaw', 'fireblast', 'boomburst', 'dragonpulse', 'return', 'stoneedge', 'crunch', 'ironhead', 'dragondance', 'quiverdance'],
 				signatureMove: 'reroll',
 				nature: 'Serious',
@@ -764,23 +779,28 @@ exports.BattleScripts = {
 				evs: {hp: 252, def: 128, spd: 128}, nature: 'Modest',
 			},
 		};
-		let pool = sample(Object.keys(sets), 6);
-		for (let i = 0; i < Math.min(6, pool.length); i++) {
-			let set = sets[pool[i]];
+		let pool = Object.keys(sets);
+		for (let i = 0; i < 6; i++) {
+			let name = this.sampleNoReplace(pool);
+			let set = sets[name];
 			set.level = 100;
-			set.name = pool[i];
-			if (!set.ivs) { // set 31 for unspecified IVs.
+			set.name = name;
+			if (!set.ivs) {
 				set.ivs = {hp:31, atk:31, def:31, spa:31, spd:31, spe:31};
 			} else {
 				for (let iv in {hp:31, atk:31, def:31, spa:31, spd:31, spe:31}) {
-					set.ivs[iv] = set.ivs[iv] ? set.ivs[iv] : 31;
+					set.ivs[iv] = iv in set.ivs ? set.ivs[iv] : 31;
 				}
 			}
 			// Assuming the hardcoded set evs are all legal.
-			if (!set.evs) set.evs = {hp:88, atk:84, def:84, spa:84, spd:84, spe:84};
+			if (!set.evs) set.evs = {hp:84, atk:84, def:84, spa:84, spd:84, spe:84};
 			if (set.signatureMove) set.signatureMoves = [set.signatureMove];
 			let len = set.signatureMoves.length;
-			set.moves = sample(set.moves, 4 - len).concat(set.signatureMoves); // always have sig move.
+			let moves = set.signatureMoves;
+			for (let j = 0; j < 4 - len; j++) {
+				moves = [this.sampleNoReplace(set.moves)].concat(moves);
+			}
+			set.moves = moves;
 			team.push(set);
 		}
 		return team;

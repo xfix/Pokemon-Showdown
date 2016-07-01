@@ -49,7 +49,7 @@ exports.BattleAbilities = { // define custom abilities here.
 				if (!foe.hasType('Ghost')) {
 					foe.types[0] = 'Ghost';
 				} else if (foe.types[0] !== 'Ghost') {
-					foe.typesData.shift();
+					foe.types.shift();
 				} else {
 					continue;
 				}
@@ -61,7 +61,7 @@ exports.BattleAbilities = { // define custom abilities here.
 		rating: 4,
 		num: 194,
 	},
-	'scrubterrain': { // MLZekrom pls, Scrub Terrain was really hacky. Happy it's out of the meta.
+	/*'scrubterrain': { // MLZekrom pls, Scrub Terrain was really hacky. Happy it's out of the meta.
 		desc: '',
 		shortDesc: '',
 		onStart: function (pokemon) {
@@ -88,7 +88,7 @@ exports.BattleAbilities = { // define custom abilities here.
 		name: 'Scrub Terrain',
 		rating: 4,
 		num: 195,
-	},
+	},*/
 	'proteon': { // Eeveelutionlvr's ability.
 		desc: '',
 		shortDesc: "This Pokemon transforms into an Eeveelution to match the type of the move it is about to use, if possible.",
