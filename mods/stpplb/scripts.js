@@ -188,7 +188,7 @@ exports.BattleScripts = {
 				evs: {hp: 4, spa: 252, spe: 252}, nature: 'Timid',
 			},
 			'Natsugan': {
-				species: 'Flygon', ability: 'Mega Plunder', item: sample(megaStoneList, 1)[0], gender: 'M',
+				species: 'Flygon', ability: 'Mega Plunder', item: megaStoneList[this.random(megaStoneList.length)], gender: 'M',
 				moves: ['earthquake', 'earthpower', 'uturn', 'dragonclaw', 'fireblast', 'boomburst', 'dragonpulse', 'return', 'stoneedge', 'crunch', 'ironhead', 'dragondance', 'quiverdance'],
 				signatureMove: 'reroll',
 				evs: {hp:88, atk: 84, def: 84, spa: 84, spd: 84, spe: 84}, nature: 'Serious',
@@ -354,8 +354,8 @@ exports.BattleScripts = {
 			},
 			"Lass zeowx": { // STPPLB+ only
 				species: 'Liepard', ability: 'Protean', item: 'Focus Sash', gender: 'F',
-				moves: sample(['suckerpunch', 'shadowsneak', 'bulletpunch', 'playrough', 'spikes', 'acrobatics'], 2).concat('fakeout'), // always have Fake Out.
-				signatureMove: 'partingvoltturn',
+				moves: ['suckerpunch', 'shadowsneak', 'bulletpunch', 'playrough', 'spikes', 'acrobatics'],
+				signatureMove: ['fakeout', 'partingvoltturn'],
 				evs: {atk:252, spa:12, spe:244}, nature: 'Hasty',
 			},
 			"Eeveelutionlvr": {
@@ -421,7 +421,7 @@ exports.BattleScripts = {
 				evs: {hp: 4, spa: 252, spe: 252}, nature: 'Timid',
 			},
 			'Natsugan': {
-				species: 'Flygon', ability: 'Mega Plunder', item: sample(megaStoneList, 1)[0], gender: 'M',
+				species: 'Flygon', ability: 'Mega Plunder', item: megaStoneList[this.random(megaStoneList.length)], gender: 'M',
 				moves: ['earthquake', 'earthpower', 'uturn', 'dragonclaw', 'fireblast', 'boomburst', 'dragonpulse', 'return', 'stoneedge', 'crunch', 'ironhead', 'dragondance', 'quiverdance'],
 				signatureMove: 'reroll',
 				nature: 'Serious',
@@ -593,8 +593,8 @@ exports.BattleScripts = {
 			},
 			"Lass zeowx": { // STPPLB+ only
 				species: 'Liepard', ability: 'Protean', item: 'Focus Sash', gender: 'F',
-				moves: sample(['suckerpunch', 'shadowsneak', 'bulletpunch', 'playrough', 'spikes', 'acrobatics'], 2).concat('fakeout'), // always have Fake Out.
-				signatureMove: 'partingvoltturn',
+				moves: ['suckerpunch', 'shadowsneak', 'bulletpunch', 'playrough', 'spikes', 'acrobatics'],
+				signatureMove: ['fakeout', 'partingvoltturn'],
 				evs: {atk:252, spa:12, spe:244}, nature: 'Hasty',
 			},
 			"Eeveelutionlvr": {
@@ -660,7 +660,7 @@ exports.BattleScripts = {
 				evs: {hp: 4, spa: 252, spe: 252}, nature: 'Timid',
 			},
 			'Natsugan': {
-				species: 'Flygon', ability: 'Mega Plunder', item: sample(megaStoneList, 1)[0], gender: 'M',
+				species: 'Flygon', ability: 'Mega Plunder', item: megaStoneList[this.random(megaStoneList.length)], gender: 'M',
 				moves: ['earthquake', 'earthpower', 'uturn', 'dragonclaw', 'fireblast', 'boomburst', 'dragonpulse', 'return', 'stoneedge', 'crunch', 'ironhead', 'dragondance', 'quiverdance'],
 				signatureMove: 'reroll',
 				nature: 'Serious',
