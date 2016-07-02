@@ -129,10 +129,7 @@ exports.BattleAbilities = { // define custom abilities here.
 	},
 	'swahahahahaggers': { // Sohippy's ability: con on switch-in.
 		desc: '',
-		shortDesc: "On switch-in, all opponents become confused for 1 turn; Ground immunity.",
-		onImmunity: function (type) {
-			if (type === 'Ground') return false;
-		},
+		shortDesc: "On switch-in, all opponents become confused for 1 turn, with 70% self-hit chance.",
 		onStart: function (pokemon) {
 			let activeFoe = pokemon.side.foe.active;
 			for (let i = 0; i < activeFoe.length; i++) {
@@ -375,8 +372,8 @@ exports.BattleAbilities = { // define custom abilities here.
 		},
 	},
 	'banevade': {
-		desc: "This Pokemon's evasion is evaluated by end of each turn. Higher evasion at lower HP.",
-		shortDesc: "Higher evasion at lower HP.",
+		desc: "This Pokemon's evasion is evaluated by end of each turn. Higher evasion at lower HP. OHKO moves will fail.",
+		shortDesc: "Higher evasion at lower HP. Immune to OHKO.",
 		onTryHit: function (pokemon, target, move) {
 			if (move.ohko) {
 				this.add('-immune', pokemon, '[msg]');
@@ -424,7 +421,7 @@ exports.BattleAbilities = { // define custom abilities here.
 		num: 209,
 	},
 	'physicalakazam': { // Makes Alakazam into a physical tank
-		shortDesc: "This Pokemon's Attack is increased 2.5x and its Defense is doubled.",
+		shortDesc: "This Pokemon's Attack is doubled and its Defense is increased 1.5x.",
 		onModifyDefPriority: 6,
 		onModifyDef: function (def) {
 			return this.chainModify(1.5);
