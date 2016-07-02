@@ -1,5 +1,5 @@
 'use strict';
- 
+
 exports.BattleItems = {
     "deepseascale": {
         inherit: true,
