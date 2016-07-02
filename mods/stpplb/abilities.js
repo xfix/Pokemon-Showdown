@@ -1,15 +1,13 @@
 'use strict';
 
 exports.BattleAbilities = { // define custom abilities here.
-	/*"glitchiate": {
-		desc: "This Pokemon's moves become Bird-type moves and have their power multiplied by 1.3. This effect comes after other effects that change a move's type, but before Ion Deluge and Electrify's effects.",
-		shortDesc: "This Pokemon's moves become Bird type and have 1.3x power.",
+	"glitchiate": {
+		desc: "This Pokemon's moves become ???-type moves and have their power multiplied by 1.3. This effect comes after other effects that change a move's type, but before Ion Deluge and Electrify's effects.",
+		shortDesc: "This Pokemon's moves become ??? type and have 1.3x power.",
 		onModifyMovePriority: -1,
-		onModifyMove: function (move, pokemon) {
-			if (move.id !== 'struggle') { // still boost moves even if they are already Bird-type (TM56). Also don't mess with Struggle.
-				move.type = 'Bird';
-				if (move.category !== 'Status') pokemon.addVolatile('glitchiate');
-			}
+		onModifyMove: function (move, pokemon) { // still boost moves even if they are already ???-type (TM56)
+			move.type = '???';
+			if (move.category !== 'Status') pokemon.addVolatile('glitchiate');
 		},
 		effect: {
 			duration: 1,
@@ -22,7 +20,7 @@ exports.BattleAbilities = { // define custom abilities here.
 		name: "Glitchiate",
 		rating: 4,
 		num: 192,
-	},*/
+	},
 	"serenegraceplus": {
 		desc: "This Pokemon's moves have their secondary chances multiplied by 3.",
 		shortDesc: "This Pokemon's moves have their secondary chances multiplied by 3.",
