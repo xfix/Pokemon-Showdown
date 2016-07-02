@@ -1,5 +1,5 @@
 'use strict';
- 
+
 exports.BattleAbilities = {
 	acidarmor: {
 		onStart: function (pokemon) {
