@@ -2184,7 +2184,7 @@ exports.Formats = [
 	{
 		name: "Cross Evolution+",
 		section: "Other Metagames",
-	        
+
 		mod: 'crossevolution',
 		ruleset: ['Sleep Clause Mod', 'Species Clause', 'OHKO Clause', 'Moody Clause', 'Evasion Moves Clause', 'Endless Battle Clause', 'HP Percentage Mod', 'Cancel Mod', 'Team Preview'],
 		banlist: ['Unreleased', 'Shadow Tag', 'Soul Dew'],
@@ -2206,7 +2206,7 @@ exports.Formats = [
 			if (!set.name || set.name === set.species) return;
 			if (toId(set.name) === 'gyarados' || toId(set.name) === 'shedinja') return ["Cross evolution with " + set.name + " is banned."];
 			if (set.species === 'Scyther' || set.species === 'Sneasel' || set.species === 'Archen') return ["" + set.species + " cannot cross evolve."];
-			
+
 			// That was the easy checks done
 			let template = this.getTemplate(set.species);
 			template = this.getTemplate(template.baseSpecies);
@@ -2214,7 +2214,7 @@ exports.Formats = [
 			let crossTemplate = this.getTemplate(set.name);
 			if (!crossTemplate.exists) return;
 			let crossPrevoTemplate = this.getTemplate(crossTemplate.prevo);
-			
+
 			// Figure out which stage evolution we're dealing with (how many pre-evolution stages are there)
 			let setStage = 1, crossStage = 1;
 			if (template.prevo) {
@@ -2230,7 +2230,7 @@ exports.Formats = [
 				}
 			}
 			if (setStage + 1 !== crossStage) return ["Cross evolution must follow evolutionary stages.", "(" + set.species + " is Stage " + setStage + " and can only cross evolve to Stage " + (setStage + 1) + ")"];
-			
+
 			// Make sure no stat is too high/low to cross evolve to
 			let stats = {'hp': 'HP', 'atk': 'Attack', 'def': 'Defense', 'spa': 'Special Attack', 'spd': 'Special Defense', 'spe': 'Speed'};
 			let statDelta = 0, evoStat = 0;
@@ -2243,7 +2243,7 @@ exports.Formats = [
 					return ["" + set.species + " cannot cross evolve to " + set.name + " because its " + stats[statid] + " is too high."];
 				}
 			}
-			
+
 			// Ability test
 			let canHaveAbility = false;
 			for (let a in crossTemplate.abilities) {
@@ -2266,12 +2266,12 @@ exports.Formats = [
 				}
 			}
 			if (!canHaveAbility) return ["" + set.species + " cannot use " + set.ability + " when cross evolved."];
-			
+
 			// Movepool (We can't rely on 'Illegal' learnset for the learnset test)
 			// This test isn't reliable for compability, but we can't rely on it anyway
 			// because ability incompabilities. So we end up with a fairly poor test that makes
 			// sure that the Pokemon at least learn the moves it doesn't inherit `sometime`.
-			
+
 			let added = {};
 			// These will have loads of duplicates, but it's okay
 			let standardMovepool = [];
@@ -2331,11 +2331,11 @@ exports.Formats = [
 	{
 		name: "Trademarked",
 		section: "Other Metagames",
-		
+
 		mod: 'trademark',
 		ruleset: ['OU'],
 		banlist: ['Ignore Illegal Abilities', 'Slaking', 'Regigigas'],
-		
+
 		onValidateSet: function (set) {
 			let move = this.getMove(set.ability);
 			if (!move.exists) {
@@ -2374,11 +2374,11 @@ exports.Formats = [
 	{
 		name: "Trademarked-EX",
 		section: "Other Metagames",
-		
+
 		mod: 'trademark',
 		ruleset: ['Ubers'],
 		banlist: ['Ignore Illegal Abilities'],
-		
+
 		onValidateSet: function (set) {
 			let bannedTrademarks = [
 				'Block', 'Mean Look', 'Spider Web', 'Nature Power', 'Heal Pulse', 'Confuse Ray',
@@ -2429,7 +2429,7 @@ exports.Formats = [
 	{
 		name: 'Classic Stat Switch',
 		section: 'Other Metagames',
-		
+
 		mod: 'classicstatswitch',
 		ruleset: ['Ubers'],
 		banlist: ['Azumarill', 'Regirock', 'Regice', 'Mawilite', 'Diancite'],
