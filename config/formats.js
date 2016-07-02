@@ -2298,7 +2298,7 @@ exports.Formats = [
 				if (crossMovepool.indexOf(move) >= 0 && standardMovepool.indexOf(move) < 0) {
 					newMoves++;
 				} else if (standardMovepool.indexOf(move) < 0) {
-					problems.push(set.species + " cannot learn " + set.moves[i] + ".");	
+					problems.push(set.species + " cannot learn " + set.moves[i] + ".");
 				}
 			}
 			if (newMoves > 2) return ["You can only gain 2 Moves from the cross evolution.", "(" + set.species + " has gained " + newMoves + " moves.)"];
@@ -2318,7 +2318,7 @@ exports.Formats = [
 		searchShow: false,
 		ruleset: ['Pokemon', 'Team Preview', 'Standard'],
 		banlist: ['Swoobat', 'Ignore Alphabet Moves'],
-		onValidateTeam: function(team, format) {
+		onValidateTeam: function (team, format) {
 			let letters = {};
 			let letter = '';
 			for (let i = 0; i < team.length; i++) {
@@ -2351,7 +2351,7 @@ exports.Formats = [
 			if (move.name === 'Roar' || move.name === 'Whirlwind') return ['' + set.species + ' has an illegal trademark ability', '(' + move.name + ' is not allowed as a trademark ability)'];
 			if (move.category !== 'Status') return ['You can only trademark status moves', '(' + set.species + '\'s trademark is ' + move.name + ')'];
 			if (set.moves.indexOf(move.name) >= 0) return ['You cannot use a move that is trademarked', '(' + set.species + ' has ' + move.name + ' as ability and a move)'];
-			
+
 			let template = this.getTemplate(set.species);
 			let added = {};
 			let canLearn = set.species === 'Smeargle';
@@ -2369,7 +2369,7 @@ exports.Formats = [
 			if (!canLearn) {
 				return ['' + set.species + ' cannot learn ' + move.name];
 			}
-		}
+		},
 	},
 	{
 		name: "Trademarked-EX",
@@ -2405,7 +2405,7 @@ exports.Formats = [
 			if (move.name === 'Roar' || move.name === 'Whirlwind') return ['' + set.species + ' has an illegal trademark ability', '(' + move.name + ' is not allowed as a trademark ability)'];
 			if (move.category !== 'Status') return ['You can only trademark status moves', '(' + set.species + '\'s trademark is ' + move.name + ')'];
 			if (set.moves.indexOf(move.name) >= 0) return ['You cannot use a move that is trademarked', '(' + set.species + ' has ' + move.name + ' as ability and a move)'];
-			
+
 			let template = this.getTemplate(set.species);
 			template = this.getTemplate(template.baseSpecies);
 			let added = {};
@@ -2424,7 +2424,7 @@ exports.Formats = [
 			if (!canLearn) {
 				return ['' + set.species + ' cannot learn ' + move.name];
 			}
-		}
+		},
 	},
 	{
 		name: 'Classic Stat Switch',
@@ -2433,7 +2433,7 @@ exports.Formats = [
 		mod: 'classicstatswitch',
 		ruleset: ['Ubers'],
 		banlist: ['Azumarill', 'Regirock', 'Regice', 'Mawilite', 'Diancite'],
-		onModifyMove: function(move) {
+		onModifyMove: function (move) {
 			let physicalTypes = [
 				'Normal', 'Fighting', 'Flying', 'Ground', 'Rock', 'Bug',
 				'Ghost', 'Poison', 'Steel',
