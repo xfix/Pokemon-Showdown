@@ -598,7 +598,7 @@ class Validator {
 				if (types.includes(move.type)) return false;
 			}
 			// alphabet cup hack to do the same
-			if (alphabetCupLetter && alphabetCupLetter === Tools.getMove(move).id.slice(0,1) && Tools.getMove(move).id !== 'sketch') return false;
+			if (alphabetCupLetter && alphabetCupLetter === Tools.getMove(move).id.slice(0, 1) && Tools.getMove(move).id !== 'sketch') return false;
 			if (!template.learnset) {
 				if (template.baseSpecies !== template.species) {
 					// forme without its own learnset
