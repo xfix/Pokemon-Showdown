@@ -167,35 +167,35 @@ exports.BattleMovedex = {
 		target: "self",
 		type: "Normal",
 	},
-	/*'tm56': {
+	'tm56': {
 		num: 625,
 		name: 'TM56',
 		id: 'tm56',
-		type: 'Bird',
+		type: '???',
 		basePower: 205,
 		accuracy: 37,
 		pp: 15,
 		drain: [1, 2],
 		category: 'Physical',
 		flags: {pulse: 1, bullet: 1, protect: 1, mirror: 1},
-		onPrepareHit: function (target, source) { // Turns user into Bird-type.
+		onPrepareHit: function (target, source) { // Turns user into ???-type.
 			this.attrLastMove('[still]');
 			this.add('-anim', source, 'Wish', source);
-			if (!source.hasType('Bird')) { // turn user into Bird-type and spout glitchy nonsense.
+			if (!source.hasType('???')) { // turn user into ???-type and spout glitchy nonsense.
 				this.add("c|" + source.name + "|9̜͉̲͇̱̘̼ͬ̈́̒͌̑̓̓7ͩ͊̚5ͨ̆͐͏̪̦6̗͎ͬ̿̍̍̉ͧ͢4̯̠ͤ͛͐̄͒͡2͐ͬ̀d̺͉̜̈ͯ̓x̩̖̥̦̥͛́ͥ͑̈́ͩ͊͠║̛̥̜̱̝͍͒̌ͣ̀͌͌̒'̣͎̗̬̯r̸̗͍ͫ̓͆ͣ̎͊ ̜̻̈D͓̰̳̝̥̙͙͋̀E͉͔̥͇̫͓͍̔ͬͣ͂̓̽x̰̗̬̖͊̏̄̑̒̿͊s̜̪̏́f̧̯̼̦̓͌̇̒o̱̾̓ͩ̆̓̀F̟̰͓̩̂̆͛ͤ▓̣̩̝̙̇̓͒͋̈͡1̡̹̹͓̬͖͐̑̉̔̏xͥ̀'̻͖͍̠̉͡v̫̼̹̳̤̱͉▓̄̏͂ͤͭ̋ͫ͏̠̦̝▓̟͉͇̣̠̦̓̄ͫͥ̐̍̂▓͔̦̫̦̜̖́▓͍ͯ͗̾͆▓̮̗̠̜͙̹̟͊̎ͤ̔̽ͬ̃▓̩̟̏ͪ̇̂̂̒▓̖̼̤͉ͤ̾̋ͥͣͬ͒▓̈́̿͂̌̓▓͇̞̗̽̔̂͊̌ͣ͐▓ͬ́ͥ̔͒͒̎▓̰̪̫̩͇̲̇̔̿͢ͅ▓̞̬͎▓̖͍̖̫ͪ͐̆̅̍̂ͨͅ▓̡̭̠̗̳̬̜̝▓̤͙̥̆̌ͨͪ̆͌▓̴͉̩̈́▓ͩ̌̌̂̿̑̐▓ͨ҉͕̠͍▓̹̌̅̂ͨ͋̃͑▓̯̰̣̝̯ͭͦ̂͋̇̾͠▓̸̺̣̜̯̙̂͋̈ͨ̎̾ͧ▓͢▓͔̚▓̭͎͖̟̼̄̈̃̎́▓̧̌ͧ▓̼̹͈͗̄̆");
 				source.setType('Bird');
-				this.add('-start', source, 'typechange', 'Bird');
+				this.add('-start', source, 'typechange', '???');
 			}
 		},
-		onHit: function (target, source) { // Turns target into Bird-type.
-			if (target.hasType('Bird')) return true;
-			target.setType('Bird');
-			this.add('-start', target, 'typechange', 'Bird');
+		onHit: function (target, source) { // Turns target into ???-type.
+			if (target.hasType('???')) return true;
+			target.setType('???');
+			this.add('-start', target, 'typechange', '???');
 		},
 		onMoveFail: function (target, source, move) {
 			this.boost({accuracy:1, evasion:1}, source);
 		},
-	},*/
+	},
 	'hexattack': {
 		num: 626,
 		name: 'Hex Attack',
@@ -311,6 +311,7 @@ exports.BattleMovedex = {
 		priority: 0,
 		flags: {},
 		onPrepareHit: function (target, source, move) {
+			this.attrLastMove('[still]');
 			this.add("c|" + source.name + "|I'm getting outta here! Byeeeee~");
 		},
 		onHit: function (target) {
@@ -347,7 +348,7 @@ exports.BattleMovedex = {
 			} else if (move.type === 'Psychic') {
 				this.add('-anim', source, "Psybeam", target);
 			} else if (move.type === 'Dark') {
-				this.add('-anim', source, "Dark Pulse", target);
+				this.add('-anim', source, "Shadow Ball", target);
 			} else if (move.type === 'Ice') {
 				this.add('-anim', source, "Ice Beam", target);
 			} else if (move.type === 'Grass') {
@@ -430,6 +431,10 @@ exports.BattleMovedex = {
 		pp: 15,
 		priority: 0,
 		flags: {protect: 1, mirror: 1, contact: 1, defrost: 1},
+		onPrepareHit: function (target, source, move) {
+			this.attrLastMove('[still]');
+			this.add('-anim', source, 'Sacred Fire', target);
+		},
 		target: "normal",
 		type: "Fire",
 	},
@@ -485,7 +490,7 @@ exports.BattleMovedex = {
 		flags: {contact:1, protect:1, mirror:1},
 		onPrepareHit: function (target, source, move) { // animation
 			this.attrLastMove('[still]');
-			this.add('-anim', source, 'Dynamic Punch', target);
+			this.add('-anim', source, 'Hammer Arm', target);
 		},
 		onHit: function (target) {
 			let bannedAbilities = {multitype:1, defeatist:1, stancechange:1, truant:1};
@@ -618,7 +623,7 @@ exports.BattleMovedex = {
 		priority: 0,
 		onPrepareHit: function (target, source, move) { // animation
 			this.attrLastMove('[still]');
-			this.add('-anim', source, 'Swords Dance', source);
+			this.add('-anim', source, 'Dragon Dance', source);
 		},
 		onHit: function (target) {
 			if (!target.template.isMega) {
@@ -806,11 +811,11 @@ exports.BattleMovedex = {
 		priority: 0,
 		flags: {contact: 1, protect: 1, mirror: 1},
 		onPrepareHit: function (target, pokemon) {
+			this.attrLastMove('[still]');
+			this.add('-anim', pokemon, 'Head Smash', target);
 			if (pokemon.hasType('Dark')) return;
 			if (!pokemon.addType('Dark')) return;
 			this.add('-start', pokemon, 'typeadd', 'Dark', '[from] move: Thousand Alts');
-			this.attrLastMove('[still]');
-			this.add('-anim', pokemon, 'Head Smash', target);
 		},
 		recoil: [1, 2],
 		secondary: {chance: 20,	volatileStatus: 'confusion'},
@@ -831,11 +836,11 @@ exports.BattleMovedex = {
 		priority: 0,
 		flags: {snatch: 1, heal: 1},
 		onPrepareHit: function (target, pokemon) {
+			this.attrLastMove('[still]');
+			this.add('-anim', pokemon, 'Roost', pokemon);
 			if (pokemon.hasType('Flying')) return;
 			if (!pokemon.addType('Flying')) return;
 			this.add('-start', pokemon, 'typeadd', 'Flying', '[from] move: BAWK!');
-			this.attrLastMove('[still]');
-			this.add('-anim', pokemon, 'Roost', pokemon);
 		},
 		heal: [1, 2],
 		secondary: false,
@@ -977,7 +982,7 @@ exports.BattleMovedex = {
 		basePower: 80,
 		category: "Special",
 		desc: "This move combines Fairy in its type effectiveness against the target. Has a chance to confuse or paralyze target.",
-		shortDesc: "Combines Fairy in its type effectiveness.",
+		shortDesc: "Combines Fairy in its type effectiveness. 45% chance to confuse. 35% chance to paralyze.",
 		pp: 10,
 		flags: {protect: 1, mirror: 1, distance: 1},
 		onEffectiveness: function (typeMod, type, move) {
@@ -1052,7 +1057,7 @@ exports.BattleMovedex = {
 		basePower: 100,
 		category: "Physical",
 		desc: "No additional effect.",
-		shortDesc: "Very Nearly always goes first.",
+		shortDesc: "Hits first.",
 		id: "boost",
 		isViable: true,
 		name: "Boost",
@@ -1078,7 +1083,7 @@ exports.BattleMovedex = {
 		name: 'Set Mine',
 		pp: 5,
 		priority: 0,
-		flags: {reflectable: 1},
+		flags: {reflectable: 1, mirror: 1},
 		secondary: false,
 		sideCondition: 'setmine',
 		onPrepareHit: function (target, source, move) { // animation
@@ -1091,11 +1096,12 @@ exports.BattleMovedex = {
 				this.effectData.moveData = {
 					id: 'mine',
 					name: 'Mine',
-					accuracy: 100,
+					accuracy: true, // it can't miss
 					basePower: 160,
 					category: 'Special',
-					flags: {},
-					ignoreImmunity: false,
+					flags: {authentic: 1}, // bypasses substitute
+					ignoreImmunity: true, // hits through flash fire
+					willCrit: false, // this makes it always not crit right?
 					effectType: 'Move',
 					type: 'Fire',
 					onPrepareHit: function (target, source, move) { // animation
@@ -1160,8 +1166,8 @@ exports.BattleMovedex = {
 			this.add('-anim', source, 'Flash Cannon', target);
 		},
 		onTryHit: function (target, source) {
-			if (target.volatiles['lockon'] && source === target.volatiles['lockon'].source) return;
-			if (source.hasAbility('noguard') || target.hasAbility('noguard')) return;
+			if (target.volatiles['lockon'] && source === target.volatiles['lockon'].source) return true;
+			if (source.hasAbility('noguard') || target.hasAbility('noguard')) return true;
 			return false;
 		},
 		target: 'normal',
@@ -1275,7 +1281,7 @@ exports.BattleMovedex = {
 		flags: {contact: 1, protect: 1, mirror: 1},
 		onPrepareHitPriority: 100,
 		onPrepareHit: function (target, source, move) {
-			move.type = move.typeList.sample(1)[0];
+			move.type = move.typeList[this.random(move.typeList.length)];
 			this.attrLastMove('[still]');
 			let anim;
 			switch (move.type) {
@@ -1286,7 +1292,7 @@ exports.BattleMovedex = {
 				anim = 'Fire Punch';
 				break;
 			case 'Fighting':
-				anim = 'Dynamic Punch';
+				anim = 'Close Combat';
 				break;
 			case 'Water':
 				anim = 'Waterfall';
@@ -1322,7 +1328,7 @@ exports.BattleMovedex = {
 				anim = 'Outrage';
 				break;
 			case 'Ghost':
-				anim = 'Shadow Claw';
+				anim = 'Shadow Punch';
 				break;
 			case 'Dark':
 				anim = 'Night Slash';
@@ -1403,6 +1409,10 @@ exports.BattleMovedex = {
 		accuracy: 90,
 		flags: {protect: 1, mirror: 1},
 		secondary: {chance: 20, volatileStatus: 'confusion'},
+		onPrepareHit: function (target, source) {
+			this.attrLastMove('[still]');
+			this.add('-anim', source, 'Confuse Ray', target);
+		},
 		onHit: function (target) {
 			target.clearBoosts();
 			this.add('-clearboost', target);
@@ -1421,6 +1431,10 @@ exports.BattleMovedex = {
 		accuracy: 100,
 		flags: {protect: 1, mirror: 1},
 		secondaries: [{chance: 100, boosts: {spe: -1}}, {chance: 20, volatileStatus: 'flinch'}],
+		onPrepareHit: function (target, source) {
+			this.attrLastMove('[still]');
+			this.add('-anim', source, 'Close Combat', target);
+		},
 		num: 672,
 	},
 	'balancedstrike': {
@@ -1435,6 +1449,8 @@ exports.BattleMovedex = {
 		accuracy: true,
 		flags: {contact: 1, protect: 1, mirror: 1},
 		onPrepareHit: function (target, source, move) {
+			this.attrLastMove('[still]');
+			this.add('-anim', source, 'Power Split', target);
 			let stats = ['atk', 'def', 'spa', 'spd', 'spe', 'accuracy', 'evasion'];
 			let boostSource = {atk:0, def:0, spa:0, spd:0, spe:0, accuracy:0, evasion:0};
 			let boostTarget = {atk:0, def:0, spa:0, spd:0, spe:0, accuracy:0, evasion:0};
@@ -1450,6 +1466,7 @@ exports.BattleMovedex = {
 			}
 			source.setBoost(boostSource);
 			target.setBoost(boostTarget);
+			this.add('-anim', source, 'Sky Attack', target);
 		},
 		num: 673,
 	},
@@ -1464,13 +1481,17 @@ exports.BattleMovedex = {
 		basePower: 0,
 		accuracy: 85,
 		flags: {protect: 1, reflectable: 1, mirror: 1, sound: 1, authentic: 1},
+		onPrepareHit: function (target, source) {
+			this.attrLastMove('[still]');
+			this.add('-anim', source, 'Hyper Voice', target);
+		},
 		onHit: function (pokemon) {
 			let bannedAbilities = {insomnia:1, multitype:1, stancechange:1, truant:1};
 			if (!bannedAbilities[pokemon.ability]) {
 				let oldAbility = pokemon.setAbility('insomnia');
 				if (oldAbility) {
-					this.add('-endability', pokemon, oldAbility, '[from] move: Worry Seed');
-					this.add('-ability', pokemon, 'Insomnia', '[from] move: Worry Seed');
+					this.add('-endability', pokemon, oldAbility, '[from] move: Text to Speech');
+					this.add('-ability', pokemon, 'Insomnia', '[from] move: Text to Speech');
 					if (pokemon.status === 'slp') {
 						pokemon.cureStatus();
 					}
@@ -1495,6 +1516,10 @@ exports.BattleMovedex = {
 		accuracy: 90,
 		flags: {protect: 1, mirror: 1},
 		volatileStatus: 'partiallytrapped',
+		onPrepareHit: function (target, source) {
+			this.attrLastMove('[still]');
+			this.add('-anim', target, 'Giga Drain', target);
+		},
 		onHit: function (pokemon) {
 			pokemon.addVolatile('taunt');
 		},
@@ -1512,6 +1537,10 @@ exports.BattleMovedex = {
 		accuracy: true,
 		flags: {mirror: 1},
 		boosts: {atk: 2},
+		onPrepareHit: function (target, source, move) {
+			this.attrLastMove('[still]');
+			this.add('-anim', source, 'Uproar', source);
+		},
 		sideCondition: 'warecho',
 		effect: {
 			duration: 3,
@@ -1536,6 +1565,10 @@ exports.BattleMovedex = {
 		basePower: 150,
 		accuracy: 80,
 		flags: {contact: 1, protect: 1, mirror: 1},
+		onPrepareHit: function (target, source, move) {
+			this.attrLastMove('[still]');
+			this.add('-anim', source, 'Head Smash', source);
+		},
 		recoil: [1, 8],
 		num: 677,
 	},
@@ -1549,8 +1582,13 @@ exports.BattleMovedex = {
 		target: 'normal',
 		basePower: 120,
 		accuracy: 100,
+		flags: {protect: 1, mirror: 1},
 		self: {
 			volatileStatus: 'lockedmove',
+		},
+		onPrepareHit: function (target, source, move) {
+			this.attrLastMove('[still]');
+			this.add('-anim', source, 'Quiver Dance', source);
 		},
 		onAfterMove: function (pokemon) {
 			if (pokemon.volatiles['lockedmove'] && pokemon.volatiles['lockedmove'].duration === 1) {
@@ -1583,6 +1621,10 @@ exports.BattleMovedex = {
 				return null;
 			}
 		},
+		onPrepareHit: function (target, source, move) {
+			this.attrLastMove('[still]');
+			this.add('-anim', source, 'Psychic', target);
+		},
 		secondary: {
 			chance: 100,
 			volatileStatus: 'flinch',
@@ -1602,6 +1644,10 @@ exports.BattleMovedex = {
 		flags: {protect: 1, mirror: 1},
 		onEffectiveness: function (typeMod, type) {
 			if (type === 'Water' || type === 'Ice' || type === 'Steel' || type === 'Fire') return 1;
+		},
+		onPrepareHit: function (target, source, move) {
+			this.attrLastMove('[still]');
+			this.add('-anim', source, 'Shadow Ball', source);
 		},
 		secondary: {chance: 10, status: 'frz'},
 		num: 680,
@@ -1665,9 +1711,13 @@ exports.BattleMovedex = {
 		flags: {mirror: 1},
 		status: 'tox',
 		self: {status: 'tox'},
+		onPrepareHit: function (target, source, move) {
+			this.attrLastMove('[still]');
+			this.add('-anim', source, 'Taunt', source);
+		},
 		onHit: function (target, source, move) {
 			target.addVolatile('trapped', source, move, 'trapper');
-			source.addVolatile('trapped', source, move, 'trapper');
+			source.addVolatile('trapped', target, move, 'trapper');
 		},
 	},
 	'loratory': {
@@ -1681,6 +1731,10 @@ exports.BattleMovedex = {
 		basePower: 0,
 		accuracy: 80,
 		flags: {mirror: 1, reflectable: 1},
+		onPrepareHit: function (target, source, move) {
+			this.attrLastMove('[still]');
+			this.add('-anim', source, 'Hypnosis', source);
+		},
 		onHit: function (target, source, move) {
 			if (Math.random() < 0.5) {
 				target.addVolatile('confusion');
