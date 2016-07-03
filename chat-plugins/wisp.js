@@ -587,6 +587,23 @@ exports.commands = {
 	kickhelp: ['/kick [user] - Kicks a user from the room.'],
 	roomkickhelp: ['/kick [user] - Kicks a user from the room.'],
 
+	unlink: 'breaklinks',
+	breaklink: 'breaklinks',
+	linkbreak: 'breaklinks',
+	breaklinks: function (target, room, user) {
+		if (!target || !target.trim()) return this.parse('/help unlink');
+		let targetUser = Users(target);
+		if (!targetUser) return this.errorReply("User '" + target + "' not found.");
+		if (!this.can('warn', targetUser, room)) return false;
+
+		this.add('|unlink|' + targetUser.userid);
+		for (let i in targetUser.prevNames) {
+			this.add('|unlink|' + i);
+		}
+		this.privateModCommand("(" + targetUser.name + "'s links were broken by " + user.name + ")");
+	},
+	unlinkhelp: ["/unlink [user] - Breaks a user's posted links."], 
+
 	hidetext: function (target, room, user) {
 		if (!target) return this.parse('/help hidetext');
 		this.splitTarget(target);
