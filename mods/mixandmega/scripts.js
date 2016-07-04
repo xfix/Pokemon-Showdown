@@ -68,9 +68,9 @@ exports.BattleScripts = {
 	doGetMixedTemplate: function (template, deltas) {
 		if (!deltas) throw new TypeError("Must specify deltas!");
 		if (!template || typeof template === 'string') template = this.getTemplate(template);
-		template = Object.clone(template); // shallow is enough
+		template = Object.assign({}, template); // shallow is enough
 		template.abilities = {'0': deltas.ability};
-		template.types = Object.merge(template.types.slice(), deltas.types).compact().unique();
+		template.types = Object.assign(template.types.slice(), deltas.types).compact().unique();
 
 		let baseStats = template.baseStats;
 		template.baseStats = {};
