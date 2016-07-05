@@ -48,6 +48,8 @@ class Dice {
 			if (money < this.bet) return self.sendReply('You don\'t have enough money for this game of dice.');
 			if (this.players.includes(user)) return self.sendReply('You have already joined this game of dice.');
 			if (this.players.length && this.players[0].latestIp === user.latestIp) return self.errorReply("You have already joined this game of dice under the alt '" + this.players[0].name + "'.");
+			if (this.players.length >= 2) return self.errorReply("Two users have already joined this game of dice.");
+	
 			this.players.push(user);
 			this.room.add('|uhtmlchange|' + this.room.diceCount + '|' + this.startMessage + '<center>' + Wisp.nameColor(user.name) + ' has joined the game!</center></div>').update();
 			if (this.players.length === 2) this.play();
@@ -55,7 +57,8 @@ class Dice {
 	}
 
 	leave(user, self) {
-		if (!this.players.includes(user)) return self.sendReply('You haven\'t joined the game of dice yet.');
+		if (!this.players.includes(user)) return self.sendReply('You haven\'t joined this game of dice yet.');
+		if (this.players.length >= 2) return self.errorReply("You cannot leave a game of dice once it has been started.");
 		this.players.splice(this.players.indexOf(user), 1);
 		this.room.add('|uhtmlchange|' + this.room.diceCount + '|' + this.startMessage + '</div>');
 	}
@@ -83,6 +86,7 @@ class Dice {
 				if (roll2 > roll1) this.players.reverse();
 				let winner = this.players[0], loser = this.players[1];
 
+				
 				let taxedAmt = Math.round(this.bet * TAX);
 				setTimeout(() => {
 					let buck = (this.bet === 1 ? 'buck' : 'bucks');
