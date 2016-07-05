@@ -646,11 +646,13 @@ exports.commands = {
 
 		nani.get('anime/search/' + targetAnime)
 		.then(data => {
+			if (data[0].adult) {
+				return this.errorReply('Nsfw content is not allowed.');
+			}
 			nani.get('anime/' + data[0].id)
 				.then(data => {
 					let css = 'text-shadow: 1px 1px 1px #CCC; padding: 3px 8px;';
 					let output = '<div class="infobox"><table width="100%"><tr>';
-					if (data.genres.indexOf('Hentai') >= 0) return this.errorReply('Nsfw content is not allowed.');
 					let description = data.description.replace(/(\r\n|\n|\r)/gm, "").split('<br><br>').join('<br>');
 					if (description.indexOf('&lt;br&gt;&lt;br&gt;') >= 0) description = description.substr(0, description.indexOf('&lt;br&gt;&lt;br&gt;'));
 					if (description.indexOf('<br>') >= 0) description = description.substr(0, description.indexOf('<br>'));
