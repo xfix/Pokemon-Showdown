@@ -359,16 +359,7 @@ class User {
 			if (room.isMuted(this)) {
 				return '!' + this.name;
 			}
-			if (this.hideauth) return this.hideauth + this.name;
-			if (this.customSymbol) return this.customSymbol + this.name;
-			if (room && room.auth) {
-				if (room.auth[this.userid]) {
-					return room.auth[this.userid] + this.name;
-				} else {
-					if (room.autorank && room.isPrivate !== true) return room.autorank + this.name;
-				}
-				if (room.isPrivate === true) return ' ' + this.name;
-			}
+			return room.getAuth(this) + this.name;
 		}
 		if (this.hideauth) return this.hideauth + this.name;
 		if (this.customSymbol) return this.customSymbol + this.name;
@@ -377,33 +368,25 @@ class User {
 	can(permission, target, room) {
 		if (this.hasSysopAccess()) return true;
 
-		let group = this.group;
-		let targetGroup = '';
-		if (target) targetGroup = target.group;
-		let groupData = Config.groups[group];
+		let group, targetGroup;
 
-		if (groupData && groupData['root']) {
-			return true;
+		if (typeof target === 'string') {
+			target = null;
+			targetGroup = target;
 		}
 
 		if (room && room.auth) {
-			if (room.auth[this.userid]) {
-				group = room.auth[this.userid];
-			} else if (room.isPrivate === true) {
-				group = ' ';
-			}
-			if (room.autorank && !room.auth[this.userid]) group = room.autorank;
-			groupData = Config.groups[group];
-			if (target) {
-				if (room.auth[target.userid]) {
-					targetGroup = room.auth[target.userid];
-				} else if (room.isPrivate === true) {
-					targetGroup = ' ';
-				}
-			}
+			group = room.getAuth(this);
+			if (target) targetGroup = room.getAuth(target);
+		} else {
+			group = this.group;
+			if (target) targetGroup = target.group;
 		}
 
-		if (typeof target === 'string') targetGroup = target;
+		let groupData = Config.groups[group];
+		if (groupData && groupData['root']) {
+			return true;
+		}
 
 		if (groupData && groupData[permission]) {
 			let jurisdiction = groupData[permission];
@@ -577,12 +560,11 @@ class User {
 	 * @param connection       The connection asking for the rename
 	 */
 	rename(name, token, newlyRegistered, connection) {
-		for (let i in this.roomCount) {
-			let room = Rooms(i);
-			if (room && room.rated && (this.userid in room.game.players)) {
-				this.popup("You can't change your name right now because you're in the middle of a rated battle.");
-				return false;
-			}
+		for (let id in this.games) {
+			if (this.games[id].ended) continue;
+			if (this.games[id].allowRenames) continue;
+			this.popup("You can't change your name right now because you're in the middle of a rated game.");
+			return false;
 		}
 
 		let challenge = '';
@@ -1118,19 +1100,13 @@ class User {
 				return false;
 			}
 		}
-		if (room.modjoin) {
-			let userGroup = this.group;
-			if (room.auth && !makeRoom) {
-				if (room.isPrivate === true) {
-					userGroup = ' ';
-				}
-				userGroup = room.auth[this.userid] || userGroup;
-			}
+		if (room.modjoin && !makeRoom) {
+			let userGroup = room.getAuth(this);
 			let modjoinGroup = room.modjoin !== true ? room.modjoin : room.modchat;
 			if (Config.groupsranking.indexOf(userGroup) < Config.groupsranking.indexOf(modjoinGroup)) {
 				if (!this.named) {
 					return null;
-				} else if (!this.can('bypassall')) {
+				} else {
 					connection.sendTo(roomid, "|noinit|nonexistent|The room '" + roomid + "' does not exist.");
 					if (Wisp.autoJoinRooms[this.userid] && Wisp.autoJoinRooms[this.userid].includes(room.id)) {
 						Wisp.autoJoinRooms[this.userid].splice(Wisp.autoJoinRooms[this.userid].indexOf(room.id), 1);
@@ -1475,6 +1451,12 @@ class User {
 	}
 	destroy() {
 		// deallocate user
+		for (let id in this.games) {
+			if (this.games[id].ended) continue;
+			if (this.games[id].forfeit) {
+				this.games[id].forfeit(this);
+			}
+		}
 		this.clearChatQueue();
 		users.delete(this.userid);
 		prevUsers.delete('guest' + this.guestNum);
