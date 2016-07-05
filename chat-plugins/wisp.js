@@ -602,7 +602,7 @@ exports.commands = {
 		}
 		this.privateModCommand("(" + targetUser.name + "'s links were broken by " + user.name + ")");
 	},
-	unlinkhelp: ["/unlink [user] - Breaks a user's posted links."], 
+	unlinkhelp: ["/unlink [user] - Breaks a user's posted links."],
 
 	hidetext: function (target, room, user) {
 		if (!target) return this.parse('/help hidetext');
