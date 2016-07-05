@@ -88,12 +88,12 @@ exports.BattleScripts = {
 				signatureMove: 'superglitch',
 				evs: {hp:252, spd:252, def:4}, nature: 'Calm',
 			},
-			/*'azum4roll': {
+			'azum4roll': {
 				species: "Azumarill", ability: "Glitchiate", item: "Metronome", gender: 'M',
 				moves: ['rollout', 'batonpass', 'swordsdance', 'bellydrum', 'extremespeed', 'playrough', 'thunderwave'],
 				signatureMove: 'tm56',
 				evs: {hp:4, atk:252, spe:252}, nature: 'Adamant',
-			},*/
+			},
 			'Iwamiger': {
 				species: "Gengar", ability: 'Serene Grace Plus', item: "Life Orb", gender: 'M',
 				moves: ['shadowball', 'flamethrower', 'icebeam', 'crunch'],
@@ -326,12 +326,12 @@ exports.BattleScripts = {
 				signatureMove: 'superglitch',
 				evs: {hp:252, spd:252, def:4}, nature: 'Calm',
 			},
-			/*'azum4roll': {
+			'azum4roll': {
 				species: "Azumarill", ability: "Glitchiate", item: "Metronome", gender: 'M',
 				moves: ['rollout', 'batonpass', 'swordsdance', 'bellydrum', 'extremespeed', 'playrough', 'thunderwave'],
 				signatureMove: 'tm56',
 				evs: {hp:4, atk:252, spe:252}, nature: 'Adamant',
-			},*/
+			},
 			'Iwamiger': {
 				species: "Gengar", ability: 'Serene Grace Plus', item: "Life Orb", gender: 'M',
 				moves: ['shadowball', 'flamethrower', 'icebeam', 'crunch'],
@@ -570,12 +570,12 @@ exports.BattleScripts = {
 				signatureMove: 'superglitch',
 				evs: {hp:252, spd:252, def:4}, nature: 'Calm',
 			},
-			/*'azum4roll': {
+			'azum4roll': {
 				species: "Azumarill", ability: "Glitchiate", item: "Metronome", gender: 'M',
 				moves: ['rollout', 'batonpass', 'swordsdance', 'bellydrum', 'extremespeed', 'playrough', 'thunderwave'],
 				signatureMove: 'tm56',
 				evs: {hp:4, atk:252, spe:252}, nature: 'Adamant',
-			},*/
+			},
 			'Iwamiger': {
 				species: "Gengar", ability: 'Serene Grace Plus', item: "Life Orb", gender: 'M',
 				moves: ['shadowball', 'flamethrower', 'icebeam', 'crunch'],
