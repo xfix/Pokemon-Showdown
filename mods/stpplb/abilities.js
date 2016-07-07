@@ -1,15 +1,13 @@
 'use strict';
 
 exports.BattleAbilities = { // define custom abilities here.
-	/*"glitchiate": {
-		desc: "This Pokemon's moves become Bird-type moves and have their power multiplied by 1.3. This effect comes after other effects that change a move's type, but before Ion Deluge and Electrify's effects.",
-		shortDesc: "This Pokemon's moves become Bird type and have 1.3x power.",
+	"glitchiate": {
+		desc: "This Pokemon's moves become ???-type moves and have their power multiplied by 1.3. This effect comes after other effects that change a move's type, but before Ion Deluge and Electrify's effects.",
+		shortDesc: "This Pokemon's moves become ??? type and have 1.3x power.",
 		onModifyMovePriority: -1,
-		onModifyMove: function (move, pokemon) {
-			if (move.id !== 'struggle') { // still boost moves even if they are already Bird-type (TM56). Also don't mess with Struggle.
-				move.type = 'Bird';
-				if (move.category !== 'Status') pokemon.addVolatile('glitchiate');
-			}
+		onModifyMove: function (move, pokemon) { // still boost moves even if they are already ???-type (TM56)
+			move.type = '???';
+			if (move.category !== 'Status') pokemon.addVolatile('glitchiate');
 		},
 		effect: {
 			duration: 1,
@@ -22,7 +20,7 @@ exports.BattleAbilities = { // define custom abilities here.
 		name: "Glitchiate",
 		rating: 4,
 		num: 192,
-	},*/
+	},
 	"serenegraceplus": {
 		desc: "This Pokemon's moves have their secondary chances multiplied by 3.",
 		shortDesc: "This Pokemon's moves have their secondary chances multiplied by 3.",
@@ -49,7 +47,7 @@ exports.BattleAbilities = { // define custom abilities here.
 				if (!foe.hasType('Ghost')) {
 					foe.types[0] = 'Ghost';
 				} else if (foe.types[0] !== 'Ghost') {
-					foe.typesData.shift();
+					foe.types.shift();
 				} else {
 					continue;
 				}
@@ -61,7 +59,7 @@ exports.BattleAbilities = { // define custom abilities here.
 		rating: 4,
 		num: 194,
 	},
-	'scrubterrain': { // MLZekrom pls, Scrub Terrain was really hacky. Happy it's out of the meta.
+	/*'scrubterrain': { // MLZekrom pls, Scrub Terrain was really hacky. Happy it's out of the meta.
 		desc: '',
 		shortDesc: '',
 		onStart: function (pokemon) {
@@ -88,7 +86,7 @@ exports.BattleAbilities = { // define custom abilities here.
 		name: 'Scrub Terrain',
 		rating: 4,
 		num: 195,
-	},
+	},*/
 	'proteon': { // Eeveelutionlvr's ability.
 		desc: '',
 		shortDesc: "This Pokemon transforms into an Eeveelution to match the type of the move it is about to use, if possible.",
@@ -129,10 +127,7 @@ exports.BattleAbilities = { // define custom abilities here.
 	},
 	'swahahahahaggers': { // Sohippy's ability: con on switch-in.
 		desc: '',
-		shortDesc: "On switch-in, all opponents become confused for 1 turn; Ground immunity.",
-		onImmunity: function (type) {
-			if (type === 'Ground') return false;
-		},
+		shortDesc: "On switch-in, all opponents become confused for 1 turn, with 70% self-hit chance.",
 		onStart: function (pokemon) {
 			let activeFoe = pokemon.side.foe.active;
 			for (let i = 0; i < activeFoe.length; i++) {
@@ -375,8 +370,8 @@ exports.BattleAbilities = { // define custom abilities here.
 		},
 	},
 	'banevade': {
-		desc: "This Pokemon's evasion is evaluated by end of each turn. Higher evasion at lower HP.",
-		shortDesc: "Higher evasion at lower HP.",
+		desc: "This Pokemon's evasion is evaluated by end of each turn. Higher evasion at lower HP. OHKO moves will fail.",
+		shortDesc: "Higher evasion at lower HP. Immune to OHKO.",
 		onTryHit: function (pokemon, target, move) {
 			if (move.ohko) {
 				this.add('-immune', pokemon, '[msg]');
@@ -424,7 +419,7 @@ exports.BattleAbilities = { // define custom abilities here.
 		num: 209,
 	},
 	'physicalakazam': { // Makes Alakazam into a physical tank
-		shortDesc: "This Pokemon's Attack is increased 2.5x and its Defense is doubled.",
+		shortDesc: "This Pokemon's Attack is doubled and its Defense is increased 1.5x.",
 		onModifyDefPriority: 6,
 		onModifyDef: function (def) {
 			return this.chainModify(1.5);
