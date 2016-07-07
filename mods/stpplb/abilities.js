@@ -44,13 +44,18 @@ exports.BattleAbilities = { // define custom abilities here.
 			let activeFoe = pokemon.side.foe.active;
 			for (let i = 0; i < activeFoe.length; i++) {
 				let foe = activeFoe[i];
+				let tempTypes = [];
+				for (var i = 0; i < foe.types; i++) {
+					tempTypes[i] = foe.types[i];
+				}
 				if (!foe.hasType('Ghost')) {
-					foe.types[0] = 'Ghost';
+					tempTypes[0] = 'Ghost';
 				} else if (foe.types[0] !== 'Ghost') {
-					foe.types.shift();
+					tempTypes.shift();
 				} else {
 					continue;
 				}
+				foe.types = tempTypes;
 				this.add('-start', foe, 'typechange', foe.types.join('/'));
 			}
 		},
@@ -598,7 +603,12 @@ exports.BattleAbilities = { // define custom abilities here.
 		onPrepareHit: function (source, target, move) {
 			let type = move.type;
 			if (!source.hasType(type)) {
-				source.types.push(type);
+				let tempTypes = [];
+				for (let i = 0; i < source.types.length; i++) {
+					tempTypes[i] = source.types[i];
+				}
+				tempTypes.push(type);
+				source.types = tempTypes;
 				this.add('-start', source, 'typechange', source.types.join('/'));
 			}
 		},
