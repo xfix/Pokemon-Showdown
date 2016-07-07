@@ -45,7 +45,7 @@ exports.BattleAbilities = { // define custom abilities here.
 			for (let i = 0; i < activeFoe.length; i++) {
 				let foe = activeFoe[i];
 				let tempTypes = [];
-				for (var i = 0; i < foe.types; i++) {
+				for (let j = 0; j < foe.types.length; i++) {
 					tempTypes[i] = foe.types[i];
 				}
 				if (!foe.hasType('Ghost')) {
