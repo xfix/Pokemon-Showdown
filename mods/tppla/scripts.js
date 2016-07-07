@@ -26,7 +26,7 @@ exports.BattleScripts = {
 	},
 	runMegaEvo: function (pokemon) {
 		if (pokemon.template.isMega || pokemon.template.isPrimal) return false;
-		let template = this.getMixedTemplate(pokemon.originalSpecies, pokemon.canMegaEvo);
+		let template = this.getMixedTemplate(pokemon.species, pokemon.canMegaEvo);
 		let side = pokemon.side;
 
 		// Pokémon affected by Sky Drop cannot mega evolve. Enforce it here for now.
@@ -41,12 +41,12 @@ exports.BattleScripts = {
 		pokemon.baseTemplate = template; // mega evolution is permanent
 
 		// Do we have a proper sprite for it?
-		if (this.getTemplate(pokemon.canMegaEvo).baseSpecies === pokemon.originalSpecies) {
+		if (this.getTemplate(pokemon.canMegaEvo).baseSpecies === pokemon.species) {
 			pokemon.details = template.species + (pokemon.level === 100 ? '' : ', L' + pokemon.level) + (pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
 			this.add('detailschange', pokemon, pokemon.details);
 			this.add('-mega', pokemon, template.baseSpecies, template.requiredItem);
 		} else {
-			let oTemplate = this.getTemplate(pokemon.originalSpecies);
+			let oTemplate = this.getTemplate(pokemon.species);
 			let oMegaTemplate = this.getTemplate(template.originalMega);
 			if (template.originalMega === 'Rayquaza-Mega') {
 				this.add('message', "" + pokemon.side.name + "'s fervent wish has reached " + pokemon.species + "!");
@@ -85,6 +85,7 @@ exports.BattleScripts = {
 	getMixedTemplate: function (originalSpecies, megaSpecies) {
 		let originalTemplate = this.getTemplate(originalSpecies);
 		let megaTemplate = this.getTemplate(megaSpecies);
+		console.log(originalSpecies);
 		if (originalTemplate.baseSpecies === megaTemplate.baseSpecies) return megaTemplate;
 		let deltas = this.getMegaDeltas(megaTemplate);
 		let template = this.doGetMixedTemplate(originalTemplate, deltas);
