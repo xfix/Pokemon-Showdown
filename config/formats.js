@@ -2505,18 +2505,17 @@ exports.Formats = [
 			if (template.species in bannedMons) {
 				return ["" + template.species + " is not allowed to hold a Mega Stone."];
 			}
-			if (item.id === 'beedrillite' || item.id === 'kangaskhanite') {
-				return ["" + item.name + " can only allowed be held by " + item.megaEvolves + "."];
-			}
+			let powerAbilities = {'Huge Power':1, 'Pure Power':1};
+			let allowedPower = false;
 			switch (item.id) {
+			case 'beedrillite': case 'kangaskhanite':
+				return ["" + item.name + " can only allowed be held by " + item.megaEvolves + "."];
 			case 'blazikenite':
-				if (!template.abilities.hasOwnProperty('Speed Boost')) return ["" + template.species + " is not allowed to hold " + item.name + "."];
+				if (set.ability !== 'Speed Boost') return ["" + template.species + " is not allowed to hold " + item.name + "."];
 				break;
 			case 'mawilite': case 'medichamite':
-				let powerAbilities = {'Huge Power':1, 'Pure Power':1};
 				if (powerAbilities.hasOwnProperty(set.ability)) break;
 				if (!template.otherFormes) return ["" + template.species + " is not allowed to hold " + item.name + "."];
-				let allowedPower = false;
 				for (let i = 0; i < template.otherFormes.length; i++) {
 					let altTemplate = this.getTemplate(template.otherFormes[i]);
 					if ((altTemplate.isMega || altTemplate.isPrimal) && powerAbilities.hasOwnProperty(altTemplate.abilities['0'])) {
@@ -2526,14 +2525,14 @@ exports.Formats = [
 				}
 				if (!allowedPower) return ["" + template.species + " is not allowed to hold " + item.name + "."];
 				break;
-			case 'slowbronite':
-				if (template.species === 'Regirock' || template.species === 'Steelix') return ["" + template.species + " is not allowed to hold " + item.name + "."];
-				break;
 			case 'mewtwonitey':
 				if (template.baseStats.def <= 20) return ["" + template.species + " does not have enough Defense to hold " + item.name + "."];
 				break;
 			case 'diancite':
 				if (template.baseStats.def <= 40 || template.baseStats.spd <= 40) return ["" + template.species + " does not have enough Def. or Sp. Def. to hold " + item.name + "."];
+				break;
+			case 'slowbronite':
+				if (template.baseStats.def > 185) return ["" + template.species + " is not allowed to hold " + item.name + "."];
 				break;
 			case 'ampharosite': case 'garchompite': case 'heracronite':
 				if (template.baseStats.spe <= 10) return ["" + template.species + " does not have enough Speed to hold " + item.name + "."];
@@ -2634,18 +2633,17 @@ exports.Formats = [
 			if (template.species in bannedMons) {
 				return ["" + template.species + " is not allowed to hold a Mega Stone."];
 			}
-			if (item.id === 'beedrillite' || item.id === 'kangaskhanite') {
-				return ["" + item.name + " can only allowed be held by " + item.megaEvolves + "."];
-			}
+			let powerAbilities = {'Huge Power':1, 'Pure Power':1};
+			let allowedPower = false;
 			switch (item.id) {
+			case 'beedrillite': case 'kangaskhanite':
+				return ["" + item.name + " can only allowed be held by " + item.megaEvolves + "."];
 			case 'blazikenite':
-				if (!template.abilities.hasOwnProperty('Speed Boost')) return ["" + template.species + " is not allowed to hold " + item.name + "."];
+				if (set.ability !== 'Speed Boost') return ["" + template.species + " is not allowed to hold " + item.name + "."];
 				break;
 			case 'mawilite': case 'medichamite':
-				let powerAbilities = {'Huge Power':1, 'Pure Power':1};
 				if (powerAbilities.hasOwnProperty(set.ability)) break;
 				if (!template.otherFormes) return ["" + template.species + " is not allowed to hold " + item.name + "."];
-				let allowedPower = false;
 				for (let i = 0; i < template.otherFormes.length; i++) {
 					let altTemplate = this.getTemplate(template.otherFormes[i]);
 					if ((altTemplate.isMega || altTemplate.isPrimal) && powerAbilities.hasOwnProperty(altTemplate.abilities['0'])) {
@@ -2655,14 +2653,14 @@ exports.Formats = [
 				}
 				if (!allowedPower) return ["" + template.species + " is not allowed to hold " + item.name + "."];
 				break;
-			case 'slowbronite':
-				if (template.species === 'Regirock' || template.species === 'Steelix') return ["" + template.species + " is not allowed to hold " + item.name + "."];
-				break;
 			case 'mewtwonitey':
 				if (template.baseStats.def <= 20) return ["" + template.species + " does not have enough Defense to hold " + item.name + "."];
 				break;
 			case 'diancite':
 				if (template.baseStats.def <= 40 || template.baseStats.spd <= 40) return ["" + template.species + " does not have enough Def. or Sp. Def. to hold " + item.name + "."];
+				break;
+			case 'slowbronite':
+				if (template.baseStats.def > 185) return ["" + template.species + " is not allowed to hold " + item.name + "."];
 				break;
 			case 'ampharosite': case 'garchompite': case 'heracronite':
 				if (template.baseStats.spe <= 10) return ["" + template.species + " does not have enough Speed to hold " + item.name + "."];
