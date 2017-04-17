@@ -371,6 +371,18 @@ exports.Formats = [
 		requirePentagon: true,
 	},
 	{
+		name: "Uber Triples",
+		desc: [
+			"Uber Triples",
+			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3511522/\">Like Smogon Triples but no Uber bans.</a>"
+		],
+		section: "ORAS Triples",
+
+		gameType: 'triples',
+		ruleset: ['Pokemon', 'Species Clause', 'OHKO Clause', 'Moody Clause', 'Evasion Moves Clause', 'Mega Rayquaza Clause', 'Endless Battle Clause', 'HP Percentage Mod', 'Cancel Mod', 'Team Preview'],
+		banlist: ['Illegal', 'Unreleased', 'Dark Void', 'Perish Song']
+	},
+	{
 		name: "Triples Hackmons Cup",
 		section: "ORAS Triples",
 
