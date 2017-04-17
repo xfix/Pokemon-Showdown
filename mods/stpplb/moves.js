@@ -382,13 +382,13 @@ exports.BattleMovedex = {
 		id: 'broadside',
 		accuracy: 100,
 		basePower: 18,
-		multihit: 5,
+		multihit: [4, 5], // Nerfed from always 5
 		category: "Special",
-		desc: "Hits 5 times. If one of the hits breaks the target's substitute, it will take damage for the remaining hits.",
-		shortDesc: "Hits 5 times in one turn.",
+		desc: "Hits 4 to 5 times. If one of the hits breaks the target's substitute, it will take damage for the remaining hits.",
+		shortDesc: "Hits 4-5 times in one turn.",
 		pp: 15,
 		priority: 0,
-		flags: {protect: 1, mirror: 1, bullet: 1},
+		flags: {protect: 1, mirror: 1, bullet: 1, recharge: 1}, // Requires recharge now
 		onPrepareHit: function (target, source, move) { // animation
 			this.attrLastMove('[still]');
 			this.add('-anim', source, 'Spike Cannon', target);
