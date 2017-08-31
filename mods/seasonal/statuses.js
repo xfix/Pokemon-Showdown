@@ -1,0 +1,34 @@
+'use strict';
+
+exports.BattleStatuses = {
+	ev: {
+		exists: true,
+		onStart: function () {
+			this.add('c|~EV|nice boosts');
+		},
+		onFaint: function () {
+			this.add('c|~EV|muk off');
+		},
+	},
+	kamikaze: {
+		exists: true,
+		onStart: function () {
+			this.add('c|&kamikaze|Omae Wa Mou Shindeiru');
+		},
+		onFaint: function () {
+			this.add('c|&kamikaze|NANI!');
+		},
+	},
+	scotteh: {
+		exists: true,
+		onStart: function () {
+			this.add('c|&Scotteh|─────▄▄████▀█▄');
+			this.add('c|&Scotteh|───▄██████████████████▄');
+			this.add('c|&Scotteh|─▄█████.▼.▼.▼.▼.▼.▼.▼');
+		},
+		onFaint: function () {
+			this.add('-message', '▄███████▄.▲.▲.▲.▲.▲.▲');
+			this.add('-message', '█████████████████████▀▀');
+		},
+	}
+};

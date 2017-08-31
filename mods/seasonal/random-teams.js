@@ -3,16 +3,33 @@
 const RandomTeams = require('../../data/random-teams');
 
 class RandomStaffBrosTeams extends RandomTeams {
-	randomTeam: function () {
+	randomStaffBrosTeam() {
 		let team = [];
 		let variant = (this.random(2) === 1);
 		let sets = {
-			
+			'EV': {
+				species: 'Muk-Alola', ability: 'Unaware', item: 'Black Sludge', gender: 'M', // ask gender
+				moves: [['Gunk Shot', 'Poison Jab'][this.random(2)], 'Recover', 'Coil'],
+				signatureMove: 'Dark Aggro',
+				evs: {hp: 252, spa: 252, spd: 4}, nature: 'Adamant',
+			},
+			'kamikaze': {
+				species: 'Staraptor', ability: 'Gale Wings', item: 'Choice Band', gender: 'M',
+				moves: ['Brave Bird', 'Close Combat', ['Double Edge', 'U-Turn'][this.random(2)]],
+				signatureMove: 'Kamikaze Rebirth',
+				evs: {hp: 172, atk: 228, spe: 108}, nature: 'Adamant',
+			},
+			'Scotteh': {
+				species: 'Suicune', ability: 'Fur Coat', item: 'Leftovers', gender: 'N',
+				moves: ['Slack Off', 'Amnesia', 'Steam Eruption'],
+				signatureMove: 'Geomagnetic Storm',
+				evs: {def: 252, spa: 4, spe: 252}, nature: 'Bold',
+			},
 		};
 		
 		// Generate the team randomly.
 		let pool = Object.keys(sets);
-		for (let i = 0; i < 6; i++) {
+		while (team.length < 6 && pool.length) {
 			let name = this.sampleNoReplace(pool);
 			let set = sets[name];
 			set.level = 100;
@@ -33,3 +50,5 @@ class RandomStaffBrosTeams extends RandomTeams {
 		return team;
 	}	
 }
+
+module.exports = RandomStaffBrosTeams;
