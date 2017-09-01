@@ -31,6 +31,12 @@ class RandomStaffBrosTeams extends RandomTeams {
 				signatureMove: 'Geomagnetic Storm',
 				evs: {def: 252, spa: 4, spe: 252}, nature: 'Bold',
 			},
+			'xfix': {
+				species: 'Xatu', ability: ['Magic Bounce', 'Prankster', 'Skill Link'][this.random(3)], item: 'Pomeg Berry', gender: 'M',
+				moves: ['Substitute', ['Roost', 'Strength Sap'][this.random(2)], 'Thunder Wave'],
+				signatureMove: 'glitzer popping',
+				evs: {hp: 4, def: 252, spd: 252}, nature: 'Calm',
+			},
 		};
 		
 		// Generate the team randomly.
