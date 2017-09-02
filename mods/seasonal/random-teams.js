@@ -20,7 +20,7 @@ class RandomStaffBrosTeams extends RandomTeams {
 				evs: {hp: 252, spa: 252, spd: 4}, nature: 'Adamant',
 			},
 			'kamikaze': {
-				species: 'Staraptor', ability: 'Gale Wings', item: 'Choice Band', gender: 'M',
+				species: 'Staraptor', ability: 'Flash Feather', item: 'Choice Band', gender: 'M',
 				moves: ['Brave Bird', 'Close Combat', ['Double Edge', 'U-Turn'][this.random(2)]],
 				signatureMove: 'Kamikaze Rebirth',
 				evs: {hp: 172, atk: 228, spe: 108}, nature: 'Adamant',
