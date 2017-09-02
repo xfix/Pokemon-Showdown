@@ -36,6 +36,7 @@ class RandomStaffBrosTeams extends RandomTeams {
 				moves: ['Substitute', ['Roost', 'Strength Sap'][this.random(2)], 'Thunder Wave'],
 				signatureMove: 'glitzer popping',
 				evs: {hp: 4, def: 252, spd: 252}, nature: 'Calm',
+			},
 			'Beowulf': {
 				species: 'Beedrill', ability: 'Download', item: 'Beedrillite', gender: 'M',
 				moves: ['spikyshield', 'gunkshot', ['sacredfire', 'boltstrike', 'diamondstorm'][this.random(3)]],
