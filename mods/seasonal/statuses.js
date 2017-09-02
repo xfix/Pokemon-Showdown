@@ -68,8 +68,9 @@ exports.BattleStatuses = {
 				pokemon.pomegBerryTriggered = true;
 				this.add('-immune', pokemon, '[msg]', '[from] item: Pomeg Berry');
 				return null;
-     }
-  },
+			}
+		},
+	},
 	beowulf: {
 		exists: true,
 		onSwitchIn: function () {
