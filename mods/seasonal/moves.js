@@ -163,6 +163,7 @@ exports.BattleMovedex = {
 		secondary: false,
 		target: "self",
 		type: "???",
+	},
 	// Beowulf
 	buzzingofthestorm: {
 		accuracy: 100,
