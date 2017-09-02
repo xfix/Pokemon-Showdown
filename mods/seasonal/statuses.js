@@ -19,6 +19,18 @@ exports.BattleStatuses = {
 			this.add('c|&kamikaze|NANI!');
 		},
 	},
+	panpawn: {
+		exists: true,
+		onStart: function () {
+			this.add('c|%panpawn|hello darkness my old friend,,,');
+		},
+		onFaint: function () {
+			this.add('c|%panpawn|how RUDE ;_;7');
+		},
+		onSwitchOut: function () {
+			this.add('c|%panpawn|... >:^(');
+		},
+	},
 	scotteh: {
 		exists: true,
 		onStart: function () {
