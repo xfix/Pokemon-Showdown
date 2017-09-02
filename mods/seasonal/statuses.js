@@ -19,6 +19,18 @@ exports.BattleStatuses = {
 			this.add('c|&kamikaze|NANI!');
 		},
 	},
+	panpawn: {
+		exists: true,
+		onStart: function () {
+			this.add('c|%panpawn|hello darkness my old friend,,,');
+		},
+		onFaint: function () {
+			this.add('c|%panpawn|how RUDE ;_;7');
+		},
+		onSwitchOut: function () {
+			this.add('c|%panpawn|... >:^(');
+		},
+	},
 	scotteh: {
 		exists: true,
 		onStart: function () {
@@ -56,7 +68,27 @@ exports.BattleStatuses = {
 				pokemon.pomegBerryTriggered = true;
 				this.add('-immune', pokemon, '[msg]', '[from] item: Pomeg Berry');
 				return null;
-			}
+     }
+  },
+	beowulf: {
+		exists: true,
+		onSwitchIn: function () {
+			this.add('c|@Beowulf|Grovel peasant, you are in the presence of the RNGesus');
+		},
+		onFaint: function () {
+			this.add('c|@Beowulf|There is no need to be mad');
+		},
+	},
+	trickster: {
+		exists: true,
+		onStart: function () {
+			this.add('c|@Trickster|(◕‿◕✿)');
+		},
+		onFaint: function () {
+			this.add('c|@Trickster|(✖﹏✖✿)');
+		},
+		onSwitchOut: function () {
+			this.add('c|@Trickster|(◠﹏◠✿)');
 		},
 	},
 };
