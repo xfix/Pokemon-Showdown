@@ -60,7 +60,6 @@ exports.BattleMovedex = {
 		isNonstandard: true,
 		name: "Next Level Strats",
 		pp: 5,
-		noPPBoosts: true,
 		priority: 0,
 		flags: {protect: 1, mirror: 1, snatch: 1},
 		onPrepareHit: function (target, source) {
