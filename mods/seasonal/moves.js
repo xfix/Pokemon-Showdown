@@ -1,6 +1,29 @@
 'use strict';
 
 exports.BattleMovedex = {
+	// Beowulf
+	buzzingofthestorm: {
+		accuracy: 100,
+		basePower: 100,
+		category: "Physical",
+		id: "buzzingofthestorm",
+		isViable: true,
+		isNonstandard: true,
+		name: "Buzzing of the Storm",
+		pp: 10,
+		priority: 0,
+		flags: {protect: 1, mirror: 1, sound: 1, authentic: 1},
+		onTryHit: function (target, source, move) {
+			this.attrLastMove(['still']);
+			this.add('-anim', source, "Bug Buzz", target);
+		},
+		secondary: {
+			chance: 20,
+			volatileStatus: 'flinch',
+		},
+		target: "any",
+		type: "Bug",
+	},
 	// EV
 	darkaggro: {
 		accuracy: 100,
@@ -127,66 +150,6 @@ exports.BattleMovedex = {
 		target: "allAdjacent",
 		type: "Electric",
 	},
-	// xfix
-	glitzerpopping: {
-		accuracy: true,
-		basePower: 0,
-		category: "Status",
-		id: 'glitzerpopping',
-		isNonstandard: true,
-		name: "glitzer popping",
-		pp: 3.14,
-		noPPBoosts: true,
-		priority: 0,
-		flags: {},
-		onHit: function (target, source, effect) {
-			const moves = [];
-			for (const i in exports.BattleMovedex) {
-				const move = exports.BattleMovedex[i];
-				if (i !== move.id) continue;
-				// Calling 1 BP move is somewhat lame and disappointing. However,
-				// signature Z moves are fine, as they actually have a base power.
-				if (move.isZ && move.basePower === 1) continue;
-				moves.push(move);
-			}
-			const randomMove = moves[this.random(moves.length)].id;
-			this.useMove(randomMove, target);
-		},
-		onAfterMove: function (pokemon) {
-			const moveData = pokemon.getMoveData('glitzerpopping');
-			if (!moveData) return;
-			// Lost 1 PP due to move usage, restore 0.9 PP to make it so that only 0.1 PP
-			// would be used.
-			moveData.pp = (Math.round(moveData.pp * 100) + 90) / 100;
-		},
-		multihit: [2, 5],
-		secondary: false,
-		target: "self",
-		type: "???",
-	},
-	// Beowulf
-	buzzingofthestorm: {
-		accuracy: 100,
-		basePower: 100,
-		category: "Physical",
-		id: "buzzingofthestorm",
-		isViable: true,
-		isNonstandard: true,
-		name: "Buzzing of the Storm",
-		pp: 10,
-		priority: 0,
-		flags: {protect: 1, mirror: 1, sound: 1, authentic: 1},
-		onTryHit: function (target, source, move) {
-			this.attrLastMove(['still']);
-			this.add('-anim', source, "Bug Buzz", target);
-		},
-		secondary: {
-			chance: 20,
-			volatileStatus: 'flinch',
-		},
-		target: "any",
-		type: "Bug",
-	},
 	// Trickster, haven't completely tested this yet
 	"3freeze": {
 		accuracy: 100,
@@ -292,5 +255,42 @@ exports.BattleMovedex = {
 		},
 		target: "normal",
 		type: "Psychic",
+	},
+	// xfix
+	glitzerpopping: {
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		id: 'glitzerpopping',
+		isNonstandard: true,
+		name: "glitzer popping",
+		pp: 3.14,
+		noPPBoosts: true,
+		priority: 0,
+		flags: {},
+		onHit: function (target, source, effect) {
+			const moves = [];
+			for (const i in exports.BattleMovedex) {
+				const move = exports.BattleMovedex[i];
+				if (i !== move.id) continue;
+				// Calling 1 BP move is somewhat lame and disappointing. However,
+				// signature Z moves are fine, as they actually have a base power.
+				if (move.isZ && move.basePower === 1) continue;
+				moves.push(move);
+			}
+			const randomMove = moves[this.random(moves.length)].id;
+			this.useMove(randomMove, target);
+		},
+		onAfterMove: function (pokemon) {
+			const moveData = pokemon.getMoveData('glitzerpopping');
+			if (!moveData) return;
+			// Lost 1 PP due to move usage, restore 0.9 PP to make it so that only 0.1 PP
+			// would be used.
+			moveData.pp = (Math.round(moveData.pp * 100) + 90) / 100;
+		},
+		multihit: [2, 5],
+		secondary: false,
+		target: "self",
+		type: "???",
 	},
 };

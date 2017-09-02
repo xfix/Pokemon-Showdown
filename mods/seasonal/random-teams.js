@@ -37,13 +37,13 @@ class RandomStaffBrosTeams extends RandomTeams {
 				signatureMove: 'Geomagnetic Storm',
 				evs: {def: 252, spa: 4, spe: 252}, nature: 'Bold',
 			},
-			'Temporaryanonymous': {
+			/*'Temporaryanonymous': {
 				species: 'Doublade', ability: 'Tough Claws', item: 'Eviolite',
 				gender: 'M',
 				moves: ['Swords Dance', 'Gear Grind', ['Sacred Sword', 'X-Scissor', 'Knock off'][this.random(3)]],
 				signatureMove: 'SPOOPY EDGE CUT',
 				evs: {atk: 252, hp: 252, def: 4}, nature: 'Adamant',
-			},
+			},*/
 			'Trickster': {
 				species: 'Hoopa', ability: 'Shadow Shield', item: 'Figy Berry',
 				gender: 'M',
